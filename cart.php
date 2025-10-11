@@ -136,76 +136,22 @@ try {
     <!-- Header Override - Máxima prioridad -->
     <link rel="stylesheet" href="public/assets/css/header-override.css?v=2.0" type="text/css">
     
+    <!-- Global Responsive Styles - TODO EL PROYECTO -->
+    <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
+    
     <style>
         /* ============================================
            ESTILOS ESPECÍFICOS DEL CARRITO
            Los estilos del header responsive están en: header-responsive.css
            ============================================ */
         
-        /* Optimización del header en desktop */
+        /* Optimización específica para cart.php en desktop */
         @media (min-width: 992px) {
-            /* Hacer el header más compacto */
-            .header .row {
-                align-items: center !important;
-            }
-            
-            .header__logo {
-                padding: 10px 0 !important;
-            }
-            
-            .header__menu {
-                padding: 10px 0 !important;
-            }
-            
-            /* Optimizar la sección derecha del header */
-            .header__right {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: flex-end !important;
-                gap: 15px !important;
-                padding: 10px 0 !important;
-            }
-            
-            .header__right__auth {
-                flex-shrink: 0 !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            
-            .header__right__auth a {
-                font-size: 13px !important;
-                white-space: nowrap !important;
-                padding: 5px 10px !important;
-            }
-            
-            .header__right__auth a span {
-                max-width: 100px !important;
-                overflow: hidden !important;
-                text-overflow: ellipsis !important;
-                display: inline-block !important;
-            }
-            
-            .header__right__widget {
-                display: flex !important;
-                align-items: center !important;
-                gap: 10px !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                list-style: none !important;
-            }
-            
-            .header__right__widget li {
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            
-            .canvas__open {
-                display: none !important;
-            }
-            
             /* Espacio para el contenido después del header */
             .breadcrumb-option {
-                padding-top: 40px !important;
+                margin-top: 0 !important;
+                padding-top: 15px !important;
+                padding-bottom: 15px !important;
             }
         }
         

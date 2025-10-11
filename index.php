@@ -125,6 +125,9 @@ try {
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
     
+    <!-- Global Responsive Styles - TODO EL PROYECTO -->
+    <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
+    
     <!-- Modern Design Improvements -->
     <link rel="stylesheet" href="public/assets/css/modern-improvements.css" type="text/css">
     

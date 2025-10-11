@@ -200,6 +200,9 @@ if($usuario_logueado) {
     <!-- Header Override - Máxima prioridad -->
     <link rel="stylesheet" href="public/assets/css/header-override.css?v=2.0" type="text/css">
     
+    <!-- Global Responsive Styles - TODO EL PROYECTO -->
+    <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
+    
     <style>
         /* ============================================
            ESTILOS ESPECÍFICOS DE SHOP

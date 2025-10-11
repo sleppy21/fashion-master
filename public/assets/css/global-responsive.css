@@ -1,0 +1,511 @@
+/* ============================================
+   GLOBAL RESPONSIVE STYLES - FASHION MASTER
+   Archivo maestro de responsividad para todo el proyecto
+   ============================================ */
+
+/* ============================================
+   VARIABLES Y RESET
+   ============================================ */
+* {
+    box-sizing: border-box;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ============================================
+   MOBILE FIRST - BASE (< 576px)
+   ============================================ */
+body {
+    overflow-x: hidden;
+}
+
+.container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Tipografía responsiva */
+h1 { font-size: 24px !important; }
+h2 { font-size: 20px !important; }
+h3 { font-size: 18px !important; }
+h4 { font-size: 16px !important; }
+h5 { font-size: 14px !important; }
+h6 { font-size: 13px !important; }
+
+/* ============================================
+   HEADER RESPONSIVE
+   ============================================ */
+@media (max-width: 991px) {
+    .header {
+        padding: 10px 0 !important;
+    }
+    
+    .header__logo {
+        max-width: 120px;
+    }
+    
+    .header__menu {
+        display: none !important;
+    }
+    
+    .header__right {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 10px !important;
+    }
+    
+    .header__right__auth {
+        display: none !important;
+    }
+    
+    .canvas__open {
+        display: block !important;
+        font-size: 20px;
+        cursor: pointer;
+    }
+}
+
+/* ============================================
+   BREADCRUMB RESPONSIVE
+   ============================================ */
+@media (max-width: 767px) {
+    .breadcrumb-option {
+        padding: 20px 0 !important;
+    }
+    
+    .breadcrumb__text h4 {
+        font-size: 20px !important;
+    }
+    
+    .breadcrumb__links {
+        flex-direction: column !important;
+        gap: 10px !important;
+        align-items: flex-start !important;
+    }
+    
+    .breadcrumb__links a {
+        font-size: 13px !important;
+    }
+}
+
+/* ============================================
+   GRID RESPONSIVE
+   ============================================ */
+@media (max-width: 767px) {
+    .row {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+    
+    .row > [class*="col-"] {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+/* ============================================
+   BOTONES RESPONSIVE
+   ============================================ */
+@media (max-width: 576px) {
+    .site-btn,
+    .primary-btn,
+    .btn {
+        width: 100% !important;
+        padding: 12px 20px !important;
+        font-size: 14px !important;
+    }
+}
+
+/* ============================================
+   PRODUCTOS / CARDS RESPONSIVE
+   ============================================ */
+@media (max-width: 991px) {
+    .product__item {
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .product__item__pic {
+        height: 250px !important;
+        object-fit: cover;
+    }
+    
+    .product__item__text {
+        padding: 15px 10px !important;
+    }
+    
+    .product__item__text h6 {
+        font-size: 14px !important;
+    }
+}
+
+/* ============================================
+   FORMULARIOS RESPONSIVE
+   ============================================ */
+@media (max-width: 576px) {
+    .checkout__form input,
+    .checkout__form select,
+    .checkout__form textarea,
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+        width: 100% !important;
+        padding: 12px 15px !important;
+        font-size: 14px !important;
+    }
+    
+    .checkout__form label {
+        font-size: 13px !important;
+        margin-bottom: 5px !important;
+    }
+}
+
+/* ============================================
+   TABLAS RESPONSIVE
+   ============================================ */
+@media (max-width: 991px) {
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+        min-width: 600px;
+    }
+}
+
+/* ============================================
+   SHOP SIDEBAR RESPONSIVE
+   ============================================ */
+@media (max-width: 991px) {
+    .shop__sidebar {
+        margin-top: 40px;
+    }
+    
+    .shop__sidebar__accordion {
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .shop__sidebar__search {
+        margin-bottom: 20px;
+    }
+    
+    .shop__sidebar__search input {
+        font-size: 14px !important;
+    }
+}
+
+/* ============================================
+   PRODUCT DETAILS RESPONSIVE
+   ============================================ */
+@media (max-width: 991px) {
+    .product__details__pic {
+        margin-bottom: 30px;
+    }
+    
+    .product__details__text {
+        padding: 0 !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .product__details__price {
+        font-size: 24px !important;
+    }
+    
+    .product__details__button {
+        flex-direction: column !important;
+    }
+    
+    .product__details__button .primary-btn {
+        margin-bottom: 10px;
+    }
+}
+
+/* ============================================
+   CART RESPONSIVE
+   ============================================ */
+@media (max-width: 991px) {
+    .shop__cart__table {
+        display: none !important;
+    }
+    
+    .cart-mobile-view {
+        display: block !important;
+    }
+    
+    .cart__discount {
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .cart__total {
+        padding: 20px 15px !important;
+    }
+    
+    .cart__total h6 {
+        font-size: 16px !important;
+    }
+    
+    .cart__total ul li {
+        font-size: 14px !important;
+    }
+}
+
+/* ============================================
+   CHECKOUT RESPONSIVE
+   ============================================ */
+@media (max-width: 991px) {
+    .checkout__order {
+        margin-top: 40px;
+    }
+}
+
+@media (max-width: 576px) {
+    .checkout__order__product {
+        font-size: 13px !important;
+    }
+    
+    .checkout__order__total {
+        font-size: 16px !important;
+    }
+}
+
+/* ============================================
+   FOOTER RESPONSIVE
+   ============================================ */
+@media (max-width: 991px) {
+    .footer {
+        padding: 40px 0 20px !important;
+    }
+    
+    .footer__widget {
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer__widget h6 {
+        font-size: 16px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .footer__widget ul li {
+        font-size: 13px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .footer__copyright__text {
+        text-align: center !important;
+        font-size: 12px !important;
+    }
+}
+
+/* ============================================
+   MODALS RESPONSIVE
+   ============================================ */
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 10px !important;
+    }
+    
+    .modal-content {
+        border-radius: 10px !important;
+    }
+    
+    .modal-header {
+        padding: 15px 20px !important;
+    }
+    
+    .modal-body {
+        padding: 20px 15px !important;
+    }
+    
+    .modal-title {
+        font-size: 18px !important;
+    }
+}
+
+/* ============================================
+   PAGINATION RESPONSIVE
+   ============================================ */
+@media (max-width: 576px) {
+    .pagination {
+        justify-content: center !important;
+    }
+    
+    .pagination a {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+        margin: 0 2px !important;
+    }
+}
+
+/* ============================================
+   SPACING UTILITIES
+   ============================================ */
+@media (max-width: 767px) {
+    .spad {
+        padding-top: 40px !important;
+        padding-bottom: 40px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .spad {
+        padding-top: 30px !important;
+        padding-bottom: 30px !important;
+    }
+    
+    .mb-5 { margin-bottom: 20px !important; }
+    .mb-4 { margin-bottom: 15px !important; }
+    .mb-3 { margin-bottom: 10px !important; }
+    
+    .mt-5 { margin-top: 20px !important; }
+    .mt-4 { margin-top: 15px !important; }
+    .mt-3 { margin-top: 10px !important; }
+}
+
+/* ============================================
+   TEXTO RESPONSIVE
+   ============================================ */
+@media (max-width: 576px) {
+    p {
+        font-size: 14px !important;
+        line-height: 1.6 !important;
+    }
+    
+    .text-truncate-mobile {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+/* ============================================
+   IMÁGENES RESPONSIVE
+   ============================================ */
+@media (max-width: 767px) {
+    img {
+        width: 100%;
+        height: auto;
+    }
+    
+    .img-fluid {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* ============================================
+   UTILIDADES DE VISIBILIDAD
+   ============================================ */
+@media (max-width: 576px) {
+    .hide-mobile {
+        display: none !important;
+    }
+}
+
+@media (min-width: 577px) {
+    .show-mobile-only {
+        display: none !important;
+    }
+}
+
+@media (max-width: 991px) {
+    .hide-tablet {
+        display: none !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .show-tablet-only {
+        display: none !important;
+    }
+    
+    .show-mobile-only {
+        display: none !important;
+    }
+}
+
+/* ============================================
+   FLEXBOX RESPONSIVE
+   ============================================ */
+@media (max-width: 767px) {
+    .flex-mobile-column {
+        flex-direction: column !important;
+    }
+    
+    .flex-mobile-wrap {
+        flex-wrap: wrap !important;
+    }
+}
+
+/* ============================================
+   OFFCANVAS MENU RESPONSIVE
+   ============================================ */
+@media (max-width: 991px) {
+    .offcanvas-menu-wrapper {
+        width: 300px;
+        max-width: 80%;
+    }
+}
+
+@media (max-width: 576px) {
+    .offcanvas-menu-wrapper {
+        width: 280px;
+        max-width: 85%;
+    }
+    
+    .offcanvas__nav ul li a {
+        font-size: 14px !important;
+        padding: 12px 20px !important;
+    }
+}
+
+/* ============================================
+   TABLETS (768px - 991px)
+   ============================================ */
+@media (min-width: 768px) and (max-width: 991px) {
+    h1 { font-size: 32px !important; }
+    h2 { font-size: 26px !important; }
+    h3 { font-size: 22px !important; }
+    
+    .container-fluid {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+/* ============================================
+   DESKTOP (992px+)
+   ============================================ */
+@media (min-width: 992px) {
+    h1 { font-size: 40px !important; }
+    h2 { font-size: 32px !important; }
+    h3 { font-size: 26px !important; }
+}
+
+/* ============================================
+   LANDSCAPE MOBILE
+   ============================================ */
+@media (max-width: 767px) and (orientation: landscape) {
+    .breadcrumb-option {
+        padding: 15px 0 !important;
+    }
+    
+    .spad {
+        padding-top: 25px !important;
+        padding-bottom: 25px !important;
+    }
+}

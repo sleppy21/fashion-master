@@ -160,6 +160,9 @@ $tipo_comprobante_texto = $tipos_comprobante[$pedido['tipo_comprobante_pedido']]
     <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
     
+    <!-- Global Responsive Styles - TODO EL PROYECTO -->
+    <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
+    
     <style>
         .confirmation-header {
             background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);

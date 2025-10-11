@@ -158,6 +158,9 @@ $page_title = $producto['nombre_producto'];
     <!-- Header Override - Máxima prioridad -->
     <link rel="stylesheet" href="public/assets/css/header-override.css?v=2.0" type="text/css">
     
+    <!-- Global Responsive Styles - TODO EL PROYECTO -->
+    <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
+    
     <!-- Product Details CSS -->
     <link rel="stylesheet" href="public/assets/css/product-details.css" type="text/css">
 </head>

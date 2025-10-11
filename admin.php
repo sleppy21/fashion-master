@@ -263,12 +263,12 @@ try {
                             <div class="stat-content">
                                 <h3><?php echo $total_productos; ?></h3>
                                 <p>Productos Activos</p>
-                                <div class="stat-trend">
+                                <div class="stat-trend <?php echo $productos_stock_bajo > 0 ? 'warning' : 'success'; ?>">
                                     <?php if ($productos_stock_bajo > 0): ?>
                                         <i class="fas fa-exclamation-triangle"></i>
-                                        <span style="color: var(--warning);"><?php echo $productos_stock_bajo; ?> con stock bajo</span>
+                                        <span><?php echo $productos_stock_bajo; ?> con stock bajo</span>
                                     <?php else: ?>
-                                        <i class="fas fa-check"></i>
+                                        <i class="fas fa-check-circle"></i>
                                         <span>Stock saludable</span>
                                     <?php endif; ?>
                                 </div>
@@ -282,7 +282,7 @@ try {
                             <div class="stat-content">
                                 <h3><?php echo $total_usuarios; ?></h3>
                                 <p>Usuarios Activos</p>
-                                <div class="stat-trend">
+                                <div class="stat-trend info">
                                     <i class="fas fa-user-check"></i>
                                     <span>Registrados en el sistema</span>
                                 </div>
@@ -296,8 +296,8 @@ try {
                             <div class="stat-content">
                                 <h3>S/. <?php echo number_format($valor_inventario, 0, ',', '.'); ?></h3>
                                 <p>Valor de Inventario</p>
-                                <div class="stat-trend">
-                                    <i class="fas fa-boxes"></i>
+                                <div class="stat-trend success">
+                                    <i class="fas fa-chart-line"></i>
                                     <span><?php echo $total_productos_sistema; ?> productos totales</span>
                                 </div>
                             </div>
@@ -310,7 +310,7 @@ try {
                             <div class="stat-content">
                                 <h3><?php echo $total_categorias; ?></h3>
                                 <p>Categorías Activas</p>
-                                <div class="stat-trend">
+                                <div class="stat-trend info">
                                     <i class="fas fa-copyright"></i>
                                     <span><?php echo $total_marcas; ?> marcas activas</span>
                                 </div>
@@ -1066,9 +1066,34 @@ try {
         
         // ===== SISTEMA DE CARGA ÚNICO POR SECCIÓN =====
         // Cada sección tiene su propia función de carga completamente independiente
-        
+        // Limpiar elementos de filtros/modales residuales entre cambios de sección
+        window.cleanupFilters = function() {
+            try {
+                // Remove elements that are modals or mobile filter buttons by class
+                document.querySelectorAll('.filters-modal, .mobile-filter-btn, .filters-modal-overlay').forEach(el => el.remove());
+
+                // Remove elements whose id starts with 'filters-modal' or 'mobile-filter' (covers variants)
+                document.querySelectorAll('[id]').forEach(el => {
+                    const id = el.id || '';
+                    if (id.startsWith('filters-modal') || id.startsWith('mobile-filter')) {
+                        el.remove();
+                    }
+                });
+
+                // Ensure body scroll isn't blocked
+                document.body.style.overflow = '';
+                document.body.classList.remove('modal-open');
+            } catch (e) {
+                console.warn('⚠️ cleanupFilters error:', e);
+            }
+        };
+
         function loadTabContent(tabId) {
             console.log('🔄 loadTabContent llamado para:', tabId);
+            // Limpiar posibles modales/filtros del módulo anterior
+            if (typeof window.cleanupFilters === 'function') {
+                window.cleanupFilters();
+            }
             
             switch(tabId) {
                 case 'productos':

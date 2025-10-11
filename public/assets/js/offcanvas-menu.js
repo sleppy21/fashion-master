@@ -89,4 +89,14 @@ $(document).ready(function() {
             $('#favoritesModal').modal('show');
         }, 300);
     });
+
+    // ============================================
+    // OBSERVER PARA DETECTAR CUANDO SE CIERRA EL MENÚ
+    // Y SIEMPRE MOSTRAR EL FOOTER
+    // ============================================
+    setInterval(function() {
+        if (!$('.offcanvas-menu-wrapper').hasClass('active')) {
+            $('footer, .footer, .mobile-cart-footer__content').show();
+        }
+    }, 500);
 });
