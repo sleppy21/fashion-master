@@ -28,11 +28,6 @@
                     <span class="user-name"><?php echo htmlspecialchars($usuario_logueado['nombre_usuario']); ?></span>
                 </div>
             </div>
-            <div class="user-action-link">
-                <i class="fa fa-cog"></i>
-                <span>Mi Cuenta</span>
-                <i class="fa fa-chevron-right"></i>
-            </div>
         </div>
     </div>
     <?php endif; ?>

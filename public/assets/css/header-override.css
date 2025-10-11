@@ -96,3 +96,32 @@
         padding: 15px 0 !important;
     }
 }
+
+/* ============================================
+   TIPS (NOTIFICACIONES) - NEGRO CON BLANCO
+   ============================================ */
+.tip,
+.header__right__widget .tip,
+.header__right__widget li a .tip,
+.offcanvas__widget .tip,
+.offcanvas__widget li a .tip {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* ============================================
+   OCULTAR FOOTER CUANDO MENU MÓVIL ESTÁ ABIERTO
+   ============================================ */
+.offcanvas-menu-overlay.active ~ footer,
+.offcanvas-menu-overlay.active ~ .footer {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Alternativa: Ocultar footer cuando overlay está visible */
+body:has(.offcanvas-menu-overlay.active) footer,
+body:has(.offcanvas-menu-overlay.active) .footer {
+    display: none !important;
+}

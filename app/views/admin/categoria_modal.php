@@ -390,7 +390,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                 <i class="fas fa-times"></i> Cancelar
             </button>
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> <?= $isEdit ? 'Actualizar' : 'Guardar' ?> Categoría
+                <i class="fas fa-save"></i> <?= $isEdit ? 'Actualizar' : 'Guardar' ?> <span class="btn-text-mobile-hide">Categoría</span>
             </button>
         </div>
     </form>

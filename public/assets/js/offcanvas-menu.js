@@ -15,6 +15,8 @@ $(document).ready(function() {
         e.preventDefault();
         $('.offcanvas-menu-wrapper').addClass('active');
         $('.offcanvas-menu-overlay').addClass('active');
+        // Ocultar footer y footer móvil del carrito
+        $('footer, .footer, .mobile-cart-footer__content').hide();
     });
 
     // Cerrar offcanvas con botón X
@@ -22,6 +24,8 @@ $(document).ready(function() {
         e.preventDefault();
         $('.offcanvas-menu-wrapper').removeClass('active');
         $('.offcanvas-menu-overlay').removeClass('active');
+        // Mostrar footer y footer móvil del carrito
+        $('footer, .footer, .mobile-cart-footer__content').show();
     });
 
     // Cerrar offcanvas con overlay
@@ -29,6 +33,8 @@ $(document).ready(function() {
         e.preventDefault();
         $('.offcanvas-menu-wrapper').removeClass('active');
         $(this).removeClass('active');
+        // Mostrar footer y footer móvil del carrito
+        $('footer, .footer, .mobile-cart-footer__content').show();
     });
 
     // ============================================
@@ -57,6 +63,8 @@ $(document).ready(function() {
         // Cerrar offcanvas
         $('.offcanvas-menu-wrapper').removeClass('active');
         $('.offcanvas-menu-overlay').removeClass('active');
+        // Mostrar footer y footer móvil del carrito
+        $('footer, .footer, .mobile-cart-footer__content').show();
         
         // Abrir modal de usuario después de cerrar offcanvas
         setTimeout(function() {
@@ -73,6 +81,8 @@ $(document).ready(function() {
         // Cerrar offcanvas
         $('.offcanvas-menu-wrapper').removeClass('active');
         $('.offcanvas-menu-overlay').removeClass('active');
+        // Mostrar footer y footer móvil del carrito
+        $('footer, .footer, .mobile-cart-footer__content').show();
         
         // Abrir modal de favoritos
         setTimeout(function() {

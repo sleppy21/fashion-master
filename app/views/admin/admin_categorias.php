@@ -18,17 +18,17 @@
             </div>
         </div>
         <div class="module-actions">
-            <button class="btn-modern btn-primary" onclick="showCreateCategoriaModal()">
-                <i class="fas fa-plus"></i>
-                <span>Nueva Categoría</span>
+            <button class="btn-modern btn-primary" onclick="showCreateCategoriaModal()" style="color: white !important;">
+                <i class="fas fa-plus" style="color: white !important;"></i>
+                <span style="color: white !important;">Nuevo <span class="btn-text-mobile-hide">Categoría</span></span>
             </button>
-            <button class="btn-modern btn-secondary" onclick="exportCategoriasExcel()">
-                <i class="fas fa-download"></i>
-                <span>Exportar Excel</span>
+            <button class="btn-modern btn-secondary" onclick="exportCategoriasExcel()" style="color: white !important;">
+                <i class="fas fa-download" style="color: white !important;"></i>
+                <span style="color: white !important;">Exportar <span class="btn-text-mobile-hide">Excel</span></span>
             </button>
-            <button class="btn-modern btn-info" onclick="showCategoriasReport()">
-                <i class="fas fa-chart-bar"></i>
-                <span>Reporte Stock</span>
+            <button class="btn-modern btn-info" onclick="showCategoriasReport()" style="color: white !important;">
+                <i class="fas fa-chart-bar" style="color: white !important;"></i>
+                <span style="color: white !important;">Reporte <span class="btn-text-mobile-hide">Stock</span></span>
             </button>
         </div>
     </div>
@@ -132,6 +132,11 @@
                 </table>
             </div>
 
+            <!-- Vista Grid (oculta por defecto, se muestra en móvil) -->
+            <div class="categorias-grid" id="categorias-grid">
+                <!-- Las cards se generan dinámicamente -->
+            </div>
+
             <!-- Paginación -->
             <div class="pagination-container">
                 <div class="pagination-info">
@@ -159,7 +164,102 @@
             </div>
         </div>
     </div>
+
+    <!-- Botón flotante de filtros (solo móvil) -->
+    <button class="mobile-filter-btn" id="mobile-filters-btn" onclick="window.toggleFiltersModalCategorias()" style="display: none;">
+        <i class="fas fa-filter"></i>
+    </button>
+
+    <!-- Modal de filtros (solo móvil) -->
+    <div class="filters-modal" id="filters-modal-categorias" style="display: none;">
+        <div class="filters-modal-content">
+            <div class="filters-modal-header">
+                <h3 class="filters-modal-title"><i class="fas fa-filter"></i> Filtros</h3>
+                <button class="filters-modal-close" onclick="window.closeFiltersModalCategorias()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="filters-modal-body">
+                <!-- Búsqueda -->
+                <div class="modal-search-container">
+                    <div class="modal-search-input-group">
+                        <i class="fas fa-search modal-search-icon"></i>
+                        <input type="text" id="modal-search-categorias" class="modal-search-input" 
+                               placeholder="Buscar categorías...">
+                    </div>
+                </div>
+
+                <!-- Filtros Grid -->
+                <div class="modal-filters-grid">
+                    <!-- Estado -->
+                    <div class="modal-filter-group">
+                        <label class="modal-filter-label">
+                            <i class="fas fa-toggle-on"></i> Estado
+                        </label>
+                        <select id="modal-filter-estado-categoria" class="modal-filter-select">
+                            <option value="">Todos los estados</option>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+
+                    <!-- Fecha -->
+                    <div class="modal-filter-group">
+                        <label class="modal-filter-label">
+                            <i class="fas fa-calendar"></i> Fecha
+                        </label>
+                        <select id="modal-filter-fecha-categoria" class="modal-filter-select">
+                            <option value="">Todas las fechas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-filter-actions">
+                <button class="btn-modern btn-outline" onclick="window.clearAllFiltersModalCategorias()">
+                    <i class="fas fa-times"></i> Limpiar
+                </button>
+                <button class="btn-modern btn-primary" onclick="window.applyFiltersModalCategorias()">
+                    <i class="fas fa-check"></i> Aplicar
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+/* ===== FORZAR COLOR BLANCO EN BOTONES DEL HEADER - CATEGORÍAS ===== */
+.admin-categorias-module .module-actions .btn-modern,
+.admin-categorias-module .module-actions .btn-modern.btn-primary,
+.admin-categorias-module .module-actions .btn-modern.btn-secondary,
+.admin-categorias-module .module-actions .btn-modern.btn-info,
+.admin-categorias-module .module-actions button {
+    color: #ffffff !important;
+}
+
+.admin-categorias-module .module-actions .btn-modern i,
+.admin-categorias-module .module-actions .btn-modern span,
+.admin-categorias-module .module-actions .btn-modern.btn-primary i,
+.admin-categorias-module .module-actions .btn-modern.btn-primary span,
+.admin-categorias-module .module-actions .btn-modern.btn-secondary i,
+.admin-categorias-module .module-actions .btn-modern.btn-secondary span,
+.admin-categorias-module .module-actions .btn-modern.btn-info i,
+.admin-categorias-module .module-actions .btn-modern.btn-info span,
+.admin-categorias-module .module-actions button i,
+.admin-categorias-module .module-actions button span {
+    color: #ffffff !important;
+}
+
+@media (max-width: 768px) {
+    .admin-categorias-module .module-actions .btn-modern,
+    .admin-categorias-module .module-actions .btn-modern *,
+    .admin-categorias-module .module-actions button,
+    .admin-categorias-module .module-actions button * {
+        color: #ffffff !important;
+    }
+}
+</style>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════════
@@ -374,7 +474,7 @@ function displayCategorias(categorias) {
     }).join('');
     
     // ⭐ ACTUALIZAR GRID SI ESTÁ ACTIVO
-    const gridContainer = document.querySelector('.products-grid');
+    const gridContainer = document.querySelector('.categorias-grid');
     const activeBtn = document.querySelector('.view-btn.active');
     
     if (gridContainer && activeBtn && activeBtn.dataset.view === 'grid') {
@@ -506,7 +606,7 @@ function toggleViewCategorias(viewType) {
     console.log('🔄 [CATEGORIAS] Cambiando vista a:', viewType);
     
     const tableWrapper = document.getElementById('categorias-table-wrapper');
-    let gridContainer = document.querySelector('.products-grid'); // Usar clase de productos
+    let gridContainer = document.querySelector('.categorias-grid'); // Usar clase correcta
     
     // ⭐ CERRAR BURBUJAS FLOTANTES INSTANTÁNEAMENTE (SIN ANIMACIÓN)
     if (cat_floatingContainer) {
@@ -544,9 +644,10 @@ function toggleViewCategorias(viewType) {
         orphanedContainers.forEach(container => container.remove());
     }
     
-    // Crear grid si no existe
-    if (viewType === 'grid' && !gridContainer) {
-        gridContainer = createCategoriasGridContainer();
+    // El grid ya existe en el HTML, solo necesitamos mostrarlo
+    if (!gridContainer) {
+        console.error('❌ No se encontró .categorias-grid');
+        return;
     }
     
     // Actualizar botones de vista
@@ -610,7 +711,7 @@ function createCategoriasGridContainer() {
 
 // Mostrar categorías en grid - DISEÑO EXACTO DE PRODUCTOS
 function displayCategoriasGrid(categorias) {
-    const gridContainer = document.querySelector('.products-grid');
+    const gridContainer = document.querySelector('.categorias-grid');
     if (!gridContainer) {
         console.error('Grid container no encontrado');
         return;
@@ -643,14 +744,14 @@ function displayCategoriasGrid(categorias) {
                                formatDate(cat.fecha_creacion_categoria) || 
                                'N/A';
         
-        // Generar HTML de imagen solo para móvil
-        const imageHTML = isMobile ? `
+        // Generar HTML de imagen (tanto para móvil como PC)
+        const imageHTML = `
             <div class="product-card-image-mobile ${cat.url_imagen_categoria ? '' : 'no-image'}">
                 ${cat.url_imagen_categoria 
                     ? `<img src="${cat.url_imagen_categoria}" alt="${cat.nombre_categoria || 'Categoría'}" onerror="this.parentElement.classList.add('no-image'); this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fas fa-tags\\'></i>';">` 
                     : '<i class="fas fa-tags"></i>'}
             </div>
-        ` : '';
+        `;
         
         return `
             <div class="product-card" ondblclick="showEditCategoriaModal(${cat.id_categoria})" style="cursor: pointer;" data-categoria-id="${cat.id_categoria}">
@@ -707,7 +808,7 @@ function displayCategoriasGrid(categorias) {
 
 // Función para aplicar Masonry layout en categorías
 function applyMasonryLayoutCategorias() {
-    const gridContainer = document.querySelector('.products-grid');
+    const gridContainer = document.querySelector('.categorias-grid');
     if (!gridContainer || window.innerWidth > 768) return;
     
     // Esperar a que las imágenes se carguen
@@ -3007,6 +3108,127 @@ function showImageFullSize(imageUrl, categoryName) {
 
 // Hacer la función global
 window.showImageFullSize = showImageFullSize;
+
+// ═══════════════════════════════════════════════════════════════════════
+// FUNCIONES DEL MODAL DE FILTROS (MÓVIL)
+// ═══════════════════════════════════════════════════════════════════════
+
+// Toggle del modal de filtros
+window.toggleFiltersModalCategorias = function() {
+    const modal = document.getElementById('filters-modal-categorias');
+    const isVisible = modal.style.display === 'flex';
+    
+    if (isVisible) {
+        closeFiltersModalCategorias();
+    } else {
+        // Sincronizar filtros del desktop al modal
+        syncFiltersToModalCategorias();
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('active'), 10);
+    }
+};
+
+// Cerrar modal de filtros
+window.closeFiltersModalCategorias = function() {
+    const modal = document.getElementById('filters-modal-categorias');
+    modal.classList.remove('active');
+    setTimeout(() => modal.style.display = 'none', 300);
+};
+
+// Sincronizar filtros del desktop al modal
+window.syncFiltersToModalCategorias = function() {
+    // Búsqueda
+    const desktopSearch = document.getElementById('search-categorias');
+    const modalSearch = document.getElementById('modal-search-categorias');
+    if (desktopSearch && modalSearch) {
+        modalSearch.value = desktopSearch.value;
+    }
+    
+    // Estado
+    const desktopEstado = document.getElementById('filter-estado-categoria');
+    const modalEstado = document.getElementById('modal-filter-estado-categoria');
+    if (desktopEstado && modalEstado) {
+        modalEstado.value = desktopEstado.value;
+    }
+    
+    // Fecha
+    const desktopFecha = document.getElementById('filter-fecha-categoria');
+    const modalFecha = document.getElementById('modal-filter-fecha-categoria');
+    if (desktopFecha && modalFecha) {
+        modalFecha.value = desktopFecha.value;
+    }
+};
+
+// Sincronizar filtros del modal al desktop
+window.syncFiltersFromModalCategorias = function() {
+    // Búsqueda
+    const modalSearch = document.getElementById('modal-search-categorias');
+    const desktopSearch = document.getElementById('search-categorias');
+    if (modalSearch && desktopSearch) {
+        desktopSearch.value = modalSearch.value;
+    }
+    
+    // Estado
+    const modalEstado = document.getElementById('modal-filter-estado-categoria');
+    const desktopEstado = document.getElementById('filter-estado-categoria');
+    if (modalEstado && desktopEstado) {
+        desktopEstado.value = modalEstado.value;
+    }
+    
+    // Fecha
+    const modalFecha = document.getElementById('modal-filter-fecha-categoria');
+    const desktopFecha = document.getElementById('filter-fecha-categoria');
+    if (modalFecha && desktopFecha) {
+        desktopFecha.value = modalFecha.value;
+    }
+};
+
+// Aplicar filtros desde el modal
+window.applyFiltersModalCategorias = function() {
+    syncFiltersFromModalCategorias();
+    filterCategorias();
+    closeFiltersModalCategorias();
+};
+
+// Limpiar filtros desde el modal
+window.clearAllFiltersModalCategorias = function() {
+    // Limpiar campos del modal
+    document.getElementById('modal-search-categorias').value = '';
+    document.getElementById('modal-filter-estado-categoria').value = '';
+    document.getElementById('modal-filter-fecha-categoria').value = '';
+    
+    // Sincronizar y aplicar
+    syncFiltersFromModalCategorias();
+    clearAllFiltersCategorias();
+    closeFiltersModalCategorias();
+};
+
+// Detectar si es móvil y mostrar/ocultar elementos
+function detectMobileViewCategorias() {
+    const isMobile = window.innerWidth <= 768;
+    const filterBtn = document.getElementById('mobile-filters-btn');
+    const desktopFilters = document.querySelector('.module-filters');
+    
+    if (filterBtn) {
+        filterBtn.style.display = isMobile ? 'flex' : 'none';
+    }
+    
+    if (desktopFilters) {
+        desktopFilters.style.display = isMobile ? 'none' : 'block';
+    }
+    
+    // Auto-cambiar a vista grid en móvil
+    if (isMobile) {
+        const gridBtn = document.querySelector('.view-btn[data-view="grid"]');
+        if (gridBtn && !gridBtn.classList.contains('active')) {
+            toggleViewCategorias('grid');
+        }
+    }
+}
+
+// Ejecutar al cargar y al redimensionar
+window.addEventListener('load', detectMobileViewCategorias);
+window.addEventListener('resize', detectMobileViewCategorias);
 
 </script>
 

@@ -34,29 +34,63 @@ $rol = $_SESSION['rol'] ?? 'admin';
 
 // Obtener estadísticas básicas
 try {
-    // Total de productos
-    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM producto");
+    // Total de productos ACTIVOS
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM producto WHERE estado = 'activo'");
     $stmt->execute();
     $total_productos = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
-    // Total de usuarios
-    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM usuario");
+    // Total de usuarios ACTIVOS
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM usuario WHERE estado_usuario = 'activo'");
     $stmt->execute();
     $total_usuarios = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
-    // Total de categorías
-    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM categoria");
+    // Total de categorías ACTIVAS
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM categoria WHERE estado_categoria = 'activo'");
     $stmt->execute();
     $total_categorias = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
-    // Ventas del mes (simulated)
-    $ventas_mes = 250;
+    // Total de marcas
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM marca WHERE estado_marca = 'activo'");
+    $stmt->execute();
+    $total_marcas = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+    // Productos con stock bajo (menos de 10 unidades)
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM producto WHERE stock_actual_producto < 10 AND estado = 'activo'");
+    $stmt->execute();
+    $productos_stock_bajo = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+    // Productos sin stock
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM producto WHERE stock_actual_producto = 0 AND estado = 'activo'");
+    $stmt->execute();
+    $productos_sin_stock = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+    // Valor total del inventario (precio * stock)
+    $stmt = $conn->prepare("SELECT SUM(precio_producto * stock_actual_producto) as total FROM producto WHERE estado = 'activo'");
+    $stmt->execute();
+    $valor_inventario = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+
+    // Total de todos los productos (activos + inactivos) para comparación
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM producto");
+    $stmt->execute();
+    $total_productos_sistema = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+    // Calcular porcentajes de crecimiento simulados basados en datos reales
+    $porcentaje_productos = $total_productos > 0 ? round(($total_productos / max($total_productos_sistema, 1)) * 100) : 0;
+    $porcentaje_categorias = $total_categorias > 0 ? min(100, $total_categorias * 10) : 0;
 
 } catch (PDOException $e) {
+    // Valores por defecto en caso de error
     $total_productos = 0;
     $total_usuarios = 0;
     $total_categorias = 0;
-    $ventas_mes = 0;
+    $total_marcas = 0;
+    $productos_stock_bajo = 0;
+    $productos_sin_stock = 0;
+    $valor_inventario = 0;
+    $total_productos_sistema = 0;
+    $porcentaje_productos = 0;
+    $porcentaje_categorias = 0;
+    error_log("Error en consultas del dashboard: " . $e->getMessage());
 }
 ?>
 <!DOCTYPE html>
@@ -172,37 +206,37 @@ try {
                     <div class="nav-tab active" data-tab="dashboard" onclick="switchTab('dashboard')">
                         <a href="javascript:void(0)">
                             <i class="fas fa-chart-line"></i>
-                            Dashboard
+                            <span>Dashboard</span>
                         </a>
                     </div>
                     <div class="nav-tab" data-tab="productos" onclick="switchTab('productos')">
                         <a href="javascript:void(0)">
                             <i class="fas fa-tshirt"></i>
-                            Productos
+                            <span>Productos</span>
                         </a>
                     </div>
                     <div class="nav-tab" data-tab="categorias" onclick="switchTab('categorias')">
                         <a href="javascript:void(0)">
                             <i class="fas fa-tags"></i>
-                            Categorías
+                            <span>Categorías</span>
                         </a>
                     </div>
                     <div class="nav-tab" data-tab="marcas" onclick="switchTab('marcas')">
                         <a href="javascript:void(0)">
                             <i class="fas fa-copyright"></i>
-                            Marcas
+                            <span>Marcas</span>
                         </a>
                     </div>
                     <div class="nav-tab" data-tab="usuarios" onclick="switchTab('usuarios')">
                         <a href="javascript:void(0)">
                             <i class="fas fa-users"></i>
-                            Usuarios
+                            <span>Usuarios</span>
                         </a>
                     </div>
                     <div class="nav-tab" data-tab="configuracion" onclick="switchTab('configuracion')">
                         <a href="javascript:void(0)">
                             <i class="fas fa-cog"></i>
-                            Configuración
+                            <span>Configuración</span>
                         </a>
                     </div>
                 </div>
@@ -228,10 +262,15 @@ try {
                             </div>
                             <div class="stat-content">
                                 <h3><?php echo $total_productos; ?></h3>
-                                <p>Productos Totales</p>
+                                <p>Productos Activos</p>
                                 <div class="stat-trend">
-                                    <i class="fas fa-arrow-up"></i>
-                                    <span>+12% vs mes anterior</span>
+                                    <?php if ($productos_stock_bajo > 0): ?>
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <span style="color: var(--warning);"><?php echo $productos_stock_bajo; ?> con stock bajo</span>
+                                    <?php else: ?>
+                                        <i class="fas fa-check"></i>
+                                        <span>Stock saludable</span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -242,38 +281,38 @@ try {
                             </div>
                             <div class="stat-content">
                                 <h3><?php echo $total_usuarios; ?></h3>
-                                <p>Usuarios Registrados</p>
+                                <p>Usuarios Activos</p>
                                 <div class="stat-trend">
-                                    <i class="fas fa-arrow-up"></i>
-                                    <span>+8% vs mes anterior</span>
+                                    <i class="fas fa-user-check"></i>
+                                    <span>Registrados en el sistema</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="stat-card sales">
                             <div class="stat-icon">
-                                <i class="fas fa-shopping-cart"></i>
+                                <i class="fas fa-dollar-sign"></i>
                             </div>
                             <div class="stat-content">
-                                <h3><?php echo $ventas_mes; ?></h3>
-                                <p>Ventas este Mes</p>
+                                <h3>S/. <?php echo number_format($valor_inventario, 0, ',', '.'); ?></h3>
+                                <p>Valor de Inventario</p>
                                 <div class="stat-trend">
-                                    <i class="fas fa-arrow-up"></i>
-                                    <span>+25% vs mes anterior</span>
+                                    <i class="fas fa-boxes"></i>
+                                    <span><?php echo $total_productos_sistema; ?> productos totales</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="stat-card orders">
                             <div class="stat-icon">
-                                <i class="fas fa-boxes"></i>
+                                <i class="fas fa-tags"></i>
                             </div>
                             <div class="stat-content">
                                 <h3><?php echo $total_categorias; ?></h3>
                                 <p>Categorías Activas</p>
                                 <div class="stat-trend">
-                                    <i class="fas fa-minus"></i>
-                                    <span>Sin cambios</span>
+                                    <i class="fas fa-copyright"></i>
+                                    <span><?php echo $total_marcas; ?> marcas activas</span>
                                 </div>
                             </div>
                         </div>
@@ -290,7 +329,7 @@ try {
                                 <i class="fas fa-plus-circle"></i>
                                 <span>Agregar Producto</span>
                             </button>
-                            <button class="action-btn add-category" onclick="switchTab('categorias')">
+                            <button class="action-btn add-category" onclick="openNewCategoryModal()">
                                 <i class="fas fa-tag"></i>
                                 <span>Nueva Categoría</span>
                             </button>
@@ -976,6 +1015,43 @@ try {
         window.showModalOverlayEdit = showModalOverlayEdit;
         window.showModalOverlayView = showModalOverlayView;
         window.closeProductModal = closeProductModal;
+        
+        // ===== FUNCIÓN PARA NUEVA CATEGORÍA =====
+        window.openNewCategoryModal = function() {
+            console.log('🏷️ Abriendo modal de nueva categoría directamente');
+            
+            // Si ya estamos en la tab de categorías, abrir directo
+            const categoriaTab = document.getElementById('categorias');
+            const isInCategoriaTab = categoriaTab && categoriaTab.classList.contains('active');
+            
+            if (isInCategoriaTab && typeof window.showCreateCategoriaModal === 'function') {
+                console.log('✅ Ya en tab de categorías, abriendo modal directo');
+                window.showCreateCategoriaModal();
+                return;
+            }
+            
+            // Si no estamos en la tab, cambiar primero
+            console.log('📍 Cambiando a tab de categorías...');
+            switchTab('categorias');
+            
+            // Esperar a que el contenido de categorías se cargue y abrir modal
+            let attempts = 0;
+            const maxAttempts = 20; // 2 segundos máximo
+            
+            const checkAndOpen = setInterval(function() {
+                attempts++;
+                
+                if (typeof window.showCreateCategoriaModal === 'function') {
+                    console.log('✅ Función encontrada, abriendo modal');
+                    clearInterval(checkAndOpen);
+                    window.showCreateCategoriaModal();
+                } else if (attempts >= maxAttempts) {
+                    console.error('❌ Timeout: no se pudo encontrar la función del modal');
+                    clearInterval(checkAndOpen);
+                    showNotification('Error al abrir el modal de categoría. Por favor intente de nuevo.', 'error');
+                }
+            }, 100); // Revisar cada 100ms
+        };
         
         console.log('✅ Funciones de modal expuestas globalmente:', {
             showCreateProductModal: typeof window.showCreateProductModal,

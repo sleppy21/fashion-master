@@ -615,7 +615,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
             <?php if (!$isView): ?>
-            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> <?= $isEdit ? 'Actualizar' : 'Guardar' ?> Producto</button>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> <?= $isEdit ? 'Actualizar' : 'Guardar' ?> <span class="btn-text-mobile-hide">Producto</span></button>
             <?php endif; ?>
         </div>
     </form>

@@ -18,17 +18,17 @@
             </div>
         </div>
         <div class="module-actions">
-            <button class="btn-modern btn-primary" onclick="closeStockBubble(); window.showCreateProductModal();">
-                <i class="fas fa-plus"></i>
-                <span>Nuevo Producto</span>
+            <button class="btn-modern btn-primary" onclick="closeStockBubble(); window.showCreateProductModal();" style="color: white !important;">
+                <i class="fas fa-plus" style="color: white !important;"></i>
+                <span style="color: white !important;">Nuevo <span class="btn-text-mobile-hide">Producto</span></span>
             </button>
-            <button class="btn-modern btn-secondary" onclick="exportProducts()">
-                <i class="fas fa-download"></i>
-                <span>Exportar Excel</span>
+            <button class="btn-modern btn-secondary" onclick="exportProducts()" style="color: white !important;">
+                <i class="fas fa-download" style="color: white !important;"></i>
+                <span style="color: white !important;">Exportar <span class="btn-text-mobile-hide">Excel</span></span>
             </button>
-            <button class="btn-modern btn-info" onclick="showStockReport()">
-                <i class="fas fa-chart-bar"></i>
-                <span>Reporte Stock</span>
+            <button class="btn-modern btn-info" onclick="showStockReport()" style="color: white !important;">
+                <i class="fas fa-chart-bar" style="color: white !important;"></i>
+                <span style="color: white !important;">Reporte <span class="btn-text-mobile-hide">Stock</span></span>
             </button>
         </div>
     </div>
@@ -192,6 +192,91 @@
             </div>
         </div>
     </div>
+
+    <!-- ========================================
+         MOBILE ONLY: Botón y Modal de Filtros
+         ======================================== -->
+    
+    <!-- Botón flotante para abrir filtros (solo mobile) -->
+    <button class="mobile-filter-btn" id="mobile-filter-btn" onclick="window.toggleFiltersModal()" style="display: none;">
+        <i class="fas fa-filter"></i>
+    </button>
+
+    <!-- Modal de filtros (solo mobile) -->
+    <div class="filters-modal" id="filters-modal" onclick="if(event.target.id === 'filters-modal') window.closeFiltersModal()">
+        <div class="filters-modal-content" onclick="event.stopPropagation();">
+            <div class="filters-modal-header">
+                <h3 class="filters-modal-title">
+                    <i class="fas fa-filter"></i> Filtros
+                </h3>
+                <button class="filters-modal-close" onclick="window.closeFiltersModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="filters-modal-body">
+                <!-- Búsqueda -->
+                <div class="modal-search-container">
+                    <div class="modal-search-input-group">
+                        <i class="fas fa-search modal-search-icon"></i>
+                        <input type="text" id="modal-search-productos" class="modal-search-input" 
+                               placeholder="Buscar productos..." oninput="window.handleModalSearchInput()">
+                        <button class="modal-search-clear" onclick="window.clearModalSearch()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="modal-filters-grid">
+                    <div class="modal-filter-group">
+                        <label class="modal-filter-label">Categoría</label>
+                        <select id="modal-filter-category" class="modal-filter-select" onchange="window.filterProductsFromModal()">
+                            <option value="">Todas las categorías</option>
+                            <!-- Se cargan dinámicamente -->
+                        </select>
+                    </div>
+                    
+                    <div class="modal-filter-group">
+                        <label class="modal-filter-label">Estado</label>
+                        <select id="modal-filter-status" class="modal-filter-select" onchange="window.filterProductsFromModal()">
+                            <option value="">Todos los estados</option>
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="modal-filter-group">
+                        <label class="modal-filter-label">Stock</label>
+                        <select id="modal-filter-stock" class="modal-filter-select" onchange="window.filterProductsFromModal()">
+                            <option value="">Todo el stock</option>
+                            <option value="agotado">Agotado</option>
+                            <option value="bajo">Stock bajo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="modal-filter-group">
+                        <label class="modal-filter-label">Fecha</label>
+                        <select id="modal-filter-fecha" class="modal-filter-select" onchange="window.filterProductsFromModal()">
+                            <option value="">Todas las fechas</option>
+                            <!-- Se cargan dinámicamente -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="modal-filter-actions">
+                    <button class="btn-modern btn-outline" onclick="window.clearModalFilters()">
+                        <i class="fas fa-filter-circle-xmark"></i> Limpiar
+                    </button>
+                    <button class="btn-modern btn-primary" onclick="window.closeFiltersModal()">
+                        <i class="fas fa-check"></i> Aplicar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -225,6 +310,175 @@ let productos = [];
 // Variables de paginación
 let currentPage = 1;
 let totalPages = 1;
+
+// ============ MOBILE FILTERS MODAL FUNCTIONS ============
+
+// Mostrar/ocultar botón de filtros móvil basado en el tamaño de pantalla
+function toggleMobileFilterButton() {
+    const mobileFilterBtn = document.querySelector('.mobile-filter-btn');
+    const isMobile = window.innerWidth <= 768;
+    
+    console.log('📱 toggleMobileFilterButton - isMobile:', isMobile, 'width:', window.innerWidth);
+    
+    if (mobileFilterBtn) {
+        if (isMobile) {
+            mobileFilterBtn.style.display = 'flex';
+            console.log('✅ Botón flotante MOSTRADO');
+        } else {
+            mobileFilterBtn.style.display = 'none';
+            console.log('✅ Botón flotante OCULTO');
+        }
+    } else {
+        console.error('❌ Botón flotante no encontrado en DOM');
+    }
+}
+
+// Abrir/cerrar modal de filtros
+function toggleFiltersModal() {
+    console.log('🔵 toggleFiltersModal llamado');
+    const modal = document.getElementById('filters-modal');
+    if (modal) {
+        modal.classList.toggle('active');
+        console.log('🔵 Modal active:', modal.classList.contains('active'));
+        if (modal.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+            syncFiltersToModal();
+        } else {
+            document.body.style.overflow = '';
+        }
+    } else {
+        console.error('❌ Modal no encontrado');
+    }
+}
+window.toggleFiltersModal = toggleFiltersModal;
+
+function closeFiltersModal() {
+    const modal = document.getElementById('filters-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+window.closeFiltersModal = closeFiltersModal;
+
+function closeFiltersModalOnOverlay(event) {
+    if (event.target.id === 'filters-modal') {
+        closeFiltersModal();
+    }
+}
+window.closeFiltersModalOnOverlay = closeFiltersModalOnOverlay;
+
+// Sincronizar filtros del desktop al modal
+function syncFiltersToModal() {
+    if (typeof $ === 'undefined') return;
+    
+    // Sincronizar búsqueda
+    const searchValue = $('#search-productos').val();
+    $('#modal-search-productos').val(searchValue);
+    
+    // Sincronizar filtros
+    const categoryValue = $('#filter-category').val();
+    const statusValue = $('#filter-status').val();
+    const stockValue = $('#filter-stock').val();
+    const fechaValue = $('#filter-fecha').val();
+    
+    $('#modal-filter-category').val(categoryValue);
+    $('#modal-filter-status').val(statusValue);
+    $('#modal-filter-stock').val(stockValue);
+    $('#modal-filter-fecha').val(fechaValue);
+}
+
+// Sincronizar filtros del modal al desktop
+function syncFiltersFromModal() {
+    if (typeof $ === 'undefined') return;
+    
+    // Sincronizar búsqueda
+    const searchValue = $('#modal-search-productos').val();
+    $('#search-productos').val(searchValue);
+    
+    // Sincronizar filtros
+    const categoryValue = $('#modal-filter-category').val();
+    const statusValue = $('#modal-filter-status').val();
+    const stockValue = $('#modal-filter-stock').val();
+    const fechaValue = $('#modal-filter-fecha').val();
+    
+    $('#filter-category').val(categoryValue);
+    $('#filter-status').val(statusValue);
+    $('#filter-stock').val(stockValue);
+    $('#filter-fecha').val(fechaValue);
+}
+
+// Manejar búsqueda desde el modal
+function handleModalSearchInput() {
+    const searchValue = document.getElementById('modal-search-productos').value;
+    if (typeof $ !== 'undefined') {
+        $('#search-productos').val(searchValue);
+    }
+    handleSearchInput();
+}
+window.handleModalSearchInput = handleModalSearchInput;
+
+// Limpiar búsqueda desde el modal
+function clearModalSearch() {
+    document.getElementById('modal-search-productos').value = '';
+    if (typeof $ !== 'undefined') {
+        $('#search-productos').val('');
+    }
+    clearProductSearch();
+}
+window.clearModalSearch = clearModalSearch;
+
+// Filtrar productos desde el modal
+function filterProductsFromModal() {
+    syncFiltersFromModal();
+    filterProducts();
+}
+window.filterProductsFromModal = filterProductsFromModal;
+
+// Limpiar todos los filtros desde el modal
+function clearModalFilters() {
+    if (typeof $ === 'undefined') return;
+    
+    // Limpiar filtros del modal
+    $('#modal-search-productos').val('');
+    $('#modal-filter-category').val('');
+    $('#modal-filter-status').val('');
+    $('#modal-filter-stock').val('');
+    $('#modal-filter-fecha').val('');
+    
+    // Sincronizar con desktop y aplicar
+    syncFiltersFromModal();
+    clearAllProductFilters();
+}
+window.clearModalFilters = clearModalFilters;
+
+// Cargar opciones de filtros en el modal
+function loadModalFilterOptions() {
+    if (typeof $ === 'undefined') return;
+    
+    // Copiar opciones de categorías
+    const categoryOptions = $('#filter-category').html();
+    $('#modal-filter-category').html(categoryOptions);
+    
+    // Copiar opciones de fecha
+    const fechaOptions = $('#filter-fecha').html();
+    $('#modal-filter-fecha').html(fechaOptions);
+}
+
+// Inicializar en carga de página
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🟢 DOMContentLoaded - Inicializando modal de filtros');
+    
+    toggleMobileFilterButton();
+    
+    // Escuchar cambios de tamaño de ventana
+    window.addEventListener('resize', toggleMobileFilterButton);
+    
+    // Cargar opciones de filtros en el modal cuando se carguen en desktop
+    setTimeout(loadModalFilterOptions, 1000);
+});
+
+// ============ END MOBILE FILTERS MODAL FUNCTIONS ============
 
 // Función para obtener la URL correcta de la imagen del producto
 function getProductImageUrl(producto, forceCacheBust = false) {
@@ -476,6 +730,8 @@ async function loadCategories() {
                     categorySelect.appendChild(option);
                 });
                 
+                // Sincronizar con el modal
+                loadModalFilterOptions();
             }
         }
     } catch (error) {
@@ -524,6 +780,9 @@ function loadProductDates(products) {
         if (valorActual && fechasUnicas.includes(valorActual)) {
             fechaSelect.value = valorActual;
         }
+        
+        // Sincronizar con el modal
+        loadModalFilterOptions();
     } catch (error) {
         console.error('❌ Error cargando fechas:', error);
     }
@@ -3801,6 +4060,37 @@ window.destroyProductosModule = function() {
 </script>
 
 <style>
+/* ===== FORZAR COLOR BLANCO EN BOTONES DEL HEADER - MÁXIMA PRIORIDAD ===== */
+.module-actions .btn-modern,
+.module-actions .btn-modern.btn-primary,
+.module-actions .btn-modern.btn-secondary,
+.module-actions .btn-modern.btn-info,
+.module-actions button {
+    color: #ffffff !important;
+}
+
+.module-actions .btn-modern i,
+.module-actions .btn-modern span,
+.module-actions .btn-modern.btn-primary i,
+.module-actions .btn-modern.btn-primary span,
+.module-actions .btn-modern.btn-secondary i,
+.module-actions .btn-modern.btn-secondary span,
+.module-actions .btn-modern.btn-info i,
+.module-actions .btn-modern.btn-info span,
+.module-actions button i,
+.module-actions button span {
+    color: #ffffff !important;
+}
+
+@media (max-width: 768px) {
+    .module-actions .btn-modern,
+    .module-actions .btn-modern *,
+    .module-actions button,
+    .module-actions button * {
+        color: #ffffff !important;
+    }
+}
+
 /* ===== PREVENIR DOBLE SCROLLBAR ===== */
 .data-table-container:has(.scrollable-table) {
     overflow: visible !important;

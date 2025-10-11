@@ -142,6 +142,346 @@ try {
            Los estilos del header responsive están en: header-responsive.css
            ============================================ */
         
+        /* Optimización del header en desktop */
+        @media (min-width: 992px) {
+            /* Hacer el header más compacto */
+            .header .row {
+                align-items: center !important;
+            }
+            
+            .header__logo {
+                padding: 10px 0 !important;
+            }
+            
+            .header__menu {
+                padding: 10px 0 !important;
+            }
+            
+            /* Optimizar la sección derecha del header */
+            .header__right {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: flex-end !important;
+                gap: 15px !important;
+                padding: 10px 0 !important;
+            }
+            
+            .header__right__auth {
+                flex-shrink: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .header__right__auth a {
+                font-size: 13px !important;
+                white-space: nowrap !important;
+                padding: 5px 10px !important;
+            }
+            
+            .header__right__auth a span {
+                max-width: 100px !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                display: inline-block !important;
+            }
+            
+            .header__right__widget {
+                display: flex !important;
+                align-items: center !important;
+                gap: 10px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                list-style: none !important;
+            }
+            
+            .header__right__widget li {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .canvas__open {
+                display: none !important;
+            }
+            
+            /* Espacio para el contenido después del header */
+            .breadcrumb-option {
+                padding-top: 40px !important;
+            }
+        }
+        
+        /* ============================================
+           BREADCRUMB CON BOTÓN
+           ============================================ */
+        .breadcrumb__links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .breadcrumb__links-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .continue-shopping-btn {
+            font-size: 11px;
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .continue-shopping-btn:hover {
+            color: #333;
+            text-decoration: underline;
+        }
+        
+        /* ============================================
+           ESTILOS DE TABLA DE CARRITO - DESKTOP
+           ============================================ */
+        
+        /* Ocultar tabla por defecto en móvil */
+        .shop__cart__table {
+            display: none;
+        }
+        
+        /* Mostrar solo en desktop */
+        @media (min-width: 992px) {
+            .shop__cart__table {
+                display: block;
+                background: white;
+                margin-bottom: 30px;
+                width: 100%;
+                border-radius: 16px;
+                padding: 20px;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+                overflow: visible !important;
+            }
+        }
+        
+        .shop__cart__table table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+            min-width: auto !important;
+            table-layout: fixed;
+        }
+        
+        .shop__cart__table thead th {
+            padding: 12px 6px;
+            background: #f8f9fa;
+            color: #666;
+            font-weight: 600;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border: none;
+        }
+        
+        .shop__cart__table thead th:first-child {
+            border-radius: 8px 0 0 8px;
+            padding-left: 12px;
+            width: 35%;
+        }
+        
+        .shop__cart__table thead th:nth-child(2) {
+            width: 16%;
+        }
+        
+        .shop__cart__table thead th:nth-child(3) {
+            width: 24%;
+        }
+        
+        .shop__cart__table thead th:nth-child(4) {
+            width: 16%;
+        }
+        
+        .shop__cart__table thead th:last-child {
+            border-radius: 0 8px 8px 0;
+            padding-right: 12px;
+            width: 7%;
+        }
+        
+        .shop__cart__table tbody tr {
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .shop__cart__table tbody tr:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .shop__cart__table tbody td {
+            padding: 12px 6px;
+            vertical-align: middle;
+            background: white;
+            border-top: 1px solid #f1f1f1;
+            border-bottom: 1px solid #f1f1f1;
+            overflow: hidden;
+        }
+        
+        .shop__cart__table tbody td:first-child {
+            border-left: 1px solid #f1f1f1;
+            border-radius: 10px 0 0 10px;
+            padding-left: 12px;
+        }
+        
+        .shop__cart__table tbody td:last-child {
+            border-right: 1px solid #f1f1f1;
+            border-radius: 0 10px 10px 0;
+            padding-right: 12px;
+        }
+        
+        .cart__product__item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 100%;
+            overflow: hidden;
+        }
+        
+        .cart__product__item img {
+            width: 55px;
+            height: 55px;
+            object-fit: cover;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+        
+        .cart__product__item__title {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+        
+        .cart__product__item__title h6 {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            word-break: break-word;
+            line-height: 1.3;
+        }
+        
+        .cart__price,
+        .cart__total {
+            font-size: 12px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        /* Ajustes para que todo quepa bien en desktop */
+        @media (min-width: 992px) {
+            .shop__cart__table {
+                padding: 20px;
+                overflow: visible !important;
+            }
+            
+            .shop__cart__table table {
+                min-width: auto !important;
+                table-layout: fixed;
+            }
+            
+            .shop__cart__table thead th {
+                font-size: 10px;
+                padding: 12px 8px;
+            }
+            
+            .shop__cart__table tbody td {
+                padding: 14px 8px;
+            }
+            
+            .cart__product__item img {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .cart__product__item__title h6 {
+                font-size: 13px;
+            }
+            
+            .cart__price,
+            .cart__total {
+                font-size: 13px;
+            }
+        }
+        
+        /* Pantallas más grandes - más espacio */
+        @media (min-width: 1200px) {
+            .shop__cart__table {
+                padding: 25px;
+            }
+            
+            .shop__cart__table thead th {
+                padding: 14px 10px;
+                font-size: 11px;
+            }
+            
+            .shop__cart__table tbody td {
+                padding: 16px 10px;
+            }
+            
+            .cart__product__item {
+                gap: 10px;
+            }
+            
+            .cart__product__item img {
+                width: 65px;
+                height: 65px;
+            }
+            
+            .cart__product__item__title h6 {
+                font-size: 14px;
+            }
+            
+            .cart__price,
+            .cart__total {
+                font-size: 14px;
+            }
+        }
+        
+        /* Pantallas extra grandes */
+        @media (min-width: 1400px) {
+            .shop__cart__table {
+                padding: 30px;
+            }
+            
+            .shop__cart__table thead th {
+                padding: 15px 12px;
+                font-size: 12px;
+            }
+            
+            .shop__cart__table tbody td {
+                padding: 18px 12px;
+            }
+            
+            .cart__product__item {
+                gap: 12px;
+            }
+            
+            .cart__product__item img {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .cart__product__item__title h6 {
+                font-size: 15px;
+            }
+            
+            .cart__price,
+            .cart__total {
+                font-size: 15px;
+            }
+        }
+        
         /* ============================================
            FOOTER STICKY MÓVIL
            ============================================ */
@@ -673,6 +1013,26 @@ try {
         .shop-cart.spad {
             padding: 60px 0;
         }
+        
+        /* Desktop - espaciado optimizado */
+        @media (min-width: 992px) {
+            .shop-cart.spad {
+                padding-top: 40px;
+                padding-bottom: 60px;
+            }
+            
+            /* REMOVIDO - ya está definido arriba con más espaciado */
+            
+            /* Reducir espacio entre breadcrumb y productos */
+            .shop__cart__table {
+                margin-top: 0;
+                margin-bottom: 30px;
+            }
+            
+            .cart-summary-sidebar {
+                margin-top: 0;
+            }
+        }
 
         /* Responsive */
         @media (max-width: 991px) {
@@ -693,17 +1053,18 @@ try {
 
         /* Responsive para tablets */
         @media (max-width: 768px) {
-            /* Hacer tabla scrollable horizontalmente */
+            /* Ocultar tabla en tablets también */
             .shop__cart__table {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                margin-bottom: 0;
-                border-radius: 12px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                display: none !important;
             }
 
             .shop__cart__table table {
-                min-width: 650px;
+                display: none;
+            }
+            
+            /* Mostrar vista de tarjetas móvil */
+            .cart-mobile-view {
+                display: block !important;
             }
 
             .shop__cart__table thead th {
@@ -815,6 +1176,10 @@ try {
         /* Responsive para móviles */
         @media (max-width: 576px) {
             /* Ocultar tabla y mostrar vista de tarjetas */
+            .shop__cart__table {
+                display: none !important;
+            }
+            
             .shop__cart__table table {
                 display: none;
             }
@@ -1077,13 +1442,7 @@ try {
                 padding: 10px;
             }
 
-            /* Botón continuar comprando */
-            .continue-shopping-btn {
-                width: 100%;
-                justify-content: center;
-                padding: 12px;
-                font-size: 13px;
-            }
+            /* Botón continuar comprando - ya manejado en estilos principales */
 
             /* Carrito vacío */
             .cart-empty {
@@ -1109,22 +1468,30 @@ try {
 
             /* Breadcrumb responsivo */
             .breadcrumb-option {
-                padding: 15px 0;
+                padding: 8px 0; /* Reducido aún más */
                 background: #f8f9fa;
+                margin-bottom: 0; /* Sin margen inferior */
             }
 
             .breadcrumb__links {
                 font-size: 13px;
-                display: flex;
-                align-items: center;
-                flex-wrap: wrap;
-                gap: 5px;
+                gap: 15px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .breadcrumb__links-left {
+                width: 100%;
+            }
+            
+            .continue-shopping-btn {
+                font-size: 11px;
+                margin-top: 5px;
             }
 
             .breadcrumb__links a,
             .breadcrumb__links span {
                 font-size: 13px;
-                white-space: nowrap;
             }
 
             .breadcrumb__links i {
@@ -1140,7 +1507,7 @@ try {
 
             /* Mejorar espaciado general */
             .shop-cart.spad {
-                padding: 30px 0;
+                padding: 10px 0; /* Reducido aún más */
                 padding-bottom: 100px; /* Espacio extra para el footer sticky móvil */
             }
 
@@ -1204,18 +1571,27 @@ try {
                 height: 18px;
             }
 
-            .continue-shopping-btn {
-                font-size: 12px;
-                padding: 10px 20px;
-            }
+            /* Botón continuar comprando - ya manejado en estilos principales */
 
             .breadcrumb__links {
                 font-size: 11px;
+                gap: 8px;
+            }
+            
+            .continue-shopping-btn {
+                font-size: 10px;
+                margin-top: 3px;
+            }
+            
+            .breadcrumb-option {
+                padding: 5px 0; /* Muy reducido */
+                margin-bottom: 0;
             }
 
             /* Espaciado general */
             .shop-cart.spad {
-                padding: 40px 0;
+                padding: 5px 0; /* Muy reducido */
+                padding-bottom: 100px;
             }
 
             .mb-4 {
@@ -1277,8 +1653,13 @@ try {
             <div class="row">
                 <div class="col-lg-12">
                     <div class="breadcrumb__links">
-                        <a href="./index.php"><i class="fa fa-home"></i> Inicio</a>
-                        <span>Carrito de Compras</span>
+                        <div class="breadcrumb__links-left">
+                            <a href="./index.php"><i class="fa fa-home"></i> Inicio</a>
+                            <span>Carrito de Compras</span>
+                        </div>
+                        <a href="shop.php" class="continue-shopping-btn">
+                            Continuar Comprando
+                        </a>
                     </div>
                 </div>
             </div>
@@ -1289,15 +1670,6 @@ try {
     <!-- Shop Cart Section Begin -->
     <section class="shop-cart spad">
         <div class="container">
-            <!-- Botón Continuar Comprando -->
-            <div class="row mb-4">
-                <div class="col-lg-12">
-                    <a href="shop.php" class="continue-shopping-btn">
-                        <i class="fa fa-arrow-left"></i> Continuar Comprando
-                    </a>
-                </div>
-            </div>
-            
             <?php if(!empty($cart_items)): ?>
             <div class="row">
                 <!-- Lista de Productos (Izquierda) -->
@@ -1952,49 +2324,5 @@ try {
     });
     </script>
     
-    <style>
-    /* Botón Continuar Comprando mejorado */
-    .continue-shopping-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px 28px;
-        background: white;
-        color: #333;
-        border: 2px solid #e1e1e1;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 15px;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-    
-    .continue-shopping-btn:hover {
-        background: #ffffffff;
-        transform: translateX(-3px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        text-decoration: none;
-        color: #333;
-    }
-    
-    .continue-shopping-btn i {
-        font-size: 16px;
-        transition: transform 0.3s ease;
-    }
-    
-    .continue-shopping-btn:hover i {
-        transform: translateX(-3px);
-    }
-    
-    @media (max-width: 576px) {
-        .continue-shopping-btn {
-            width: 100%;
-            justify-content: center;
-            padding: 12px 24px;
-            font-size: 14px;
-        }
-    }
-    </style>
 </body>
 </html>
