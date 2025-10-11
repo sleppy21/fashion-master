@@ -1,0 +1,397 @@
+/* ========================================
+   BOTÓN PRINCIPAL DEL CHAT - VERSION MEJORADA
+   - Movido más a la derecha
+   - Correcciones y mejoras de accesibilidad / rendimiento
+   ======================================== */
+
+/* Variables CSS necesarias */
+:root {
+    --fs-primary: #000000;
+    --fs-primary-hover: #333333;
+    --fs-bg-primary: #ffffff;
+    --fs-bg-secondary: #f8fafc;
+    --fs-bg-chat: #f1f5f9;
+    --fs-text-primary: #1e293b;
+    --fs-text-secondary: #64748b;
+    --fs-text-muted: #94a3b8;
+    --fs-border: #e2e8f0;
+    --fs-border-light: #f1f5f9;
+    --fs-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --fs-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --fs-radius: 12px;
+    --fs-radius-lg: 16px;
+    --fs-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --fs-widget-right: 20px; /* pegado a la derecha */
+    --fs-widget-bottom: 20px;
+    --fs-zindex: 10000;
+}
+
+/* Box sizing local al widget para evitar sorpresas */
+.fs-chat-widget,
+.fs-chat-widget * {
+    box-sizing: border-box;
+}
+
+/* Widget Container */
+.fs-chat-widget {
+    position: fixed;
+    bottom: var(--fs-widget-bottom);
+    right: var(--fs-widget-right);
+    z-index: var(--fs-zindex);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+    transition: none;
+    max-width: 400px;
+    width: auto;
+    outline: none;
+}
+
+/* Visible / hidden helpers */
+.fs-chat-widget.fs-visible {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+}
+
+.fs-chat-widget.fs-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Botón del chat con efectos hover y enfoque accesible */
+.fs-chat-button {
+    display: inline-flex;
+    align-items: center;
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 28px;
+    cursor: pointer;
+    box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.15), -2px 2px 6px rgba(0, 0, 0, 0.1);
+    transition: var(--fs-transition);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    position: relative;
+    min-height: 56px;
+    overflow: hidden;
+    transform-origin: center;
+    align-self: center;
+    gap: 12px;
+}
+
+/* Hover */
+.fs-chat-button:hover {
+    background: #262626 !important;
+    box-shadow: -6px 6px 16px rgba(26, 26, 26, 0.35), -3px 3px 10px rgba(26, 26, 26, 0.25);
+    transform: scale(1.02);
+    animation: pulse 1.2s ease-in-out 1 forwards;
+}
+
+/* Focus visible para teclado */
+.fs-chat-button:focus-visible {
+    outline: 3px solid rgba(99, 102, 241, 0.18); /* azul suave */
+    outline-offset: 3px;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
+}
+
+/* Icono */
+.fs-chat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    background: #000000 !important;
+    border-radius: 50%;
+    transition: transform 0.45s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+/* Evitar animaciones excesivas si el usuario prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+    .fs-chat-button,
+    .fs-chat-icon {
+        transition: none;
+        transform: none;
+        animation: none !important;
+    }
+}
+
+/* Hover del icono */
+.fs-chat-button:hover .fs-chat-icon {
+    transform: rotate(360deg) scale(1.06);
+    background: #000000 !important;
+    background-color: #000000 !important;
+}
+
+/* Forzar fondo negro en todos los estados del botón */
+.fs-chat-button,
+.fs-chat-widget .fs-chat-button,
+button.fs-chat-button {
+    background-color: #000000 !important;
+    background: #000000 !important;
+}
+
+.fs-chat-button:hover,
+.fs-chat-widget .fs-chat-button:hover,
+button.fs-chat-button:hover {
+    background-color: #262626 !important;
+    background: #262626 !important;
+}
+
+/* Forzar fondo negro del icono/logo */
+.fs-chat-icon,
+.fs-chat-widget .fs-chat-icon,
+.fs-chat-button .fs-chat-icon {
+    background: #000000 !important;
+    background-color: #000000 !important;
+}
+
+.fs-chat-button:hover .fs-chat-icon,
+.fs-chat-widget .fs-chat-button:hover .fs-chat-icon {
+    background-color: #262626 !important;
+    background: #262626 !important;
+}
+
+.fs-chat-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(1.1);
+    transition: transform 0.3s ease;
+    display: block;
+    margin: 0 auto;
+    transform-origin: center center;
+}
+
+/* Animaciones de click */
+.fs-chat-button.fs-clicked {
+    animation: button-pulse 0.3s ease-out;
+}
+
+/* Animación de giro al hacer click - mantener compatibilidad */
+.fs-chat-button:active .fs-chat-icon img {
+    animation: spin-once 0.6s ease !important;
+}
+
+/* Texto */
+.fs-chat-text {
+    white-space: nowrap;
+    transition: var(--fs-transition);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: #ffffff;
+}
+
+/* Efectos hover mejorados - sin animaciones automáticas */
+/* Solo se activan efectos cuando el usuario interactúa */
+
+/* RESPONSIVE DESIGN PARA BOTÓN PRINCIPAL */
+
+/* Muy pequeño: mantener margen a la derecha pequeño para no salirse de pantalla */
+@media (max-width: 500px) {
+    :root {
+        --fs-widget-right: 20px;
+        --fs-widget-bottom: 20px;
+    }
+
+    .fs-chat-widget {
+        right: var(--fs-widget-right) !important;
+        bottom: var(--fs-widget-bottom) !important;
+        transform: none !important;
+    }
+
+    .fs-chat-button {
+        padding: 0;
+        width: 56px;
+        height: 56px;
+        border-radius: 28px;
+        justify-content: center;
+        min-height: 56px;
+    }
+
+    .fs-chat-text {
+        display: none;
+    }
+
+    .fs-chat-icon {
+        margin: 0;
+        width: 32px;
+        height: 32px;
+    }
+}
+
+@media (min-width: 501px) and (max-width: 575.98px) {
+    :root {
+        --fs-widget-right: 30px;
+        --fs-widget-bottom: 20px;
+    }
+
+    .fs-chat-widget {
+        right: var(--fs-widget-right) !important;
+        bottom: var(--fs-widget-bottom) !important;
+        transform: none !important;
+    }
+
+    .fs-chat-button {
+        padding: 8px 12px;
+        border-radius: 24px;
+        font-size: 12px;
+        min-height: 48px;
+    }
+
+    .fs-chat-text {
+        font-size: 12px;
+    }
+
+    .fs-chat-icon {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* Tablet pequeño */
+@media (max-width: 767.98px) and (min-width: 576px) {
+    :root {
+        --fs-widget-right: 50px;
+    }
+
+    .fs-chat-widget {
+        right: var(--fs-widget-right);
+    }
+
+    .fs-chat-button {
+        padding: 10px 16px;
+        font-size: 13px;
+        min-height: 48px;
+    }
+
+    .fs-chat-icon {
+        width: 32px;
+        height: 32px;
+        margin-right: 10px;
+    }
+}
+
+/* Tablet grande / laptop */
+@media (max-width: 991.98px) and (min-width: 768px) {
+    :root {
+        --fs-widget-right: 20px;
+    }
+
+    .fs-chat-widget {
+        right: var(--fs-widget-right);
+    }
+
+    .fs-chat-button {
+        padding: 12px 18px;
+        font-size: 14px;
+    }
+}
+
+/* Desktop amplio: pegado a la derecha */
+@media (min-width: 1200px) {
+    :root {
+        --fs-widget-right: 20px; /* pegado a la derecha */
+    }
+
+    .fs-chat-widget {
+        right: var(--fs-widget-right);
+    }
+
+    .fs-chat-button {
+        padding: 14px 24px;
+        font-size: 15px;
+    }
+}
+
+/* Pequeña mejora: si el botón incluye un badge de notificación */
+.fs-chat-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: #ff3b30;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+/* Asegurar buen contraste si el botón cambia a color claro en algún contexto */
+.fs-chat-button.light {
+    background: var(--fs-bg-primary);
+    color: var(--fs-text-primary);
+    border: 1px solid var(--fs-border);
+}
+
+.fs-chat-button.light:hover {
+    background: #f6f7f9;
+}
+
+/* Clases utilitarias por si se necesita ocultar texto en animaciones */
+.fs-chat-text--hidden {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Soporte para touch: hacer área táctil un poco más grande */
+@media (pointer: coarse) {
+    .fs-chat-button {
+        padding: 14px 22px;
+        min-height: 56px;
+    }
+}
+
+/* Animación de giro una vez */
+@keyframes spin-once {
+    from {
+        transform: rotate(0deg) !important;
+    }
+    to {
+        transform: rotate(360deg) !important;
+    }
+}
+
+/* Animación de pulso del botón */
+@keyframes button-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.15), -2px 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        transform: scale(1.15);
+        box-shadow: -8px 8px 25px rgba(0, 0, 0, 0.3), -4px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.15), -2px 2px 6px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Animación de pulso suave (una vez) */
+@keyframes pulse {
+    0% {
+        transform: scale(1.02);
+        box-shadow: -6px 6px 16px rgba(26, 26, 26, 0.35), -3px 3px 10px rgba(26, 26, 26, 0.25);
+    }
+    50% {
+        transform: scale(1.06);
+        box-shadow: -8px 8px 20px rgba(26, 26, 26, 0.45), -4px 4px 14px rgba(26, 26, 26, 0.35);
+    }
+    100% {
+        transform: scale(1.02);
+        box-shadow: -6px 6px 16px rgba(26, 26, 26, 0.35), -3px 3px 10px rgba(26, 26, 26, 0.25);
+    }
+}

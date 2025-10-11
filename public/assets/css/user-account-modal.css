@@ -1,0 +1,574 @@
+/* ============================================
+   MODAL DE CUENTA DE USUARIO - DISEÑO DROPDOWN
+   Estilos premium para dropdown de usuario
+   ============================================ */
+
+/* Modal Container - Dropdown Style */
+.user-modal {
+    display: none;
+    position: absolute;
+    z-index: 99999;
+}
+
+/* Overlay removido */
+.user-modal-overlay {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+}
+
+/* Modal Content - Dropdown compacto */
+.user-modal-content {
+    position: fixed;
+    top: 60px;
+    right: 150px;
+    background: #ffffff;
+    width: 340px;
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 80px);
+    border-radius: 12px;
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    z-index: 100000;
+    opacity: 0;
+    transform: translateY(-15px);
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Animaciones activas */
+.user-modal.active .user-modal-content {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.user-modal.closing .user-modal-content {
+    opacity: 0;
+    transform: translateY(-15px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Flecha superior del dropdown */
+.user-modal-content::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 30px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #ffffff;
+    filter: drop-shadow(0 -2px 3px rgba(0, 0, 0, 0.1));
+}
+
+/* Botón cerrar compacto */
+.user-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    color: #666;
+    font-size: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-modal-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #000;
+    transform: rotate(90deg);
+}
+
+/* Header compacto horizontal */
+.user-modal-header {
+    position: relative;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #ffffff;
+    border-bottom: 2px solid #f0f0f0;
+    min-height: 80px;
+}
+
+.header-background {
+    display: none;
+}
+
+/* Avatar compacto a la izquierda */
+.user-avatar-container {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.user-avatar-circle {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    background: #f5f5f5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e5e5e5;
+}
+
+.avatar-initial {
+    font-size: 22px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.avatar-status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    background: #10b981;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+/* Información del usuario a la derecha - Layout vertical */
+.user-name {
+    margin: 0 0 2px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #2c3e50;
+    line-height: 1.3;
+}
+
+.user-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: #ecf0f1;
+    border-radius: 10px;
+    color: #34495e;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* Stats Grid compacto */
+.user-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 15px 15px 0;
+    background: #ffffff;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #e5e5e5;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.15);
+    border-color: #2c3e50;
+    background: #f9f9f9;
+}
+
+.stat-cart {
+    border-left: 3px solid #2c3e50;
+}
+
+.stat-favorites {
+    border-left: 3px solid #7f8c8d;
+}
+
+.stat-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 16px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.stat-cart .stat-icon {
+    background: #ecf0f1;
+    color: #2c3e50;
+}
+
+.stat-favorites .stat-icon {
+    background: #ecf0f1;
+    color: #7f8c8d;
+}
+
+.stat-card:hover .stat-icon {
+    background: #2c3e50;
+    color: #ffffff;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c3e50;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 10px;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+    font-weight: 600;
+}
+
+/* User Info List compacto - SIN scroll interno */
+.user-info-list {
+    padding: 15px;
+    background: #ffffff;
+}
+
+.user-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 8px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.user-info-item:last-child {
+    border-bottom: none;
+}
+
+.user-info-item:hover {
+    background: #f9f9f9;
+    padding-left: 12px;
+    border-color: transparent;
+}
+
+.info-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ecf0f1;
+    border-radius: 8px;
+    color: #7f8c8d;
+    font-size: 14px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.user-info-item:hover .info-icon {
+    background: #2c3e50;
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+.info-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.info-label {
+    font-size: 9px;
+    color: #95a5a6;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+}
+
+.info-value {
+    font-size: 13px;
+    color: #2c3e50;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+/* Footer compacto */
+.user-modal-footer {
+    padding: 15px;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-top: 1px solid #e9ecef;
+}
+
+.btn-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    display: none !important;
+}
+
+.btn-admin {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.btn-admin:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
+}
+
+.btn-logout {
+    background: linear-gradient(135deg, #7f8c8d 0%, #5a6c7d 100%);
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(127, 140, 141, 0.3);
+}
+
+.btn-logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(127, 140, 141, 0.4);
+    background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+}
+
+/* Estilo mejorado para user account link */
+#user-account-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: #f5f5f5;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Efecto de fondo animado */
+#user-account-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.03), transparent);
+    transition: left 0.6s ease;
+}
+
+#user-account-link:hover::before {
+    left: 100%;
+}
+
+/* Icono de usuario */
+#user-account-link i {
+    font-size: 16px;
+    transition: all 0.4s ease;
+}
+
+/* Hover efectos sutiles */
+#user-account-link:hover {
+    background: #e8e8e8;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+#user-account-link:hover i {
+    transform: rotate(15deg) scale(1.1);
+}
+
+/* Ajuste del header__right__auth para mejor distribución */
+.header__right__auth {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header__right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .user-modal-content {
+        right: 10px;
+        width: calc(100vw - 20px);
+        max-width: 350px;
+    }
+    
+    .user-modal-content::before {
+        right: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-modal-content {
+        top: 55px;
+        right: 5px;
+        left: 5px;
+        width: auto;
+        max-width: none;
+    }
+    
+    .user-modal-content::before {
+        right: 15px;
+    }
+
+    .user-modal-header {
+        padding: 25px 15px 20px;
+    }
+
+    .user-avatar-circle {
+        width: 60px;
+        height: 60px;
+    }
+
+    .avatar-initial {
+        font-size: 28px;
+    }
+
+    .user-name {
+        font-size: 16px;
+    }
+
+    .user-stats-grid {
+        padding: 12px 12px 0;
+        gap: 8px;
+    }
+
+    .stat-card {
+        padding: 10px;
+    }
+
+    .stat-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .stat-number {
+        font-size: 20px;
+    }
+
+    .user-info-list {
+        padding: 12px;
+    }
+
+    .user-modal-footer {
+        padding: 12px;
+    }
+
+    .btn-action {
+        padding: 10px 16px;
+        font-size: 12px;
+    }
+}
+
+/* Animaciones adicionales */
+.stat-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    transition: left 0.5s;
+}
+
+.stat-card:hover::before {
+    left: 100%;
+}
+
+/* Efecto ripple para botones */
+.btn-action {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: ripple-animation 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}

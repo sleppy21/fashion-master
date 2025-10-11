@@ -1,0 +1,51 @@
+pregunta,categoria
+¿Cuánto cuesta la camiseta negra?,precio
+¿Qué precio tienen los jeans?,precio
+¿Cuál es el precio del polo azul?,precio
+¿Tienen descuentos en pantalones?,precio
+¿Hay ofertas en vestidos?,precio
+¿Cuánto sale el blazer gris?,precio
+¿Qué tan caro es este producto?,precio
+¿Está en oferta?,precio
+¿Tienen precios especiales?,precio
+¿Cuál es el costo de las zapatillas?,precio
+¿Tienen talla M en camisetas?,talla
+¿Qué tallas hay disponibles?,talla
+¿Hay talla XL en stock?,talla
+¿Tienen mi talla?,talla
+¿Qué tallas manejan?,talla
+¿Hay talla 38 en zapatos?,talla
+¿Tienen talla S disponible?,talla
+¿Qué tallas tienen en pantalones?,talla
+¿Hay talla grande?,talla
+¿Tienen talla 42 en jeans?,talla
+¿Tienen en stock?,disponibilidad
+¿Está disponible?,disponibilidad
+¿Hay existencias?,disponibilidad
+¿Cuándo llega más stock?,disponibilidad
+¿Tienen disponible en rojo?,disponibilidad
+¿Hay en color negro?,disponibilidad
+¿Tienen existencias del polo azul?,disponibilidad
+¿Está agotado?,disponibilidad
+¿Hay en tienda?,disponibilidad
+¿Cuántos quedan?,disponibilidad
+¿Qué colores tienen?,color
+¿Viene en azul?,color
+¿Hay en color rojo?,color
+¿Qué colores manejan?,color
+¿Tienen en negro?,color
+¿Hay más colores disponibles?,color
+¿En qué colores viene?,color
+¿Tienen en blanco?,color
+¿Hay variedad de colores?,color
+¿Qué tonos tienen?,color
+¿Me puedes ayudar?,general
+Busco información,general
+¿Qué productos tienen?,general
+¿Cómo puedo comprar?,general
+Necesito ayuda,general
+¿Dónde están ubicados?,general
+¿Cuáles son sus horarios?,general
+¿Hacen envíos?,general
+¿Aceptan devoluciones?,general
+¿Cómo es el proceso de cambio?,general

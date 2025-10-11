@@ -1,0 +1,414 @@
+[2025-10-10 01:09:12] DEBUG: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP d9443c01a7336-29034f08912sm38848655ad.78 - gsmtp
+
+[2025-10-10 01:09:12] DEBUG: CLIENT -> SERVER: EHLO DESKTOP-TN1LE86
+
+[2025-10-10 01:09:13] DEBUG: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [38.172.128.240]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-10-10 01:09:13] DEBUG: CLIENT -> SERVER: STARTTLS
+
+[2025-10-10 01:09:13] DEBUG: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[2025-10-10 01:09:13] DEBUG: CLIENT -> SERVER: EHLO DESKTOP-TN1LE86
+
+[2025-10-10 01:09:13] DEBUG: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [38.172.128.240]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-10-10 01:09:13] DEBUG: CLIENT -> SERVER: AUTH LOGIN
+
+[2025-10-10 01:09:13] DEBUG: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[2025-10-10 01:09:13] DEBUG: CLIENT -> SERVER: [credentials hidden]
+[2025-10-10 01:09:13] DEBUG: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[2025-10-10 01:09:13] DEBUG: CLIENT -> SERVER: [credentials hidden]
+[2025-10-10 01:09:14] DEBUG: SERVER -> CLIENT: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-29034f08912sm38848655ad.78 - gsmtp
+
+[2025-10-10 01:09:14] DEBUG: SMTP ERROR: Password command failed: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-29034f08912sm38848655ad.78 - gsmtp
+
+[2025-10-10 01:09:14] DEBUG: SMTP Error: Could not authenticate.
+[2025-10-10 01:09:14] DEBUG: CLIENT -> SERVER: QUIT
+
+[2025-10-10 01:09:14] DEBUG: SERVER -> CLIENT: 221 2.0.0 closing connection d9443c01a7336-29034f08912sm38848655ad.78 - gsmtp
+
+[2025-10-10 01:09:14] DEBUG: SMTP Error: Could not authenticate.
+[2025-10-10 01:10:01] DEBUG: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP d9443c01a7336-29034e1cb83sm39496035ad.44 - gsmtp
+
+[2025-10-10 01:10:01] DEBUG: CLIENT -> SERVER: EHLO DESKTOP-TN1LE86
+
+[2025-10-10 01:10:01] DEBUG: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [38.172.128.240]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-10-10 01:10:01] DEBUG: CLIENT -> SERVER: STARTTLS
+
+[2025-10-10 01:10:01] DEBUG: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[2025-10-10 01:10:01] DEBUG: CLIENT -> SERVER: EHLO DESKTOP-TN1LE86
+
+[2025-10-10 01:10:01] DEBUG: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [38.172.128.240]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-10-10 01:10:01] DEBUG: CLIENT -> SERVER: AUTH LOGIN
+
+[2025-10-10 01:10:02] DEBUG: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[2025-10-10 01:10:02] DEBUG: CLIENT -> SERVER: [credentials hidden]
+[2025-10-10 01:10:02] DEBUG: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[2025-10-10 01:10:02] DEBUG: CLIENT -> SERVER: [credentials hidden]
+[2025-10-10 01:10:02] DEBUG: SERVER -> CLIENT: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-29034e1cb83sm39496035ad.44 - gsmtp
+
+[2025-10-10 01:10:02] DEBUG: SMTP ERROR: Password command failed: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-29034e1cb83sm39496035ad.44 - gsmtp
+
+[2025-10-10 01:10:02] DEBUG: SMTP Error: Could not authenticate.
+[2025-10-10 01:10:02] DEBUG: CLIENT -> SERVER: QUIT
+
+[2025-10-10 01:10:02] DEBUG: SERVER -> CLIENT: 221 2.0.0 closing connection d9443c01a7336-29034e1cb83sm39496035ad.44 - gsmtp
+
+[2025-10-10 01:10:02] DEBUG: SMTP Error: Could not authenticate.
+[2025-10-10 01:11:01] DEBUG: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 41be03b00d2f7-b678df66ab0sm663333a12.35 - gsmtp
+
+[2025-10-10 01:11:01] DEBUG: CLIENT -> SERVER: EHLO DESKTOP-TN1LE86
+
+[2025-10-10 01:11:01] DEBUG: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [190.235.163.81]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-10-10 01:11:01] DEBUG: CLIENT -> SERVER: STARTTLS
+
+[2025-10-10 01:11:01] DEBUG: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[2025-10-10 01:11:02] DEBUG: CLIENT -> SERVER: EHLO DESKTOP-TN1LE86
+
+[2025-10-10 01:11:02] DEBUG: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [190.235.163.81]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-10-10 01:11:02] DEBUG: CLIENT -> SERVER: AUTH LOGIN
+
+[2025-10-10 01:11:02] DEBUG: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[2025-10-10 01:11:02] DEBUG: CLIENT -> SERVER: [credentials hidden]
+[2025-10-10 01:11:02] DEBUG: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[2025-10-10 01:11:02] DEBUG: CLIENT -> SERVER: [credentials hidden]
+[2025-10-10 01:11:03] DEBUG: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: MAIL FROM:<spiritboom672@gmail.com>
+
+[2025-10-10 01:11:03] DEBUG: SERVER -> CLIENT: 250 2.1.0 OK 41be03b00d2f7-b678df66ab0sm663333a12.35 - gsmtp
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: RCPT TO:<spiritboom672@gmail.com>
+
+[2025-10-10 01:11:03] DEBUG: SERVER -> CLIENT: 250 2.1.5 OK 41be03b00d2f7-b678df66ab0sm663333a12.35 - gsmtp
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: DATA
+
+[2025-10-10 01:11:03] DEBUG: SERVER -> CLIENT: 354 Go ahead 41be03b00d2f7-b678df66ab0sm663333a12.35 - gsmtp
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: Date: Fri, 10 Oct 2025 01:11:01 +0200
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: To: spiritboom672@gmail.com
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: From: Fashion Store <spiritboom672@gmail.com>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: Subject: =?UTF-8?Q?=F0=9F=8E=89_Prueba_de_Email_-_Fashion_Store?=
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: Message-ID: <aOFuOcM8trlgmoPGlq3sST5QlH2Ju8w5c5CsZx4XcM@DESKTOP-TN1LE86>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.1 (https://github.com/PHPMailer/PHPMailer)
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: MIME-Version: 1.0
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:  boundary="b1=_aOFuOcM8trlgmoPGlq3sST5QlH2Ju8w5c5CsZx4XcM"
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: Content-Transfer-Encoding: 8bit
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: --b1=_aOFuOcM8trlgmoPGlq3sST5QlH2Ju8w5c5CsZx4XcM
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: Content-Transfer-Encoding: 8bit
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:     
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:     
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         .success { background: #4CAF50; color: white; padding: 15px; border-radius: 5px; margin: 20px 0; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         .info { background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #2196F3; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:     
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:     
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             ✅ Email de Prueba Exitoso
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             Fashion Store - Sistema de Correos
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 ¡El sistema de emails está funcionando correctamente!
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             📧 Información de la Prueba
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 Fecha: 10/10/2025 01:11:01
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 Servidor SMTP: Gmail (smtp.gmail.com:587)
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 Método: PHPMailer con TLS
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 Estado: ✅ Enviado correctamente
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             🔧 Características Implementadas:
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 ✅ PHPMailer instalado y configurado
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 ✅ Gmail SMTP con autenticación segura
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 ✅ Plantillas HTML responsivas
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 ✅ Sistema de logs para debugging
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 ✅ Recuperación de contraseña funcional
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             Si recibes este email, significa que el sistema está listo para usar.
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 Fashion Store © 2025 | Powered by PHPMailer
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 Este es un email automático de prueba
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:     
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: --b1=_aOFuOcM8trlgmoPGlq3sST5QlH2Ju8w5c5CsZx4XcM
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: Content-Transfer-Encoding: 8bit
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: <!DOCTYPE html>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: <html>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: <head>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:     <meta charset="UTF-8">
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:     <style>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         .success { background: #4CAF50; color: white; padding: 15px; border-radius: 5px; margin: 20px 0; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         .info { background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #2196F3; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:     </style>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: </head>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: <body>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:     <div class="container">
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         <div class="header">
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             <h1>✅ Email de Prueba Exitoso</h1>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             <p>Fashion Store - Sistema de Correos</p>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         </div>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         <div class="content">
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             <div class="success">
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 <strong>¡El sistema de emails está funcionando correctamente!</strong>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             </div>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             <h2>📧 Información de la Prueba</h2>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             <div class="info">
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 <p><strong>Fecha:</strong> 10/10/2025 01:11:01</p>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 <p><strong>Servidor SMTP:</strong> Gmail (smtp.gmail.com:587)</p>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 <p><strong>Método:</strong> PHPMailer con TLS</p>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 <p><strong>Estado:</strong> ✅ Enviado correctamente</p>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             </div>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             <h3>🔧 Características Implementadas:</h3>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             <ul>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 <li>✅ PHPMailer instalado y configurado</li>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 <li>✅ Gmail SMTP con autenticación segura</li>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 <li>✅ Plantillas HTML responsivas</li>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 <li>✅ Sistema de logs para debugging</li>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 <li>✅ Recuperación de contraseña funcional</li>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             </ul>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             <p><strong>Si recibes este email, significa que el sistema está listo para usar.</strong></p>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             <div class="footer">
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 <p>Fashion Store © 2025 | Powered by PHPMailer</p>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:                 <p>Este es un email automático de prueba</p>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:             </div>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:         </div>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER:     </div>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: </body>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: </html>
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: --b1=_aOFuOcM8trlgmoPGlq3sST5QlH2Ju8w5c5CsZx4XcM--
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: 
+
+[2025-10-10 01:11:03] DEBUG: CLIENT -> SERVER: .
+
+[2025-10-10 01:11:04] DEBUG: SERVER -> CLIENT: 250 2.0.0 OK  1760051463 41be03b00d2f7-b678df66ab0sm663333a12.35 - gsmtp
+
+[2025-10-10 01:11:04] DEBUG: CLIENT -> SERVER: QUIT
+
+[2025-10-10 01:11:04] DEBUG: SERVER -> CLIENT: 221 2.0.0 closing connection 41be03b00d2f7-b678df66ab0sm663333a12.35 - gsmtp
+

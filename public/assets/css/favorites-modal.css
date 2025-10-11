@@ -1,0 +1,373 @@
+/* ============================================
+   MODAL DE FAVORITOS - DISEÑO DROPDOWN
+   Estilos premium para dropdown de favoritos
+   ============================================ */
+
+/* Modal Container - Dropdown Style */
+.favorites-modal {
+    display: none;
+    position: absolute;
+    z-index: 99999;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal Content - Dropdown compacto con tamaño fijo */
+.favorites-modal-content {
+    position: fixed;
+    top: 60px;
+    right: 150px;
+    background: #ffffff;
+    width: 380px;
+    height: 480px;
+    max-width: calc(100vw - 40px);
+    border-radius: 12px;
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    animation: slideDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+    z-index: 100000;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Flecha superior del dropdown */
+.favorites-modal-content::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 30px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #ffffff;
+    filter: drop-shadow(0 -2px 3px rgba(0, 0, 0, 0.1));
+}
+
+/* Botón cerrar */
+.favorites-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    color: #666;
+    font-size: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.favorites-modal-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #000;
+    transform: rotate(90deg);
+}
+
+/* Header */
+.favorites-modal-header {
+    padding: 15px;
+    background: #ffffff;
+    border-bottom: 2px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+.favorites-modal-header h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #2c3e50;
+}
+
+.favorites-modal-header h3 i {
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.favorites-count {
+    margin: 0;
+    font-size: 12px;
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+/* Body - Scrollable con altura fija */
+.favorites-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 12px;
+    background: #f8f9fa;
+    min-height: 0;
+/* Favorite Item */
+.favorite-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.favorite-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    border-color: #2c3e50;
+}   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #667eea;
+}
+
+/* Favorite Image */
+.favorite-image {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.favorite-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.stock-badge {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.stock-badge.out {
+    background: #dc3545;
+    color: white;
+}
+
+.stock-badge.sale {
+    background: #28a745;
+    color: white;
+}
+
+/* Favorite Info */
+.favorite-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.favorite-info h6 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.favorite-info h6 a {
+    color: #2c3e50;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.favorite-info h6 a:hover {
+    color: #2c3e50;
+}
+
+.favorite-price {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.price-current {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.price-old {
+    font-size: 12px;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.favorite-date {
+    font-size: 10px;
+    color: #999;
+    margin-top: auto;
+}
+
+/* Favorite Actions */
+.favorite-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+}
+
+.btn-favorite-cart,
+.btn-favorite-remove {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+}
+
+.btn-favorite-cart {
+    background: #2c3e50;
+    color: white;
+}
+
+.btn-favorite-cart:hover:not(:disabled) {
+    background: #1a252f;
+    transform: scale(1.05);
+}
+
+.btn-favorite-cart:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-favorite-remove {
+    background: #fee;
+    color: #dc3545;
+}
+
+.btn-favorite-remove:hover {
+    background: #dc3545;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Empty State */
+.favorites-empty {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.favorites-empty i {
+    font-size: 80px;
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+.favorites-empty p {
+    font-size: 16px;
+    color: #999;
+    margin-bottom: 20px;
+}
+
+.btn-shop-now {
+    display: inline-block;
+    padding: 10px 24px;
+    background: #2c3e50;
+    color: white;
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.btn-shop-now:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(44, 62, 80, 0.3);
+    color: white;
+    background: #1a252f;
+}
+
+/* Footer - OCULTO */
+.favorites-modal-footer {
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .favorites-modal-content {
+        right: 10px;
+        left: 10px;
+        width: auto;
+        max-width: none;
+    }
+    
+    .favorites-modal-content::before {
+        right: 20px;
+    }
+}
+
+/* Scrollbar personalizado */
+.favorites-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.favorites-modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.favorites-modal-body::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 10px;
+}
+
+.favorites-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #5568d3;
+}
+/* Scrollbar personalizado */
+.favorites-modal-body::-webkit-scrollbar {
+    width: 5px;
+}
+
+.favorites-modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.favorites-modal-body::-webkit-scrollbar-thumb {
+    background: #2c3e50;
+    border-radius: 10px;
+}
+
+.favorites-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #1a252f;
+}

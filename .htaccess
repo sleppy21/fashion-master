@@ -1,0 +1,19 @@
+# Fashion Store - Configuración básica de Apache
+# Archivo .htaccess simplificado para evitar errores
+
+# Habilitar mostrar errores PHP (solo para desarrollo)
+php_flag display_errors On
+php_value error_reporting "E_ALL"
+
+# Configuración básica de archivos
+DirectoryIndex index.php index.html
+
+# Redireccionar assets estáticos (opcional)
+# RewriteEngine On
+# RewriteRule ^assets/(.*)$ public/assets/$1 [L]
+
+# Permitir acceso a archivos PHP
+<Files "*.php">
+    Order allow,deny
+    Allow from all
+</Files>

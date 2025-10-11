@@ -1,0 +1,392 @@
+/* ============================================================================
+   🎨 CATEGORIA MODALS - CSS GLOBAL
+   Sistema completo de modales para: Crear, Editar, Ver y Eliminar categorías
+   Diseño idéntico a productos con animaciones fade profesionales
+   ============================================================================ */
+
+/* =============================================================================
+   OVERLAY BASE - Fondo difuminado para todos los modales
+   ============================================================================= */
+.delete-confirmation-overlay-categoria {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 1000002 !important;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Overlay visible con animación */
+.delete-confirmation-overlay-categoria.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* =============================================================================
+   MODAL DE ELIMINACIÓN - Caja principal
+   ============================================================================= */
+.delete-confirmation-modal-categoria {
+    background: #1e293b !important;
+    border-radius: 12px !important;
+    max-width: 500px !important;
+    width: 90% !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Modal visible con animación */
+.delete-confirmation-modal-categoria.show {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+}
+
+/* =============================================================================
+   HEADER - Título del modal
+   ============================================================================= */
+.delete-modal-header-categoria {
+    background: #1e293b !important;
+    color: white !important;
+    padding: 1.5rem 2rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    text-align: center !important;
+}
+
+.delete-modal-header-categoria h3 {
+    color: white !important;
+    margin: 0 !important;
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.75rem !important;
+}
+
+.delete-modal-header-categoria h3 i {
+    color: #dc2626 !important;
+    font-size: 1.75rem !important;
+}
+
+/* =============================================================================
+   BODY - Contenido del modal
+   ============================================================================= */
+.delete-modal-body-categoria {
+    background: #1e293b !important;
+    padding: 2rem !important;
+    text-align: center !important;
+}
+
+.warning-icon-categoria {
+    font-size: 3rem !important;
+    color: #dc2626 !important;
+    margin-bottom: 1rem !important;
+    animation: pulse 2s infinite !important;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+.delete-modal-body-categoria p {
+    color: #cbd5e1 !important;
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.delete-modal-body-categoria strong {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* =============================================================================
+   INPUT - Campo de confirmación
+   ============================================================================= */
+.confirmation-input-categoria {
+    width: 100% !important;
+    padding: 0.75rem 1rem !important;
+    border: 2px solid #334155 !important;
+    border-radius: 8px !important;
+    font-size: 1rem !important;
+    background: #0f172a !important;
+    color: white !important;
+    margin-bottom: 0.75rem !important;
+    transition: all 0.3s ease !important;
+    box-sizing: border-box !important;
+}
+
+.confirmation-input-categoria:focus {
+    outline: none !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.confirmation-input-categoria.valid {
+    border-color: #10b981 !important;
+}
+
+.confirmation-input-categoria.invalid {
+    border-color: #dc2626 !important;
+}
+
+/* Error message */
+.delete-error-categoria {
+    color: #dc2626 !important;
+    font-size: 0.875rem !important;
+    margin-top: 0.5rem !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+.delete-error-categoria.show {
+    opacity: 1 !important;
+    height: auto !important;
+    margin-bottom: 1rem !important;
+}
+
+/* =============================================================================
+   FOOTER - Botones de acción
+   ============================================================================= */
+.delete-modal-footer-categoria {
+    background: #0f172a !important;
+    padding: 1.5rem 2rem !important;
+    display: flex !important;
+    gap: 1rem !important;
+    justify-content: flex-end !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Botón Cancelar */
+.btn-cancel-delete-categoria {
+    padding: 0.75rem 1.5rem !important;
+    background: #334155 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    font-size: 1rem !important;
+}
+
+.btn-cancel-delete-categoria:hover {
+    background: #475569 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Botón Eliminar */
+.btn-confirm-delete-categoria {
+    padding: 0.75rem 1.5rem !important;
+    background: #dc2626 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    font-size: 1rem !important;
+}
+
+.btn-confirm-delete-categoria:hover {
+    background: #b91c1c !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4) !important;
+}
+
+.btn-confirm-delete-categoria:disabled {
+    background: #475569 !important;
+    cursor: not-allowed !important;
+    opacity: 0.5 !important;
+}
+
+.btn-confirm-delete-categoria:disabled:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* =============================================================================
+   MODAL DE IFRAME - Para Crear, Editar y Ver
+   ============================================================================= */
+.modal-overlay-categoria {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 1000002 !important;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 20px !important;
+}
+
+.modal-overlay-categoria.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.modal-content-categoria {
+    background: white !important;
+    border-radius: 12px !important;
+    width: 90% !important;
+    max-width: 800px !important;
+    height: 80vh !important;
+    max-height: 600px !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+    overflow: hidden !important;
+    position: relative !important;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal-content-categoria.show {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+}
+
+.modal-content-categoria iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+}
+
+/* =============================================================================
+   BOTÓN CERRAR MODAL
+   ============================================================================= */
+.modal-close-btn-categoria {
+    position: absolute !important;
+    top: 15px !important;
+    right: 15px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    color: white !important;
+    border: none !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.5rem !important;
+    transition: all 0.2s ease !important;
+    z-index: 1 !important;
+}
+
+.modal-close-btn-categoria:hover {
+    background: rgba(0, 0, 0, 0.8) !important;
+    transform: rotate(90deg) !important;
+}
+
+/* =============================================================================
+   ANIMACIONES GLOBALES
+   ============================================================================= */
+@keyframes slideInModal {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideOutModal {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+}
+
+/* =============================================================================
+   RESPONSIVE - Ajustes para móviles
+   ============================================================================= */
+@media (max-width: 640px) {
+    .delete-confirmation-modal-categoria {
+        width: 95% !important;
+    }
+    
+    .delete-modal-header-categoria h3 {
+        font-size: 1.25rem !important;
+    }
+    
+    .delete-modal-body-categoria {
+        padding: 1.5rem !important;
+    }
+    
+    .delete-modal-footer-categoria {
+        flex-direction: column !important;
+        padding: 1rem !important;
+    }
+    
+    .btn-cancel-delete-categoria,
+    .btn-confirm-delete-categoria {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    
+    .modal-content-categoria {
+        width: 95% !important;
+        height: 90vh !important;
+    }
+}
+
+/* =============================================================================
+   Z-INDEX HIERARCHY - Control de capas
+   ============================================================================= */
+.cat_floatingContainer {
+    z-index: 999999 !important;
+}
+
+.delete-confirmation-overlay-categoria,
+.modal-overlay-categoria {
+    z-index: 1000002 !important;
+}
+
+.delete-confirmation-modal-categoria,
+.modal-content-categoria {
+    z-index: 1000003 !important;
+}
+
+/* =============================================================================
+   UTILIDADES
+   ============================================================================= */
+.no-scroll {
+    overflow: hidden !important;
+}

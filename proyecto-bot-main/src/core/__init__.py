@@ -1,0 +1,1 @@
+# Core del chat engine

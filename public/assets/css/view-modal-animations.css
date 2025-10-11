@@ -1,0 +1,531 @@
+/**
+ * =====================================================================
+ * VIEW MODAL ANIMATIONS - CSS GLOBAL
+ * Animaciones SOLO FADE (sin transform, sin scale, sin translateY)
+ * Para modales con IDs únicos: #categoria-view-modal, #product-view-modal
+ * =====================================================================
+ */
+
+/* ============================================
+   KEYFRAMES - SOLO FADE (OPACITY)
+   ============================================ */
+
+/* Fade In - SOLO OPACITY */
+@keyframes pureModalFadeIn {
+    from {
+        opacity: 0;
+        visibility: hidden;
+    }
+    to {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* Fade Out - SOLO OPACITY */
+@keyframes pureModalFadeOut {
+    from {
+        opacity: 1;
+        visibility: visible;
+    }
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+/* Slide In desde abajo SIN escala - SOLO FADE */
+@keyframes viewModalSlideIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Slide Out SIN escala - SOLO FADE */
+@keyframes viewModalSlideOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Desvanecimiento suave sin movimiento - SOLO OPACITY */
+@keyframes viewModalSmoothFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Desvanecimiento suave de entrada - SOLO OPACITY */
+@keyframes viewModalSmoothFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Zoom In elegante - SIN SCALE, SOLO FADE */
+@keyframes viewModalZoomIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Zoom Out elegante - SIN SCALE, SOLO FADE */
+@keyframes viewModalZoomOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Efecto de desenfoque del fondo */
+@keyframes viewModalBlurIn {
+    from {
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+    }
+    to {
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+}
+
+@keyframes viewModalBlurOut {
+    from {
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+    to {
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+    }
+}
+
+/* ============================================
+   ANULAR TRANSITIONS DEL WRAPPER (SOLO MODAL PRINCIPAL)
+   ============================================ */
+
+/* FORZAR: El modal principal NO debe tener transitions que interfieran con animations */
+#categoria-view-modal,
+#categoria-view-modal > .categoria-view-modal__overlay,
+#categoria-view-modal > .categoria-view-modal__container,
+#product-view-modal,
+#product-view-modal > .product-view-modal__overlay,
+#product-view-modal > .product-view-modal__container {
+    transition: none !important;
+}
+
+/* ⚡ ANULAR opacity de elementos internos para permitir animación */
+#categoria-view-modal .categoria-view-modal__header,
+#categoria-view-modal .categoria-view-modal__body,
+#categoria-view-modal .categoria-view-modal__footer,
+#categoria-view-modal .categoria-view-modal__title,
+#categoria-view-modal .categoria-view-modal__content,
+#categoria-view-modal .categoria-view-modal__image-section,
+#product-view-modal .product-view-modal__header,
+#product-view-modal .product-view-modal__body,
+#product-view-modal .product-view-modal__footer {
+    opacity: inherit !important; /* Heredar del padre para que la animación funcione */
+    visibility: inherit !important; /* Heredar visibilidad también */
+}
+
+/* ============================================
+   ESTADO INICIAL - MODAL OCULTO (CON ID)
+   ============================================ */
+
+/* FORZAR estado inicial opacity 0 con MÁXIMA especificidad */
+#categoria-view-modal:not(.show):not(.closing),
+#product-view-modal:not(.show):not(.closing) {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* También FORZAR en el modal SIN clases (recién creado) */
+#categoria-view-modal:not(.show),
+#product-view-modal:not(.show) {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+#categoria-view-modal:not(.show):not(.closing) .categoria-view-modal__container,
+#product-view-modal:not(.show):not(.closing) .product-view-modal__container {
+    opacity: 0 !important;
+}
+
+/* ============================================
+   ESTADO ABIERTO - ANIMACIÓN FADE IN (CON ID)
+   ============================================ */
+
+#categoria-view-modal.show,
+#product-view-modal.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    animation: pureModalFadeIn 1s ease-out forwards !important; /* ⚡ 1 SEGUNDO para ser MUY VISIBLE */
+}
+
+#categoria-view-modal.show .categoria-view-modal__container,
+#product-view-modal.show .product-view-modal__container {
+    opacity: 1 !important;
+    animation: pureModalFadeIn 1s ease-out 0.2s forwards !important; /* ⚡ Container con delay */
+}
+
+/* ============================================
+   ESTADO CERRANDO - ANIMACIÓN FADE OUT (CON ID)
+   ============================================ */
+
+#categoria-view-modal.closing,
+#product-view-modal.closing {
+    animation: pureModalFadeOut 0.3s ease-in forwards !important; /* ⚡ Más rápido: 0.3s */
+    pointer-events: none !important;
+}
+
+#categoria-view-modal.closing .categoria-view-modal__container,
+#product-view-modal.closing .product-view-modal__container {
+    animation: pureModalFadeOut 0.3s ease-in forwards !important;
+}
+
+/* ============================================
+   ANIMACIONES INTERNAS - CONTENIDO
+   ============================================ */
+
+/* Header aparece con delay */
+.product-view-modal.show .product-view-modal__header,
+.marca-view-modal.show .marca-view-modal__header,
+.category-view-modal.show .category-view-modal__header,
+.categoria-view-modal.show .categoria-view-modal__header,
+.user-view-modal.show .user-view-modal__header,
+.view-modal.show .view-modal__header {
+    animation: viewModalFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.1s backwards;
+}
+
+/* Body aparece con delay mayor */
+.product-view-modal.show .product-view-modal__body,
+.marca-view-modal.show .marca-view-modal__body,
+.category-view-modal.show .category-view-modal__body,
+.categoria-view-modal.show .categoria-view-modal__body,
+.user-view-modal.show .user-view-modal__body,
+.view-modal.show .view-modal__body {
+    animation: viewModalFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.15s backwards;
+}
+
+/* Footer aparece al final */
+.product-view-modal.show .product-view-modal__footer,
+.marca-view-modal.show .marca-view-modal__footer,
+.category-view-modal.show .category-view-modal__footer,
+.categoria-view-modal.show .categoria-view-modal__footer,
+.user-view-modal.show .user-view-modal__footer,
+.view-modal.show .view-modal__footer {
+    animation: viewModalFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.2s backwards;
+}
+
+/* ============================================
+   ANIMACIONES PARA IMÁGENES
+   ============================================ */
+
+@keyframes imageZoomIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.product-view-modal.show .product-view-modal__main-image,
+.marca-view-modal.show .marca-view-modal__main-image,
+.category-view-modal.show .category-view-modal__main-image,
+.categoria-view-modal.show .categoria-view-modal__main-image,
+.view-modal.show .view-modal__main-image {
+    animation: imageZoomIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s backwards;
+}
+
+/* ============================================
+   ANIMACIONES PARA BADGES Y ICONOS
+   ============================================ */
+
+@keyframes badgePulseIn {
+    0% {
+@keyframes badgePulseIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+.product-view-modal.show .product-view-modal__badge,
+.marca-view-modal.show .marca-view-modal__badge,
+.category-view-modal.show .category-view-modal__badge,
+.categoria-view-modal.show .categoria-view-modal__badge,
+.view-modal.show .view-modal__badge {
+    animation: badgePulseIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s backwards;
+}
+
+.product-view-modal.show .product-view-modal__icon,
+.marca-view-modal.show .marca-view-modal__icon,
+.category-view-modal.show .category-view-modal__icon,
+.categoria-view-modal.show .categoria-view-modal__icon,
+.view-modal.show .view-modal__icon {
+    animation: badgePulseIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s backwards;
+}
+
+/* ============================================
+   ANIMACIONES PARA INFO CARDS
+   ============================================ */
+
+@keyframes cardSlideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+@keyframes cardSlideUp {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}view-modal.show .view-modal__info-card {
+    animation: cardSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+/* Delay progresivo para múltiples cards */
+.product-view-modal.show .product-view-modal__info-card:nth-child(1),
+.marca-view-modal.show .marca-view-modal__info-card:nth-child(1),
+.category-view-modal.show .category-view-modal__info-card:nth-child(1),
+.view-modal.show .view-modal__info-card:nth-child(1) {
+    animation-delay: 0.25s;
+}
+
+.product-view-modal.show .product-view-modal__info-card:nth-child(2),
+.marca-view-modal.show .marca-view-modal__info-card:nth-child(2),
+.category-view-modal.show .category-view-modal__info-card:nth-child(2),
+.view-modal.show .view-modal__info-card:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.product-view-modal.show .product-view-modal__info-card:nth-child(3),
+.marca-view-modal.show .marca-view-modal__info-card:nth-child(3),
+.category-view-modal.show .category-view-modal__info-card:nth-child(3),
+.view-modal.show .view-modal__info-card:nth-child(3) {
+    animation-delay: 0.35s;
+}
+
+.product-view-modal.show .product-view-modal__info-card:nth-child(4),
+.marca-view-modal.show .marca-view-modal__info-card:nth-child(4),
+.category-view-modal.show .category-view-modal__info-card:nth-child(4),
+.view-modal.show .view-modal__info-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+/* ============================================
+   BOTÓN DE CERRAR CON EFECTO HOVER
+   ============================================ */
+
+.product-view-modal__close,
+.marca-view-modal__close,
+.category-view-modal__close,
+.categoria-view-modal__close,
+.user-view-modal__close,
+.view-modal__close {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.product-view-modal__close:hover,
+.marca-view-modal__close:hover,
+.category-view-modal__close:hover,
+.categoria-view-modal__close:hover,
+.user-view-modal__close:hover,
+.view-modal__close:hover {
+    transform: rotate(90deg) scale(1.1) !important;
+}
+
+.product-view-modal__close:active,
+.marca-view-modal__close:active,
+.category-view-modal__close:active,
+.categoria-view-modal__close:active,
+.user-view-modal__close:active,
+.view-modal__close:active {
+    transform: rotate(90deg) scale(0.95) !important;
+}
+
+/* ============================================
+   RESPONSIVE - ANIMACIONES EN MÓVIL
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* En móvil: animaciones más rápidas */
+    .product-view-modal.show,
+    .marca-view-modal.show,
+    .category-view-modal.show,
+    .categoria-view-modal.show,
+    .user-view-modal.show,
+    .view-modal.show {
+        animation-duration: 0.3s !important;
+    }
+    
+    .product-view-modal.show .product-view-modal__container,
+    .marca-view-modal.show .marca-view-modal__container,
+    .category-view-modal.show .category-view-modal__container,
+    .categoria-view-modal.show .categoria-view-modal__container,
+    .user-view-modal.show .user-view-modal__container,
+    .view-modal.show .view-modal__container {
+        animation-duration: 0.35s !important;
+    }
+    
+    .product-view-modal.closing,
+    .marca-view-modal.closing,
+    .category-view-modal.closing,
+    .categoria-view-modal.closing,
+    .user-view-modal.closing,
+    .view-modal.closing {
+        animation-duration: 0.25s !important;
+    }
+    
+    .product-view-modal.closing .product-view-modal__container,
+    .marca-view-modal.closing .marca-view-modal__container,
+    .category-view-modal.closing .category-view-modal__container,
+    .categoria-view-modal.closing .categoria-view-modal__container,
+    .user-view-modal.closing .user-view-modal__container,
+    .view-modal.closing .view-modal__container {
+        animation-duration: 0.25s !important;
+    }
+}
+
+/* ============================================
+   REDUCE MOTION - ACCESIBILIDAD
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .product-view-modal,
+    .marca-view-modal,
+    .category-view-modal,
+    .categoria-view-modal,
+    .user-view-modal,
+    .view-modal,
+    .product-view-modal *,
+    .marca-view-modal *,
+    .category-view-modal *,
+    .categoria-view-modal *,
+    .user-view-modal *,
+    .view-modal * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============================================
+   MEJORAS VISUALES ADICIONALES
+   ============================================ */
+
+/* Suavizar la transición del blur */
+.product-view-modal,
+.marca-view-modal,
+.category-view-modal,
+.categoria-view-modal,
+.user-view-modal,
+.view-modal {
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    transition: backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-view-modal.show,
+.marca-view-modal.show,
+.category-view-modal.show,
+.categoria-view-modal.show,
+.user-view-modal.show,
+.view-modal.show {
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+}
+
+/* Efecto de sombra pulsante al abrir */
+@keyframes shadowPulse {
+    0%, 100% {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    }
+}
+
+.product-view-modal.show .product-view-modal__container,
+.marca-view-modal.show .marca-view-modal__container,
+.category-view-modal.show .category-view-modal__container,
+.user-view-modal.show .user-view-modal__container,
+.view-modal.show .view-modal__container {
+    animation: viewModalSlideIn 0.4s ease-out forwards !important;
+}
+
+/* ============================================
+   SCROLLBAR PERSONALIZADO PARA MODAL
+   ============================================ */
+
+/* Scrollbar del body del modal */
+.product-view-modal__body::-webkit-scrollbar,
+.marca-view-modal__body::-webkit-scrollbar,
+.category-view-modal__body::-webkit-scrollbar,
+.categoria-view-modal__body::-webkit-scrollbar,
+.user-view-modal__body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.product-view-modal__body::-webkit-scrollbar-track,
+.marca-view-modal__body::-webkit-scrollbar-track,
+.category-view-modal__body::-webkit-scrollbar-track,
+.categoria-view-modal__body::-webkit-scrollbar-track,
+.user-view-modal__body::-webkit-scrollbar-track {
+    background: rgba(30, 41, 59, 0.3);
+    border-radius: 10px;
+}
+
+.product-view-modal__body::-webkit-scrollbar-thumb,
+.marca-view-modal__body::-webkit-scrollbar-thumb,
+.category-view-modal__body::-webkit-scrollbar-thumb,
+.categoria-view-modal__body::-webkit-scrollbar-thumb,
+.user-view-modal__body::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.product-view-modal__body::-webkit-scrollbar-thumb:hover,
+.marca-view-modal__body::-webkit-scrollbar-thumb:hover,
+.category-view-modal__body::-webkit-scrollbar-thumb:hover,
+.categoria-view-modal__body::-webkit-scrollbar-thumb:hover,
+.user-view-modal__body::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+/* Firefox */
+.product-view-modal__body,
+.marca-view-modal__body,
+.category-view-modal__body,
+.categoria-view-modal__body,
+.user-view-modal__body {
+    scrollbar-width: thin;
+    scrollbar-color: #f59e0b rgba(30, 41, 59, 0.3);
+}

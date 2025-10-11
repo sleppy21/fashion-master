@@ -1,0 +1,1797 @@
+﻿/* ==================================
+   AUTH MODERN CSS - TRANSPARENT DESIGN
+   ================================== */
+
+:root {
+    --white: #ffffff;
+    --light-gray: #d1d5db;
+    --medium-gray: #9ca3af;
+    --dark-gray: #6b7280;
+    --danger: #ef4444;
+    --success: #10b981;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Eliminar todos los bordes y outlines azules del navegador */
+input,
+textarea,
+select,
+button {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--white);
+    background: #1a1a1a;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+::selection {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--white);
+}
+
+/* ==================================
+   GEOMETRIC SHAPES BACKGROUND
+   ================================== */
+.geometric-shapes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+    background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 50%, #0f0f0f 100%);
+}
+
+.shape {
+    position: absolute;
+    opacity: 0.08;
+}
+
+.shape-circle {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #707070, #505050);
+    top: 10%;
+    left: 5%;
+    animation: floatCircle 25s ease-in-out infinite;
+}
+
+@keyframes floatCircle {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(50px, -80px) scale(1.1); }
+}
+
+.shape-triangle {
+    width: 0;
+    height: 0;
+    border-left: 150px solid transparent;
+    border-right: 150px solid transparent;
+    border-bottom: 260px solid #606060;
+    top: 60%;
+    right: 10%;
+    animation: floatTriangle 30s ease-in-out infinite;
+}
+
+@keyframes floatTriangle {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(180deg) translate(30px, 30px); }
+}
+
+.shape-square {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #808080, #606060);
+    bottom: 15%;
+    left: 15%;
+    animation: floatSquare 28s ease-in-out infinite;
+}
+
+@keyframes floatSquare {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(45deg) scale(1.2); }
+}
+
+.shape-hexagon {
+    width: 180px;
+    height: 100px;
+    background: #707070;
+    position: relative;
+    top: 40%;
+    right: 20%;
+    animation: floatHexagon 32s ease-in-out infinite;
+}
+
+@keyframes floatHexagon {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-60px, 60px) rotate(60deg); }
+}
+
+/* ==================================
+   CONTAINERS - UNIFIED TRANSPARENT
+   ================================== */
+.login-container,
+.register-container,
+.forgot-container,
+.reset-container,
+.change-password-container {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.login-container > div,
+.register-container > div {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    background: rgba(30, 30, 30, 0.6);
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.forgot-container > div,
+.reset-container > div,
+.change-password-container > div {
+    width: 100%;
+    max-width: 550px;
+    background: rgba(30, 30, 30, 0.6);
+    backdrop-filter: blur(20px);
+    border-radius: 1.5rem;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ==================================
+   LEFT PANEL - TRANSPARENT
+   ================================== */
+/* ===================================
+   LEFT PANEL - BRANDING
+   =================================== */
+.login-left,
+.register-left {
+    flex: 0 0 45%;
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2.5rem;
+    background: transparent;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.brand-logo {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-logo span {
+    display: block;
+    text-align: center;
+    letter-spacing: 0.05em;
+}
+
+.brand-logo i {
+    font-size: 3rem;
+    color: var(--light-gray);
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+}
+
+.welcome-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.welcome-text h3 {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.02em;
+}
+
+.welcome-text p {
+    margin-bottom: 0.5rem;
+}
+
+.benefit-item,
+.benefits-list .benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8125rem;
+    margin-bottom: 1rem;
+}
+
+.benefit-item i {
+    color: var(--light-gray);
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* ==================================
+   RIGHT PANEL - TRANSPARENT
+   ================================== */
+.login-right,
+.register-right {
+    flex: 0 0 55%;
+    width: 55%;
+    background: transparent;
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.register-right {
+    overflow-y: auto;
+    max-height: 85vh;
+}
+
+.login-right {
+    overflow-y: visible;
+}
+
+/* Custom scrollbar */
+.register-right::-webkit-scrollbar {
+    width: 6px;
+}
+
+.register-right::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+.register-right::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.register-right::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.login-header,
+.register-header,
+.forgot-header,
+.reset-header,
+.change-password-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.login-header h2,
+.register-header h2,
+.forgot-header h2,
+.reset-header h2,
+.change-password-header h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+}
+
+.login-header p,
+.register-header p,
+.forgot-header p,
+.reset-header p,
+.change-password-header p {
+    color: var(--medium-gray);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* ==================================
+   FORM ELEMENTS - TRANSPARENT
+   ================================== */
+.login-form,
+.register-form,
+.forgot-form,
+.reset-form,
+.change-password-form {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+    margin-bottom: 0;
+}
+
+.form-row .form-group {
+    margin-bottom: 0;
+}
+
+.input-group {
+    position: relative;
+    width: 100%;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--light-gray);
+}
+
+.form-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+}
+
+.required {
+    color: #e74c3c;
+    margin-left: 0.125rem;
+}
+
+.required {
+    color: rgba(239, 68, 68, 0.7);
+    margin-left: 0.125rem;
+}
+
+/* TRANSPARENT INPUTS - NO BLUE */
+.form-control {
+    width: 100% !important;
+    padding: 0.5rem 0 0.5rem 0.5rem !important;
+    margin-left: 2.2rem !important;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--white);
+    background: transparent !important;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0;
+    outline: none !important;
+    box-shadow: none !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    line-height: 1.2;
+    box-sizing: border-box;
+}
+
+/* Input con botón de ver contraseña - sin restricciones de ancho */
+.input-password .form-control {
+    padding-right: 0.5rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.input-password {
+    position: relative;
+}
+
+/* Ocultar el icono del ojo - mejor usar la funcionalidad nativa del navegador */
+.toggle-password {
+    display: none !important;
+}
+
+/* Select styling */
+select.form-control {
+    cursor: pointer;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23ffffff" d="M6 9L1 4h10z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    padding-right: 2.5rem;
+    max-width: 100%;
+}
+
+select.form-control option {
+    background: #2a2a2a;
+    color: var(--white);
+    padding: 0.5rem;
+}
+
+/* Limitar ancho del campo género para que no ocupe todo el ancho */
+#genero {
+    max-width: 350px;
+}
+
+/* Date input styling */
+input[type="date"].form-control {
+    cursor: pointer;
+}
+
+input[type="date"].form-control::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+input[type="date"].form-control::-webkit-calendar-picker-indicator:hover {
+    opacity: 0.8;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.8125rem;
+    font-style: italic;
+}
+
+.input-group i {
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 1rem;
+    pointer-events: none;
+    transition: color 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    line-height: 1.2;
+    padding-top: 0.5rem;
+    width: 2.2rem;
+    text-align: left;
+    z-index: 5;
+    display: block;
+}
+
+/* Icono de candado en campos de contraseña es clickeable */
+.input-password i {
+    pointer-events: all;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.input-password i:hover {
+    color: rgba(255, 255, 255, 0.7);
+    transform: scale(1.1);
+}
+
+.input-password i:active {
+    transform: scale(0.95);
+}
+
+/* Candado abierto cuando se muestra la contraseña */
+.input-password i.fa-lock-open {
+    color: rgba(76, 175, 80, 0.7);
+}
+
+.input-password i.fa-lock-open:hover {
+    color: rgba(76, 175, 80, 0.9);
+}
+
+.input-group:has(.form-control:focus) i {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem 0.25rem;
+    display: inline-flex;
+    align-items: flex-start;
+    justify-content: center;
+    transition: color 0.3s ease;
+    z-index: 10;
+    width: 1.5rem;
+    height: auto;
+    pointer-events: all;
+    margin: 0;
+}
+
+.toggle-password:hover {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.toggle-password i {
+    position: static;
+    transform: none;
+    pointer-events: none;
+    display: block;
+    line-height: 1;
+}
+
+/* Password strength meter */
+.password-strength {
+    margin-top: 0.5rem;
+}
+
+.strength-meter {
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 0.375rem;
+}
+
+.strength-meter-fill {
+    height: 100%;
+    width: 0;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 2px;
+}
+
+.password-strength span {
+    font-size: 0.75rem;
+    color: var(--medium-gray);
+}
+
+/* ==================================
+   BUTTONS - TRANSPARENT
+   ================================== */
+.btn-login,
+.btn-register,
+.btn-submit {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    margin-top: 0.5rem;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-login:hover,
+.btn-register:hover,
+.btn-submit:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+/* ==================================
+   LINKS & MISC
+   ================================== */
+
+.register-link,
+.login-link,
+.back-home {
+    text-align: center;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--medium-gray);
+    width: 100%;
+}
+
+.register-link:first-of-type {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 1rem;
+    padding-top: 1rem;
+}
+
+.register-link a,
+.login-link a,
+.back-home a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 0.25rem;
+    transition: color 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.register-link a:hover,
+.login-link a:hover,
+.back-home a:hover {
+    color: var(--light-gray);
+}
+
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.5rem 0 1rem 0;
+    font-size: 0.8125rem;
+    width: 100%;
+    flex-wrap: nowrap;
+    gap: 1rem;
+}
+
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    border-radius: 0.3125rem;
+    background: transparent;
+    cursor: pointer;
+    appearance: none;
+    position: relative;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.checkbox-wrapper input[type="checkbox"]:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.checkbox-wrapper input[type="checkbox"]:checked {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+}
+
+.checkbox-wrapper input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--white);
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.checkbox-wrapper label {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--medium-gray);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.3s ease;
+    line-height: 1.6;
+}
+
+.checkbox-wrapper label:hover {
+    color: var(--white);
+}
+
+.forgot-link {
+    font-size: 0.8125rem;
+    color: var(--light-gray);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+}
+
+.forgot-link:hover {
+    color: var(--white);
+}
+
+/* Terms and conditions checkbox */
+.terms-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    font-size: 0.8125rem;
+    width: 100%;
+}
+
+.terms-checkbox input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+    accent-color: var(--light-gray);
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+}
+
+.terms-checkbox label {
+    margin: 0;
+    color: var(--medium-gray);
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.terms-checkbox a {
+    color: var(--white);
+    text-decoration: none;
+    transition: color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.terms-checkbox a:hover {
+    color: var(--light-gray);
+    text-decoration: underline;
+}
+
+/* Bottom links container */
+.login-footer,
+.register-footer {
+    width: 100%;
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ==================================
+   ALERTS - Esquina Superior Derecha (Transparente con toque de color)
+   ================================== */
+.alert {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
+    animation: slideInRight 0.4s ease-out;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    z-index: 999999 !important;
+    min-width: 300px;
+    max-width: 420px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Icono del alert */
+.alert i:first-child {
+    font-size: 1.125rem;
+    min-width: 18px;
+}
+
+/* Error - Completamente transparente con solo toque de rojo */
+.alert-danger {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-left: 3px solid rgba(239, 68, 68, 0.8);
+}
+
+.alert-danger i:first-child {
+    color: rgba(239, 68, 68, 0.9);
+}
+
+/* Success - Completamente transparente con solo toque de verde */
+.alert-success {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-left: 3px solid rgba(34, 197, 94, 0.8);
+}
+
+.alert-success i:first-child {
+    color: rgba(34, 197, 94, 0.9);
+}
+
+/* Auto-hide después de 5 segundos */
+.alert.auto-hide {
+    animation: slideInRight 0.4s ease-out,
+               fadeOut 0.4s ease-in 4.6s forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+}
+
+/* ==================================
+   ADDITIONAL COMPONENTS
+   ================================== */
+.forgot-icon,
+.reset-icon,
+.change-password-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: var(--white);
+    font-size: 2rem;
+}
+
+.back-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.back-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--light-gray);
+    font-size: 0.875rem;
+    text-decoration: none;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.back-links a:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--white);
+    transform: translateX(-3px);
+}
+
+.back-links a i {
+    font-size: 0.75rem;
+}
+
+.security-tips,
+.password-requirements {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.75rem;
+    border-left: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.security-tips h4,
+.password-requirements h4 {
+    color: var(--white);
+    font-size: 0.9375rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.security-tips ul,
+.password-requirements ul {
+    list-style: none;
+    padding: 0;
+}
+
+.security-tips li,
+.password-requirements li {
+    color: var(--medium-gray);
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.security-tips li::before,
+.password-requirements li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--light-gray);
+}
+
+/* ==================================
+   RESPONSIVE
+   ================================== */
+@media (max-width: 1200px) {
+    .login-container > * {
+        max-width: 95% !important;
+        gap: 1.5rem !important;
+    }
+    
+    .register-container > * {
+        max-width: 95% !important;
+        gap: 1.5rem !important;
+    }
+    
+    .login-left,
+    .register-left {
+        flex: 0 0 42% !important;
+        width: 42% !important;
+        max-width: 42% !important;
+        min-width: 42% !important;
+        padding: 2rem 1.5rem !important;
+    }
+    
+    .login-right,
+    .register-right {
+        flex: 0 0 58% !important;
+        width: 58% !important;
+        max-width: 58% !important;
+        min-width: 58% !important;
+        padding: 2rem 1.5rem !important;
+    }
+    
+    .register-right {
+        max-height: 90vh !important;
+    }
+
+}
+
+@media (max-width: 1024px) {
+    .login-container,
+    .register-container {
+        padding: 1.5rem !important;
+        margin: 1.25rem auto !important;
+    }
+    
+    .login-container > * {
+        max-width: 90% !important;
+        gap: 1.25rem !important;
+    }
+    
+    .register-container > * {
+        max-width: 90% !important;
+        gap: 1.25rem !important;
+    }
+    
+    .login-left,
+    .register-left {
+        flex: 0 0 40% !important;
+        width: 40% !important;
+        max-width: 40% !important;
+        min-width: 40% !important;
+        padding: 1.5rem 1.25rem !important;
+    }
+    
+    .login-right,
+    .register-right {
+        flex: 0 0 60% !important;
+        width: 60% !important;
+        max-width: 60% !important;
+        min-width: 60% !important;
+        padding: 1.5rem 1.25rem !important;
+    }
+    
+    .register-right {
+        max-height: 85vh !important;
+    }
+    
+    h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    .benefit-item {
+        font-size: 0.8125rem !important;
+    }
+    
+    .form-control {
+        font-size: 0.875rem !important;
+        padding-left: 2rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-container,
+    .register-container {
+        padding: 1.5rem !important;
+        margin: 1rem auto !important;
+    }
+    
+    .login-container > *,
+    .register-container > * {
+        flex-direction: column !important;
+        max-width: 100% !important;
+        gap: 1.5rem !important;
+    }
+    
+    .login-left,
+    .register-left {
+        flex: 1 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+        padding: 2rem 1.5rem !important;
+        margin: 0 !important;
+        min-height: auto !important;
+        max-height: none !important;
+        height: auto !important;
+    }
+    
+    .login-right,
+    .register-right {
+        flex: 1 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        padding: 2rem 1.5rem !important;
+        margin: 0 !important;
+        min-height: auto !important;
+        max-height: none !important;
+        height: auto !important;
+        overflow-y: visible !important;
+    }
+    
+    .register-right {
+        overflow-y: visible !important;
+        max-height: none !important;
+    }
+    
+    .form-control {
+        font-size: 0.9375rem !important;
+        padding: 0.75rem 0 !important;
+        padding-left: 2.25rem !important;
+    }
+    
+    .input-group i {
+        font-size: 0.875rem !important;
+    }
+    
+    .login-header h2,
+    .register-header h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    .brand-logo {
+        font-size: 1.5rem !important;
+        margin-bottom: 1.25rem !important;
+    }
+    
+    .brand-logo i {
+        font-size: 2.5rem !important;
+    }
+    
+    .welcome-text {
+        font-size: 0.875rem !important;
+        margin-bottom: 1.25rem !important;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+    }
+    
+    .form-row .form-group {
+        margin-bottom: 1.25rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container,
+    .register-container {
+        padding: 1rem !important;
+        margin: 0.75rem auto !important;
+    }
+    
+    .login-container > *,
+    .register-container > * {
+        max-width: 100% !important;
+        border-radius: 1rem !important;
+        gap: 1rem !important;
+    }
+    
+    .login-left,
+    .register-left,
+    .login-right,
+    .register-right {
+        padding: 1.75rem 1.25rem !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        min-height: auto !important;
+        max-height: none !important;
+        height: auto !important;
+    }
+    
+    .login-header h2,
+    .register-header h2 {
+        font-size: 1.375rem !important;
+    }
+    
+    .login-header p,
+    .register-header p {
+        font-size: 0.8125rem !important;
+    }
+    
+    .form-control {
+        font-size: 0.875rem !important;
+        padding: 0.625rem 0 !important;
+        padding-left: 2rem !important;
+        border-bottom-width: 1.5px !important;
+    }
+    
+    .input-group i {
+        font-size: 0.8125rem !important;
+    }
+    
+    .btn-login,
+    .btn-register,
+    .btn-submit {
+        font-size: 0.875rem !important;
+        padding: 0.875rem 1.25rem !important;
+    }
+    
+    .brand-logo {
+        font-size: 1.25rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .brand-logo i {
+        font-size: 2rem !important;
+    }
+    
+    .welcome-text {
+        font-size: 0.8125rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .checkbox-wrapper label,
+    .forgot-link {
+        font-size: 0.75rem !important;
+    }
+    
+    .register-link,
+    .login-link,
+    .back-home {
+        font-size: 0.75rem !important;
+        margin-top: 0.75rem !important;
+    }
+}
+
+/* ==================================
+   UTILITY
+   ================================== */
+.hidden {
+    display: none;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Input validation states */
+.form-control.is-valid {
+    border-bottom-color: rgba(16, 185, 129, 0.5);
+}
+
+.form-control.is-invalid,
+.form-control.error {
+    border-bottom-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Loading state */
+.btn-login.loading,
+.btn-register.loading,
+.btn-submit.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn-login.loading::after,
+.btn-register.loading::after,
+.btn-submit.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--white);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Focus states for accessibility */
+.form-control:focus,
+.btn-login:focus,
+.btn-register:focus,
+.btn-submit:focus,
+.forgot-link:focus,
+.toggle-password:focus {
+    outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Improve text rendering */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==================================
+   BOOTSTRAP COMPATIBILITY
+   Sobrescrituras para evitar conflictos con Bootstrap
+   ================================== */
+
+/* Reset de estilos de Bootstrap que podrían interferir */
+.login-container .form-control,
+.register-container .form-control,
+.forgot-container .form-control,
+.reset-container .form-control,
+.change-password-container .form-control {
+    /* Sobrescribir estilos de Bootstrap */
+    height: auto !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    color: var(--white) !important;
+}
+
+.login-container .form-control:focus,
+.register-container .form-control:focus,
+.forgot-container .form-control:focus,
+.reset-container .form-control:focus,
+.change-password-container .form-control:focus {
+    background-color: transparent !important;
+    border-bottom-color: rgba(255, 255, 255, 0.4) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Reset de alert de Bootstrap */
+.login-container .alert,
+.register-container .alert,
+.forgot-container .alert,
+.reset-container .alert,
+.change-password-container .alert {
+    border: none !important;
+    border-left: 3px solid !important;
+    border-radius: 0.5rem !important;
+}
+
+/* Reset de botones de Bootstrap */
+.btn-login,
+.btn-register,
+.btn-submit {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: var(--white) !important;
+}
+
+.btn-login:hover,
+.btn-login:focus,
+.btn-register:hover,
+.btn-register:focus,
+.btn-submit:hover,
+.btn-submit:focus {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: var(--white) !important;
+    box-shadow: none !important;
+}
+
+/* Reset de input-group de Bootstrap */
+.login-container .input-group,
+.register-container .input-group,
+.forgot-container .input-group,
+.reset-container .input-group,
+.change-password-container .input-group {
+    position: relative !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+.login-container .input-group > *,
+.register-container .input-group > *,
+.forgot-container .input-group > *,
+.reset-container .input-group > *,
+.change-password-container .input-group > * {
+    position: relative !important;
+    flex: 1 1 auto !important;
+    width: 1% !important;
+    min-width: 0 !important;
+}
+
+/* Evitar que Bootstrap afecte los iconos */
+.login-container .input-group i,
+.register-container .input-group i,
+.forgot-container .input-group i,
+.reset-container .input-group i,
+.change-password-container .input-group i {
+    flex: 0 0 auto !important;
+    width: auto !important;
+}
+
+/* Reset de form-group de Bootstrap */
+.login-container .form-group,
+.register-container .form-group,
+.forgot-container .form-group,
+.reset-container .form-group,
+.change-password-container .form-group {
+    margin-bottom: 1.25rem !important;
+}
+
+/* Reset de labels de Bootstrap */
+.login-container label,
+.register-container label,
+.forgot-container label,
+.reset-container label,
+.change-password-container label {
+    display: block !important;
+    margin-bottom: 0.375rem !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    color: var(--light-gray) !important;
+}
+
+/* Reset de checkbox de Bootstrap */
+.login-container .checkbox-wrapper input[type="checkbox"],
+.register-container .checkbox-wrapper input[type="checkbox"],
+.forgot-container .checkbox-wrapper input[type="checkbox"],
+.reset-container .checkbox-wrapper input[type="checkbox"],
+.change-password-container .checkbox-wrapper input[type="checkbox"] {
+    width: 1.125rem !important;
+    height: 1.125rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: 0.3125rem !important;
+}
+
+/* Forzar colores del password strength */
+.strength-meter-fill.strength-weak {
+    background: #e74c3c !important;
+    width: 33% !important;
+}
+
+.strength-meter-fill.strength-medium {
+    background: #f39c12 !important;
+    width: 66% !important;
+}
+
+.strength-meter-fill.strength-strong {
+    background: #27ae60 !important;
+    width: 100% !important;
+}
+
+/* Reset de container de Bootstrap si se usa */
+.login-container .container,
+.register-container .container,
+.forgot-container .container,
+.reset-container .container,
+.change-password-container .container {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Reset de row y col de Bootstrap */
+.login-container .row,
+.register-container .row,
+.forgot-container .row,
+.reset-container .row,
+.change-password-container .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.login-container .col,
+.login-container [class*="col-"],
+.register-container .col,
+.register-container [class*="col-"],
+.forgot-container .col,
+.forgot-container [class*="col-"],
+.reset-container .col,
+.reset-container [class*="col-"],
+.change-password-container .col,
+.change-password-container [class*="col-"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* ==================================
+   MEJORAS RESPONSIVAS ADICIONALES
+   ================================== */
+
+/* Touch targets mejorados para móviles */
+@media (hover: none) and (pointer: coarse) {
+    .btn-login,
+    .btn-register,
+    .btn-submit,
+    .toggle-password,
+    .checkbox-wrapper input[type="checkbox"],
+    .back-links a,
+    .forgot-link,
+    .register-link a,
+    .login-link a,
+    .back-home a {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        padding: 0.75rem 1rem !important;
+    }
+    
+    .toggle-password {
+        padding: 0.75rem !important;
+    }
+}
+
+/* Optimización para pantallas pequeñas en landscape */
+@media (max-height: 600px) and (orientation: landscape) {
+    .login-container,
+    .register-container {
+        padding: 1rem !important;
+        min-height: auto !important;
+    }
+    
+    .login-left,
+    .register-left {
+        display: none !important;
+    }
+    
+    .login-right,
+    .register-right {
+        flex: 1 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 1.5rem 1rem !important;
+    }
+    
+    .register-right {
+        max-height: 450px !important;
+        overflow-y: auto !important;
+    }
+    
+    .form-group {
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .login-header,
+    .register-header {
+        margin-bottom: 1rem !important;
+    }
+    
+    .login-header h2,
+    .register-header h2 {
+        font-size: 1.25rem !important;
+    }
+    
+    /* Alertas en móvil - centradas arriba */
+    .alert {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        max-width: calc(100% - 20px);
+        font-size: 0.8125rem;
+        padding: 0.875rem 1rem;
+    }
+}
+
+/* Mejoras para tablets en portrait */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    .login-container > *,
+    .register-container > * {
+        max-width: 90% !important;
+    }
+    
+    .alert {
+        right: 15px;
+        top: 15px;
+        max-width: 400px;
+    }
+}
+
+/* Prevenir zoom en iOS cuando se hace focus en inputs */
+@supports (-webkit-touch-callout: none) {
+    .form-control {
+        font-size: 16px !important;
+    }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Modo de alto contraste */
+@media (prefers-contrast: high) {
+    .form-control {
+        border-bottom-width: 3px !important;
+    }
+    
+    .btn-login,
+    .btn-register,
+    .btn-submit {
+        border-width: 2px !important;
+    }
+    
+    .alert {
+        border-left-width: 4px !important;
+    }
+}
+
+/* Dark mode support (aunque ya estamos en dark) */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #1a1a1a;
+    }
+}
+
+/* Mejoras para impresión (ocultar fondos animados) */
+@media print {
+    .geometric-shapes {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* Info box styling */
+.info-box {
+    margin: 1.5rem 0;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+    border-left: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.info-box p {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    color: var(--medium-gray);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.info-box i {
+    color: var(--light-gray);
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.security-tips h6,
+.password-requirements h6 {
+    color: var(--white);
+    font-size: 0.9375rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ==================================
+   FIN DE SOBRESCRITURAS BOOTSTRAP
+   ================================== */
+
+/* ==================================
+   ANIMACIONES SIMPLES COMPATIBLES CON BOOTSTRAP
+   ================================== */
+
+/* Animación suave de entrada para el contenedor principal */
+.login-container,
+.register-container,
+.forgot-container,
+.reset-container,
+.change-password-container {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+
+
+/* Animación para los paneles internos */
+.login-container > div,
+.register-container > div,
+.forgot-container > div,
+.reset-container > div,
+.change-password-container > div {
+    animation: scaleIn 0.5s ease-out 0.2s both;
+}
+
+
+
+/* Animación para elementos individuales con retrasos progresivos */
+.brand-logo {
+    animation: fadeIn 0.5s ease-out 0.3s both;
+}
+
+.welcome-text {
+    animation: fadeIn 0.5s ease-out 0.4s both;
+}
+
+.benefit-item:nth-child(1) {
+    animation: slideInLeft 0.4s ease-out 0.5s both;
+}
+
+.benefit-item:nth-child(2) {
+    animation: slideInLeft 0.4s ease-out 0.6s both;
+}
+
+.benefit-item:nth-child(3) {
+    animation: slideInLeft 0.4s ease-out 0.7s both;
+}
+
+.benefit-item:nth-child(4) {
+    animation: slideInLeft 0.4s ease-out 0.8s both;
+}
+
+.benefit-item:nth-child(5) {
+    animation: slideInLeft 0.4s ease-out 0.9s both;
+}
+
+
+
+/* Animación para headers y formularios */
+.login-header,
+.register-header,
+.forgot-header,
+.reset-header,
+.change-password-header {
+    animation: fadeIn 0.5s ease-out 0.4s both;
+}
+
+.form-group {
+    animation: fadeInUp 0.4s ease-out both;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.5s; }
+.form-group:nth-child(2) { animation-delay: 0.6s; }
+.form-group:nth-child(3) { animation-delay: 0.7s; }
+.form-group:nth-child(4) { animation-delay: 0.8s; }
+.form-group:nth-child(5) { animation-delay: 0.9s; }
+.form-group:nth-child(6) { animation-delay: 1s; }
+.form-group:nth-child(7) { animation-delay: 1.1s; }
+.form-group:nth-child(8) { animation-delay: 1.2s; }
+
+/* Animación para botones y links */
+.btn-login,
+.btn-register,
+.btn-submit {
+    animation: fadeInUp 0.4s ease-out 1.1s both;
+}
+
+.checkbox-wrapper {
+    animation: fadeIn 0.4s ease-out 1s both;
+}
+
+.register-link,
+.login-link,
+.back-home {
+    animation: fadeIn 0.4s ease-out 1.3s both;
+}
+
+.alert {
+    animation: slideDown 0.4s ease-out;
+}
+
+
+
+/* ============================================
+   VALIDACIÓN DE FORMULARIOS
+   ============================================ */
+.form-group input.is-valid {
+    border-color: rgba(34, 197, 94, 0.5) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2322c55e' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.375rem) center;
+    background-size: calc(0.75em + 0.75rem) calc(0.75em + 0.75rem);
+    padding-right: calc(1.5em + 1.5rem);
+}
+
+.form-group input.is-invalid {
+    border-color: rgba(239, 68, 68, 0.5) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23ef4444'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23ef4444' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.375rem) center;
+    background-size: calc(0.75em + 0.75rem) calc(0.75em + 0.75rem);
+    padding-right: calc(1.5em + 1.5rem);
+}
+
+.invalid-feedback {
+    display: none;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: rgba(239, 68, 68, 0.9);
+    background: rgba(239, 68, 68, 0.1);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border-left: 3px solid rgba(239, 68, 68, 0.8);
+}
+
+.invalid-feedback::before {
+    content: "⚠️ ";
+    margin-right: 0.25rem;
+}
