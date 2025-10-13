@@ -1,9 +1,9 @@
 <?php
-// Modal para marcas - Vista PHP (Mejorado: dise√±o "Ver marca" con scroll arreglado, animaciones suaves y correcci√≥n de colores)
-// Incluir la conexi√≥n para obtener categor√≠as y marcas
+// Modal para marcas - Vista PHP
+// Incluir la conexiÛn para obtener marcas y marcas
 require_once __DIR__ . '/../../../config/conexion.php';
 
-// Obtener categor√≠as para el select
+// Obtener marcas para el select
 try {
     $stmt = $conn->prepare("SELECT id_marca as id, nombre_marca as nombre FROM marca WHERE status_marca = 1 ORDER BY nombre_marca");
     $stmt->execute();
@@ -21,7 +21,7 @@ try {
     $marcas = [];
 }
 
-// Si es ediciÔøΩn o vista, obtener datos del marca
+// Si es ediciÛn o vista, obtener datos de la marca
 $marca = null;
 $action = isset($_GET['action']) ? $_GET['action'] : 'create';
 $isView = $action === 'view' && isset($_GET['id']);
@@ -39,267 +39,168 @@ if (($isEdit || $isView) && isset($_GET['id'])) {
 }
 
 $hasData = $marca !== null;
-$modalTitle = $isView ? 'Ver marca' : ($isEdit ? 'Editar marca' : 'Nuevo marca');
+$modalTitle = $isView ? 'Ver Marca' : ($isEdit ? 'Editar Marca' : 'Nueva Marca');
 $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
 ?>
 
 <?php if ($isView && $hasData): ?>
 
-<!-- VIEW: Modal Ver Marca - Dise√±o Profesional Mejorado -->
-<div class="product-view-modal marca-view-enhanced show" id="marcaViewModal">
-    <div class="product-view-modal__overlay"></div>
+<!-- VIEW: Modal Ver Marca - DiseÒo Profesional Completo -->
+<div id="marca-view-modal" class="marca-view-modal" style="opacity: 0; visibility: hidden; pointer-events: none;">
+    <!-- IMPORTANTE: ID ˙nico para evitar conflictos CSS -->
+    <!-- Overlay de fondo - SIN onclick para evitar duplicaciÛn (admin.php ya tiene el listener) -->
+    <div class="marca-view-modal__overlay"></div>
     
-    <div class="product-view-modal__container" style="max-width: 1000px;">
-        <!-- HEADER MEJORADO -->
-        <div class="product-view-modal__header" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 2rem 2.5rem; border-bottom: 2px solid rgba(251, 191, 36, 0.2);">
-            <div class="product-view-modal__header-content" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                <div style="display: flex; align-items: center; gap: 1.5rem;">
-                    <div class="product-view-modal__icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; box-shadow: 0 8px 16px rgba(245, 158, 11, 0.3);">
-                        <i class="fas fa-tag"></i>
-                    </div>
-                    <div>
-                        <h2 class="product-view-modal__title" style="font-size: 28px; font-weight: 700; color: #f1f5f9; margin: 0 0 0.5rem 0; letter-spacing: -0.5px;">
-                            <?= htmlspecialchars($marca['nombre_marca']) ?>
-                        </h2>
-                        <div style="display: flex; gap: 1rem; align-items: center;">
-                            <span class="product-view-modal__badge" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 13px; font-weight: 600; background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3);">
-                                <i class="fas fa-lock"></i>
-                                Solo Lectura
-                            </span>
-                            <?php if ($marca['estado_marca'] === 'activo'): ?>
-                                <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 13px; font-weight: 600; background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3);">
-                                    <i class="fas fa-check-circle"></i>
-                                    Activo
-                                </span>
-                            <?php else: ?>
-                                <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 13px; font-weight: 600; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);">
-                                    <i class="fas fa-times-circle"></i>
-                                    Inactivo
-                                </span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
+    <!-- Contenedor del modal -->
+    <div class="marca-view-modal__container">
+        <!-- HEADER -->
+        <div class="marca-view-modal__header">
+            <div class="marca-view-modal__header-content">
+                <h2 class="marca-view-modal__title">
+                    <span class="marca-view-modal__title-icon">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                    Ver Marca
+                </h2>
                 
-                <button type="button" class="product-view-modal__close" onclick="closeMarcaModal()" aria-label="Cerrar" style="width: 44px; height: 44px; background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 12px; color: #cbd5e1; font-size: 20px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-times"></i>
-                </button>
+                <div class="marca-view-modal__badge">
+                    <i class="fas fa-lock"></i>
+                    Solo Lectura
+                </div>
             </div>
+            
+            <button type="button" class="marca-view-modal__close" onclick="closeMarcaModal()" aria-label="Cerrar">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
 
-        <!-- BODY MEJORADO -->
-        <div class="product-view-modal__body" style="padding: 2.5rem; max-height: 70vh; overflow-y: auto;">
-            <div class="product-view-modal__content" style="display: grid; grid-template-columns: 380px 1fr; gap: 2.5rem;">
-                
-                <!-- PANEL IZQUIERDO: IMAGEN DESTACADA (STICKY) -->
-                <div class="product-view-modal__image-section" style="display: flex; flex-direction: column; gap: 1.5rem; position: sticky; top: 0; align-self: start;">
-                    <!-- Imagen Principal con efecto glassmorphism -->
-                    <div class="product-view-modal__image-container" style="position: relative; height: 450px; background: linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(226, 232, 240, 0.95) 100%); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.5); overflow: hidden; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 50px;">
-                        <!-- Decoraci√≥n de fondo -->
-                        <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(245, 158, 11, 0.05) 0%, transparent 70%); pointer-events: none;"></div>
-                        
+        <!-- BODY -->
+        <div class="marca-view-modal__body">
+            <div class="marca-view-modal__content">
+                <!-- PANEL IZQUIERDO: IMAGEN -->
+                <div class="marca-view-modal__image-section">
+                    <div class="marca-view-modal__image-container">
                         <?php
                         $imagenSrc = '';
-                        if (!empty($marca['url_imagen_marca']) && $marca['url_imagen_marca'] !== 'NULL') {
+                        if (!empty($marca['url_imagen_marca'])) {
                             $imagenSrc = $marca['url_imagen_marca'];
-                        } elseif (!empty($marca['imagen_marca']) && $marca['imagen_marca'] !== 'NULL') {
-                            $imagenSrc = '/fashion-master/public/assets/img/brands/' . $marca['imagen_marca'];
-                        } else {
-                            $imagenSrc = '/fashion-master/public/assets/img/default-product.jpg';
+                        } elseif (!empty($marca['imagen_marca'])) {
+                            $imagenSrc = 'public/assets/img/products/' . $marca['imagen_marca'];
                         }
                         ?>
                         
-                        <img src="<?= htmlspecialchars($imagenSrc) ?>" 
-                             alt="<?= htmlspecialchars($marca['nombre_marca']) ?>" 
-                             class="product-view-modal__main-image"
-                             ondblclick="showImageFullSize('<?= htmlspecialchars($imagenSrc) ?>', '<?= htmlspecialchars($marca['nombre_marca']) ?>')"
-                             style="position: relative; z-index: 1; max-width: 100%; max-height: 350px; object-fit: contain; border-radius: 12px; cursor: zoom-in; transition: transform 0.3s ease;"
-                             onerror="this.src='/fashion-master/public/assets/img/default-product.jpg'; this.onerror=null;"
-                             onmouseover="this.style.transform='scale(1.05)'"
-                             onmouseout="this.style.transform='scale(1)'">
-                        
-                        <!-- Badge de zoom -->
-                        <div style="position: absolute; bottom: 20px; right: 20px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); padding: 0.6rem 1rem; border-radius: 8px; color: white; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; pointer-events: none; z-index: 2;">
-                            <i class="fas fa-search-plus"></i>
-                            Doble clic para ampliar
-                        </div>
+                        <?php if ($imagenSrc): ?>
+                            <img src="<?= htmlspecialchars($imagenSrc) ?>" 
+                                 alt="<?= htmlspecialchars($marca['nombre_marca']) ?>" 
+                                 class="marca-view-modal__image"
+                                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'marca-view-modal__image-placeholder\'><i class=\'fas fa-image\'></i><span>Imagen no disponible</span></div>'">
+                        <?php else: ?>
+                            <div class="marca-view-modal__image-placeholder">
+                                <i class="fas fa-image"></i>
+                                <span>Sin imagen</span>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                    
-                    <!-- Card de ID -->
-                    <div style="background: linear-gradient(135deg, #334155 0%, #1e293b 100%); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(148, 163, 184, 0.1); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span style="color: #94a3b8; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">ID de Marca</span>
-                            <i class="fas fa-hashtag" style="color: #f59e0b;"></i>
-                        </div>
-                        <div style="color: #f1f5f9; font-size: 24px; font-weight: 700; font-family: 'Courier New', monospace;">#<?= str_pad($marca['id_marca'], 4, '0', STR_PAD_LEFT) ?></div>
+                    <div class="marca-view-modal__image-name">
+                        <?= htmlspecialchars($marca['nombre_marca']) ?>
                     </div>
                 </div>
 
-                <!-- PANEL DERECHO: INFORMACI√ìN DETALLADA -->
-                <div class="product-view-modal__details-section" style="display: flex; flex-direction: column; gap: 1.5rem;">
-                    
-                    <!-- CARD: Informaci√≥n B√°sica -->
-                    <div class="product-view-modal__info-card" style="background: rgba(51, 65, 85, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(148, 163, 184, 0.1); border-radius: 16px; padding: 1.8rem; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);">
-                        <div class="product-view-modal__info-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid rgba(139, 92, 246, 0.2);">
-                            <div class="product-view-modal__info-icon" style="width: 44px; height: 44px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);">
+                <!-- PANEL DERECHO: INFORMACI”N -->
+                <div class="marca-view-modal__info-section">
+                    <!-- INFORMACI”N B¡SICA -->
+                    <div class="marca-view-modal__card">
+                        <div class="marca-view-modal__card-header">
+                            <div class="marca-view-modal__card-icon">
                                 <i class="fas fa-info-circle"></i>
                             </div>
-                            <h3 class="product-view-modal__info-title" style="font-size: 20px; font-weight: 700; color: #f1f5f9; margin: 0;">Informaci√≥n B√°sica</h3>
+                            <h3 class="marca-view-modal__card-title">InformaciÛn B·sica</h3>
                         </div>
                         
-                        <div class="product-view-modal__info-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
-                            
-                            <div class="product-view-modal__info-item" style="background: rgba(30, 41, 59, 0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(30, 41, 59, 0.6)'; this.style.borderColor='rgba(139, 92, 246, 0.3)'" onmouseout="this.style.background='rgba(30, 41, 59, 0.4)'; this.style.borderColor='rgba(148, 163, 184, 0.08)'">
-                                <label class="product-view-modal__info-label" style="display: block; color: #94a3b8; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem;">
-                                    <i class="fas fa-tag" style="margin-right: 0.4rem; color: #f59e0b;"></i>
-                                    Nombre de la Marca
-                                </label>
-                                <div class="product-view-modal__info-value" style="color: #e2e8f0; font-size: 16px; font-weight: 600;">
+                        <div class="marca-view-modal__grid">
+                            <div class="marca-view-modal__field">
+                                <label class="marca-view-modal__field-label">Nombre</label>
+                                <div class="marca-view-modal__field-value">
                                     <?= htmlspecialchars($marca['nombre_marca']) ?>
                                 </div>
                             </div>
                             
-                            <div class="product-view-modal__info-item" style="background: rgba(30, 41, 59, 0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(30, 41, 59, 0.6)'; this.style.borderColor='rgba(139, 92, 246, 0.3)'" onmouseout="this.style.background='rgba(30, 41, 59, 0.4)'; this.style.borderColor='rgba(148, 163, 184, 0.08)'">
-                                <label class="product-view-modal__info-label" style="display: block; color: #94a3b8; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem;">
-                                    <i class="fas fa-barcode" style="margin-right: 0.4rem; color: #06b6d4;"></i>
-                                    C√≥digo
-                                </label>
-                                <div class="product-view-modal__info-value" style="color: #e2e8f0; font-size: 16px; font-weight: 600; font-family: 'Courier New', monospace;">
-                                    <?= htmlspecialchars($marca['codigo_marca'] ?? 'N/A') ?>
+                            <div class="marca-view-modal__field">
+                                <label class="marca-view-modal__field-label">CÛdigo</label>
+                                <div class="marca-view-modal__field-value marca-view-modal__field-value--code">
+                                    <?= htmlspecialchars($marca['codigo_marca'] ?: 'N/A') ?>
                                 </div>
                             </div>
                             
-                            <?php if (!empty($marca['descripcion_marca'])): ?>
-                            <div class="product-view-modal__info-item" style="grid-column: 1 / -1; background: rgba(30, 41, 59, 0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08);">
-                                <label class="product-view-modal__info-label" style="display: block; color: #94a3b8; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem;">
-                                    <i class="fas fa-align-left" style="margin-right: 0.4rem; color: #10b981;"></i>
-                                    Descripci√≥n
-                                </label>
-                                <div class="product-view-modal__info-value" style="color: #cbd5e1; font-size: 15px; line-height: 1.7; font-weight: 400;">
-                                    <?= nl2br(htmlspecialchars($marca['descripcion_marca'])) ?>
-                                </div>
-                            </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <!-- CARD: Estado y Configuraci√≥n -->
-                    <div class="product-view-modal__info-card" style="background: rgba(51, 65, 85, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(148, 163, 184, 0.1); border-radius: 16px; padding: 1.8rem; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);">
-                        <div class="product-view-modal__info-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid rgba(34, 197, 94, 0.2);">
-                            <div class="product-view-modal__info-icon" style="width: 44px; height: 44px; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
-                                <i class="fas fa-cogs"></i>
-                            </div>
-                            <h3 class="product-view-modal__info-title" style="font-size: 20px; font-weight: 700; color: #f1f5f9; margin: 0;">Estado y Configuraci√≥n</h3>
-                        </div>
-                        
-                        <div class="product-view-modal__info-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
-                            
-                            <div class="product-view-modal__info-item" style="background: rgba(30, 41, 59, 0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(30, 41, 59, 0.6)'; this.style.borderColor='rgba(34, 197, 94, 0.3)'" onmouseout="this.style.background='rgba(30, 41, 59, 0.4)'; this.style.borderColor='rgba(148, 163, 184, 0.08)'">
-                                <label class="product-view-modal__info-label" style="display: block; color: #94a3b8; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem;">
-                                    <i class="fas fa-toggle-on" style="margin-right: 0.4rem; color: <?= $marca['estado_marca'] === 'activo' ? '#22c55e' : '#ef4444' ?>;"></i>
-                                    Estado
-                                </label>
-                                <div class="product-view-modal__info-value" style="color: #e2e8f0; font-size: 16px; font-weight: 600;">
-                                    <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 10px; background: <?= $marca['estado_marca'] === 'activo' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)' ?>; color: <?= $marca['estado_marca'] === 'activo' ? '#22c55e' : '#ef4444' ?>; border: 1px solid <?= $marca['estado_marca'] === 'activo' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)' ?>;">
-                                        <i class="fas fa-<?= $marca['estado_marca'] === 'activo' ? 'check-circle' : 'times-circle' ?>"></i>
-                                        <?= ucfirst(htmlspecialchars($marca['estado_marca'])) ?>
+                            <div class="marca-view-modal__field">
+                                <label class="marca-view-modal__field-label">Estado</label>
+                                <div class="marca-view-modal__field-value">
+                                    <?php 
+                                    $isActive = isset($marca['estado_marca']) && $marca['estado_marca'] === 'activo';
+                                    ?>
+                                    <span class="marca-view-modal__status-badge marca-view-modal__status-badge--<?= $isActive ? 'active' : 'inactive' ?>">
+                                        <i class="fas fa-<?= $isActive ? 'check-circle' : 'times-circle' ?>"></i>
+                                        <?= $isActive ? 'Activo' : 'Inactivo' ?>
                                     </span>
                                 </div>
                             </div>
                             
-                            <div class="product-view-modal__info-item" style="background: rgba(30, 41, 59, 0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(30, 41, 59, 0.6)'; this.style.borderColor='rgba(34, 197, 94, 0.3)'" onmouseout="this.style.background='rgba(30, 41, 59, 0.4)'; this.style.borderColor='rgba(148, 163, 184, 0.08)'">
-                                <label class="product-view-modal__info-label" style="display: block; color: #94a3b8; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem;">
-                                    <i class="fas fa-database" style="margin-right: 0.4rem; color: #3b82f6;"></i>
-                                    Status
-                                </label>
-                                <div class="product-view-modal__info-value" style="color: #e2e8f0; font-size: 16px; font-weight: 600;">
-                                    <?= $marca['status_marca'] == 1 ? '<span style="color: #22c55e;"><i class="fas fa-check-circle"></i> Visible</span>' : '<span style="color: #ef4444;"><i class="fas fa-eye-slash"></i> Oculto</span>' ?>
-                                </div>
-                            </div>
-
-                            <?php if (!empty($marca['pais_origen'])): ?>
-                            <div class="product-view-modal__info-item" style="background: rgba(30, 41, 59, 0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(30, 41, 59, 0.6)'; this.style.borderColor='rgba(34, 197, 94, 0.3)'" onmouseout="this.style.background='rgba(30, 41, 59, 0.4)'; this.style.borderColor='rgba(148, 163, 184, 0.08)'">
-                                <label class="product-view-modal__info-label" style="display: block; color: #94a3b8; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem;">
-                                    <i class="fas fa-globe" style="margin-right: 0.4rem; color: #8b5cf6;"></i>
-                                    Pa√≠s de Origen
-                                </label>
-                                <div class="product-view-modal__info-value" style="color: #e2e8f0; font-size: 16px; font-weight: 600;">
-                                    <?= htmlspecialchars($marca['pais_origen']) ?>
-                                </div>
-                            </div>
-                            <?php endif; ?>
-
-                            <?php if (!empty($marca['sitio_web'])): ?>
-                            <div class="product-view-modal__info-item" style="background: rgba(30, 41, 59, 0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(30, 41, 59, 0.6)'; this.style.borderColor='rgba(34, 197, 94, 0.3)'" onmouseout="this.style.background='rgba(30, 41, 59, 0.4)'; this.style.borderColor='rgba(148, 163, 184, 0.08)'">
-                                <label class="product-view-modal__info-label" style="display: block; color: #94a3b8; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem;">
-                                    <i class="fas fa-link" style="margin-right: 0.4rem; color: #06b6d4;"></i>
-                                    Sitio Web
-                                </label>
-                                <div class="product-view-modal__info-value" style="color: #06b6d4; font-size: 14px; font-weight: 600; word-break: break-all;">
-                                    <a href="<?= htmlspecialchars($marca['sitio_web']) ?>" target="_blank" style="color: #06b6d4; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#0891b2'" onmouseout="this.style.color='#06b6d4'">
-                                        <i class="fas fa-external-link-alt" style="margin-right: 0.4rem;"></i>
-                                        <?= htmlspecialchars($marca['sitio_web']) ?>
-                                    </a>
-                                </div>
+                            <?php if (!empty($marca['descripcion_marca'])): ?>
+                            <div class="marca-view-modal__description">
+                                <label class="marca-view-modal__field-label">DescripciÛn</label>
+                                <p class="marca-view-modal__description-text">
+                                    <?= nl2br(htmlspecialchars($marca['descripcion_marca'])) ?>
+                                </p>
                             </div>
                             <?php endif; ?>
                         </div>
                     </div>
 
-                    <!-- CARD: Informaci√≥n del Sistema -->
-                    <div class="product-view-modal__info-card" style="background: rgba(51, 65, 85, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(148, 163, 184, 0.1); border-radius: 16px; padding: 1.8rem; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);">
-                        <div class="product-view-modal__info-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid rgba(6, 182, 212, 0.2);">
-                            <div class="product-view-modal__info-icon" style="width: 44px; height: 44px; background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);">
-                                <i class="fas fa-clock"></i>
+                    <!-- INFORMACI”N ADICIONAL -->
+                    <div class="marca-view-modal__card">
+                        <div class="marca-view-modal__card-header">
+                            <div class="marca-view-modal__card-icon">
+                                <i class="fas fa-calendar"></i>
                             </div>
-                            <h3 class="product-view-modal__info-title" style="font-size: 20px; font-weight: 700; color: #f1f5f9; margin: 0;">Informaci√≥n del Sistema</h3>
+                            <h3 class="marca-view-modal__card-title">InformaciÛn Adicional</h3>
                         </div>
                         
-                        <div class="product-view-modal__info-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
-                            
-                            <?php if (!empty($marca['fecha_creacion_marca'])): ?>
-                            <div class="product-view-modal__info-item" style="background: rgba(30, 41, 59, 0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(30, 41, 59, 0.6)'; this.style.borderColor='rgba(6, 182, 212, 0.3)'" onmouseout="this.style.background='rgba(30, 41, 59, 0.4)'; this.style.borderColor='rgba(148, 163, 184, 0.08)'">
-                                <label class="product-view-modal__info-label" style="display: block; color: #94a3b8; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem;">
-                                    <i class="fas fa-calendar-plus" style="margin-right: 0.4rem; color: #22c55e;"></i>
-                                    Creado
-                                </label>
-                                <div class="product-view-modal__info-value" style="color: #e2e8f0; font-size: 15px; font-weight: 600;">
-                                    <?= date('d/m/Y', strtotime($marca['fecha_creacion_marca'])) ?>
-                                </div>
-                                <div style="color: #94a3b8; font-size: 13px; margin-top: 0.3rem;">
-                                    <?= date('H:i:s', strtotime($marca['fecha_creacion_marca'])) ?>
+                        <div class="marca-view-modal__grid">
+                            <div class="marca-view-modal__field">
+                                <label class="marca-view-modal__field-label">Fecha de Registro</label>
+                                <div class="marca-view-modal__field-value">
+                                    <?php
+                                    $fecha = $marca['fecha_registro_marca'] ?? $marca['fecha_creacion_marca'] ?? null;
+                                    if ($fecha) {
+                                        $dt = new DateTime($fecha);
+                                        echo $dt->format('d/m/Y H:i');
+                                    } else {
+                                        echo 'N/A';
+                                    }
+                                    ?>
                                 </div>
                             </div>
-                            <?php endif; ?>
                             
-                            <?php if (!empty($marca['fecha_actualizacion_marca'])): ?>
-                            <div class="product-view-modal__info-item" style="background: rgba(30, 41, 59, 0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(30, 41, 59, 0.6)'; this.style.borderColor='rgba(6, 182, 212, 0.3)'" onmouseout="this.style.background='rgba(30, 41, 59, 0.4)'; this.style.borderColor='rgba(148, 163, 184, 0.08)'">
-                                <label class="product-view-modal__info-label" style="display: block; color: #94a3b8; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem;">
-                                    <i class="fas fa-calendar-edit" style="margin-right: 0.4rem; color: #f59e0b;"></i>
-                                    Modificado
-                                </label>
-                                <div class="product-view-modal__info-value" style="color: #e2e8f0; font-size: 15px; font-weight: 600;">
-                                    <?= date('d/m/Y', strtotime($marca['fecha_actualizacion_marca'])) ?>
-                                </div>
-                                <div style="color: #94a3b8; font-size: 13px; margin-top: 0.3rem;">
-                                    <?= date('H:i:s', strtotime($marca['fecha_actualizacion_marca'])) ?>
+                            <?php if (isset($marca['fecha_actualizacion_marca']) && !empty($marca['fecha_actualizacion_marca'])): ?>
+                            <div class="marca-view-modal__field">
+                                <label class="marca-view-modal__field-label">⁄ltima ActualizaciÛn</label>
+                                <div class="marca-view-modal__field-value">
+                                    <?php
+                                    $dt = new DateTime($marca['fecha_actualizacion_marca']);
+                                    echo $dt->format('d/m/Y H:i');
+                                    ?>
                                 </div>
                             </div>
                             <?php endif; ?>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
 
-        <!-- FOOTER PROFESIONAL -->
-        <div class="product-view-modal__footer" style="padding: 1.5rem 2.5rem; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(10px); border-top: 2px solid rgba(148, 163, 184, 0.1); display: flex; justify-content: space-between; align-items: center;">
-            <div style="color: #94a3b8; font-size: 13px; display: flex; align-items: center; gap: 0.5rem;">
-                <i class="fas fa-info-circle"></i>
-                <span>Modal de solo lectura</span>
-            </div>
-            <button type="button" class="product-view-modal__btn product-view-modal__btn--secondary" onclick="closeMarcaModal()" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #64748b 0%, #475569 100%); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.6rem; box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(100, 116, 139, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(100, 116, 139, 0.3)'">
+        <!-- FOOTER -->
+        <div class="marca-view-modal__footer">
+            <button type="button" class="marca-view-modal__btn marca-view-modal__btn--secondary" onclick="closeMarcaModal()">
                 <i class="fas fa-times"></i>
                 Cerrar
             </button>
@@ -307,186 +208,81 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
     </div>
 </div>
 
+<!-- Script para animaciÛn de entrada del modal VIEW -->
 <script>
-// JavaScript espec√≠fico para el modal Ver marca
 (function() {
     'use strict';
     
-    // Funci√≥n para cerrar el modal Ver marca
-    // ‚úÖ SIMPLIFICADO: Solo usar closeMarcaModal global
-    function closeViewmarcaModal() {
-        console.log('‚úÖ closeViewmarcaModal() - llamando a funci√≥n global');
-        
-        // Siempre llamar a la funci√≥n global
-        if (typeof window.closeMarcaModal === 'function') {
-            window.closeMarcaModal();
-        } else {
-            console.error('‚ùå closeMarcaModal no est√° disponible');
-        }
+    console.log('[marca VIEW] Inicializando modal de vista...');
+    
+    // Animar entrada del modal
+    const modal = document.querySelector('.marca-view-modal');
+    if (modal) {
+        requestAnimationFrame(() => {
+            modal.classList.add('show');
+        });
     }
     
-    // Exponer funci√≥n localmente
-    window.closeViewmarcaModal = closeViewmarcaModal;
-    
-    // FunciÔøΩn para activar animaciones del stock despuÔøΩs de que el modal aparezca
-    function activateStockAnimations() {
-        const stockBar = document.querySelector('.marca-view-modal__stock-fill');
-        if (stockBar) {
-            // Guardar el ancho original
-            const originalWidth = stockBar.style.width;
-            const stockValue = parseInt(originalWidth);
-            
-            // Resetear a 0
-            stockBar.style.width = '0%';
-            stockBar.style.transition = 'none';
-            
-            // Aplicar el ancho original despuÔøΩs de un delay con transiciÔøΩn suave
-            setTimeout(() => {
-                stockBar.style.transition = 'width 2s cubic-bezier(0.4, 0, 0.2, 1)';
-                stockBar.style.width = originalWidth;
-                
-                // Agregar efectos especiales basados en el stock
-                if (stockValue > 80) {
-                    stockBar.style.animation = 'stockPulseHigh 3s ease-in-out infinite';
-                } else if (stockValue > 50) {
-                    stockBar.style.animation = 'stockPulseMedium 2s ease-in-out infinite';
-                } else if (stockValue > 0) {
-                    stockBar.style.animation = 'stockPulseLow 1.5s ease-in-out infinite';
-                }
-            }, 500);
-        }
-        
-        // Activar animaciones del descuento
-        const discountField = document.querySelector('.marca-view-modal__field-value--discount');
-        if (discountField) {
-            const discountValue = parseFloat(discountField.dataset.discount);
-            
-            // Intensificar efectos segÔøΩn el porcentaje de descuento
-            if (discountValue >= 50) {
-                discountField.style.animation = 'discountPulse 1s ease-in-out infinite, fireEffect 0.5s ease-in-out infinite';
-                discountField.style.boxShadow = '0 0 40px rgba(255, 68, 68, 0.8), 0 0 80px rgba(255, 107, 107, 0.4)';
-            } else if (discountValue >= 30) {
-                discountField.style.animation = 'discountPulse 1.5s ease-in-out infinite';
-                discountField.style.boxShadow = '0 0 25px rgba(255, 68, 68, 0.6)';
-            }
-        }
-    }
-    
-    // Activar animaciones despuÔøΩs de que el modal estÔøΩ visible
-    setTimeout(activateStockAnimations, 1000);
-    
-    // FunciÔøΩn de debug para verificar estado del modal
-    window.debugModal = function() {
-        const modal = document.querySelector('.marca-view-modal');
-        if (modal) {
-            const styles = window.getComputedStyle(modal);
-            console.log('?? Debug modal Ver marca:', {
-                found: true,
-                classes: modal.className,
-                display: styles.display,
-                opacity: styles.opacity,
-                visibility: styles.visibility,
-                position: styles.position,
-                zIndex: styles.zIndex,
-                top: styles.top,
-                left: styles.left,
-                background: styles.background,
-                backdropFilter: styles.backdropFilter
-            });
-        } else {
-            console.log('? Modal Ver marca no encontrado en DOM');
+    // Cerrar con ESC
+    const handleEsc = (e) => {
+        if (e.key === 'Escape') {
+            closeMarcaModal();
+            document.removeEventListener('keydown', handleEsc);
         }
     };
-    
-    // ‚úÖ SIMPLIFICADO: Los botones usan onclick="closeMarcaModal()" en el HTML
-    // Solo necesitamos configurar el overlay para cerrar al hacer click fuera
-    function setupCloseEvents() {
-        console.log('‚öôÔ∏è Configurando eventos de cierre del modal');
-        
-        // Cerrar con overlay (click en fondo)
-        const overlay = document.querySelector('.marca-view-modal__overlay');
-        if (overlay) {
-            overlay.removeEventListener('click', overlay.clickHandler);
-            overlay.clickHandler = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('üîò Click en overlay (fondo)');
-                if (typeof window.closeMarcaModal === 'function') {
-                    window.closeMarcaModal();
-                }
-            };
-            overlay.addEventListener('click', overlay.clickHandler);
-        }
-    }
-    
-    // Configurar evento ESC GLOBAL inmediatamente
-    if (!window.modalEscapeConfigured) {
-        const globalEscHandler = function(e) {
-            if (e.key === 'Escape' || e.keyCode === 27) {
-                const activeModal = document.querySelector('.marca-view-modal.show');
-                if (activeModal) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('?? Tecla ESC presionada - cerrando modal');
-                    if (typeof window.closeMarcaModal === 'function') {
-                        window.closeMarcaModal();
-                    } else {
-                        closeViewmarcaModal();
-                    }
-                }
-            }
-        };
-        
-        // Agregar listener global para ESC
-        document.addEventListener('keydown', globalEscHandler, true);
-        window.modalEscapeConfigured = true;
-        console.log('? Event listener ESC global configurado');
-    }
-    
-    // Configurar eventos inmediatamente
-    setupCloseEvents();
-    
+    document.addEventListener('keydown', handleEsc);
 })();
 </script>
 
-<?php else: ?>
+<?php endif; ?>
 
-<!-- CREAR / EDITAR: se mantiene la versiÔøΩn original sin cambios de estilos para evitar conflictos -->
+<!-- ============================================ -->
+<!-- FORMULARIO CREATE/EDIT -->
+<!-- ============================================ -->
+<?php if (!$isView): ?>
+
+<!-- CREAR / EDITAR: DISE—O EXACTAMENTE IGUAL A PRODUCTOS -->
 <div class="modal-content">
     <div class="modal-header">
         <h2 class="modal-title">
             <i class="fas fa-<?= $iconClass ?>"></i>
             <?= $modalTitle ?>
         </h2>
-        <button type="button" class="modal-close">
+        <button type="button" class="modal-close" onclick="closeMarcaModal()">
             <i class="fas fa-times"></i>
         </button>
     </div>
     
-    <form id="marcaForm" method="POST" action="" enctype="multipart/form-data">
+    <form id="marcaForm" enctype="multipart/form-data">
         <input type="hidden" name="action" value="<?= $isEdit ? 'update' : 'create' ?>">
         <?php if ($isEdit): ?>
             <input type="hidden" name="id_marca" value="<?= $marca['id_marca'] ?>">
-            <!-- Mantener status_marca sin modificar al editar -->
             <input type="hidden" name="status_marca" value="<?= $marca['status_marca'] ?>">
         <?php else: ?>
-            <!-- Para marcas nuevos, establecer status_marca en 1 (activo/no eliminado) -->
             <input type="hidden" name="status_marca" value="1">
         <?php endif; ?>
         
+        <!-- Contenedor de errores -->
+        <div id="marcaFormError" style="display: none; margin: 1rem 1.5rem; padding: 1rem; background: #fee; border-left: 4px solid #f44336; border-radius: 4px;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-exclamation-circle" style="color: #f44336; font-size: 1.2rem;"></i>
+                <span id="marcaFormErrorMessage" style="color: #c62828; font-weight: 500;"></span>
+            </div>
+        </div>
+        
         <div class="modal-body">
-            <!-- Informaci√≥n b√°sica -->
+            <!-- InformaciÛn b·sica -->
             <div class="form-section">
                 <h3 class="section-title">
                     <i class="fas fa-info-circle"></i>
-                    Informaci√≥n B√°sica
+                    InformaciÛn de la Marca
                 </h3>
                 
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="nombre_marca">
                             <i class="fas fa-tag"></i>
-                            Nombre de la Marca
+                            Nombre de la Marca *
                         </label>
                         <input type="text" 
                                id="nombre_marca" 
@@ -494,34 +290,59 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                                value="<?= $hasData ? htmlspecialchars($marca['nombre_marca']) : '' ?>"
                                required 
                                maxlength="100"
-                               <?= $isView ? 'readonly' : '' ?>
-                               placeholder="Ej: Nike, Adidas, etc..">
+                               placeholder="Ej: Ropa Deportiva, Zapatos, Accesorios...">
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="codigo_marca">
                             <i class="fas fa-barcode"></i>
-                            C√≥digo de Marca
+                            CÛdigo de Marca
                         </label>
                         <input type="text" 
                                id="codigo_marca" 
                                name="codigo_marca" 
                                value="<?= $hasData ? htmlspecialchars($marca['codigo_marca']) : '' ?>"
                                maxlength="50"
-                               <?= $isView ? 'readonly' : '' ?>
-                               placeholder="Ej: MARCA-001">
-                        <small class="form-text">C√≥digo √∫nico identificador (opcional)</small>
+                               placeholder="Ej: CAT-001, ROPA-DEP...">
+                        <small class="form-text">CÛdigo ˙nico opcional para identificar la marca</small>
                     </div>
-                    
+                </div>
+            </div>
+            
+            <!-- DescripciÛn -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-align-left"></i>
+                    DescripciÛn
+                </h3>
+                
+                <div class="form-group">
+                    <textarea id="descripcion_marca" 
+                              name="descripcion_marca" 
+                              rows="4" 
+                              maxlength="500"
+                              placeholder="Describe las caracterÌsticas principales de la marca..."><?= $hasData ? htmlspecialchars($marca['descripcion_marca']) : '' ?></textarea>
+                    <small class="form-text">M·ximo 500 caracteres</small>
+                </div>
+            </div>
+            
+            <!-- Estado -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-toggle-on"></i>
+                    Estado
+                </h3>
+                
+                <div class="form-grid">
                     <div class="form-group">
                         <label for="estado_marca">
-                            <i class="fas fa-toggle-on"></i>
-                            Estado
+                            <i class="fas fa-power-off"></i>
+                            Estado de la Marca *
                         </label>
                         <select id="estado_marca" 
                                 name="estado_marca" 
                                 class="form-control"
-                                <?= $isView ? 'disabled readonly style="background-color: #f8f9fa !important; cursor: not-allowed !important; pointer-events: none !important;"' : '' ?>>
+                                required>
                             <option value="activo" <?= ($hasData && $marca['estado_marca'] === 'activo') ? 'selected' : '' ?>>Activo</option>
                             <option value="inactivo" <?= ($hasData && $marca['estado_marca'] === 'inactivo') ? 'selected' : '' ?>>Inactivo</option>
                         </select>
@@ -529,669 +350,806 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                 </div>
             </div>
             
-            <!-- Descripci√≥n -->
-            <div class="form-section">
-                <h3 class="section-title">
-                    <i class="fas fa-align-left"></i>
-                    Descripci√≥n
-                </h3>
-                
-                <div class="form-group">
-                    <textarea id="descripcion_marca" 
-                              name="descripcion_marca" 
-                              rows="4" 
-                              maxlength="1000"
-                              placeholder="Describe la marca, su historia, valores, etc..."
-                              <?= $isView ? 'readonly' : '' ?>><?= $hasData ? htmlspecialchars($marca['descripcion_marca']) : '' ?></textarea>
-                    <small class="form-text">M√°ximo 1000 caracteres (opcional)</small>
-                </div>
-            </div>
-            
-            <!-- Imagen de la marca -->
+            <!-- Imagen de la Marca -->
             <div class="form-section">
                 <h3 class="section-title">
                     <i class="fas fa-image"></i>
-                    Imagen de la Marca 
+                    Imagen de la Marca
                 </h3>
                 
-                <div class="file-upload-container" style="display: flex; flex-direction: column; align-items: center;">
-                    <?php if ($hasData && (!empty($marca['url_imagen_marca']) || !empty($marca['imagen_marca']))): ?>
-                        <div class="current-image-section" style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
-                            <div class="current-image-display" style="max-width: 100%; max-height: 350px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 8px; padding: 20px;">
-                                <?php 
-                                $imagenSrc = '';
-                                if (!empty($marca['url_imagen_marca']) && $marca['url_imagen_marca'] !== 'NULL') {
-                                    $imagenSrc = $marca['url_imagen_marca'];
-                                } elseif (!empty($marca['imagen_marca']) && $marca['imagen_marca'] !== 'NULL') {
-                                    $imagenSrc = '/fashion-master/public/assets/img/products/' . $marca['imagen_marca'];
-                                } else {
-                                    $imagenSrc = '/fashion-master/public/assets/img/default-product.png';
-                                }
-                                ?>
-                                <img src="<?= htmlspecialchars($imagenSrc) ?>" 
-                                     alt="Imagen actual de la marca" 
-                                     class="current-marca-image" 
-                                     ondblclick="showImageFullSize('<?= htmlspecialchars($imagenSrc) ?>', '<?= htmlspecialchars($marca['nombre_marca']) ?>')"
-                                     style="max-width: 100%; max-height: 310px; object-fit: contain; border-radius: 8px; cursor: zoom-in;"
-                                     onerror="this.src='/fashion-master/public/assets/img/default-product.png'; this.onerror=null;">
+                <div class="file-upload-container">
+                    <?php if ($hasData && !empty($marca['url_imagen_marca'])): ?>
+                        <div class="current-image-section">
+                            <div class="current-image-display">
+                                <img src="<?= htmlspecialchars($marca['url_imagen_marca']) ?>" 
+                                     alt="imagen actual de la Marca" 
+                                     class="current-product-image" 
+                                     onerror="this.src='public/assets/img/default-category.jpg'; this.onerror=null;">
                             </div>
-                            <?php if (!$isView): ?>
-                            <div class="change-image-section" style="text-align: center;">
-                                <button type="button" class="btn-change-image" onclick="triggerFileInput()">
+                            <div class="change-image-section">
+                                <button type="button" class="btn-change-image" onclick="document.getElementById('imagen_marca').click()">
                                     <i class="fas fa-camera"></i> Cambiar imagen
                                 </button>
                             </div>
-                            <?php endif; ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="file-upload-area" id="uploadArea" onclick="document.getElementById('imagen_marca').click()">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <p class="upload-text"><strong>Haz clic aquÌ para seleccionar una imagen</strong><br>o arrastra y suelta tu archivo</p>
+                            <small class="upload-hint">Formatos: JPG, PNG, GIF (m·x. 5MB)</small>
                         </div>
                     <?php endif; ?>
 
-                    <?php if (!$hasData): ?>
-                    <div class="file-upload-area" id="uploadArea" onclick="triggerFileInput()">
-                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                        <p class="upload-text"><strong>Haz clic aqui para seleccionar una imagen</strong><br>o arrastra y suelta tu archivo</p>
-                        <small class="upload-hint">Formatos: JPG, PNG, GIF (max. 5MB)</small>
-                    </div>
-                    <?php endif; ?>
-
-                    <input type="file" id="imagen" name="imagen_marca_file" accept="image/*" style="display:none;">
-                    <input type="hidden" id="imagen_marca_base64" name="imagen_marca_base64" value="">
-                    <div id="imagePreview" class="image-preview-section" style="display:none; flex-direction: column; align-items: center; gap: 15px;">
-                        <div class="preview-image-display" style="width: 200px; height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 8px; border: 2px solid #e2e8f0;">
-                            <img id="previewImg" src="" alt="Preview de nueva imagen" class="preview-marca-image" style="width: 100%; height: 100%; object-fit: contain;">
-                        </div>
-                        <div class="preview-actions-section" style="margin-top: 0; text-align: center;"><button type="button" class="btn-remove-image" onclick="removeImagePreview()"><i class="fas fa-trash"></i> Eliminar imagen</button></div>
-                    </div>
+                    <input type="file" id="imagen_marca" name="imagen_marca" accept="image/*" style="display:none;">
                 </div>
             </div>
         </div>
         
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
-            <?php if (!$isView): ?>
-            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> <?= $isEdit ? 'Actualizar' : 'Guardar' ?> marca</button>
-            <?php endif; ?>
+            <button type="button" class="btn btn-secondary" onclick="closeMarcaModal()">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> <?= $isEdit ? 'Actualizar' : 'Guardar' ?> <span class="btn-text-mobile-hide">marca</span>
+            </button>
         </div>
     </form>
 </div>
-<!-- SCRIPTS compartidos para crear/editar (idÔøΩnticos a originales, no afectan la vista) -->
+
+<!-- SCRIPTS para el formulario -->
 <script>
-/**
- * Scripts mejorados para modal "Ver marca" (y reutilizables para crear/editar)
- * - Animaciones suaves (entrada, salida, stagger, parallax)
- * - File upload con recorte en canvas (preview) y reemplazo del archivo enviado
- * - Submit AJAX con animaciÔøΩn del botÔøΩn y manejo de respuesta
- * - Scroll/touch handling para evitar que la pÔøΩgina detrÔøΩs se mueva
- *
- * Pegar este <script> tal cual en el modal (ya no necesita mÔøΩs cambios).
- */
-
-(function () {
-  'use strict';
-
-  /* --------------------------
-     Helpers
-     -------------------------- */
-  function $(selector, ctx = document) { return ctx.querySelector(selector); }
-  function $all(selector, ctx = document) { return Array.from((ctx || document).querySelectorAll(selector)); }
-  function isTouch() { return ('ontouchstart' in window) || navigator.maxTouchPoints > 0; }
-
-  function dataURLToBlob(dataURL) {
-    // dataURL: "data:image/jpeg;base64,...."
-    const parts = dataURL.split(',');
-    const mime = parts[0].match(/:(.*?);/)[1];
-    const bstr = atob(parts[1]);
-    let n = bstr.length;
-    const u8 = new Uint8Array(n);
-    while (n--) u8[n] = bstr.charCodeAt(n);
-    return new Blob([u8], { type: mime });
-  }
-
-  function animateClassOnce(el, klass, duration = 400) {
-    if (!el) return;
-    el.classList.add(klass);
-    setTimeout(() => el.classList.remove(klass), duration + 20);
-  }
-
-  /* --------------------------
-     File upload + preview (cropping square)
-     -------------------------- */
-  function setupFileUploadScoped(root = document) {
-    const fileInput = $('#imagen', root);
-    const uploadArea = $('#uploadArea', root);
-    const preview = $('#imagePreview', root);
-    const previewImg = $('#previewImg', root);
-    const currentImageSection = $('.current-image-section', root);
-
-    if (!fileInput) return; // funciona sÔøΩlo en crear/editar
-
-    // Reemplazar input para quitar event listeners previos
-    const newInput = fileInput.cloneNode(true);
-    fileInput.parentNode.replaceChild(newInput, fileInput);
-
-    newInput.addEventListener('change', handleFileSelect);
-
-    if (uploadArea) {
-      uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.classList.add('dragover');
-      });
-      uploadArea.addEventListener('dragleave', (e) => {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
-      });
-      uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files && files.length) {
-          // asignar archivos al input
-          try {
-            newInput.files = files;
-          } catch (err) {
-            // algunos navegadores no permiten asignar FileList directamente
-          }
-          handleFileSelect({ target: { files } });
-        }
-      });
-    }
-
-    function handleFileSelect(e) {
-      if (!e || !e.target || !e.target.files || !e.target.files[0]) return;
-      const file = e.target.files[0];
-
-      // Validaciones
-      if (!file.type.startsWith('image/')) {
-        alert('Por favor, selecciona un archivo de imagen vÔøΩlido.');
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        alert('El archivo es demasiado grande. MÔøΩximo 5MB.');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function (ev) {
-        const tmp = new Image();
-        tmp.onload = function () {
-          // ADAPTAR imagen completa (contain) en lugar de recortar
-          const targetSize = 800; // tamaÔøΩo del contenedor cuadrado
-          const canvas = document.createElement('canvas');
-          canvas.width = targetSize;
-          canvas.height = targetSize;
-          const ctx = canvas.getContext('2d');
-
-          // Calcular el escalado para que la imagen completa entre en el canvas
-          const scale = Math.min(targetSize / tmp.width, targetSize / tmp.height);
-          const scaledWidth = tmp.width * scale;
-          const scaledHeight = tmp.height * scale;
-
-          // Centrar la imagen en el canvas
-          const offsetX = (targetSize - scaledWidth) / 2;
-          const offsetY = (targetSize - scaledHeight) / 2;
-
-          // Fondo blanco para ÔøΩreas vacÔøΩas
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, targetSize, targetSize);
-
-          // Dibujar la imagen completa adaptada (contain)
-          ctx.drawImage(tmp, offsetX, offsetY, scaledWidth, scaledHeight);
-
-          // Convertir a dataURL
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-
-          // Mostrar preview (animado)
-          if (previewImg) {
-            previewImg.src = dataUrl;
-          }
-          if (preview) {
-            preview.style.display = 'block';
-            preview.style.opacity = '1';
-            // Sin requestAnimationFrame ni animateClassOnce para evitar delays
-          }
-
-          // ocultar uploadArea y currentImageSection
-          if (uploadArea) uploadArea.style.display = 'none';
-          if (currentImageSection) currentImageSection.style.display = 'none';
-
-          // Guardar dataURL en el input hidden para enviar al backend
-          const base64Input = document.getElementById('imagen_marca_base64');
-          if (base64Input) {
-            base64Input.value = dataUrl;
-            console.log('üì∏ Imagen convertida a base64 y guardada en input hidden');
-          }
-          
-          // Tambi√©n guardar en dataset por compatibilidad
-          newInput.dataset.cropped = dataUrl;
-        };
-        tmp.src = ev.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  /* --------------------------
-     DetecciÔøΩn de cambios en el formulario
-     -------------------------- */
-  let originalFormData = {};
-  
-  function captureOriginalFormData(form) {
-    originalFormData = {};
-    const formData = new FormData(form);
-    for (let [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        originalFormData[key] = value.name + '|' + value.size;
-      } else {
-        originalFormData[key] = value;
-      }
-    }
-    console.log('?? Datos originales del formulario capturados:', originalFormData);
-  }
-  
-  function hasFormChanged(form) {
-    const currentFormData = new FormData(form);
-    let hasChanges = false;
+(function() {
+    'use strict';
     
-    // Comparar cada campo
-    for (let [key, value] of currentFormData.entries()) {
-      let currentValue = value;
-      if (value instanceof File) {
-        // Ignorar archivos vacÔøΩos (no seleccionados)
-        if (value.size === 0) continue;
-        currentValue = value.name + '|' + value.size;
-        if (originalFormData[key] !== currentValue) {
-          console.log(`?? Cambio detectado en ${key}: archivo nuevo seleccionado`);
-          hasChanges = true;
-        }
-      } else {
-        if (originalFormData[key] !== currentValue) {
-          console.log(`?? Cambio detectado en ${key}: "${originalFormData[key]}" ? "${currentValue}"`);
-          hasChanges = true;
-        }
-      }
-    }
-    
-    // Verificar si se eliminaron campos
-    for (let key in originalFormData) {
-      if (!currentFormData.has(key) && key !== 'imagen_marca') {
-        console.log(`?? Cambio detectado: campo ${key} eliminado`);
-        hasChanges = true;
-      }
-    }
-    
-    return hasChanges;
-  }
-
-  /* --------------------------
-     Form submit (AJAX) con reemplazo de imagen por preview cropped
-     -------------------------- */
-  function setupFormSubmitScoped(root = document) {
-    const form = $('#marcaForm', root);
-    if (!form) return;
-    
-    // Capturar datos originales cuando se carga el formulario
-    setTimeout(() => captureOriginalFormData(form), 500);
-
-    form.addEventListener('submit', async function (ev) {
-      ev.preventDefault();
-      
-      // VALIDACI√ìN: Verificar si realmente hubo cambios
-      if (!hasFormChanged(form)) {
-        console.log('‚ö†Ô∏è No se detectaron cambios en el formulario. Cerrando modal sin actualizar.');
+    // ? FUNCI”N PRINCIPAL PARA GUARDAR (EVITA REFRESH DE P¡GINA)
+    async function guardarmarca() {
+        console.log('?? Iniciando guardado de marca (SIN REFRESH)');
         
-        // Mostrar mensaje sutil
-        if (window.parent && typeof window.parent.showNotification === 'function') {
-          window.parent.showNotification('No se realizaron cambios', 'info');
+        const form = document.getElementById('marcaForm');
+        if (!form) {
+            console.error('? Formulario no encontrado');
+            return;
         }
         
-        // ‚úÖ Cerrar modal INMEDIATAMENTE sin actualizar tabla
-        if (typeof window.closeMarcaModal === 'function') {
-          window.closeMarcaModal();
-        } else {
-          console.error('‚ùå closeMarcaModal no disponible');
-        }
+        // ? GUARDAR TAB ACTIVO ANTES DE CUALQUIER OPERACI”N
+        console.log('?? Forzando tab "marcas" en localStorage');
+        localStorage.setItem('admin_active_tab', 'marcas');
         
-        return; // Detener el env√≠o
-      }
-      
-      console.log('? Cambios detectados, procediendo con el guardado...');
-
-      const targetUrl = (window.AppConfig && typeof window.AppConfig.getApiUrl === 'function')
-        ? window.AppConfig.getApiUrl('marcaController.php')
-        : '/app/controllers/marcaController.php';
-
-      // BotÔøΩn submit
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const originalHTML = submitBtn ? submitBtn.innerHTML : null;
-
-      if (submitBtn) {
-        submitBtn.innerHTML = '<span class="pv-spinner" aria-hidden="true" style="display:inline-block;vertical-align:middle;"><i class="fas fa-spinner fa-spin"></i></span> Guardando...';
-        submitBtn.disabled = true;
-        submitBtn.style.pointerEvents = 'none';
-      }
-
-      try {
-        // Construir FormData y, si existe preview cropped, reemplazar la imagen
-        const fd = new FormData(form);
-
-        // buscar input file y su dataset.cropped
-        const fileInput = $('#imagen', form);
-        if (fileInput && fileInput.dataset && fileInput.dataset.cropped) {
-          try {
-            // quitar entrada anterior (si existe)
-            // NOTE: algunos navegadores aÔøΩaden automÔøΩticamente el archivo, FormData.delete debe funcionar
-            fd.delete('imagen_marca');
-            const blob = dataURLToBlob(fileInput.dataset.cropped);
-            // nombre de archivo recomendado
-            const filename = (fileInput.files && fileInput.files[0] && fileInput.files[0].name) ? fileInput.files[0].name.replace(/\.[^/.]+$/, '') + '-cropped.jpg' : 'imagen-cropped.jpg';
-            fd.append('imagen_marca', blob, filename);
-          } catch (err) {
-            console.warn('No se pudo adjuntar imagen recortada, se enviarÔøΩ el archivo original si existe.', err);
-          }
+        // Ocultar errores previos
+        const errorContainer = document.getElementById('marcaFormError');
+        const errorMessage = document.getElementById('marcaFormErrorMessage');
+        if (errorContainer) errorContainer.style.display = 'none';
+        
+        const formData = new FormData(form);
+        const submitBtn = document.getElementById('guardarMarcaBtn');
+        const originalText = submitBtn ? submitBtn.innerHTML : '';
+        const isEdit = formData.get('action') === 'update';
+        const marcaId = formData.get('id_marca');
+        
+        // ========== DEBUG: Mostrar TODO el FormData ==========
+        console.log('? === CONTENIDO COMPLETO DE FORMDATA ===');
+        for (let [key, value] of formData.entries()) {
+            console.log(`  ${key}:`, value);
         }
-
-        // Fetch con timeout (opcional)
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 20000);
-
-        const resp = await fetch(targetUrl, {
-          method: 'POST',
-          body: fd,
-          headers: { 'X-Requested-With': 'XMLHttpRequest' },
-          signal: controller.signal
+        console.log('=========================================');
+        
+        console.log('??? Enviando datos:', {
+            action: formData.get('action'),
+            id: marcaId,
+            codigo: formData.get('codigo_marca'),
+            nombre: formData.get('nombre_marca'),
+            descripcion: formData.get('descripcion_marca'),
+            estado: formData.get('estado_marca')
         });
-        clearTimeout(timeout);
-
-        if (!resp.ok) throw new Error('HTTP ' + resp.status + ' ' + resp.statusText);
-        const text = await resp.text();
-
-        let data;
-        try { data = JSON.parse(text); } catch (err) { throw new Error('Respuesta no JSON: ' + err.message); }
-
-        if (data.success) {
-          // CORRECCI√ìN: No mostrar notificaciones, solo cerrar el modal silenciosamente
-          
-          // Primero recargar la tabla con la marca actualizada
-          // El backend retorna data.data (no data.marca)
-          const marcaActualizada = data.data || data.marca;
-          
-          if (marcaActualizada) {
-            console.log('üîÑ marca actualizada recibida, actualizando tabla...');
-            console.log('üì¶ Datos:', marcaActualizada);
-            reloadParentmarcasTable(marcaActualizada);
-          } else {
-            console.warn('‚ö†Ô∏è No se recibieron datos de marca actualizada');
-          }
-          
-          // ‚úÖ CIERRE INMEDIATO - Sin delays
-          if (typeof window.closeMarcaModal === 'function') {
-            window.closeMarcaModal();
-          } else {
-            console.error('‚ùå closeMarcaModal no disponible');
-          }
-        } else {
-          // CORRECCI√ìN: No mostrar notificaciones de error
-          console.error('Error al guardar:', data.error || 'Error desconocido');
-        }
-
-      } catch (error) {
-        console.error('Error al enviar formulario:', error);
-        if (window.parent && typeof window.parent.showNotification === 'function') {
-          window.parent.showNotification('Error de conexiÔøΩn al guardar marca', 'error');
-        } else {
-          alert('Error de conexiÔøΩn al guardar marca: ' + (error && error.message ? error.message : error));
-        }
-      } finally {
+        
+        // Deshabilitar botÛn y mostrar loading
         if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.style.pointerEvents = '';
-          if (originalHTML !== null) submitBtn.innerHTML = originalHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
         }
-      }
-    });
-  }
-
-  /* --------------------------
-     RECARGA AUTOM√ÅTICA DE TABLA DESPU√âS DE GUARDAR
-     -------------------------- */
-  function reloadParentmarcasTable(updatedmarca = null) {
-    console.log('üîÑ Recargando tabla de marcas...');
-    console.log('üì¶ Datos recibidos:', updatedmarca);
-    
-    // Definir targetWindow al inicio (√°mbito global de la funci√≥n)
-    const targetWindow = window;
-    
-    // Intentar actualizaci√≥n suave primero
-    try {
-      // ‚úÖ CORRECCI√ìN: Usar marcaSmoothTableUpdater espec√≠fico para marcas
-      if (targetWindow.marcaSmoothTableUpdater && updatedmarca) {
-        console.log('‚úÖ MarcaSmoothTableUpdater disponible, actualizando...');
         
-        // CORRECCI√ìN: Pasar el ID como n√∫mero y los datos completos
-        const marcaId = parseInt(updatedmarca.id_marca || updatedmarca.id);
-        
-        console.log('üéØ Llamando updateSingleMarca con ID:', marcaId);
-        console.log('üìã Datos completos:', updatedmarca);
-        
-        targetWindow.marcaSmoothTableUpdater.updateSingleMarca(marcaId, updatedmarca)
-          .then(() => {
-            console.log('‚úÖ Tabla actualizada suavemente sin recargar');
-          })
-          .catch(err => {
-            console.error('‚ùå Error en actualizaci√≥n suave:', err);
-            // Fallback a recarga completa
-            fallbackReload(targetWindow);
-          });
-      } else {
-        console.log('‚ö†Ô∏è MarcaSmoothTableUpdater no disponible o datos vac√≠os');
-        console.log('  - marcaSmoothTableUpdater:', !!targetWindow.marcaSmoothTableUpdater);
-        console.log('  - updatedmarca:', !!updatedmarca);
-        fallbackReload(targetWindow);
-      }
-    } catch (err) {
-      console.error('‚ùå Error al recargar tabla:', err);
-      fallbackReload(targetWindow);
+        try {
+            // URL del controlador
+            const controllerUrl = '/fashion-master/app/controllers/MarcaController.php';
+            
+            const response = await fetch(controllerUrl, {
+                method: 'POST',
+                body: formData
+            });
+            
+            // Verificar si la respuesta es JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('El servidor no devolviÛ una respuesta JSON v·lida');
+            }
+            
+            const result = await response.json();
+            
+            console.log('?? RESPUESTA COMPLETA:', result);
+            console.log('?? DATOS RECIBIDOS:', result.data);
+            if (result.data) {
+                console.log('?? C”DIGO EN RESPUESTA:', result.data.codigo_marca);
+            }
+            
+            if (result.success) {
+                console.log('? marca guardada exitosamente:', result);
+                
+                // ? RE-CONFIRMAR TAB ACTIVO ANTES DE CERRAR
+                localStorage.setItem('admin_active_tab', 'marcas');
+                console.log('?? Tab "marcas" confirmado en localStorage');
+                
+                // Cerrar modal
+                if (typeof closeMarcaModal === 'function') {
+                    closeMarcaModal();
+                }
+                
+                // Actualizar tabla en tiempo real (SIN REFRESH)
+                if (isEdit && marcaId && result.data) {
+                    // EDITAR: Actualizar fila existente
+                    console.log('?? Llamando updateSingleMarca con ID:', marcaId);
+                    if (typeof updateSingleMarca === 'function') {
+                        await updateSingleMarca(marcaId, result.data);
+                    }
+                } else if (!isEdit && result.data) {
+                    // CREAR: Recargar tabla para mostrar Nueva Marca
+                    console.log('?? Recargando datos de tabla (AJAX)');
+                    if (typeof loadMarcasData === 'function') {
+                        loadMarcasData();
+                    }
+                }
+                
+                console.log('? OperaciÛn completada - permaneciendo en marcas (SIN REFRESH)');
+            } else {
+                // Mostrar error en el modal
+                const errorMsg = result.error || 'Error al guardar la marca';
+                console.error('? Error del servidor:', errorMsg);
+                
+                if (errorContainer && errorMessage) {
+                    errorMessage.textContent = errorMsg;
+                    errorContainer.style.display = 'block';
+                    
+                    // Scroll al error
+                    errorContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+                
+                // Restaurar botÛn
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            }
+        } catch (error) {
+            console.error('? Error de red:', error);
+            
+            // Mostrar error en el modal
+            const errorMsg = 'Error de conexiÛn: ' + error.message;
+            
+            if (errorContainer && errorMessage) {
+                errorMessage.textContent = errorMsg;
+                errorContainer.style.display = 'block';
+                errorContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                alert(errorMsg);
+            }
+            
+            // Restaurar botÛn
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
     }
-  }
-  
-  function fallbackReload(targetWindow) {
-    console.log('üîÑ Fallback: recargando tabla completa');
-    if (typeof targetWindow.loadMarcas === 'function') {
-      targetWindow.loadMarcas();
-    } else {
-      console.warn('loadMarcas no encontrado en targetWindow');
-    }
-  }
-
-  /* --------------------------
-     Animaciones / Parallax / Accessibility / Scroll lock
-     -------------------------- */
-  function pvEnhanceScoped(root = document) {
-    const modalRoot = root.querySelector('.marca-view-modal') || root;
-    if (!modalRoot) return;
-
-    // stagger reveal sections - DESACTIVADO para evitar delays al cerrar
-    const sections = $all('.info-section', modalRoot);
-    sections.forEach((s) => s.classList.add('pv-show')); // Inmediato sin setTimeout
-
-    // parallax blobs and image tilt (only non-touch)
-    const header = $('.modern-modal-header', modalRoot);
-    const blobs = $all('.pv-blob', modalRoot);
-    const imageContainer = $('.image-container', modalRoot);
-
-    if (header && !isTouch()) {
-      header.addEventListener('mousemove', (ev) => {
-        const r = header.getBoundingClientRect();
-        const cx = r.left + r.width / 2;
-        const cy = r.top + r.height / 2;
-        const dx = (ev.clientX - cx) / r.width;
-        const dy = (ev.clientY - cy) / r.height;
-        blobs.forEach((b, idx) => {
-          const speed = idx === 0 ? 18 : 8;
-          b.style.transform = `translate3d(${dx * speed}px, ${-dy * speed}px, 0)`;
+    
+    // Asignar evento al botÛn de guardar
+    const guardarBtn = document.getElementById('guardarMarcaBtn');
+    if (guardarBtn) {
+        guardarBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('??? Click en botÛn Guardar (prevenciÛn de refresh activada)');
+            guardarmarca();
         });
-        if (imageContainer) imageContainer.style.transform = `perspective(900px) rotateX(${dy * 4}deg) rotateY(${dx * 6}deg)`;
-      });
-      header.addEventListener('mouseleave', () => {
-        blobs.forEach(b => b.style.transform = '');
-        if (imageContainer) imageContainer.style.transform = '';
-      });
     }
-
-    // focus close button - SIN DELAY
-    const closeBtn = $('.modern-modal-close', modalRoot) || $('.modal-close', modalRoot);
-    if (closeBtn) closeBtn.focus(); // Inmediato sin setTimeout
-
-    // prevent body scroll leak: allow scroll only inside modal body
-    const body = $('.modern-modal-body', modalRoot);
-    if (body) {
-      body.addEventListener('wheel', (e) => {
-        const atTop = body.scrollTop === 0 && e.deltaY < 0;
-        const atBottom = Math.ceil(body.scrollTop + body.clientHeight) >= body.scrollHeight && e.deltaY > 0;
-        if (atTop || atBottom) e.preventDefault();
-      }, { passive: false });
-
-      let startY = 0;
-      body.addEventListener('touchstart', (e) => { startY = e.touches ? e.touches[0].clientY : 0; }, { passive: true });
-      body.addEventListener('touchmove', (e) => {
-        const curY = e.touches ? e.touches[0].clientY : 0;
-        const diff = startY - curY;
-        const atTop = body.scrollTop === 0 && diff < 0;
-        const atBottom = Math.ceil(body.scrollTop + body.clientHeight) >= body.scrollHeight && diff > 0;
-        if (atTop || atBottom) e.preventDefault();
-      }, { passive: false });
+    
+    // PREVENCI”N ADICIONAL: Capturar submit del form (por si acaso)
+    const form = document.getElementById('marcaForm');
+    if (form) {
+        form.addEventListener('submit', async function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            
+            console.log('?? === SUBMIT marca INICIADO ===');
+            
+            // BotÛn submit
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalHTML = submitBtn ? submitBtn.innerHTML : null;
+            
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+                submitBtn.disabled = true;
+                submitBtn.style.pointerEvents = 'none';
+            }
+            
+            try {
+                const formData = new FormData(form);
+                const isEdit = formData.get('action') === 'update';
+                const marcaId = formData.get('id_marca');
+                
+                // DEBUG: Mostrar FormData
+                console.log('?? FormData:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`  ${key}:`, value);
+                }
+                
+                const controllerUrl = '/fashion-master/app/controllers/MarcaController.php';
+                
+                const resp = await fetch(controllerUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                
+                if (!resp.ok) throw new Error('HTTP ' + resp.status + ' ' + resp.statusText);
+                const text = await resp.text();
+                
+                let data;
+                try { data = JSON.parse(text); } catch (err) { throw new Error('Respuesta no JSON: ' + err.message); }
+                
+                console.log('?? Response:', data);
+                
+                if (data.success) {
+                    console.log('? marca guardada');
+                    
+                    // Actualizar tabla en PARENT window
+                    if (data.data) {
+                        if (isEdit && marcaId) {
+                            console.log('?? Actualizando en parent...');
+                            if (window.parent && typeof window.parent.updateSingleMarca === 'function') {
+                                await window.parent.updateSingleMarca(marcaId, data.data);
+                            }
+                        } else {
+                            console.log('?? Recargando tabla en parent...');
+                            if (window.parent && typeof window.parent.loadMarcasData === 'function') {
+                                window.parent.loadMarcasData();
+                            }
+                        }
+                    }
+                    
+                    // ? CERRAR MODAL (PARENT)
+                    if (typeof window.closeMarcaModal === 'function') {
+                        window.closeMarcaModal();
+                    } else if (window.parent && typeof window.parent.closeMarcaModal === 'function') {
+                        window.parent.closeMarcaModal();
+                    } else {
+                        console.error('? closeMarcaModal no disponible');
+                    }
+                    
+                } else {
+                    // Mostrar error
+                    const errorMsg = data.error || 'Error al guardar';
+                    console.error('? Error:', errorMsg);
+                    
+                    const errorContainer = document.getElementById('marcaFormError');
+                    const errorMessage = document.getElementById('marcaFormErrorMessage');
+                    
+                    if (errorContainer && errorMessage) {
+                        errorMessage.textContent = errorMsg;
+                        errorContainer.style.display = 'block';
+                    } else {
+                        alert(errorMsg);
+                    }
+                }
+                
+            } catch (error) {
+                console.error('? Error:', error);
+                alert('Error: ' + error.message);
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.pointerEvents = '';
+                    if (originalHTML !== null) submitBtn.innerHTML = originalHTML;
+                }
+            }
+            
+            return false;
+        });
     }
-
-    // close with smooth animation when close button is pressed
-    const closeButtons = $all('.modern-modal-close, .modal-close, .marca-view-modal__close, .marca-view-modal__btn--secondary, .btn-secondary', modalRoot);
-    closeButtons.forEach(btn => {
-      btn.addEventListener('click', (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation(); // Prevenir burbujeo de eventos
-        
-        console.log('üö™ Bot√≥n de cierre clickeado - cerrando modal');
-        
-        // Llamar a la funci√≥n global closeMarcaModal
-        if (typeof window.closeMarcaModal === 'function') {
-          window.closeMarcaModal();
-        } else if (typeof window.parent !== 'undefined' && typeof window.parent.closeMarcaModal === 'function') {
-          window.parent.closeMarcaModal();
-        } else {
-          console.error('‚ö†Ô∏è closeMarcaModal no encontrado - usando fallback');
-          // Fallback: remover el overlay directamente
-          const overlay = document.getElementById('product-modal-overlay');
-          if (overlay) {
-            overlay.classList.remove('show');
-            setTimeout(() => {
-              if (overlay.parentNode) {
-                overlay.remove();
-              }
-              document.body.classList.remove('modal-open');
-            }, 300);
-          }
-        }
-      }, { once: true }); // once:true previene clicks m√∫ltiples
+    
+    // ? PREVENIR ENTER EN INPUTS (NO SUBMIT)
+    const formInputs = form.querySelectorAll('input, textarea');
+    formInputs.forEach(input => {
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && input.type !== 'textarea') {
+                e.preventDefault();
+                console.log('?? Enter bloqueado en input (prevenciÛn de submit)');
+                return false;
+            }
+        });
     });
-  }
-
-  /* --------------------------
-     Funciones globales para HTML onclick
-     -------------------------- */
-  window.triggerFileInput = function() {
-    const fileInput = document.getElementById('imagen');
-    if (fileInput) {
-      fileInput.click();
+    
+    // ValidaciÛn y preview de imagen
+    const imgInput = document.getElementById('imagen_marca');
+    if (imgInput) {
+        imgInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validar tamaÒo (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('La imagen es muy grande. M·ximo 5MB.');
+                    this.value = '';
+                    return;
+                }
+                
+                // Validar tipo
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Solo se permiten im·genes (JPG, PNG, GIF, WebP).');
+                    this.value = '';
+                    return;
+                }
+                
+                // Preview de la imagen
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const uploadArea = document.getElementById('uploadArea');
+                    if (uploadArea) {
+                        uploadArea.innerHTML = `
+                            <div class="image-preview-container">
+                                <img src="${e.target.result}" alt="Preview" class="image-preview">
+                                <button type="button" class="btn-remove-image" onclick="removeImagePreview()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     }
-  };
-
-  window.removeImagePreview = function() {
-    const fileInput = document.getElementById('imagen');
-    const preview = document.getElementById('imagePreview');
+    
+    // FunciÛn para remover preview
+    window.removeImagePreview = function() {
+        const imgInput = document.getElementById('imagen_marca');
+        const uploadArea = document.getElementById('uploadArea');
+        
+        if (imgInput) imgInput.value = '';
+        if (uploadArea) {
+            uploadArea.innerHTML = `
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <p class="upload-text"><strong>Haz clic aquÌ para seleccionar una imagen</strong><br>o arrastra y suelta tu archivo</p>
+                <small class="upload-hint">Formatos: JPG, PNG, GIF (m·x. 5MB)</small>
+            `;
+        }
+    };
+    
+    // Drag and drop para im·genes
     const uploadArea = document.getElementById('uploadArea');
-    const currentImageSection = document.querySelector('.current-image-section');
-    
-    if (fileInput) {
-      fileInput.value = '';
-      delete fileInput.dataset.cropped;
-    }
-    
-    if (preview) {
-      preview.style.display = 'none';
-      const previewImg = document.getElementById('previewImg');
-      if (previewImg) previewImg.src = '';
-    }
-    
-    // Mostrar upload area o current image segÔøΩn corresponda
-    if (currentImageSection) {
-      currentImageSection.style.display = 'block';
-    } else if (uploadArea) {
-      uploadArea.style.display = 'flex';
-    }
-  };
-
-  /* --------------------------
-     Initializer
-     -------------------------- */
-  function initModalScripts(context = document) {
-    // setup file upload (only if input exists)
-    try { setupFileUploadScoped(context); } catch (e) { console.warn('setupFileUploadScoped error', e); }
-
-    // setup form submit
-    try { setupFormSubmitScoped(context); } catch (e) { console.warn('setupFormSubmitScoped error', e); }
-
-    // enhance view modal animations & behavior
-    try { pvEnhanceScoped(context); } catch (e) { console.warn('pvEnhanceScoped error', e); }
-    
-    // Hacer que la imagen sea fixed pero mantener su posiciÔøΩn en el grid
-    try {
-      const imageSection = context.querySelector('.marca-view-modal__image-section');
-      const modalBody = context.querySelector('.marca-view-modal__body');
-      const modalContainer = context.querySelector('.marca-view-modal__container');
-      
-      if (imageSection && modalBody && modalContainer) {
-        // Guardar la posiciÔøΩn original
-        const rect = imageSection.getBoundingClientRect();
-        const leftPosition = rect.left;
-        
-        // Obtener la posiciÔøΩn del header para calcular el centro del body
-        const header = context.querySelector('.marca-view-modal__header');
-        const footer = context.querySelector('.marca-view-modal__footer');
-        const headerHeight = header ? header.offsetHeight : 0;
-        const footerHeight = footer ? footer.offsetHeight : 0;
-        
-        // Calcular el centro del area del body
-        const containerRect = modalContainer.getBoundingClientRect();
-        const bodyTop = containerRect.top + headerHeight;
-        const bodyHeight = containerRect.height - headerHeight - footerHeight;
-        const centerY = bodyTop + (bodyHeight / 2);
-        
-        // Hacer la imagen fixed
-        imageSection.style.position = 'fixed';
-        imageSection.style.left = leftPosition + 'px';
-        imageSection.style.top = centerY + 'px';
-        imageSection.style.transform = 'translateY(-50%)';
-        imageSection.style.width = '400px';
-        
-        // Actualizar posiciÔøΩn si se redimensiona la ventana
-        window.addEventListener('resize', function() {
-          const newRect = imageSection.parentElement.getBoundingClientRect();
-          imageSection.style.left = newRect.left + 'px';
+    if (uploadArea) {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
         });
-      }
-    } catch (e) { console.warn('fixed image error', e); }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => initModalScripts(document));
-  } else {
-    initModalScripts(document);
-  }
-
-  // Exponer utilidades en window por si otro script necesita reinicializar (por ejemplo modales dinÔøΩmicos)
-  window.PVModal = {
-    init: initModalScripts,
-    dataURLToBlob
-  };
-
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.add('drag-over');
+            });
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.remove('drag-over');
+            });
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                const imgInput = document.getElementById('imagen_marca');
+                if (imgInput) {
+                    imgInput.files = files;
+                    imgInput.dispatchEvent(new Event('change'));
+                }
+            }
+        });
+    }
 })();
 </script>
+
 <?php endif; ?>
+
+<!-- ============================================ -->
+<!-- SCRIPTS COMUNES PARA CREATE/EDIT Y VIEW -->
+<!-- ============================================ -->
+<script>
+(function() {
+    'use strict';
+    
+    console.log('?? Script marca_modal.php cargado');
+    
+    // ========================================
+    // ? PREVISUALIZACI”N Y VALIDACI”N DE IMAGEN
+    // ========================================
+    const imgInput = document.getElementById('imagen_marca');
+    if (imgInput) {
+        console.log('? Input de imagen encontrado, configurando preview');
+        
+        imgInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                console.log('?? Archivo seleccionado:', file.name, file.size, 'bytes');
+                
+                // Validar tamaÒo (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('La imagen es muy grande. M·ximo 5MB.');
+                    this.value = '';
+                    return;
+                }
+                
+                // Validar tipo
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Solo se permiten im·genes (JPG, PNG, GIF, WebP).');
+                    this.value = '';
+                    return;
+                }
+                
+                // Preview de la imagen
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    console.log('? Imagen cargada, mostrando preview');
+                    
+                    // Buscar elementos existentes
+                    const uploadArea = document.getElementById('uploadArea');
+                    const currentImageDisplay = document.querySelector('.current-image-display');
+                    const fileUploadContainer = document.querySelector('.file-upload-container');
+                    
+                    console.log('?? uploadArea:', uploadArea);
+                    console.log('?? currentImageDisplay:', currentImageDisplay);
+                    
+                    if (currentImageDisplay) {
+                        // MODO EDITAR: Ya existe una imagen, actualizarla
+                        const img = currentImageDisplay.querySelector('img');
+                        if (img) {
+                            img.src = e.target.result;
+                            console.log('? Preview actualizado en imagen existente (EDITAR)');
+                        }
+                    } else if (uploadArea) {
+                        // MODO CREAR: Reemplazar uploadArea con preview cuadrado (1:1)
+                        uploadArea.innerHTML = `
+                            <div class="image-preview-container" style="text-align: center;">
+                                <img src="${e.target.result}" alt="Preview" style="width: 150px; height: 150px; object-fit: contain; border-radius: 8px; margin-bottom: 10px; border: 2px solid #e0e0e0; background: rgba(0, 0, 0, 0.05);">
+                                <br>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="removeImagePreview()">
+                                    <i class="fas fa-times"></i> Quitar imagen
+                                </button>
+                            </div>
+                        `;
+                        console.log('? Preview creado en uploadArea (CREAR)');
+                    } else if (fileUploadContainer) {
+                        // FALLBACK: Crear preview cuadrado en el contenedor
+                        fileUploadContainer.innerHTML = `
+                            <div class="image-preview-container" style="text-align: center;">
+                                <img src="${e.target.result}" alt="Preview" style="width: 150px; height: 150px; object-fit: contain; border-radius: 8px; margin-bottom: 10px; border: 2px solid #e0e0e0; background: rgba(0, 0, 0, 0.05);">
+                                <br>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="removeImagePreview()">
+                                    <i class="fas fa-times"></i> Quitar imagen
+                                </button>
+                                <input type="file" id="imagen_marca" name="imagen_marca" accept="image/*" style="display:none;">
+                            </div>
+                        `;
+                        console.log('? Preview creado en fileUploadContainer (FALLBACK)');
+                        
+                        // Re-asignar el input
+                        const newInput = document.getElementById('imagen_marca');
+                        if (newInput) {
+                            newInput.addEventListener('change', arguments.callee);
+                        }
+                    } else {
+                        console.error('? No se encontrÛ ning˙n contenedor para mostrar el preview');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    } else {
+        console.warn('?? Input de imagen no encontrado');
+    }
+    
+    // FunciÛn para remover preview
+    window.removeImagePreview = function() {
+        console.log('??? Removiendo preview de imagen');
+        const imgInput = document.getElementById('imagen_marca');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileUploadContainer = document.querySelector('.file-upload-container');
+        
+        if (imgInput) {
+            imgInput.value = '';
+            console.log('? Input limpiado');
+        }
+        
+        if (uploadArea) {
+            // Restaurar uploadArea original
+            uploadArea.innerHTML = `
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <p class="upload-text"><strong>Haz clic aquÌ para seleccionar una imagen</strong><br>o arrastra y suelta tu archivo</p>
+                <small class="upload-hint">Formatos: JPG, PNG, GIF (m·x. 5MB)</small>
+            `;
+            uploadArea.onclick = function() { document.getElementById('imagen_marca').click(); };
+            console.log('? UploadArea restaurado');
+        } else if (fileUploadContainer) {
+            // Restaurar desde contenedor
+            fileUploadContainer.innerHTML = `
+                <div class="file-upload-area" id="uploadArea" onclick="document.getElementById('imagen_marca').click()">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <p class="upload-text"><strong>Haz clic aquÌ para seleccionar una imagen</strong><br>o arrastra y suelta tu archivo</p>
+                    <small class="upload-hint">Formatos: JPG, PNG, GIF (m·x. 5MB)</small>
+                </div>
+                <input type="file" id="imagen_marca" name="imagen_marca" accept="image/*" style="display:none;">
+            `;
+            console.log('? FileUploadContainer restaurado');
+            
+            // Re-configurar el nuevo input
+            const newInput = document.getElementById('imagen_marca');
+            if (newInput && window.setupImagePreview) {
+                window.setupImagePreview();
+            }
+        }
+    };
+    
+    // ========================================
+    // ? DRAG AND DROP PARA IM¡GENES
+    // ========================================
+    const uploadArea = document.getElementById('uploadArea');
+    if (uploadArea) {
+        console.log('? Upload area encontrada, configurando drag & drop');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.add('drag-over');
+            });
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.remove('drag-over');
+            });
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                console.log('?? Archivo arrastrado:', files[0].name);
+                const imgInput = document.getElementById('imagen_marca');
+                if (imgInput) {
+                    imgInput.files = files;
+                    imgInput.dispatchEvent(new Event('change'));
+                }
+            }
+        });
+    } else {
+        console.warn('?? Upload area no encontrada');
+    }
+    
+    // ========================================
+    // ? CAPTURAR SUBMIT DEL FORM
+    // ========================================
+    const form = document.getElementById('marcaForm');
+    if (!form) {
+        console.warn('?? Formulario marcaForm no encontrado (modo VIEW)');
+        return;
+    }
+    
+    console.log('? Formulario encontrado, configurando submit handler');
+    
+    // ? Variables para detectar cambios en el formulario
+    let originalFormData = {};
+    
+    function captureOriginalFormData(form) {
+        originalFormData = {};
+        const formData = new FormData(form);
+        for (let [key, value] of formData.entries()) {
+            if (value instanceof File) {
+                originalFormData[key] = value.name + '|' + value.size;
+            } else {
+                originalFormData[key] = value;
+            }
+        }
+        console.log('?? Datos originales del formulario capturados');
+    }
+    
+    function hasFormChanged(form) {
+        const currentFormData = new FormData(form);
+        let hasChanges = false;
+        
+        // Comparar cada campo
+        for (let [key, value] of currentFormData.entries()) {
+            let currentValue = value;
+            if (value instanceof File) {
+                // Ignorar archivos vacÌos (no seleccionados)
+                if (value.size === 0) continue;
+                currentValue = value.name + '|' + value.size;
+                if (originalFormData[key] !== currentValue) {
+                    console.log(`?? Campo cambiado: ${key}`);
+                    hasChanges = true;
+                }
+            } else {
+                if (originalFormData[key] !== currentValue) {
+                    console.log(`?? Campo cambiado: ${key} (de "${originalFormData[key]}" a "${currentValue}")`);
+                    hasChanges = true;
+                }
+            }
+        }
+        
+        // Verificar si se eliminaron campos
+        for (let key in originalFormData) {
+            if (!currentFormData.has(key) && key !== 'imagen_marca') {
+                console.log(`?? Campo eliminado: ${key}`);
+                hasChanges = true;
+            }
+        }
+        
+        return hasChanges;
+    }
+    
+    // ? Capturar datos originales despuÈs de cargar el formulario
+    setTimeout(() => captureOriginalFormData(form), 500);
+    
+    form.addEventListener('submit', async function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        
+        console.log('?? === SUBMIT marca INICIADO ===');
+        
+        // ? VALIDAR SI HUBO CAMBIOS
+        if (!hasFormChanged(form)) {
+            console.log('?? No se detectaron cambios en el formulario');
+            
+            // Mostrar notificaciÛn
+            if (typeof window.showNotification === 'function') {
+                window.showNotification('No se realizaron cambios', 'info');
+            }
+            
+            // Cerrar modal
+            if (typeof window.closeMarcaModal === 'function') {
+                window.closeMarcaModal();
+            }
+            
+            return;
+        }
+        
+        console.log('? Se detectaron cambios, procediendo a guardar...');
+        
+        // BotÛn submit
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalHTML = submitBtn ? submitBtn.innerHTML : null;
+        
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+            submitBtn.disabled = true;
+            submitBtn.style.pointerEvents = 'none';
+        }
+        
+        try {
+            const formData = new FormData(form);
+            const isEdit = formData.get('action') === 'update';
+            const marcaId = formData.get('id_marca');
+            
+            // DEBUG: Mostrar FormData
+            console.log('?? FormData:');
+            for (let [key, value] of formData.entries()) {
+                console.log(`  ${key}:`, value);
+            }
+            
+            const controllerUrl = '/fashion-master/app/controllers/MarcaController.php';
+            
+            const resp = await fetch(controllerUrl, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            
+            if (!resp.ok) throw new Error('HTTP ' + resp.status + ' ' + resp.statusText);
+            const text = await resp.text();
+            
+            let data;
+            try { data = JSON.parse(text); } catch (err) { throw new Error('Respuesta no JSON: ' + err.message); }
+            
+            console.log('?? Response:', data);
+            
+            if (data.success) {
+                console.log('? marca guardada');
+                
+                // ? GUARDAR TAB ACTIVO EN LOCALSTORAGE
+                if (window.localStorage) {
+                    window.localStorage.setItem('admin_active_tab', 'marcas');
+                    console.log('?? Tab "marcas" guardado en localStorage');
+                }
+                
+                // Mostrar notificaciÛn de Èxito
+                if (typeof window.showNotification === 'function') {
+                    window.showNotification(
+                        isEdit ? 'marca actualizada correctamente' : 'marca creada correctamente',
+                        'success'
+                    );
+                }
+                
+                // Actualizar tabla
+                if (data.data) {
+                    if (isEdit && marcaId) {
+                        console.log('?? Actualizando marca...');
+                        if (typeof window.updateSingleMarca === 'function') {
+                            await window.updateSingleMarca(marcaId, data.data);
+                        }
+                    } else {
+                        console.log('?? Recargando tabla...');
+                        if (typeof window.loadMarcasData === 'function') {
+                            window.loadMarcasData();
+                        }
+                    }
+                }
+                
+                // ? CERRAR MODAL
+                if (typeof window.closeMarcaModal === 'function') {
+                    window.closeMarcaModal();
+                } else {
+                    console.error('? closeMarcaModal no disponible');
+                }
+                
+            } else {
+                // Mostrar error
+                const errorMsg = data.error || 'Error al guardar';
+                console.error('? Error:', errorMsg);
+                
+                // ? MOSTRAR NOTIFICACI”N DE ERROR
+                if (typeof window.showNotification === 'function') {
+                    window.showNotification(errorMsg, 'error');
+                }
+                
+                const errorContainer = document.getElementById('marcaFormError');
+                const errorMessage = document.getElementById('marcaFormErrorMessage');
+                
+                if (errorContainer && errorMessage) {
+                    errorMessage.textContent = errorMsg;
+                    errorContainer.style.display = 'block';
+                } else {
+                    alert(errorMsg);
+                }
+            }
+            
+        } catch (error) {
+            console.error('? Error:', error);
+            alert('Error: ' + error.message);
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.style.pointerEvents = '';
+                if (originalHTML !== null) submitBtn.innerHTML = originalHTML;
+            }
+        }
+        
+        return false;
+    });
+    
+    console.log('? Submit handler configurado correctamente');
+    
+})();
+</script>

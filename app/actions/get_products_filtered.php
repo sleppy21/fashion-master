@@ -17,6 +17,7 @@ try {
     $filtro_precio_min = isset($_GET['pmin']) ? (float)$_GET['pmin'] : (isset($_GET['precio_min']) ? (float)$_GET['precio_min'] : 0);
     $filtro_precio_max = isset($_GET['pmax']) ? (float)$_GET['pmax'] : (isset($_GET['precio_max']) ? (float)$_GET['precio_max'] : 9999);
     $filtro_buscar = isset($_GET['q']) ? trim($_GET['q']) : (isset($_GET['buscar']) ? trim($_GET['buscar']) : '');
+    $filtro_ordenar = isset($_GET['sort']) ? $_GET['sort'] : 'newest';
 
     // Construir query con filtros
     $sql = "
@@ -32,7 +33,8 @@ try {
             m.nombre_marca,
             c.nombre_categoria,
             COALESCE(AVG(r.calificacion), 0) as calificacion_promedio,
-            COALESCE(COUNT(DISTINCT r.id_resena), 0) as total_resenas
+            COALESCE(COUNT(DISTINCT r.id_resena), 0) as total_resenas,
+            (p.precio_producto - (p.precio_producto * p.descuento_porcentaje_producto / 100)) as precio_final
         FROM producto p
         LEFT JOIN marca m ON p.id_marca = m.id_marca
         LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
@@ -70,7 +72,30 @@ try {
     $params[] = $filtro_precio_min;
     $params[] = $filtro_precio_max;
 
-    $sql .= " ORDER BY p.id_producto DESC";
+    // Agregar ordenamiento según el filtro seleccionado
+    switch($filtro_ordenar) {
+        case 'price_asc':
+            $sql .= " ORDER BY precio_final ASC";
+            break;
+        case 'price_desc':
+            $sql .= " ORDER BY precio_final DESC";
+            break;
+        case 'name_asc':
+            $sql .= " ORDER BY p.nombre_producto ASC";
+            break;
+        case 'name_desc':
+            $sql .= " ORDER BY p.nombre_producto DESC";
+            break;
+        case 'newest':
+            $sql .= " ORDER BY p.id_producto DESC";
+            break;
+        case 'rating':
+            $sql .= " ORDER BY calificacion_promedio DESC, total_resenas DESC";
+            break;
+        default:
+            $sql .= " ORDER BY p.id_producto DESC";
+            break;
+    }
 
     $productos = executeQuery($sql, $params);
 

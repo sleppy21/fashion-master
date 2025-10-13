@@ -131,6 +131,10 @@ try {
     <!-- Css Styles -->
     <link rel="stylesheet" href="public/assets/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/font-awesome.min.css" type="text/css">
+    
+    <!-- Font Awesome 6.4.0 (Iconos modernos - Misma versión que cart.php) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="public/assets/css/elegant-icons.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/jquery-ui.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/magnific-popup.css" type="text/css">
@@ -714,7 +718,7 @@ try {
 
             /* Ajustar sección de checkout */
             .checkout.spad {
-                padding: 20px 0 100px !important;
+                padding: 1px 0 100px !important;
             }
 
             /* Hacer formulario de ancho completo */

@@ -44,8 +44,14 @@ function e($string) {
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- SweetAlert2 para alertas modernas -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <!-- CSS Moderno Personalizado (después de Bootstrap para sobrescribir) -->
     <link rel="stylesheet" href="<?= asset('css/auth-modern.css') ?>">
+    
+    <!-- Mobile Override - MÁXIMA PRIORIDAD para checkboxes pequeños -->
+    <link rel="stylesheet" href="<?= asset('css/auth-mobile-override.css') ?>">
 </head>
 <body>
     <!-- Alertas en la esquina superior derecha (fuera de contenedores) -->
@@ -203,9 +209,6 @@ function e($string) {
                                        pattern="9\d{8}"
                                        title="Debe empezar con 9 y tener 9 dígitos"
                                        maxlength="9"
-                                       autocomplete="tel">
-                                       placeholder="+51 999 999 999"
-                                       pattern="[\+]?[0-9\s]{9,15}"
                                        autocomplete="tel">
                             </div>
                         </div>

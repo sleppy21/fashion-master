@@ -291,15 +291,23 @@
     }
 
     function initFavoriteModalButtons() {
-        // Botones para agregar al carrito desde favoritos
+        // Botones para agregar/quitar del carrito desde favoritos
         document.addEventListener('click', function(e) {
             // Soportar ambos nombres de clase
             if (e.target.closest('.btn-favorite-cart') || e.target.closest('.btn-add-to-cart-fav')) {
                 e.preventDefault();
                 const button = e.target.closest('.btn-favorite-cart') || e.target.closest('.btn-add-to-cart-fav');
                 const productId = button.getAttribute('data-id');
-                if (productId) {
-                    addToCart(productId);
+                const inCart = button.getAttribute('data-in-cart') === 'true';
+                
+                if (productId && !button.disabled) {
+                    if (inCart) {
+                        // Quitar del carrito
+                        removeFromCart(productId, button);
+                    } else {
+                        // Agregar al carrito
+                        addToCartFromFavorites(productId, button);
+                    }
                 }
             }
         });
@@ -313,6 +321,88 @@
                 const productId = button.getAttribute('data-id');
                 if (productId) {
                     removeFavoriteFromModal(productId);
+                }
+            }
+        });
+    }
+
+    function addToCartFromFavorites(productId, button) {
+        fetch('app/actions/add_to_cart.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `id_producto=${productId}&cantidad=1`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(data.message, 'success');
+                updateCartCount(data.cart_count);
+                
+                // Actualizar TODOS los botones de este producto en el modal
+                updateCartButtonState(productId, true);
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error al agregar al carrito', 'error');
+        });
+    }
+
+    function removeFromCart(productId, button) {
+        fetch('app/actions/remove_from_cart.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `id_producto=${productId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Producto quitado del carrito', 'success');
+                updateCartCount(data.cart_count);
+                
+                // Actualizar TODOS los botones de este producto en el modal
+                updateCartButtonState(productId, false);
+            } else {
+                showNotification(data.message || 'Error al quitar del carrito', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error al quitar del carrito', 'error');
+        });
+    }
+
+    // Función para actualizar el estado visual de todos los botones de carrito de un producto
+    function updateCartButtonState(productId, inCart) {
+        const buttons = document.querySelectorAll(`.btn-favorite-cart[data-id="${productId}"]`);
+        
+        buttons.forEach(btn => {
+            if (btn.disabled) return; // No tocar botones deshabilitados (sin stock)
+            
+            btn.setAttribute('data-in-cart', inCart ? 'true' : 'false');
+            const icon = btn.querySelector('i');
+            
+            if (inCart) {
+                // Estado: En carrito
+                btn.classList.add('in-cart');
+                btn.style.background = '#28a745';
+                btn.title = 'En carrito - Clic para quitar';
+                if (icon) {
+                    icon.className = 'fa fa-check-circle';
+                }
+            } else {
+                // Estado: No en carrito
+                btn.classList.remove('in-cart');
+                btn.style.background = '#2c3e50';
+                btn.title = 'Agregar al carrito';
+                if (icon) {
+                    icon.className = 'fa fa-cart-plus';
                 }
             }
         });

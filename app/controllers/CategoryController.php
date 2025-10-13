@@ -58,6 +58,9 @@ try {
         case 'upload_image':
             uploadImage();
             break;
+        case 'getCategoryStats':
+            getCategoryStats();
+            break;
         case 'get_stats':
             getCategoriaStats();
             break;
@@ -993,5 +996,48 @@ function getCategoriaStats() {
         'success' => true,
         'data' => $stats
     ]);
+}
+
+/**
+ * Obtener estadísticas de categorías para gráficos (Chart.js)
+ */
+function getCategoryStats() {
+    global $conn;
+    
+    try {
+        // Obtener productos por categoría (top 10)
+        $query = "SELECT c.nombre_categoria, COUNT(p.id_producto) as total_productos
+                  FROM categoria c 
+                  LEFT JOIN producto p ON c.id_categoria = p.id_categoria AND p.estado = 'activo'
+                  WHERE c.estado_categoria = 'activo'
+                  GROUP BY c.id_categoria, c.nombre_categoria
+                  ORDER BY total_productos DESC 
+                  LIMIT 10";
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $categories = [];
+        $counts = [];
+        
+        foreach ($results as $row) {
+            $categories[] = $row['nombre_categoria'];
+            $counts[] = (int)$row['total_productos'];
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'categories' => $categories,
+            'counts' => $counts
+        ]);
+        
+    } catch (PDOException $e) {
+        error_log("Error en getCategoryStats: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'error' => 'Error al obtener estadísticas',
+            'message' => $e->getMessage()
+        ]);
+    }
 }
 ?>

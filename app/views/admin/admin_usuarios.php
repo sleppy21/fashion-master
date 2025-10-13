@@ -2,12 +2,12 @@
 // Vista de gestión de usuarios con CRUD completo
 ?>
 <div class="admin-module">
-    <div class="module-header">
+    <div class="module-header" data-aos="fade-down" data-aos-duration="600">
         <h2 class="module-title">
             <i class="fas fa-users"></i>
             Gestión de Usuarios
         </h2>
-        <div class="module-actions">
+        <div class="module-actions" data-aos="fade-left" data-aos-delay="200">
             <button class="btn-modern primary" onclick="showAddUserModal()">
                 <i class="fas fa-user-plus"></i>
                 Nuevo Usuario
@@ -20,7 +20,7 @@
     </div>
 
     <!-- Filtros y búsqueda -->
-    <div class="module-filters">
+    <div class="module-filters" data-aos="fade-up" data-aos-duration="600" data-aos-delay="400">
         <div class="search-container">
             <input type="text" id="search-usuarios" class="search-input" placeholder="Buscar usuarios...">
             <i class="fas fa-search search-icon"></i>
@@ -369,7 +369,7 @@ function setupModalEvents() {
         const confirmPassword = document.getElementById('confirm-new-password').value;
         
         if (newPassword !== confirmPassword) {
-            showAlert('Las contraseñas no coinciden', 'error');
+            showNotification('Las contraseñas no coinciden', 'error');
             return;
         }
         
@@ -430,7 +430,7 @@ function loadUsuarios() {
             }
         })
         .catch(error => {    
-            showAlert('Error de conexión: ' + error.message, 'error');
+            showNotification('Error de conexión: ' + error.message, 'error');
             showNoDataMessage('Error de conexión. Verifique que esté logueado como administrador y que el servidor esté funcionando.');
         })
         .finally(() => {
@@ -595,11 +595,11 @@ function editUser(id) {
                 
                 document.getElementById('user-modal').classList.add('show');
             } else {
-                showAlert('Error al cargar usuario: ' + data.error, 'error');
+                showNotification('Error al cargar usuario: ' + data.error, 'error');
             }
         })
         .catch(error => {
-            showAlert('Error de conexión', 'error');
+            showNotification('Error de conexión', 'error');
         });
 }
 
@@ -636,20 +636,21 @@ function saveUsuario() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            showAlert(data.message, 'success');
+            showNotification(data.message, 'success');
             closeUserModal();
             loadUsuarios();
         } else {
-            showAlert('Error: ' + data.error, 'error');
+            showNotification('Error: ' + data.error, 'error');
         }
     })
     .catch(error => {
-        showAlert('Error de conexión', 'error');
+        showNotification('Error de conexión', 'error');
     });
 }
 
 function deleteUser(id) {
-    if (confirm('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.')) {
+    confirmDelete('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.', () => {
+        showLoading();
         fetch(`app/controllers/UsuarioController.php?action=delete&id=${id}`, {
             method: 'POST',
             credentials: 'same-origin',
@@ -661,23 +662,26 @@ function deleteUser(id) {
         })
         .then(response => response.json())
         .then(data => {
+            hideLoading();
             if (data.success) {
-                showAlert(data.message, 'success');
+                showNotification(data.message, 'success');
                 loadUsuarios();
             } else {
-                showAlert('Error: ' + data.error, 'error');
+                showNotification('Error: ' + data.error, 'error');
             }
         })
         .catch(error => {
-            showAlert('Error de conexión', 'error');
+            hideLoading();
+            showNotification('Error de conexión', 'error');
         });
-    }
+    });
 }
 
 function toggleUserStatus(id, currentStatus) {
     const action = currentStatus ? 'desactivar' : 'activar';
     
-    if (confirm(`¿Deseas ${action} este usuario?`)) {
+    confirmAction(`¿Deseas ${action} este usuario?`, () => {
+        showLoading();
         fetch(`app/controllers/UsuarioController.php?action=toggle_status&id=${id}`, {
             method: 'POST',
             credentials: 'same-origin',
@@ -689,17 +693,19 @@ function toggleUserStatus(id, currentStatus) {
         })
         .then(response => response.json())
         .then(data => {
+            hideLoading();
             if (data.success) {
-                showAlert(data.message, 'success');
+                showNotification(data.message, 'success');
                 loadUsuarios();
             } else {
-                showAlert('Error: ' + data.error, 'error');
+                showNotification('Error: ' + data.error, 'error');
             }
         })
         .catch(error => {
-            showAlert('Error de conexión', 'error');
+            hideLoading();
+            showNotification('Error de conexión', 'error');
         });
-    }
+    });
 }
 
 function changePassword(id) {
@@ -728,14 +734,14 @@ function changeUserPassword() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            showAlert(data.message, 'success');
+            showNotification(data.message, 'success');
             closePasswordModal();
         } else {
-            showAlert('Error: ' + data.error, 'error');
+            showNotification('Error: ' + data.error, 'error');
         }
     })
     .catch(error => {
-        showAlert('Error de conexión', 'error');
+        showNotification('Error de conexión', 'error');
     });
 }
 
@@ -752,12 +758,12 @@ function closePasswordModal() {
 
 function viewUser(id) {
     // Implementar vista detallada del usuario
-    alert('Función de vista detallada - ID: ' + id);
+    showNotification('Función de vista detallada - ID: ' + id, 'info');
 }
 
 function exportUsers() {
     // Implementar exportación de usuarios
-    showAlert('Función de exportación en desarrollo', 'info');
+    showNotification('Función de exportación en desarrollo', 'info');
 }
 
 // ===== PAGINACIÓN =====
@@ -796,30 +802,6 @@ function hideLoading() {
     // El loading se oculta automáticamente al renderizar la tabla
 }
 
-function showAlert(message, type = 'info') {
-    // Crear o actualizar el alert
-    let alertContainer = document.querySelector('.alert-container');
-    if (!alertContainer) {
-        alertContainer = document.createElement('div');
-        alertContainer.className = 'alert-container';
-        document.body.appendChild(alertContainer);
-    }
-    
-    const alert = document.createElement('div');
-    alert.className = `alert alert-${type}`;
-    alert.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'times' : 'info'}"></i>
-        ${message}
-    `;
-    
-    alertContainer.appendChild(alert);
-    
-    // Auto-remover después de 5 segundos
-    setTimeout(() => {
-        alert.remove();
-    }, 5000);
-}
-
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -831,4 +813,38 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
+
+// 🎨 INICIALIZACIÓN DE LIBRERÍAS MODERNAS
+
+// Inicializar Flatpickr para filtro de fechas (si existe)
+if (typeof flatpickr !== 'undefined') {
+    // Buscar si hay algún input de fecha en el módulo para inicializar Flatpickr
+    const dateInputs = document.querySelectorAll('.admin-module input[type="date"]');
+    dateInputs.forEach(input => {
+        flatpickr(input, {
+            mode: 'range',
+            dateFormat: 'Y-m-d',
+            locale: 'es',
+            onChange: function(selectedDates, dateStr, instance) {
+                if (selectedDates.length === 2) {
+                    console.log('📅 Rango de fechas seleccionado:', dateStr);
+                    loadUsuarios();
+                }
+            },
+            onClear: function() {
+                loadUsuarios();
+            }
+        });
+    });
+    console.log('📅 Flatpickr inicializado en módulo de usuarios');
+}
+
+// Refrescar animaciones AOS después de cargar el módulo
+setTimeout(() => {
+    if (typeof AOS !== 'undefined') {
+        AOS.refresh();
+        console.log('🎬 Animaciones AOS aplicadas al módulo de usuarios');
+    }
+}, 100);
+
 </script>

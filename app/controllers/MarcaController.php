@@ -212,12 +212,12 @@ function createMarca($conn) {
     // Generar código automático si no existe
     $codigo = $data['codigo_marca'] ?? 'MARCA-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
     
-    // Procesar imagen
+    // Procesar imagen desde $_FILES (igual que categorías)
     $imagen_filename = 'default-brand.png';
     $url_imagen = '/fashion-master/public/assets/img/default-product.jpg';
     
-    if (!empty($data['imagen_marca_base64'])) {
-        $result = processBase64Image($data['imagen_marca_base64'], 'brands');
+    if (isset($_FILES['imagen_marca']) && $_FILES['imagen_marca']['error'] === UPLOAD_ERR_OK) {
+        $result = processUploadedImage($_FILES['imagen_marca'], 'brands');
         if ($result['success']) {
             $imagen_filename = $result['filename'];
             $url_imagen = '/fashion-master/public/assets/img/brands/' . $imagen_filename;
@@ -307,9 +307,9 @@ function updateMarca($conn) {
         }
     }
     
-    // Procesar nueva imagen si existe
-    if (!empty($data['imagen_marca_base64'])) {
-        $result = processBase64Image($data['imagen_marca_base64'], 'brands');
+    // Procesar nueva imagen si existe desde $_FILES (igual que categorías)
+    if (isset($_FILES['imagen_marca']) && $_FILES['imagen_marca']['error'] === UPLOAD_ERR_OK) {
+        $result = processUploadedImage($_FILES['imagen_marca'], 'brands');
         if ($result['success']) {
             $update_fields[] = "imagen_marca = ?";
             $params[] = $result['filename'];
@@ -507,6 +507,70 @@ function processBase64Image($base64String, $folder = 'brands') {
         }
         
         return ['success' => false, 'error' => 'Error guardando imagen'];
+        
+    } catch (Exception $e) {
+        return ['success' => false, 'error' => $e->getMessage()];
+    }
+}
+
+/**
+ * Procesar imagen subida desde $_FILES (igual que CategoryController)
+ */
+function processUploadedImage($file, $folder = 'brands') {
+    try {
+        // Verificar errores de upload
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            return ['success' => false, 'error' => 'Error al subir archivo'];
+        }
+        
+        // Validar tamaño (5MB)
+        $maxSize = 5 * 1024 * 1024; // 5MB
+        if ($file['size'] > $maxSize) {
+            return ['success' => false, 'error' => 'La imagen excede el tamaño máximo de 5MB'];
+        }
+        
+        // Validar tipo de archivo
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime_type = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        
+        $allowed_types = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'image/webp' => 'webp'
+        ];
+        
+        if (!array_key_exists($mime_type, $allowed_types)) {
+            return ['success' => false, 'error' => 'Tipo de archivo no permitido. Solo JPG, PNG, GIF, WebP'];
+        }
+        
+        // Generar nombre único
+        $extension = $allowed_types[$mime_type];
+        $filename = 'marca-' . time() . '-' . rand(1000000, 9999999) . '.' . $extension;
+        
+        // Directorio de destino
+        $upload_dir = __DIR__ . '/../../public/assets/img/' . $folder . '/';
+        
+        // Crear directorio si no existe
+        if (!is_dir($upload_dir)) {
+            if (!mkdir($upload_dir, 0755, true)) {
+                return ['success' => false, 'error' => 'No se pudo crear el directorio'];
+            }
+        }
+        
+        $filepath = $upload_dir . $filename;
+        
+        // Mover archivo
+        if (!move_uploaded_file($file['tmp_name'], $filepath)) {
+            return ['success' => false, 'error' => 'Error al guardar la imagen'];
+        }
+        
+        return [
+            'success' => true,
+            'filename' => $filename,
+            'path' => $filepath
+        ];
         
     } catch (Exception $e) {
         return ['success' => false, 'error' => $e->getMessage()];

@@ -19,12 +19,33 @@ if (!isset($conn)) {
 
 // Verificar si el usuario está logueado y es administrador
 if (!isset($_SESSION['user_id'])) {
-    echo '<script>alert("No hay sesión iniciada. Redirigiendo al login..."); window.location.href="login.php";</script>';
+    echo '<script>
+        Swal.fire({
+            icon: "error",
+            title: "Sesión no iniciada",
+            text: "No hay sesión iniciada. Redirigiendo al login...",
+            timer: 2000,
+            showConfirmButton: false,
+            timerProgressBar: true
+        }).then(() => {
+            window.location.href="login.php";
+        });
+    </script>';
     exit;
 }
 
 if ($_SESSION['rol'] !== 'admin') {
-    echo '<script>alert("No tienes permisos de administrador. Rol actual: ' . ($_SESSION['rol'] ?? 'No definido') . '"); window.location.href="index.php";</script>';
+    echo '<script>
+        Swal.fire({
+            icon: "error",
+            title: "Acceso denegado",
+            text: "No tienes permisos de administrador. Rol actual: ' . ($_SESSION['rol'] ?? 'No definido') . '",
+            confirmButtonText: "Volver al inicio",
+            confirmButtonColor: "#3085d6"
+        }).then(() => {
+            window.location.href="index.php";
+        });
+    </script>';
     exit;
 }
 
@@ -111,19 +132,41 @@ try {
     <link href="public/assets/css/categoria-modals.css" rel="stylesheet">
     <link href="public/assets/css/product-view-modal.css" rel="stylesheet">
     <link href="public/assets/css/categoria-view-modal.css" rel="stylesheet">
+    <link href="public/assets/css/marca-view-modal.css" rel="stylesheet">
     <link href="public/assets/css/view-modal-animations.css" rel="stylesheet"> <!-- DEBE SER EL ÚLTIMO -->
     
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- ========================================== -->
+    <!-- LIBRERÍAS MODERNAS -->
+    <!-- ========================================== -->
+    
+    <!-- 1. Flatpickr - Selector de fecha y hora moderno -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <!-- 2. Chart.js - Gráficos y estadísticas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- 3. Fetch API - Ya viene incluido en navegadores modernos, no necesita importación -->
+    
+    <!-- 4. AOS.js - Animaciones al hacer scroll -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    
+    <!-- 5. Font Awesome - Íconos modernos (actualizado a 6.5.0) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- 6. SweetAlert2 - Alertas y confirmaciones elegantes -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- ========================================== -->
+    <!-- FIN LIBRERÍAS MODERNAS -->
+    <!-- ========================================== -->
     
     <!-- SheetJS para exportar a Excel -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     
     <!-- Configuración global de rutas -->
     <script src="public/assets/js/config.js"></script>
-    
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
     <!-- Sistema de actualización suave de tabla -->
     <script src="public/assets/js/smooth-table-update.js"></script>
@@ -151,8 +194,8 @@ try {
     </script>
     
     <!-- ⭐ CONTENEDOR DE NOTIFICACIONES -->
-    <!-- ⭐ CONTENEDOR DE NOTIFICACIONES (Abajo a la derecha como shop.php) -->
-    <div id="notification-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column-reverse; gap: 10px;"></div>
+    <!-- Las notificaciones ahora se manejan con SweetAlert2 -->
+    <div id="notification-container" style="display: none;"></div>
     
     <div class="admin-container">
         <!-- Header del admin -->
@@ -172,16 +215,9 @@ try {
                         <p class="header-subtitle">Panel de Control Empresarial</p>
                     </div>
                 </div>
-                
-                <!-- Logo centrado -->
-                <div class="admin-logo">
-                    <div class="logo-icon">
-                        <i class="fas fa-crown"></i>
-                    </div>
-                </div>
-                
+                       
                 <div class="admin-user-info">
-                    <div class="user-profile">
+                    <div class="user-profile" onclick="toggleUserMenu(event)">
                         <div class="user-avatar">
                             <?php echo strtoupper(substr($usuario, 0, 2)); ?>
                         </div>
@@ -189,11 +225,35 @@ try {
                             <h3><?php echo htmlspecialchars($usuario); ?></h3>
                             <span><?php echo ucfirst($rol); ?></span>
                         </div>
+                        <i class="fas fa-chevron-down user-dropdown-icon"></i>
+                        
+                        <!-- Menú desplegable -->
+                        <div class="user-dropdown-menu" id="userDropdownMenu">
+                            <div class="dropdown-header">
+                                <div class="dropdown-avatar">
+                                    <?php echo strtoupper(substr($usuario, 0, 2)); ?>
+                                </div>
+                                <div class="dropdown-info">
+                                    <h4><?php echo htmlspecialchars($usuario); ?></h4>
+                                    <p><?php echo ucfirst($rol); ?></p>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item" onclick="alert('Perfil en desarrollo')">
+                                <i class="fas fa-user"></i>
+                                <span>Mi Perfil</span>
+                            </a>
+                            <a href="#" class="dropdown-item" onclick="switchTab('configuracion'); toggleUserMenu(event)">
+                                <i class="fas fa-cog"></i>
+                                <span>Configuración</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="logout.php" class="dropdown-item logout-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Cerrar Sesión</span>
+                            </a>
+                        </div>
                     </div>
-                    <a href="logout.php" class="logout-btn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Salir
-                    </a>
                 </div>
             </div>
         </header>
@@ -246,27 +306,77 @@ try {
             <div class="tab-content">
                 <!-- Dashboard Tab -->
                 <div class="tab-pane active" id="dashboard">
-                    <div class="dashboard-header">
+                    <div class="dashboard-header" data-aos="fade-down">
                         <h1>
                             <i class="fas fa-tachometer-alt"></i>
                             Dashboard Principal
+                            <span class="realtime-badge" id="realtime-indicator" style="
+                                display: inline-block;
+                                background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+                                color: white;
+                                padding: 5px 12px;
+                                border-radius: 20px;
+                                font-size: 12px;
+                                font-weight: 600;
+                                margin-left: 10px;
+                                vertical-align: middle;
+                                animation: pulse 2s infinite;
+                            ">
+                                <i class="fas fa-sync-alt" style="margin-right: 5px;"></i>
+                                Actualización automática
+                            </span>
                         </h1>
-                        <p>Resumen general del sistema de Fashion Store</p>
+                        <p>
+                            Resumen general del sistema de Fashion Store
+                            <span id="last-update-time" style="
+                                display: inline-block;
+                                background: rgba(52, 152, 219, 0.1);
+                                padding: 3px 10px;
+                                border-radius: 10px;
+                                font-size: 11px;
+                                margin-left: 10px;
+                                color: #3498db;
+                            ">
+                                <i class="fas fa-clock"></i> Actualizado ahora
+                            </span>
+                        </p>
                     </div>
+                    
+                    <style>
+                        @keyframes pulse {
+                            0%, 100% { opacity: 1; transform: scale(1); }
+                            50% { opacity: 0.8; transform: scale(1.05); }
+                        }
+                        
+                        @keyframes fadeInUpdate {
+                            from {
+                                opacity: 0;
+                                transform: translateY(-10px);
+                            }
+                            to {
+                                opacity: 1;
+                                transform: translateY(0);
+                            }
+                        }
+                        
+                        .stat-updated {
+                            animation: fadeInUpdate 0.5s ease;
+                        }
+                    </style>
 
-                    <!-- Tarjetas de estadísticas -->
+                    <!-- Tarjetas de estadísticas principales -->
                     <div class="stats-grid">
-                        <div class="stat-card products">
+                        <div class="stat-card products" data-aos="fade-up" data-aos-delay="100">
                             <div class="stat-icon">
                                 <i class="fas fa-tshirt"></i>
                             </div>
                             <div class="stat-content">
-                                <h3><?php echo $total_productos; ?></h3>
+                                <h3 id="total-productos" style="transition: all 0.3s ease;"><?php echo $total_productos; ?></h3>
                                 <p>Productos Activos</p>
                                 <div class="stat-trend <?php echo $productos_stock_bajo > 0 ? 'warning' : 'success'; ?>">
                                     <?php if ($productos_stock_bajo > 0): ?>
                                         <i class="fas fa-exclamation-triangle"></i>
-                                        <span><?php echo $productos_stock_bajo; ?> con stock bajo</span>
+                                        <span><span id="productos-stock-bajo" style="transition: all 0.3s ease;"><?php echo $productos_stock_bajo; ?></span> con stock bajo</span>
                                     <?php else: ?>
                                         <i class="fas fa-check-circle"></i>
                                         <span>Stock saludable</span>
@@ -275,12 +385,12 @@ try {
                             </div>
                         </div>
 
-                        <div class="stat-card users">
+                        <div class="stat-card users" data-aos="fade-up" data-aos-delay="200">
                             <div class="stat-icon">
                                 <i class="fas fa-users"></i>
                             </div>
                             <div class="stat-content">
-                                <h3><?php echo $total_usuarios; ?></h3>
+                                <h3 id="total-usuarios" style="transition: all 0.3s ease;"><?php echo $total_usuarios; ?></h3>
                                 <p>Usuarios Activos</p>
                                 <div class="stat-trend info">
                                     <i class="fas fa-user-check"></i>
@@ -289,12 +399,12 @@ try {
                             </div>
                         </div>
 
-                        <div class="stat-card sales">
+                        <div class="stat-card sales" data-aos="fade-up" data-aos-delay="300">
                             <div class="stat-icon">
                                 <i class="fas fa-dollar-sign"></i>
                             </div>
                             <div class="stat-content">
-                                <h3>S/. <?php echo number_format($valor_inventario, 0, ',', '.'); ?></h3>
+                                <h3 id="valor-inventario" style="transition: all 0.3s ease;">S/. <?php echo number_format($valor_inventario, 0, ',', '.'); ?></h3>
                                 <p>Valor de Inventario</p>
                                 <div class="stat-trend success">
                                     <i class="fas fa-chart-line"></i>
@@ -303,23 +413,138 @@ try {
                             </div>
                         </div>
 
-                        <div class="stat-card orders">
+                        <div class="stat-card orders" data-aos="fade-up" data-aos-delay="400">
                             <div class="stat-icon">
                                 <i class="fas fa-tags"></i>
                             </div>
                             <div class="stat-content">
-                                <h3><?php echo $total_categorias; ?></h3>
+                                <h3 id="total-categorias" style="transition: all 0.3s ease;"><?php echo $total_categorias; ?></h3>
                                 <p>Categorías Activas</p>
                                 <div class="stat-trend info">
                                     <i class="fas fa-copyright"></i>
-                                    <span><?php echo $total_marcas; ?> marcas activas</span>
+                                    <span><span id="total-marcas" style="transition: all 0.3s ease;"><?php echo $total_marcas; ?></span> marcas activas</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Estadísticas secundarias (Pedidos, Reseñas, Favoritos, Ventas) -->
+                    <div class="stats-grid-secondary" style="margin-top: 20px;">
+                        <div class="stat-card-small pedidos" data-aos="fade-up" data-aos-delay="500">
+                            <div class="stat-icon-small">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="stat-content-small">
+                                <h4 id="total-pedidos">0</h4>
+                                <p>Total Pedidos</p>
+                                <small id="pedidos-pendientes">0 pendientes</small>
+                            </div>
+                        </div>
+
+                        <div class="stat-card-small resenas" data-aos="fade-up" data-aos-delay="550">
+                            <div class="stat-icon-small">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-content-small">
+                                <h4 id="total-resenas">0</h4>
+                                <p>Reseñas Aprobadas</p>
+                                <small id="calificacion-promedio">0.0 ★ promedio</small>
+                            </div>
+                        </div>
+
+                        <div class="stat-card-small favoritos" data-aos="fade-up" data-aos-delay="600">
+                            <div class="stat-icon-small">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="stat-content-small">
+                                <h4 id="total-favoritos">0</h4>
+                                <p>Favoritos Totales</p>
+                                <small id="total-carrito">0 en carritos</small>
+                            </div>
+                        </div>
+
+                        <div class="stat-card-small ventas" data-aos="fade-up" data-aos-delay="650">
+                            <div class="stat-icon-small">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="stat-content-small">
+                                <h4 id="ventas-mes">S/. 0</h4>
+                                <p>Ventas del Mes</p>
+                                <small id="productos-semana">0 productos esta semana</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráficos con Chart.js -->
+                    <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr)); gap: 20px; margin: 30px 0;">
+                        <!-- Gráfico de Stock -->
+                        <div class="chart-card" data-aos="fade-up" data-aos-delay="700" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
+                                <i class="fas fa-chart-pie"></i> Estado del Inventario
+                            </h3>
+                            <canvas id="stockChart" style="max-height: 300px;"></canvas>
+                        </div>
+
+                        <!-- Gráfico de Categorías -->
+                        <div class="chart-card" data-aos="fade-up" data-aos-delay="750" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
+                                <i class="fas fa-chart-bar"></i> Productos por Categoría
+                            </h3>
+                            <canvas id="categoryChart" style="max-height: 300px;"></canvas>
+                        </div>
+
+                        <!-- Gráfico de Distribución por Género -->
+                        <div class="chart-card" data-aos="fade-up" data-aos-delay="800" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
+                                <i class="fas fa-venus-mars"></i> Distribución por Género
+                            </h3>
+                            <canvas id="genderChart" style="max-height: 300px;"></canvas>
+                        </div>
+
+                        <!-- Gráfico de Ventas Mensuales -->
+                        <div class="chart-card chart-card-wide" data-aos="fade-up" data-aos-delay="850" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); grid-column: 1 / -1;">
+                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
+                                <i class="fas fa-chart-line"></i> Ventas de los Últimos 6 Meses
+                            </h3>
+                            <canvas id="salesChart" style="max-height: 300px;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Actividad Reciente y Top Productos -->
+                    <div class="activity-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr)); gap: 20px; margin: 30px 0;">
+                        <!-- Actividad Reciente -->
+                        <div class="activity-card" data-aos="fade-up" data-aos-delay="900" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
+                                <i class="fas fa-history"></i> Actividad Reciente
+                            </h3>
+                            <div id="recent-activity" style="max-height: 400px; overflow-y: auto;">
+                                <p style="text-align: center; color: #999;">Cargando actividad...</p>
+                            </div>
+                        </div>
+
+                        <!-- Productos Más Favoritos -->
+                        <div class="activity-card" data-aos="fade-up" data-aos-delay="950" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
+                                <i class="fas fa-heart"></i> Productos Más Favoritos
+                            </h3>
+                            <div id="top-favorites" style="max-height: 400px; overflow-y: auto;">
+                                <p style="text-align: center; color: #999;">Cargando productos...</p>
+                            </div>
+                        </div>
+
+                        <!-- Productos Mejor Calificados -->
+                        <div class="activity-card" data-aos="fade-up" data-aos-delay="1000" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
+                                <i class="fas fa-star"></i> Productos Mejor Calificados
+                            </h3>
+                            <div id="top-rated" style="max-height: 400px; overflow-y: auto;">
+                                <p style="text-align: center; color: #999;">Cargando calificaciones...</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Acciones rápidas -->
-                    <div class="quick-actions">
+                    <div class="quick-actions" data-aos="fade-up" data-aos-delay="700">
                         <h2>
                             <i class="fas fa-bolt"></i>
                             Acciones Rápidas
@@ -1016,6 +1241,344 @@ try {
         window.showModalOverlayView = showModalOverlayView;
         window.closeProductModal = closeProductModal;
         
+        // ===== FUNCIONES DEL MODAL DE CATEGORÍAS (IGUALES A PRODUCTOS) =====
+        
+        function showCreateCategoriaModal() {
+            showModalOverlayCreateCategoria();
+        }
+
+        function showEditCategoriaModal(categoriaId) {
+            showModalOverlayEditCategoria(categoriaId);
+        }
+
+        function showViewCategoriaModal(categoriaId) {
+            showModalOverlayViewCategoria(categoriaId);
+        }
+
+        function editCategoria(categoriaId) {
+            showModalOverlayEditCategoria(categoriaId);
+        }
+
+        function verCategoria(categoriaId) {
+            showModalOverlayViewCategoria(categoriaId);
+        }
+
+        function openCategoriaModal(action, categoriaId) {
+            if (action === 'create') {
+                showModalOverlayCreateCategoria();
+            } else if (action === 'edit') {
+                showModalOverlayEditCategoria(categoriaId);
+            } else if (action === 'view') {
+                showModalOverlayViewCategoria(categoriaId);
+            }
+        }
+
+        function showModalOverlayCreateCategoria() {
+            try {
+                console.log('🚀 showModalOverlayCreateCategoria iniciado');
+                document.body.classList.add('modal-open');
+                
+                let overlay = document.getElementById('categoria-modal-overlay');
+                if (overlay) {
+                    console.log('🗑️ Eliminando overlay existente');
+                    overlay.remove();
+                }
+                
+                overlay = document.createElement('div');
+                overlay.id = 'categoria-modal-overlay';
+                overlay.className = 'modal-overlay';
+                overlay.innerHTML = `
+                    <div id="modal-content-wrapper">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                            <p>Cargando modal...</p>
+                        </div>
+                    </div>
+                `;
+                
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) {
+                        console.log('🖱️ Clic fuera del modal detectado, cerrando...');
+                        closeCategoriaModal();
+                    }
+                });
+                
+                document.body.appendChild(overlay);
+                console.log('✅ Overlay agregado al DOM');
+                
+                requestAnimationFrame(() => {
+                    overlay.classList.add('show');
+                    console.log('✅ Clase show agregada al overlay');
+                });
+                
+                const fetchUrl = 'app/views/admin/categoria_modal.php?action=create';
+                console.log('🆕 URL para CREAR categoría:', fetchUrl);
+                
+                fetch(fetchUrl)
+                .then(response => {
+                    console.log('📡 Respuesta recibida:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    console.log('📄 HTML recibido, longitud:', html.length);
+                    const wrapper = overlay.querySelector('#modal-content-wrapper');
+                    if (wrapper) {
+                        wrapper.outerHTML = html;
+                        console.log('✅ Modal content reemplazado completamente');
+                        
+                        const scripts = overlay.querySelectorAll('script');
+                        console.log('📜 Scripts encontrados:', scripts.length);
+                        scripts.forEach((script, index) => {
+                            if (script.textContent && script.textContent.trim()) {
+                                try {
+                                    eval(script.textContent);
+                                } catch (scriptError) {
+                                    console.error(`❌ Error en script ${index + 1}:`, scriptError);
+                                }
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error cargando modal crear categoría:', error);
+                    const wrapper = overlay.querySelector('#modal-content-wrapper');
+                    if (wrapper) {
+                        wrapper.innerHTML = `
+                            <div style="padding: 20px; text-align: center;">
+                                <h3 style="color: #dc3545;">Error al cargar modal</h3>
+                                <p>Error: ${error.message}</p>
+                                <button onclick="closeCategoriaModal()" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Cerrar</button>
+                            </div>
+                        `;
+                    }
+                });
+            } catch (mainError) {
+                console.error('❌ Error general en showModalOverlayCreateCategoria:', mainError);
+                document.body.classList.remove('modal-open');
+                const existingOverlay = document.getElementById('categoria-modal-overlay');
+                if (existingOverlay) {
+                    existingOverlay.remove();
+                }
+            }
+        }
+
+        function showModalOverlayEditCategoria(categoriaId) {
+            try {
+                console.log('✏️ showModalOverlayEditCategoria iniciado con ID:', categoriaId);
+                document.body.classList.add('modal-open');
+                
+                let overlay = document.getElementById('categoria-modal-overlay');
+                if (overlay) {
+                    console.log('🗑️ Eliminando overlay existente');
+                    overlay.remove();
+                }
+                
+                overlay = document.createElement('div');
+                overlay.id = 'categoria-modal-overlay';
+                overlay.className = 'modal-overlay';
+                overlay.innerHTML = `
+                    <div id="modal-content-wrapper">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                            <p>Cargando modal...</p>
+                        </div>
+                    </div>
+                `;
+                
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) {
+                        console.log('🖱️ Clic fuera del modal detectado, cerrando...');
+                        closeCategoriaModal();
+                    }
+                });
+                
+                document.body.appendChild(overlay);
+                console.log('✅ Overlay agregado al DOM');
+                
+                requestAnimationFrame(() => {
+                    overlay.classList.add('show');
+                    console.log('✅ Clase show agregada al overlay');
+                });
+                
+                const fetchUrl = `app/views/admin/categoria_modal.php?action=edit&id=${categoriaId}`;
+                console.log('✏️ URL para EDITAR categoría:', fetchUrl);
+                
+                fetch(fetchUrl)
+                .then(response => {
+                    console.log('📡 Respuesta recibida:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    console.log('📄 HTML recibido, longitud:', html.length);
+                    const wrapper = overlay.querySelector('#modal-content-wrapper');
+                    if (wrapper) {
+                        wrapper.outerHTML = html;
+                        console.log('✅ Modal content reemplazado completamente');
+                        
+                        const scripts = overlay.querySelectorAll('script');
+                        scripts.forEach((script, index) => {
+                            if (script.textContent && script.textContent.trim()) {
+                                try {
+                                    eval(script.textContent);
+                                } catch (scriptError) {
+                                    console.error(`❌ Error en script ${index + 1}:`, scriptError);
+                                }
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error cargando modal editar categoría:', error);
+                    const wrapper = overlay.querySelector('#modal-content-wrapper');
+                    if (wrapper) {
+                        wrapper.innerHTML = `
+                            <div style="padding: 20px; text-align: center;">
+                                <h3 style="color: #dc3545;">Error al cargar modal</h3>
+                                <p>Error: ${error.message}</p>
+                                <button onclick="closeCategoriaModal()" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Cerrar</button>
+                            </div>
+                        `;
+                    }
+                });
+            } catch (mainError) {
+                console.error('❌ Error general en showModalOverlayEditCategoria:', mainError);
+                document.body.classList.remove('modal-open');
+                const existingOverlay = document.getElementById('categoria-modal-overlay');
+                if (existingOverlay) {
+                    existingOverlay.remove();
+                }
+            }
+        }
+
+        function showModalOverlayViewCategoria(categoriaId) {
+            try {
+                console.log('👁️ showModalOverlayViewCategoria iniciado con ID:', categoriaId);
+                document.body.classList.add('modal-open');
+                
+                let overlay = document.getElementById('categoria-modal-overlay');
+                if (overlay) {
+                    console.log('🗑️ Eliminando overlay existente');
+                    overlay.remove();
+                }
+                
+                overlay = document.createElement('div');
+                overlay.id = 'categoria-modal-overlay';
+                overlay.className = 'modal-overlay';
+                overlay.innerHTML = `
+                    <div id="modal-content-wrapper">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                            <p>Cargando modal...</p>
+                        </div>
+                    </div>
+                `;
+                
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) {
+                        console.log('🖱️ Clic fuera del modal detectado, cerrando...');
+                        closeCategoriaModal();
+                    }
+                });
+                
+                document.body.appendChild(overlay);
+                console.log('✅ Overlay agregado al DOM');
+                
+                requestAnimationFrame(() => {
+                    overlay.classList.add('show');
+                    console.log('✅ Clase show agregada al overlay');
+                });
+                
+                const fetchUrl = `app/views/admin/categoria_modal.php?action=view&id=${categoriaId}`;
+                console.log('👁️ URL para VER categoría:', fetchUrl);
+                
+                fetch(fetchUrl)
+                .then(response => {
+                    console.log('📡 Respuesta recibida:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    console.log('📄 HTML recibido, longitud:', html.length);
+                    const wrapper = overlay.querySelector('#modal-content-wrapper');
+                    if (wrapper) {
+                        wrapper.outerHTML = html;
+                        console.log('✅ Modal content reemplazado completamente');
+                        
+                        const scripts = overlay.querySelectorAll('script');
+                        scripts.forEach((script, index) => {
+                            if (script.textContent && script.textContent.trim()) {
+                                try {
+                                    eval(script.textContent);
+                                } catch (scriptError) {
+                                    console.error(`❌ Error en script ${index + 1}:`, scriptError);
+                                }
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error cargando modal ver categoría:', error);
+                    const wrapper = overlay.querySelector('#modal-content-wrapper');
+                    if (wrapper) {
+                        wrapper.innerHTML = `
+                            <div style="padding: 20px; text-align: center;">
+                                <h3 style="color: #dc3545;">Error al cargar modal</h3>
+                                <p>Error: ${error.message}</p>
+                                <button onclick="closeCategoriaModal()" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Cerrar</button>
+                            </div>
+                        `;
+                    }
+                });
+            } catch (mainError) {
+                console.error('❌ Error general en showModalOverlayViewCategoria:', mainError);
+                document.body.classList.remove('modal-open');
+                const existingOverlay = document.getElementById('categoria-modal-overlay');
+                if (existingOverlay) {
+                    existingOverlay.remove();
+                }
+            }
+        }
+
+        function closeCategoriaModal() {
+            console.log('❌ Cerrando modal de categoría');
+            
+            const overlay = document.getElementById('categoria-modal-overlay');
+            if (overlay) {
+                overlay.classList.remove('show');
+                setTimeout(() => {
+                    overlay.remove();
+                    document.body.classList.remove('modal-open');
+                    
+                    // Recargar lista de categorías si existe la función
+                    if (typeof window.loadCategorias === 'function') {
+                        window.loadCategorias();
+                    }
+                }, 300);
+            } else {
+                document.body.classList.remove('modal-open');
+            }
+        }
+
+        // Exponer funciones de categorías globalmente
+        window.showCreateCategoriaModal = showCreateCategoriaModal;
+        window.showEditCategoriaModal = showEditCategoriaModal;
+        window.showViewCategoriaModal = showViewCategoriaModal;
+        window.editCategoria = editCategoria;
+        window.verCategoria = verCategoria;
+        window.openCategoriaModal = openCategoriaModal;
+        window.showModalOverlayCreateCategoria = showModalOverlayCreateCategoria;
+        window.showModalOverlayEditCategoria = showModalOverlayEditCategoria;
+        window.showModalOverlayViewCategoria = showModalOverlayViewCategoria;
+        window.closeCategoriaModal = closeCategoriaModal;
+        
         // ===== FUNCIÓN PARA NUEVA CATEGORÍA =====
         window.openNewCategoryModal = function() {
             console.log('🏷️ Abriendo modal de nueva categoría directamente');
@@ -1183,6 +1746,89 @@ try {
                 });
         }
         
+        // ===== FUNCIONES GLOBALES DE CATEGORÍAS (deben estar disponibles antes de cargar el HTML) =====
+        
+        // Variable global para tracking de vista actual en categorías
+        window.categorias_currentView = 'table';
+        window.categorias_activeFloatingContainer = null;
+        
+        // Función para cambiar vista (tabla/grid) - GLOBAL
+        window.toggleCategoriaView = function(viewType) {
+            console.log('🔄 Cambiando vista de categorías a:', viewType);
+            
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile && viewType === 'table') {
+                console.warn('⚠️ Vista tabla bloqueada en móvil');
+                return;
+            }
+            
+            const tableContainer = document.querySelector('.data-table-wrapper');
+            const gridContainer = document.querySelector('.categorias-grid');
+            const viewButtons = document.querySelectorAll('.view-btn');
+            
+            if (viewType === 'grid') {
+                if (tableContainer) tableContainer.style.display = 'none';
+                if (gridContainer) {
+                    gridContainer.style.display = 'grid';
+                } else {
+                    // Si no existe, intentar crearlo
+                    if (typeof window.createGridView === 'function') {
+                        window.createGridView();
+                    }
+                }
+                window.categorias_currentView = 'grid';
+            } else {
+                if (tableContainer) tableContainer.style.display = 'block';
+                if (gridContainer) gridContainer.style.display = 'none';
+                window.categorias_currentView = 'table';
+            }
+            
+            // Actualizar botones activos
+            viewButtons.forEach(btn => {
+                const btnView = btn.getAttribute('data-view');
+                if (btnView === viewType) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            console.log('✅ Vista cambiada a:', viewType);
+        };
+        
+        // Función para mostrar menú de acciones - GLOBAL
+        window.showCategoriaActionMenu = function(button, categoriaId, categoriaNombre) {
+            console.log('📋 Mostrando menú de acciones para categoría:', categoriaId);
+            
+            // Si ya hay un menú abierto, cerrarlo primero
+            if (window.categorias_activeFloatingContainer) {
+                if (typeof window.closeCategoriasFloatingActions === 'function') {
+                    window.closeCategoriasFloatingActions();
+                }
+            }
+            
+            // Crear contenedor del menú
+            if (typeof window.createCategoriaAnimatedFloatingContainer === 'function') {
+                window.createCategoriaAnimatedFloatingContainer(button, categoriaId, categoriaNombre);
+            }
+        };
+        
+        // Función para cerrar menús flotantes - GLOBAL
+        window.closeCategoriasFloatingActions = function() {
+            const container = window.categorias_activeFloatingContainer;
+            if (container && container.parentElement) {
+                container.classList.add('closing');
+                setTimeout(() => {
+                    if (container.parentElement) {
+                        container.remove();
+                    }
+                    window.categorias_activeFloatingContainer = null;
+                }, 300);
+            }
+        };
+        
+        console.log('✅ Funciones globales de categorías cargadas');
+        
         // ===== FUNCIÓN ÚNICA PARA CATEGORÍAS =====
         function loadCategoriasSection() {
             console.log('🏷️ [CATEGORIAS] Iniciando carga de sección...');
@@ -1223,18 +1869,46 @@ try {
                     scripts.forEach((script, index) => {
                         try {
                             if (script.textContent && script.textContent.trim()) {
-                                eval(script.textContent);
-                                console.log(`✅ [CATEGORIAS] Script ${index} ejecutado`);
+                                // Usar Function constructor en lugar de createElement para evitar problemas de codificación
+                                const scriptContent = script.textContent;
+                                // Limpiar caracteres problemáticos antes de ejecutar
+                                const cleanContent = scriptContent
+                                    .replace(/[^\x00-\x7F]/g, function(char) {
+                                        // Mantener caracteres seguros, reemplazar problemáticos
+                                        const code = char.charCodeAt(0);
+                                        if (code === 0xFFFD || code > 0x10000) return '';
+                                        return char;
+                                    });
+                                
+                                // Ejecutar con Function para mejor manejo de encoding
+                                try {
+                                    const fn = new Function(cleanContent);
+                                    fn();
+                                    console.log(`✅ [CATEGORIAS] Script ${index} ejecutado`);
+                                } catch (innerError) {
+                                    // Si falla, intentar con eval como fallback
+                                    console.warn(`⚠️ [CATEGORIAS] Function falló, usando eval para script ${index}`);
+                                    window.eval(cleanContent);
+                                    console.log(`✅ [CATEGORIAS] Script ${index} ejecutado con eval`);
+                                }
                             }
                         } catch (error) {
                             console.error(`❌ [CATEGORIAS] Error ejecutando script ${index}:`, error);
+                            console.error('Script content preview:', script.textContent.substring(0, 200));
                         }
                     });
                     
-                    // NOTA: initializecategoriasModule() se auto-ejecuta dentro del script evaluado
-                    // No es necesario llamarlo aquí
-                    
                     console.log('✅ [CATEGORIAS] Sección cargada completamente');
+                    
+                    // Intentar cargar datos después de un breve delay
+                    setTimeout(() => {
+                        if (typeof window.loadCategoriasData === 'function') {
+                            console.log('📊 Cargando datos de categorías...');
+                            window.loadCategoriasData();
+                        } else {
+                            console.warn('⚠️ loadCategoriasData no está disponible');
+                        }
+                    }, 100);
                 })
                 .catch(error => {
                     console.error('❌ [CATEGORIAS] Error en carga:', error);
@@ -1267,7 +1941,7 @@ try {
             targetContainer.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Cargando marcas...</div>';
             
             console.log('📂 [MARCAS] Iniciando fetch...');
-            fetch('app/views/admin/admin_marca.php?_=' + Date.now())
+            fetch('app/views/admin/admin_marcas.php?_=' + Date.now())
                 .then(response => {
                     console.log('📡 [MARCAS] Respuesta recibida:', response.status);
                     if (!response.ok) {
@@ -1763,8 +2437,6 @@ try {
 
         // ===== INICIALIZAR ProductModalManager desde product-modals.js =====
         console.log('🔧 Verificando disponibilidad de ProductModalManager...');
-        console.log('ProductModalManager type:', typeof ProductModalManager);
-        console.log('ProductModalManager:', ProductModalManager);
         
         // Verificar que la clase ProductModalManager esté disponible
         if (typeof ProductModalManager !== 'undefined') {
@@ -1772,8 +2444,6 @@ try {
             console.log('✅ ProductModalManager encontrado - creando instancia...');
             window.productModalManager = new ProductModalManager();
             console.log('✅ ProductModalManager inicializado correctamente');
-            console.log('📋 Métodos disponibles:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.productModalManager)));
-            console.log('🔍 closeModal method:', typeof window.productModalManager.closeModal);
         } else {
             console.error('❌ ProductModalManager no está definido - verificar carga de product-modals.js');
             // Fallback: crear objeto básico de compatibilidad
@@ -2001,88 +2671,1110 @@ try {
         console.log('🚀 Sistema SPA cargado. Ejecuta diagnosticoSistema() para verificar.');
     </script>
     
-    <!-- ⭐ SISTEMA DE NOTIFICACIONES (Estilo idéntico a shop.php) -->
+    <!-- ⭐ SISTEMA DE NOTIFICACIONES CON SWEETALERT2 ⭐ -->
     <script>
+    // ========================================
+    // 🍭 SISTEMA DE NOTIFICACIONES MODERNAS
+    // ========================================
+    
+    /**
+     * Notificación Toast - Aparece en la esquina superior derecha
+     * Más elegante y llamativa con animaciones
+     */
     window.showNotification = function(message, type = 'info') {
-        const container = document.getElementById('notification-container');
-        if (!container) return;
-        
-        // Colores e iconos idénticos a shop.php
-        const colors = {
-            'success': '#2ecc71',
-            'error': '#e74c3c',
-            'warning': '#f39c12',
-            'info': '#3498db'
-        };
-        
         const icons = {
-            'success': '✓',
-            'error': '✕',
-            'warning': '⚠',
-            'info': 'ℹ'
+            'success': 'success',
+            'error': 'error',
+            'warning': 'warning',
+            'info': 'info'
         };
         
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            position: relative;
-            background: ${colors[type] || colors.info};
-            color: white;
-            padding: 15px 25px 15px 20px;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: slideInRight 0.3s ease;
-            cursor: pointer;
-        `;
-        
-        notification.innerHTML = `
-            <span style="font-size: 20px;">${icons[type]}</span>
-            <span>${message}</span>
-        `;
-        
-        // Click para cerrar
-        notification.onclick = function() {
-            this.style.animation = 'slideOutRight 0.3s ease';
-            setTimeout(() => this.remove(), 300);
+        const backgrounds = {
+            'success': 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)',
+            'error': 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)',
+            'warning': 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)',
+            'info': 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)'
         };
-        
-        container.appendChild(notification);
-        
-        // Auto-cerrar después de 3 segundos (igual que shop.php)
-        setTimeout(() => {
-            notification.style.animation = 'slideOutRight 0.3s ease';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+            customClass: {
+                popup: 'modern-toast',
+                title: 'modern-toast-title'
+            },
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown animate__faster'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp animate__faster'
+            }
+        });
+
+        Toast.fire({
+            icon: icons[type] || 'info',
+            title: message,
+            background: backgrounds[type] || backgrounds.info,
+            color: '#fff',
+            iconColor: '#fff'
+        });
+    };
+
+    /**
+     * Alerta Modal Completa - Para mensajes importantes
+     */
+    window.showAlert = function(title, message, type = 'info') {
+        Swal.fire({
+            icon: type,
+            title: title,
+            html: message,
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#3498db',
+            customClass: {
+                popup: 'modern-alert',
+                confirmButton: 'modern-alert-button'
+            },
+            showClass: {
+                popup: 'animate__animated animate__zoomIn animate__faster'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__zoomOut animate__faster'
+            }
+        });
+    };
+
+    /**
+     * Confirmación de Eliminación - Con animación de advertencia
+     */
+    window.confirmDelete = function(message, callback) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            html: message,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e74c3c',
+            cancelButtonColor: '#95a5a6',
+            confirmButtonText: '<i class="fas fa-trash"></i> Sí, eliminar',
+            cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
+            reverseButtons: true,
+            focusCancel: true,
+            customClass: {
+                popup: 'modern-confirm',
+                confirmButton: 'modern-confirm-delete',
+                cancelButton: 'modern-confirm-cancel'
+            },
+            showClass: {
+                popup: 'animate__animated animate__shakeX animate__faster'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (callback) callback();
+            }
+        });
+    };
+
+    /**
+     * Confirmación Genérica - Para acciones que requieren confirmación
+     */
+    window.confirmAction = function(message, callback) {
+        Swal.fire({
+            title: '¿Confirmas esta acción?',
+            html: message,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3498db',
+            cancelButtonColor: '#95a5a6',
+            confirmButtonText: '<i class="fas fa-check"></i> Confirmar',
+            cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
+            reverseButtons: true,
+            customClass: {
+                popup: 'modern-confirm'
+            }
+        }).then((result) => {
+            if (result.isConfirmed && callback) {
+                callback();
+            }
+        });
+    };
+
+    /**
+     * Loading/Spinner - Indicador de carga con mensaje
+     */
+    window.showLoading = function(message = 'Procesando...') {
+        Swal.fire({
+            title: message,
+            html: '<div class="modern-loading"><div class="spinner"></div></div>',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            customClass: {
+                popup: 'modern-loading-popup'
+            },
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    };
+
+    /**
+     * Cerrar Loading
+     */
+    window.hideLoading = function() {
+        Swal.close();
     };
     
-    // Animaciones (igual que shop.php)
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideInRight {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+    // ========================================
+    // 🎨 ESTILOS PERSONALIZADOS PARA SWEETALERT2
+    // ========================================
+    const styleModernAlerts = document.createElement('style');
+    styleModernAlerts.textContent = `
+        /* Importar Animate.css para animaciones */
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+        
+        /* Toast moderno */
+        .modern-toast.swal2-toast {
+            border-radius: 12px !important;
+            padding: 16px 20px !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(10px);
         }
-        @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(400px);
-                opacity: 0;
-            }
+        
+        .modern-toast-title {
+            font-size: 15px !important;
+            font-weight: 600 !important;
+            font-family: 'Inter', sans-serif !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modern-toast .swal2-icon {
+            margin: 0 10px 0 0 !important;
+        }
+        
+        .modern-toast .swal2-timer-progress-bar {
+            background: rgba(255, 255, 255, 0.8) !important;
+            height: 3px !important;
+        }
+        
+        /* Alert modal moderno */
+        .modern-alert {
+            border-radius: 20px !important;
+            padding: 30px !important;
+        }
+        
+        .modern-alert .swal2-title {
+            font-family: 'Inter', sans-serif !important;
+            font-weight: 700 !important;
+            font-size: 24px !important;
+        }
+        
+        .modern-alert-button {
+            border-radius: 8px !important;
+            padding: 12px 30px !important;
+            font-weight: 600 !important;
+            font-family: 'Inter', sans-serif !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .modern-alert-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4) !important;
+        }
+        
+        /* Confirmación moderna */
+        .modern-confirm {
+            border-radius: 20px !important;
+            padding: 30px !important;
+        }
+        
+        .modern-confirm .swal2-title {
+            font-family: 'Inter', sans-serif !important;
+            font-weight: 700 !important;
+        }
+        
+        .modern-confirm-delete {
+            border-radius: 8px !important;
+            padding: 12px 25px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .modern-confirm-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4) !important;
+        }
+        
+        .modern-confirm-cancel {
+            border-radius: 8px !important;
+            padding: 12px 25px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .modern-confirm-cancel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(149, 165, 166, 0.4) !important;
+        }
+        
+        /* Loading moderno */
+        .modern-loading-popup {
+            border-radius: 20px !important;
+            padding: 40px !important;
+        }
+        
+        .modern-loading {
+            margin: 20px 0;
+        }
+        
+        .modern-loading .spinner {
+            border: 4px solid rgba(52, 152, 219, 0.2);
+            border-left-color: #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     `;
-    document.head.appendChild(style);
+    document.head.appendChild(styleModernAlerts);
+
+    // ===== MENÚ DESPLEGABLE DE USUARIO =====
+    function toggleUserMenu(event) {
+        event.stopPropagation();
+        const menu = document.getElementById('userDropdownMenu');
+        const icon = document.querySelector('.user-dropdown-icon');
+        
+        if (menu.classList.contains('show')) {
+            menu.classList.remove('show');
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            menu.classList.add('show');
+            icon.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    // Cerrar menú al hacer click fuera
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('userDropdownMenu');
+        const icon = document.querySelector('.user-dropdown-icon');
+        if (menu && menu.classList.contains('show')) {
+            menu.classList.remove('show');
+            if (icon) icon.style.transform = 'rotate(0deg)';
+        }
+    });
+
+    // ========================================
+    // 🎬 INICIALIZACIÓN DE LIBRERÍAS MODERNAS
+    // ========================================
+
+    /**
+     * 1. INICIALIZAR AOS.js - Animaciones on Scroll
+     * Configuración mejorada para animaciones más llamativas
+     */
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: 1000,           // Duración más larga para que sea más visible
+                easing: 'ease-out-cubic', // Animación más suave
+                once: false,              // Permitir que se repita al hacer scroll
+                offset: 50,               // Activar antes para mejor UX
+                delay: 0,                 // Sin delay global
+                mirror: true,             // Animar al hacer scroll arriba/abajo
+                anchorPlacement: 'top-bottom'
+            });
+            
+            console.log('✅ AOS.js inicializado con configuración mejorada');
+            
+            // Refrescar AOS cada vez que cambie el contenido
+            window.refreshAOS = function() {
+                AOS.refresh();
+                console.log('🔄 AOS refrescado');
+            };
+            
+            // Agregar animación a elementos que se carguen dinámicamente
+            const observer = new MutationObserver(function(mutations) {
+                AOS.refresh();
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+        } else {
+            console.error('❌ AOS.js no está cargado');
+        }
+    });
+
+    // 2. Inicializar Chart.js - Todos los Gráficos
+    window.addEventListener('load', function() {
+        // Gráfico 1: Estado del Inventario
+        const stockCtx = document.getElementById('stockChart');
+        if (stockCtx) {
+            stockChart = new Chart(stockCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Stock Saludable', 'Stock Bajo', 'Sin Stock'],
+                    datasets: [{
+                        data: [
+                            <?php echo $total_productos - $productos_stock_bajo - $productos_sin_stock; ?>,
+                            <?php echo $productos_stock_bajo; ?>,
+                            <?php echo $productos_sin_stock; ?>
+                        ],
+                        backgroundColor: [
+                            '#2ecc71',
+                            '#f39c12',
+                            '#e74c3c'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 12,
+                                font: {
+                                    size: 11,
+                                    family: 'Inter, sans-serif'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + ' productos';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            console.log('✅ Chart.js - Gráfico de Stock inicializado');
+        }
+
+        // Gráfico 2: Productos por Categoría
+        const categoryCtx = document.getElementById('categoryChart');
+        if (categoryCtx) {
+            fetch('app/controllers/DashboardController.php?action=getCategoryStats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.categories) {
+                        const labels = data.categories.map(c => c.nombre_categoria);
+                        const counts = data.categories.map(c => c.total_productos);
+                        
+                        categoryChart = new Chart(categoryCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Productos',
+                                    data: counts,
+                                    backgroundColor: '#3498db',
+                                    borderColor: '#2980b9',
+                                    borderWidth: 1,
+                                    borderRadius: 5
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            stepSize: 1,
+                                            font: {
+                                                size: 10,
+                                                family: 'Inter, sans-serif'
+                                            }
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            font: {
+                                                size: 10,
+                                                family: 'Inter, sans-serif'
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                return 'Productos: ' + context.parsed.y;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        console.log('✅ Chart.js - Gráfico de Categorías inicializado');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error cargando datos de categorías:', error);
+                });
+        }
+
+        // Gráfico 3: Distribución por Género
+        const genderCtx = document.getElementById('genderChart');
+        if (genderCtx) {
+            fetch('app/controllers/DashboardController.php?action=getGenderDistribution')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.distribution) {
+                        const labels = data.distribution.map(d => {
+                            const generoMap = {
+                                'M': 'Masculino',
+                                'F': 'Femenino',
+                                'Unisex': 'Unisex',
+                                'Kids': 'Niños'
+                            };
+                            return generoMap[d.genero_producto] || d.genero_producto;
+                        });
+                        const counts = data.distribution.map(d => d.cantidad);
+                        const colors = ['#3b82f6', '#ec4899', '#8b5cf6', '#f59e0b'];
+                        
+                        genderChart = new Chart(genderCtx, {
+                            type: 'pie',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    data: counts,
+                                    backgroundColor: colors.slice(0, counts.length),
+                                    borderWidth: 2,
+                                    borderColor: '#fff'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            padding: 12,
+                                            font: {
+                                                size: 11,
+                                                family: 'Inter, sans-serif'
+                                            }
+                                        }
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                return context.label + ': ' + context.parsed + ' productos';
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        console.log('✅ Chart.js - Gráfico de Género inicializado');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error cargando distribución por género:', error);
+                });
+        }
+
+        // Gráfico 4: Ventas Mensuales
+        const salesCtx = document.getElementById('salesChart');
+        if (salesCtx) {
+            fetch('app/controllers/DashboardController.php?action=getSalesData')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.sales && data.sales.mensuales) {
+                        const labels = data.sales.mensuales.map(v => {
+                            const [year, month] = v.mes.split('-');
+                            return new Date(year, month - 1).toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
+                        });
+                        const ventasData = data.sales.mensuales.map(v => parseFloat(v.total_ventas));
+                        const pedidosData = data.sales.mensuales.map(v => parseInt(v.total_pedidos));
+                        
+                        salesChart = new Chart(salesCtx, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: 'Ventas (S/.)',
+                                        data: ventasData,
+                                        borderColor: '#10b981',
+                                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                        borderWidth: 2,
+                                        fill: true,
+                                        tension: 0.4
+                                    },
+                                    {
+                                        label: 'Pedidos',
+                                        data: pedidosData,
+                                        borderColor: '#3b82f6',
+                                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                        borderWidth: 2,
+                                        fill: true,
+                                        tension: 0.4,
+                                        yAxisID: 'y1'
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                interaction: {
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                scales: {
+                                    y: {
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'left',
+                                        beginAtZero: true,
+                                        ticks: {
+                                            font: {
+                                                size: 10,
+                                                family: 'Inter, sans-serif'
+                                            },
+                                            callback: function(value) {
+                                                return 'S/. ' + value.toFixed(0);
+                                            }
+                                        }
+                                    },
+                                    y1: {
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'right',
+                                        beginAtZero: true,
+                                        grid: {
+                                            drawOnChartArea: false
+                                        },
+                                        ticks: {
+                                            font: {
+                                                size: 10,
+                                                family: 'Inter, sans-serif'
+                                            }
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            font: {
+                                                size: 10,
+                                                family: 'Inter, sans-serif'
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                        labels: {
+                                            padding: 15,
+                                            font: {
+                                                size: 11,
+                                                family: 'Inter, sans-serif'
+                                            }
+                                        }
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                let label = context.dataset.label || '';
+                                                if (label) {
+                                                    label += ': ';
+                                                }
+                                                if (context.datasetIndex === 0) {
+                                                    label += 'S/. ' + context.parsed.y.toFixed(2);
+                                                } else {
+                                                    label += context.parsed.y + ' pedidos';
+                                                }
+                                                return label;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        console.log('✅ Chart.js - Gráfico de Ventas inicializado');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error cargando datos de ventas:', error);
+                });
+        }
+
+        // Cargar datos adicionales del dashboard
+        setTimeout(() => {
+            loadDashboardExtras();
+        }, 1000);
+    });
+
+    // 3. SweetAlert2 ya está listo para usar globalmente
+    console.log('✅ SweetAlert2 listo para usar');
+
+    // 4. Fetch API ya está disponible nativamente
+    console.log('✅ Fetch API disponible nativamente');
+
+    // ========================================
+    // 🔄 SISTEMA DE ACTUALIZACIÓN EN TIEMPO REAL
+    // ========================================
+    
+    /**
+     * Actualizar estadísticas del dashboard en tiempo real
+     * Usa Fetch API para obtener datos frescos del servidor
+     */
+    let dashboardUpdateInterval = null;
+    let stockChart = null;
+    let categoryChart = null;
+    let genderChart = null;
+    let salesChart = null;
+    
+    window.updateDashboardStats = async function() {
+        try {
+            console.log('🔄 Actualizando estadísticas del dashboard...');
+            
+            // Mostrar indicador de carga en el badge
+            const realtimeIndicator = document.getElementById('realtime-indicator');
+            if (realtimeIndicator) {
+                realtimeIndicator.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i>Actualizando...';
+            }
+            
+            // Obtener estadísticas actualizadas con Fetch API
+            const response = await fetch('app/controllers/DashboardController.php?action=getStats', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Actualizar tarjetas principales
+                updateStatCard('total-productos', data.stats.total_productos, 'productos');
+                updateStatCard('total-usuarios', data.stats.total_usuarios, 'usuarios');
+                updateStatCard('productos-stock-bajo', data.stats.productos_stock_bajo, 'alertas');
+                updateStatCard('total-categorias', data.stats.total_categorias, 'categorias');
+                updateStatCard('total-marcas', data.stats.total_marcas, 'marcas');
+                
+                // Actualizar tarjetas secundarias
+                updateStatCard('total-pedidos', data.stats.total_pedidos || 0, 'pedidos');
+                updateStatCard('total-resenas', data.stats.total_resenas || 0, 'resenas');
+                updateStatCard('total-favoritos', data.stats.total_favoritos || 0, 'favoritos');
+                updateStatCard('total-carrito', data.stats.total_carrito || 0, 'carrito');
+                updateStatCard('productos-semana', data.stats.productos_semana || 0, 'semana');
+                
+                // Actualizar ventas del mes
+                const ventasMesEl = document.getElementById('ventas-mes');
+                if (ventasMesEl) {
+                    ventasMesEl.textContent = 'S/. ' + formatNumber(data.stats.ventas_mes || 0);
+                }
+                
+                // Actualizar pedidos pendientes
+                const pedidosPendientesEl = document.getElementById('pedidos-pendientes');
+                if (pedidosPendientesEl) {
+                    pedidosPendientesEl.textContent = (data.stats.pedidos_pendientes || 0) + ' pendientes';
+                }
+                
+                // Actualizar calificación promedio
+                const calificacionPromedioEl = document.getElementById('calificacion-promedio');
+                if (calificacionPromedioEl) {
+                    calificacionPromedioEl.textContent = (data.stats.calificacion_promedio || 0) + ' ★ promedio';
+                }
+                
+                // Actualizar valor de inventario con formato
+                const valorInventarioEl = document.getElementById('valor-inventario');
+                if (valorInventarioEl) {
+                    const nuevoValor = 'S/. ' + formatNumber(data.stats.valor_inventario);
+                    if (valorInventarioEl.textContent !== nuevoValor) {
+                        valorInventarioEl.style.transform = 'scale(1.1)';
+                        valorInventarioEl.style.color = '#2ecc71';
+                        setTimeout(() => {
+                            valorInventarioEl.textContent = nuevoValor;
+                            setTimeout(() => {
+                                valorInventarioEl.style.transform = 'scale(1)';
+                                valorInventarioEl.style.color = '';
+                            }, 150);
+                        }, 100);
+                    }
+                }
+                
+                // Actualizar gráfico de stock si existe
+                if (stockChart && data.stats.stock_distribution) {
+                    stockChart.data.datasets[0].data = [
+                        data.stats.stock_distribution.saludable,
+                        data.stats.stock_distribution.bajo,
+                        data.stats.stock_distribution.sin_stock
+                    ];
+                    stockChart.update('active');
+                }
+                
+                // Actualizar tiempo de última actualización
+                const lastUpdateTime = document.getElementById('last-update-time');
+                if (lastUpdateTime) {
+                    const now = new Date();
+                    const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    lastUpdateTime.innerHTML = `<i class="fas fa-clock"></i> Última actualización: ${timeStr}`;
+                    lastUpdateTime.classList.add('stat-updated');
+                    setTimeout(() => lastUpdateTime.classList.remove('stat-updated'), 500);
+                }
+                
+                // Restaurar indicador
+                if (realtimeIndicator) {
+                    realtimeIndicator.innerHTML = '<i class="fas fa-sync-alt" style="margin-right: 5px;"></i>Actualización automática';
+                }
+                
+                console.log('✅ Estadísticas actualizadas correctamente');
+                
+                // Mostrar notificación sutil solo la primera vez
+                if (!window.dashboardFirstUpdate) {
+                    showNotification('Dashboard actualizado en tiempo real', 'success');
+                    window.dashboardFirstUpdate = true;
+                }
+            }
+            
+        } catch (error) {
+            console.error('❌ Error actualizando dashboard:', error);
+            
+            // Mostrar error en el indicador
+            const realtimeIndicator = document.getElementById('realtime-indicator');
+            if (realtimeIndicator) {
+                realtimeIndicator.innerHTML = '<i class="fas fa-exclamation-triangle" style="margin-right: 5px;"></i>Error de conexión';
+                realtimeIndicator.style.background = 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
+                
+                setTimeout(() => {
+                    realtimeIndicator.innerHTML = '<i class="fas fa-sync-alt" style="margin-right: 5px;"></i>Actualización automática';
+                    realtimeIndicator.style.background = 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)';
+                }, 3000);
+            }
+        }
+    };
+    
+    /**
+     * Cargar datos adicionales: Actividad Reciente, Top Productos, etc.
+     */
+    window.loadDashboardExtras = async function() {
+        try {
+            // Cargar actividad reciente
+            const activityResponse = await fetch('app/controllers/DashboardController.php?action=getRecentActivity');
+            const activityData = await activityResponse.json();
+            
+            if (activityData.success) {
+                renderRecentActivity(activityData.activities);
+            }
+            
+            // Cargar productos más favoritos
+            const topProductsResponse = await fetch('app/controllers/DashboardController.php?action=getTopProducts');
+            const topProductsData = await topProductsResponse.json();
+            
+            if (topProductsData.success) {
+                renderTopProducts(topProductsData.top_products);
+            }
+            
+            // Cargar distribución por género
+            const genderResponse = await fetch('app/controllers/DashboardController.php?action=getGenderDistribution');
+            const genderData = await genderResponse.json();
+            
+            if (genderData.success && genderChart) {
+                updateGenderChart(genderData.distribution);
+            }
+            
+            // Cargar ventas mensuales
+            const salesResponse = await fetch('app/controllers/DashboardController.php?action=getSalesData');
+            const salesData = await salesResponse.json();
+            
+            if (salesData.success && salesChart) {
+                updateSalesChart(salesData.sales.mensuales);
+            }
+            
+        } catch (error) {
+            console.error('❌ Error cargando datos adicionales:', error);
+        }
+    };
+    
+    /**
+     * Renderizar actividad reciente
+     */
+    function renderRecentActivity(activities) {
+        const container = document.getElementById('recent-activity');
+        if (!container) return;
+        
+        let html = '';
+        
+        // Productos recientes
+        if (activities.productos_recientes && activities.productos_recientes.length > 0) {
+            activities.productos_recientes.slice(0, 5).forEach(producto => {
+                html += `
+                    <div class="activity-item">
+                        <div class="activity-item-header">
+                            <span class="activity-item-title">${producto.nombre_producto}</span>
+                            <span class="activity-item-time">${formatDateTime(producto.fecha_registro)}</span>
+                        </div>
+                        <div class="activity-item-details">
+                            <span class="activity-badge info">
+                                <i class="fas fa-tag"></i> ${producto.nombre_categoria || 'Sin categoría'}
+                            </span>
+                            <span class="activity-badge success">
+                                <i class="fas fa-boxes"></i> Stock: ${producto.stock_actual_producto || 0}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            html = '<p style="text-align: center; color: #999; padding: 20px;">No hay actividad reciente</p>';
+        }
+        
+        container.innerHTML = html;
+    }
+    
+    /**
+     * Renderizar productos más favoritos y mejor calificados
+     */
+    function renderTopProducts(topProducts) {
+        // Más favoritos
+        const favoritesContainer = document.getElementById('top-favorites');
+        if (favoritesContainer && topProducts.favoritos) {
+            let html = '';
+            topProducts.favoritos.slice(0, 5).forEach(producto => {
+                html += `
+                    <div class="activity-item">
+                        <div class="activity-item-header">
+                            <span class="activity-item-title">${producto.nombre_producto}</span>
+                            <span class="activity-badge warning">
+                                <i class="fas fa-heart"></i> ${producto.total_favoritos}
+                            </span>
+                        </div>
+                        <div class="activity-item-details">
+                            <span style="color: #059669; font-weight: 600;">S/. ${formatNumber(producto.precio_producto)}</span>
+                            <span style="color: #666;">${producto.nombre_categoria || 'Sin categoría'}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            favoritesContainer.innerHTML = html || '<p style="text-align: center; color: #999;">Sin datos</p>';
+        }
+        
+        // Mejor calificados
+        const ratedContainer = document.getElementById('top-rated');
+        if (ratedContainer && topProducts.calificados) {
+            let html = '';
+            topProducts.calificados.slice(0, 5).forEach(producto => {
+                html += `
+                    <div class="activity-item">
+                        <div class="activity-item-header">
+                            <span class="activity-item-title">${producto.nombre_producto}</span>
+                            <span class="activity-badge success">
+                                <i class="fas fa-star"></i> ${parseFloat(producto.calificacion_promedio).toFixed(1)}
+                            </span>
+                        </div>
+                        <div class="activity-item-details">
+                            <span style="color: #059669; font-weight: 600;">S/. ${formatNumber(producto.precio_producto)}</span>
+                            <span style="color: #666;">${producto.total_resenas} reseñas</span>
+                        </div>
+                    </div>
+                `;
+            });
+            ratedContainer.innerHTML = html || '<p style="text-align: center; color: #999;">Sin datos</p>';
+        }
+    }
+    
+    /**
+     * Actualizar gráfico de género
+     */
+    function updateGenderChart(distribution) {
+        if (!genderChart || !distribution) return;
+        
+        const labels = distribution.map(d => d.genero_producto);
+        const data = distribution.map(d => d.cantidad);
+        
+        genderChart.data.labels = labels;
+        genderChart.data.datasets[0].data = data;
+        genderChart.update();
+    }
+    
+    /**
+     * Actualizar gráfico de ventas
+     */
+    function updateSalesChart(ventas) {
+        if (!salesChart || !ventas) return;
+        
+        const labels = ventas.map(v => {
+            const [year, month] = v.mes.split('-');
+            return new Date(year, month - 1).toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
+        });
+        const data = ventas.map(v => parseFloat(v.total_ventas));
+        
+        salesChart.data.labels = labels;
+        salesChart.data.datasets[0].data = data;
+        salesChart.update();
+    }
+    
+    /**
+     * Formatear fecha y hora
+     */
+    function formatDateTime(dateStr) {
+        const date = new Date(dateStr);
+        const now = new Date();
+        const diff = now - date;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        
+        if (days === 0) return 'Hoy';
+        if (days === 1) return 'Ayer';
+        if (days < 7) return `Hace ${days} días`;
+        return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+    }
+    
+    /**
+     * Actualizar una tarjeta de estadística con animación
+     */
+    function updateStatCard(elementId, newValue, type) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        
+        const currentValue = element.textContent.trim();
+        const newValueStr = newValue.toString();
+        
+        // Solo actualizar si el valor cambió
+        if (currentValue !== newValueStr) {
+            // Animación de cambio
+            element.style.transform = 'scale(1.1)';
+            element.style.color = '#2ecc71';
+            
+            setTimeout(() => {
+                element.textContent = newValueStr;
+                
+                setTimeout(() => {
+                    element.style.transform = 'scale(1)';
+                    element.style.color = '';
+                }, 150);
+            }, 100);
+        }
+    }
+    
+    /**
+     * Formatear números con separadores de miles
+     */
+    function formatNumber(num) {
+        return new Intl.NumberFormat('es-PE').format(num);
+    }
+    
+    /**
+     * Iniciar actualización automática del dashboard
+     * Se actualiza cada 30 segundos
+     */
+    window.startDashboardAutoUpdate = function(intervalSeconds = 30) {
+        console.log(`🔄 Iniciando actualización automática cada ${intervalSeconds} segundos`);
+        
+        // Limpiar intervalo existente
+        if (dashboardUpdateInterval) {
+            clearInterval(dashboardUpdateInterval);
+        }
+        
+        // Configurar nuevo intervalo
+        dashboardUpdateInterval = setInterval(() => {
+            const currentTab = document.querySelector('.tab-content.active');
+            
+            // Solo actualizar si estamos en la pestaña del dashboard
+            if (currentTab && currentTab.id === 'dashboard') {
+                updateDashboardStats();
+            }
+        }, intervalSeconds * 1000);
+        
+        console.log('✅ Actualización automática configurada');
+    };
+    
+    /**
+     * Detener actualización automática
+     */
+    window.stopDashboardAutoUpdate = function() {
+        if (dashboardUpdateInterval) {
+            clearInterval(dashboardUpdateInterval);
+            dashboardUpdateInterval = null;
+            console.log('⏸️ Actualización automática detenida');
+        }
+    };
+    
+    // Iniciar actualización automática solo si estamos en el dashboard
+    window.addEventListener('load', function() {
+        const currentTab = document.querySelector('.tab-content.active');
+        if (currentTab && currentTab.id === 'dashboard') {
+            // Primera actualización después de 5 segundos
+            setTimeout(() => {
+                updateDashboardStats();
+            }, 5000);
+            
+            // Iniciar actualización automática cada 30 segundos
+            startDashboardAutoUpdate(30);
+        }
+    });
+    
+    // Actualizar cuando se cambia a la pestaña dashboard
+    window.addEventListener('tabchange', function(e) {
+        if (e.detail && e.detail.tabId === 'dashboard') {
+            updateDashboardStats();
+            startDashboardAutoUpdate(30);
+        } else {
+            stopDashboardAutoUpdate();
+        }
+    });
+
+    // 5. Ejemplo de uso de SweetAlert2 para reemplazar alert()
+    window.alert = function(message) {
+        Swal.fire({
+            title: 'Aviso',
+            text: message,
+            icon: 'info',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Entendido'
+        });
+    };
+
+    // Ejemplo de uso de SweetAlert2 para confirmaciones
+    window.confirmAction = function(message, callback) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: message,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, continuar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed && callback) {
+                callback();
+            }
+        });
+    };
+
+    console.log('✅ Todas las librerías modernas inicializadas correctamente');
+    console.log('✅ Sistema de actualización en tiempo real configurado');
     </script>
 
 </body>

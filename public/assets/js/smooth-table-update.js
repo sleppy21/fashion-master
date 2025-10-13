@@ -438,8 +438,13 @@ class SmoothTableUpdater {
     }
 }
 
+// ===== EXPORTAR CLASE AL SCOPE GLOBAL =====
+window.SmoothTableUpdater = SmoothTableUpdater;
+console.log('✅ SmoothTableUpdater exportado al scope global');
+
 // Crear instancia global
 window.smoothTableUpdater = new SmoothTableUpdater();
+console.log('✅ Instancia global smoothTableUpdater creada');
 
 // Exportar para uso en otros módulos
 if (typeof module !== 'undefined' && module.exports) {

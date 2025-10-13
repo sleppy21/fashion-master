@@ -135,10 +135,23 @@ function listProductos($conn) {
         }
     }
     
-    // Filtro por fecha de creación
+    // Filtro por fecha de creación - Soporta rango "YYYY-MM-DD to YYYY-MM-DD"
     if (!empty($fecha)) {
-        $where_conditions[] = "DATE(p.fecha_creacion_producto) = ?";
-        $params[] = $fecha;
+        // Verificar si es un rango de fechas
+        if (strpos($fecha, ' to ') !== false) {
+            // Es un rango: "2025-01-01 to 2025-01-31"
+            list($fecha_inicio, $fecha_fin) = explode(' to ', $fecha);
+            $fecha_inicio = trim($fecha_inicio);
+            $fecha_fin = trim($fecha_fin);
+            
+            $where_conditions[] = "DATE(p.fecha_creacion_producto) BETWEEN ? AND ?";
+            $params[] = $fecha_inicio;
+            $params[] = $fecha_fin;
+        } else {
+            // Es una fecha exacta
+            $where_conditions[] = "DATE(p.fecha_creacion_producto) = ?";
+            $params[] = $fecha;
+        }
     }
     
     // Construir query base

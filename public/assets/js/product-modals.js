@@ -1154,6 +1154,10 @@ window.showStockModal = function(productId, currentStock, productName) {
     
 })();
 
+    // ===== EXPORTAR CLASE AL SCOPE GLOBAL =====
+    window.ProductModalManager = ProductModalManager;
+    console.log('✅ ProductModalManager exportado al scope global');
+
 } else {
     console.warn('⚠️ ProductModalManager ya existe - saltando redeclaración');
 }

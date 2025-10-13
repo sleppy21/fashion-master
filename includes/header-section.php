@@ -1,4 +1,5 @@
 <!-- Header Section Begin -->
+<!-- VERSION 2.1 - <?php echo date('Y-m-d H:i:s'); ?> -->
 <style>
     /* Estilos globales para dropdowns - aplican en todas las resoluciones */
     .header__menu .dropdown {

@@ -71,6 +71,7 @@ $filtro_marca = isset($_GET['m']) ? intval($_GET['m']) : (isset($_GET['marca']) 
 $filtro_precio_min = isset($_GET['pmin']) ? floatval($_GET['pmin']) : (isset($_GET['precio_min']) ? floatval($_GET['precio_min']) : 0);
 $filtro_precio_max = isset($_GET['pmax']) ? floatval($_GET['pmax']) : (isset($_GET['precio_max']) ? floatval($_GET['precio_max']) : 10000);
 $filtro_buscar = isset($_GET['q']) ? trim($_GET['q']) : (isset($_GET['buscar']) ? trim($_GET['buscar']) : '');
+$filtro_ordenar = isset($_GET['sort']) ? $_GET['sort'] : 'newest';
 
 // Construir query con filtros
 $query = "
@@ -127,7 +128,31 @@ $query .= " GROUP BY p.id_producto, p.nombre_producto, p.precio_producto, p.codi
             p.descripcion_producto, p.descuento_porcentaje_producto, p.genero_producto, 
             p.en_oferta_producto, p.stock_actual_producto, p.url_imagen_producto,
             m.nombre_marca, c.nombre_categoria, c.id_categoria, m.id_marca";
-$query .= " ORDER BY p.id_producto DESC";
+
+// Agregar ordenamiento según el filtro seleccionado
+switch($filtro_ordenar) {
+    case 'price_asc':
+        $query .= " ORDER BY (p.precio_producto - (p.precio_producto * p.descuento_porcentaje_producto / 100)) ASC";
+        break;
+    case 'price_desc':
+        $query .= " ORDER BY (p.precio_producto - (p.precio_producto * p.descuento_porcentaje_producto / 100)) DESC";
+        break;
+    case 'name_asc':
+        $query .= " ORDER BY p.nombre_producto ASC";
+        break;
+    case 'name_desc':
+        $query .= " ORDER BY p.nombre_producto DESC";
+        break;
+    case 'newest':
+        $query .= " ORDER BY p.id_producto DESC";
+        break;
+    case 'rating':
+        $query .= " ORDER BY calificacion_promedio DESC, total_resenas DESC";
+        break;
+    default:
+        $query .= " ORDER BY p.id_producto DESC";
+        break;
+}
 
 // Ejecutar consulta
 $productos = [];
@@ -151,7 +176,7 @@ try {
 // Obtener todas las marcas para el filtro
 $marcas = [];
 try {
-    $marcas_resultado = executeQuery("SELECT id_marca, nombre_marca FROM marca WHERE status_marca = 1 ORDER BY nombre_marca ASC");
+    $marcas_resultado = executeQuery("SELECT id_marca, nombre_marca, url_imagen_marca FROM marca WHERE status_marca = 1 ORDER BY nombre_marca ASC");
     $marcas = $marcas_resultado ? $marcas_resultado : [];
 } catch(Exception $e) {
     error_log("Error al obtener marcas: " . $e->getMessage());
@@ -184,24 +209,119 @@ if($usuario_logueado) {
     <link rel="stylesheet" href="public/assets/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/font-awesome.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/jquery-ui.min.css" type="text/css">
+    
+    <!-- noUiSlider - Reemplaza jQuery UI Slider -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
+    
     <link rel="stylesheet" href="public/assets/css/magnific-popup.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
+    
+    <?php include 'includes/modern-libraries.php'; ?>
     
     <!-- Modals CSS -->
     <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
     
     <!-- Header Responsive Global CSS -->
-    <link rel="stylesheet" href="public/assets/css/header-responsive.css?v=2.0" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/header-responsive.css?v=3.0" type="text/css">
     
     <!-- Header Override - Máxima prioridad -->
     <link rel="stylesheet" href="public/assets/css/header-override.css?v=2.0" type="text/css">
     
     <!-- Global Responsive Styles - TODO EL PROYECTO -->
     <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
+    
+    <!-- ===================================================================
+         FUNCIONES DE FILTROS - CARGADAS EN HEAD PARA DISPONIBILIDAD GLOBAL
+         =================================================================== -->
+    <script>
+    // Variables globales para manejar filtros
+    var filtrosActuales = {
+        categoria: <?php echo $filtro_categoria ?: 'null'; ?>,
+        genero: <?php echo $filtro_genero ? "'" . $filtro_genero . "'" : 'null'; ?>,
+        marca: <?php echo $filtro_marca ?: 'null'; ?>,
+        precio_min: <?php echo $filtro_precio_min; ?>,
+        precio_max: <?php echo $filtro_precio_max; ?>,
+        buscar: '<?php echo addslashes($filtro_buscar); ?>'
+    };
+
+    // Función unificada para aplicar filtros - DISPONIBLE GLOBALMENTE
+    function aplicarFiltro(tipo, valor) {
+        // Actualizar el filtro específico
+        if(valor === null || valor === '' || valor === 'all') {
+            filtrosActuales[tipo] = null;
+        } else {
+            filtrosActuales[tipo] = valor;
+        }
+        
+        // Actualizar estado visual de los botones (solo si el DOM está listo)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                actualizarBotonesActivos(tipo, valor);
+                aplicarFiltrosAjax();
+            });
+        } else {
+            actualizarBotonesActivos(tipo, valor);
+            aplicarFiltrosAjax();
+        }
+    }
+
+    // Función para actualizar el estado visual de los botones
+    function actualizarBotonesActivos(tipo, valor) {
+        const botones = document.querySelectorAll('[data-filter-type="' + tipo + '"]');
+        
+        botones.forEach(function(boton) {
+            const btnValue = boton.getAttribute('data-filter-value');
+            boton.classList.remove('active');
+            
+            if ((valor === null || valor === '' || valor === 'all') && btnValue === '') {
+                boton.classList.add('active');
+            } else if (btnValue == valor) {
+                boton.classList.add('active');
+            }
+        });
+    }
+
+    // Función para aplicar filtros vía Fetch API
+    function aplicarFiltrosAjax() {
+        let params = new URLSearchParams();
+        
+        if(filtrosActuales.categoria) params.set('c', filtrosActuales.categoria);
+        if(filtrosActuales.genero) params.set('g', filtrosActuales.genero);
+        if(filtrosActuales.marca) params.set('m', filtrosActuales.marca);
+        if(filtrosActuales.precio_min > 0 || filtrosActuales.precio_max < 500) {
+            params.set('pmin', filtrosActuales.precio_min);
+            params.set('pmax', filtrosActuales.precio_max);
+        }
+        if(filtrosActuales.buscar) params.set('q', filtrosActuales.buscar);
+        
+        // Agregar ordenamiento
+        const sortValue = document.getElementById('sortSelect')?.value;
+        if(sortValue && sortValue !== 'default') {
+            params.set('sort', sortValue);
+        }
+        
+        const newUrl = params.toString() ? '?' + params.toString() : window.location.pathname;
+        history.pushState({}, '', newUrl);
+        
+        const productsContainer = document.querySelector('.shop__product__option__right').closest('.row').nextElementSibling;
+        if (productsContainer) {
+            productsContainer.innerHTML = '<div class="col-12 text-center" style="padding: 60px 20px;"><i class="fa fa-spinner fa-spin" style="font-size: 48px; color: #ca1515;"></i><p style="margin-top: 20px; color: #666;">Cargando productos...</p></div>';
+        }
+        
+        fetch('app/actions/get_products_filtered.php?' + params.toString())
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && productsContainer) {
+                    productsContainer.innerHTML = data.html;
+                    document.dispatchEvent(new CustomEvent('productosActualizados'));
+                }
+            })
+            .catch(error => console.error('Error en filtros:', error));
+    }
+    </script>
     
     <style>
         /* ============================================
@@ -218,20 +338,7 @@ if($usuario_logueado) {
     include 'includes/header-section.php'; 
     ?>
 
-    <!-- Breadcrumb Begin -->
-    <div class="breadcrumb-option">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="breadcrumb__links">
-                        <a href="./index.php"><i class="fa fa-home"></i> Inicio</a>
-                        <span>Tienda</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Breadcrumb End -->
+    <?php include 'includes/breadcrumb.php'; ?>
 
     <!-- Botón de filtros (solo visible en móvil) -->
     <button class="btn-mobile-filters" id="btnMobileFilters">
@@ -265,120 +372,137 @@ if($usuario_logueado) {
     <section class="shop spad">
         <div class="container">
             <div class="row">
-                <!-- SIDEBAR CON FILTROS -->
+                <!-- SIDEBAR CON FILTROS MEJORADO -->
                 <div class="col-lg-3 col-md-3">
                     <div class="shop__sidebar">
-                        <!-- Botón limpiar filtros ARRIBA -->
-                        <div class="mb-3">
-                            <button class="btn-clear-filters w-100" onclick="limpiarFiltros()">
-                                <i class="fa fa-refresh"></i> 
-                                <span>Restablecer filtros</span>
+                        <!-- Header de filtros -->
+                        <div class="filters-header">
+                            <h3><i class="fa fa-sliders"></i> Filtros</h3>
+                            <button class="btn-clear-filters-compact" onclick="limpiarFiltros()" title="Limpiar filtros">
+                                <i class="fa fa-redo"></i>
                             </button>
                         </div>
                         
                         <!-- Filtro por Categorías -->
-                        <div class="sidebar__categories mb-4">
-                            <div class="section-title">
-                                <h4>Categorías</h4>
+                        <div class="filter-section">
+                            <div class="filter-section-header" data-toggle="collapse" data-target="#categoriesCollapse">
+                                <h4><i class="fa fa-th-large"></i> Categorías</h4>
+                                <i class="fa fa-chevron-down toggle-icon"></i>
                             </div>
-                            <div class="filter-buttons-group" style="display: flex; flex-direction: column; gap: 8px;">
-                                <button class="filter-btn <?php echo !$filtro_categoria ? 'active' : ''; ?>" 
-                                        onclick="aplicarFiltro('categoria', null)"
-                                        data-filter-type="categoria"
-                                        data-filter-value="">
-                                    <i class="fa fa-th"></i> Todas
-                                </button>
-                                <?php foreach($categorias as $categoria): 
-                                    $is_active = $filtro_categoria == $categoria['id_categoria'];
-                                ?>
-                                <button class="filter-btn <?php echo $is_active ? 'active' : ''; ?>" 
-                                        onclick="aplicarFiltro('categoria', <?php echo $categoria['id_categoria']; ?>)"
-                                        data-filter-type="categoria"
-                                        data-filter-value="<?php echo $categoria['id_categoria']; ?>">
-                                    <?php echo htmlspecialchars($categoria['nombre_categoria']); ?>
-                                </button>
-                                <?php endforeach; ?>
+                            <div class="filter-section-body collapse show" id="categoriesCollapse">
+                                <div class="filter-buttons-grid">
+                                    <button class="filter-chip <?php echo !$filtro_categoria ? 'active' : ''; ?>" 
+                                            onclick="aplicarFiltro('categoria', null)"
+                                            data-filter-type="categoria"
+                                            data-filter-value="">
+                                        <i class="fa fa-th"></i>
+                                        <span>Todas</span>
+                                    </button>
+                                    <?php foreach($categorias as $categoria): 
+                                        $is_active = $filtro_categoria == $categoria['id_categoria'];
+                                    ?>
+                                    <button class="filter-chip <?php echo $is_active ? 'active' : ''; ?>" 
+                                            onclick="aplicarFiltro('categoria', <?php echo $categoria['id_categoria']; ?>)"
+                                            data-filter-type="categoria"
+                                            data-filter-value="<?php echo $categoria['id_categoria']; ?>">
+                                        <span><?php echo htmlspecialchars($categoria['nombre_categoria']); ?></span>
+                                    </button>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Filtro por Género -->
-                        <div class="sidebar__filter mb-4">
-                            <div class="section-title">
-                                <h4>Género</h4>
+                        <div class="filter-section">
+                            <div class="filter-section-header" data-toggle="collapse" data-target="#genderCollapse">
+                                <h4><i class="fa fa-venus-mars"></i> Género</h4>
+                                <i class="fa fa-chevron-down toggle-icon"></i>
                             </div>
-                            <div class="filter-buttons-group">
-                                <button class="filter-btn <?php echo !$filtro_genero || $filtro_genero == 'all' ? 'active' : ''; ?>" 
-                                        onclick="aplicarFiltro('genero', null)"
-                                        data-filter-type="genero"
-                                        data-filter-value="">
-                                    <i class="fa fa-users"></i> Todos
-                                </button>
-                                <button class="filter-btn <?php echo $filtro_genero == 'F' ? 'active' : ''; ?>" 
-                                        onclick="aplicarFiltro('genero', 'F')"
-                                        data-filter-type="genero"
-                                        data-filter-value="F">
-                                    <i class="fa fa-female"></i> Mujer
-                                </button>
-                                <button class="filter-btn <?php echo $filtro_genero == 'M' ? 'active' : ''; ?>" 
-                                        onclick="aplicarFiltro('genero', 'M')"
-                                        data-filter-type="genero"
-                                        data-filter-value="M">
-                                    <i class="fa fa-male"></i> Hombre
-                                </button>
-                                <button class="filter-btn <?php echo $filtro_genero == 'Kids' ? 'active' : ''; ?>" 
-                                        onclick="aplicarFiltro('genero', 'Kids')"
-                                        data-filter-type="genero"
-                                        data-filter-value="Kids">
-                                    <i class="fa fa-child"></i> Kids
-                                </button>
+                            <div class="filter-section-body collapse show" id="genderCollapse">
+                                <div class="filter-buttons-grid gender-grid">
+                                    <button class="filter-chip <?php echo !$filtro_genero || $filtro_genero == 'all' ? 'active' : ''; ?>" 
+                                            onclick="aplicarFiltro('genero', null)"
+                                            data-filter-type="genero"
+                                            data-filter-value="">
+                                        <i class="fa fa-users"></i>
+                                        <span>Todos</span>
+                                    </button>
+                                    <button class="filter-chip <?php echo $filtro_genero == 'F' ? 'active' : ''; ?>" 
+                                            onclick="aplicarFiltro('genero', 'F')"
+                                            data-filter-type="genero"
+                                            data-filter-value="F">
+                                        <i class="fa fa-female"></i>
+                                        <span>Mujer</span>
+                                    </button>
+                                    <button class="filter-chip <?php echo $filtro_genero == 'M' ? 'active' : ''; ?>" 
+                                            onclick="aplicarFiltro('genero', 'M')"
+                                            data-filter-type="genero"
+                                            data-filter-value="M">
+                                        <i class="fa fa-male"></i>
+                                        <span>Hombre</span>
+                                    </button>
+                                    <button class="filter-chip <?php echo $filtro_genero == 'Kids' ? 'active' : ''; ?>" 
+                                            onclick="aplicarFiltro('genero', 'Kids')"
+                                            data-filter-type="genero"
+                                            data-filter-value="Kids">
+                                        <i class="fa fa-child"></i>
+                                        <span>Kids</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Filtro por Marca -->
-                        <div class="sidebar__categories mb-4">
-                            <div class="section-title">
-                                <h4>Marcas</h4>
+                        <div class="filter-section">
+                            <div class="filter-section-header" data-toggle="collapse" data-target="#brandsCollapse">
+                                <h4><i class="fa fa-bookmark"></i> Marcas</h4>
+                                <i class="fa fa-chevron-down toggle-icon"></i>
                             </div>
-                            <div class="filter-buttons-group">
-                                <button class="filter-btn <?php echo !$filtro_marca ? 'active' : ''; ?>" 
-                                        onclick="aplicarFiltro('marca', null)"
-                                        data-filter-type="marca"
-                                        data-filter-value="">
-                                    <i class="fa fa-star"></i> Todas
-                                </button>
-                                <?php foreach($marcas as $marca): ?>
-                                <button class="filter-btn <?php echo $filtro_marca == $marca['id_marca'] ? 'active' : ''; ?>" 
-                                        onclick="aplicarFiltro('marca', <?php echo $marca['id_marca']; ?>)"
-                                        data-filter-type="marca"
-                                        data-filter-value="<?php echo $marca['id_marca']; ?>">
-                                    <?php if(!empty($marca['url_imagen_marca']) && $marca['url_imagen_marca'] != '/fashion-master/public/assets/img/default-product.jpg'): ?>
-                                        <img src="<?php echo htmlspecialchars($marca['url_imagen_marca']); ?>" 
-                                             alt="<?php echo htmlspecialchars($marca['nombre_marca']); ?>" 
-                                             class="marca-icon">
-                                    <?php endif; ?>
-                                    <?php echo htmlspecialchars($marca['nombre_marca']); ?>
-                                </button>
-                                <?php endforeach; ?>
+                            <div class="filter-section-body collapse show" id="brandsCollapse">
+                                <div class="filter-list">
+                                    <button class="filter-list-item <?php echo !$filtro_marca ? 'active' : ''; ?>" 
+                                            onclick="aplicarFiltro('marca', null)"
+                                            data-filter-type="marca"
+                                            data-filter-value="">
+                                        <i class="fa fa-check-circle check-icon"></i>
+                                        <span class="filter-list-text">Todas las marcas</span>
+                                    </button>
+                                    <?php foreach($marcas as $marca): ?>
+                                    <button class="filter-list-item <?php echo $filtro_marca == $marca['id_marca'] ? 'active' : ''; ?>" 
+                                            onclick="aplicarFiltro('marca', <?php echo $marca['id_marca']; ?>)"
+                                            data-filter-type="marca"
+                                            data-filter-value="<?php echo $marca['id_marca']; ?>">
+                                        <i class="fa fa-check-circle check-icon"></i>
+                                        <?php if(!empty($marca['url_imagen_marca']) && $marca['url_imagen_marca'] != '/fashion-master/public/assets/img/default-product.jpg'): ?>
+                                            <img src="<?php echo htmlspecialchars($marca['url_imagen_marca']); ?>" 
+                                                 alt="<?php echo htmlspecialchars($marca['nombre_marca']); ?>" 
+                                                 class="marca-icon-list">
+                                        <?php endif; ?>
+                                        <span class="filter-list-text"><?php echo htmlspecialchars($marca['nombre_marca']); ?></span>
+                                    </button>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Filtro por Precio -->
-                        <div class="sidebar__filter mb-4">
-                            <div class="section-title">
-                                <h4>Rango de Precio</h4>
+                        <div class="filter-section">
+                            <div class="filter-section-header" data-toggle="collapse" data-target="#priceCollapse">
+                                <h4><i class="fa fa-dollar-sign"></i> Precio</h4>
+                                <i class="fa fa-chevron-down toggle-icon"></i>
                             </div>
-                            <div class="filter-range-wrap">
-                                <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
-                                data-min="0" data-max="500" id="price-slider"></div>
-                                <div class="range-slider mt-3">
-                                    <div class="price-input">
-                                        <p style="margin-bottom: 8px; font-weight: 600;">Precio seleccionado:</p>
-                                        <div style="display: flex; gap: 10px; align-items: center;">
-                                            <input type="text" id="minamount" value="$<?php echo $filtro_precio_min; ?>" readonly 
-                                                   style="width: 80px; text-align: center; border: 1px solid #ddd; padding: 5px; border-radius: 4px;">
-                                            <span>-</span>
-                                            <input type="text" id="maxamount" value="$<?php echo $filtro_precio_max; ?>" readonly 
-                                                   style="width: 80px; text-align: center; border: 1px solid #ddd; padding: 5px; border-radius: 4px;">
+                            <div class="filter-section-body collapse show" id="priceCollapse">
+                                <div class="price-range-container">
+                                    <div class="price-slider" id="price-slider"></div>
+                                    <div class="price-inputs">
+                                        <div class="price-input-group">
+                                            <label>Mínimo</label>
+                                            <input type="text" id="minamount" value="$<?php echo $filtro_precio_min; ?>" readonly>
+                                        </div>
+                                        <span class="price-separator">-</span>
+                                        <div class="price-input-group">
+                                            <label>Máximo</label>
+                                            <input type="text" id="maxamount" value="$<?php echo $filtro_precio_max; ?>" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -390,14 +514,42 @@ if($usuario_logueado) {
                 <!-- PRODUCTOS -->
                 <div class="col-lg-9 col-md-9">
                     <!-- Barra de herramientas -->
-                    <div class="row mb-4">
-                        <div class="col-lg-6">
+                    <div class="row mb-4 align-items-end">
+                        <div class="col-lg-4 col-md-12 mb-3 mb-lg-0">
                             <div class="shop__product__option__left">
                                 <p><strong><?php echo count($productos); ?></strong> productos encontrados</p>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                            <div class="shop__product__option__sort">
+                                <label for="sortSelect" style="font-size: 13px; color: #666; margin-bottom: 5px; display: block;">
+                                    <i class="fa fa-sort"></i> Ordenar por:
+                                </label>
+                                <select id="sortSelect" class="form-control" style="
+                                    border: 1px solid #ddd;
+                                    border-radius: 6px;
+                                    padding: 8px 12px;
+                                    font-size: 14px;
+                                    color: #333;
+                                    background: white;
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+                                ">
+                                    <option value="default" <?php echo $filtro_ordenar === 'default' ? 'selected' : ''; ?>>Predeterminado</option>
+                                    <option value="price_asc" <?php echo $filtro_ordenar === 'price_asc' ? 'selected' : ''; ?>>Precio: Menor a Mayor</option>
+                                    <option value="price_desc" <?php echo $filtro_ordenar === 'price_desc' ? 'selected' : ''; ?>>Precio: Mayor a Menor</option>
+                                    <option value="name_asc" <?php echo $filtro_ordenar === 'name_asc' ? 'selected' : ''; ?>>Nombre: A - Z</option>
+                                    <option value="name_desc" <?php echo $filtro_ordenar === 'name_desc' ? 'selected' : ''; ?>>Nombre: Z - A</option>
+                                    <option value="newest" <?php echo $filtro_ordenar === 'newest' ? 'selected' : ''; ?>>Más Recientes</option>
+                                    <option value="rating" <?php echo $filtro_ordenar === 'rating' ? 'selected' : ''; ?>>Mejor Calificados</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
                             <div class="shop__product__option__right">
+                                <label style="font-size: 13px; color: #666; margin-bottom: 5px; display: block;">
+                                    <i class="fa fa-search"></i> Buscar:
+                                </label>
                                 <div class="search-box-wrapper">
                                     <input type="text" 
                                            id="search-input-shop" 
@@ -667,21 +819,30 @@ if($usuario_logueado) {
     }
     ?>
 
-    <!-- Js Plugins -->
+    <!-- ============================================
+         JAVASCRIPT LIBRARIES - ORDEN CRÍTICO
+         ============================================ -->
+    
+    <!-- 1. jQuery - Requerido por Bootstrap, Owl Carousel, y main.js -->
     <script src="public/assets/js/jquery-3.3.1.min.js"></script>
+    
+    <!-- 2. Plugins que dependen de jQuery -->
     <script src="public/assets/js/bootstrap.min.js"></script>
-    <script src="public/assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="public/assets/js/jquery-ui.min.js"></script>
-    <script src="public/assets/js/mixitup.min.js"></script>
-    <script src="public/assets/js/jquery.countdown.min.js"></script>
-    <script src="public/assets/js/jquery.slicknav.js"></script>
     <script src="public/assets/js/owl.carousel.min.js"></script>
-    <script src="public/assets/js/jquery.nicescroll.min.js"></script>
     <script src="public/assets/js/main.js"></script>
     
-    <!-- Masonry Layout para efecto cascada en productos -->
+    <!-- 3. Bibliotecas Vanilla JS (NO dependen de jQuery) -->
+    <script src="public/assets/js/mixitup.min.js"></script>
+    
+    <!-- 4. Masonry Layout para efecto cascada en productos -->
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    
+    <!-- 5. noUiSlider - Reemplaza jQuery UI Slider para filtro de precios -->
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+    
+    <!-- 6. Fetch API Handler Moderno - Reemplaza AJAX de filtros -->
+    <script src="public/assets/js/fetch-api-handler.js"></script>
 
     <?php if($usuario_logueado): ?>
     <!-- Scripts para carrito y favoritos -->
@@ -689,11 +850,204 @@ if($usuario_logueado) {
     <script src="public/assets/js/user-account-modal.js"></script>
     <?php endif; ?>
     
-    <!-- Product Navigation ya no es necesario - usando onclick directo -->
-    <!-- <script src="public/assets/js/product-navigation.js"></script> -->
-    
     <!-- Scroll Position Memory -->
     <script src="public/assets/js/scroll-position-memory.js"></script>
+
+    <!-- ===================================================================
+         INICIALIZACIÓN DE COMPONENTES - EJECUTAR DESPUÉS DE LIBRERÍAS
+         =================================================================== -->
+    <script>
+    // Inicialización cuando el DOM está listo
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🎯 Inicializando componentes de shop.php');
+        
+        // ==================== BÚSQUEDA EN TIEMPO REAL ====================
+        var searchTimeout;
+        const searchInput = document.getElementById('search-input-shop');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                const searchValue = this.value;
+                
+                searchTimeout = setTimeout(function() {
+                    filtrosActuales.buscar = searchValue;
+                    aplicarFiltrosAjax();
+                }, 800);
+            });
+            console.log('✅ Búsqueda en tiempo real inicializada');
+        }
+
+        // ==================== ORDENAMIENTO ====================
+        const sortSelect = document.getElementById('sortSelect');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', function() {
+                aplicarFiltrosAjax();
+            });
+            console.log('✅ Selector de ordenamiento inicializado');
+        }
+
+        // ==================== SLIDER DE PRECIO ====================
+        const minPrice = <?php echo $filtro_precio_min; ?>;
+        const maxPrice = <?php echo $filtro_precio_max; ?>;
+        
+        const priceSlider = document.getElementById('price-slider');
+        if (priceSlider && typeof noUiSlider !== 'undefined') {
+            noUiSlider.create(priceSlider, {
+                start: [minPrice, maxPrice],
+                connect: true,
+                range: { 'min': 0, 'max': 500 },
+                step: 1,
+                format: {
+                    to: function(value) { return Math.round(value); },
+                    from: function(value) { return Number(value); }
+                },
+                // Mejorar interacción táctil
+                behaviour: 'tap-drag',
+                tooltips: false,
+                cssPrefix: 'noUi-',
+                cssClasses: {
+                    target: 'target',
+                    base: 'base',
+                    origin: 'origin',
+                    handle: 'handle',
+                    handleLower: 'handle-lower',
+                    handleUpper: 'handle-upper',
+                    touchArea: 'touch-area',
+                    horizontal: 'horizontal',
+                    vertical: 'vertical',
+                    background: 'background',
+                    connect: 'connect',
+                    connects: 'connects',
+                    ltr: 'ltr',
+                    rtl: 'rtl',
+                    draggable: 'draggable',
+                    drag: 'state-drag',
+                    tap: 'state-tap',
+                    active: 'active',
+                    tooltip: 'tooltip',
+                    pips: 'pips',
+                    pipsHorizontal: 'pips-horizontal',
+                    pipsVertical: 'pips-vertical',
+                    marker: 'marker',
+                    markerHorizontal: 'marker-horizontal',
+                    markerVertical: 'marker-vertical',
+                    markerNormal: 'marker-normal',
+                    markerLarge: 'marker-large',
+                    markerSub: 'marker-sub',
+                    value: 'value',
+                    valueHorizontal: 'value-horizontal',
+                    valueVertical: 'value-vertical',
+                    valueNormal: 'value-normal',
+                    valueLarge: 'value-large',
+                    valueSub: 'value-sub'
+                }
+            });
+
+            const minAmountInput = document.getElementById('minamount');
+            const maxAmountInput = document.getElementById('maxamount');
+
+            // Actualizar inputs mientras se mueve el slider (sin filtrar)
+            priceSlider.noUiSlider.on('update', function(values, handle) {
+                const value = values[handle];
+                if (handle === 0) {
+                    minAmountInput.value = '$' + value;
+                } else {
+                    maxAmountInput.value = '$' + value;
+                }
+            });
+
+            // Filtrar SOLO al soltar el slider
+            priceSlider.noUiSlider.on('set', function(values) {
+                filtrosActuales.precio_min = parseInt(values[0]);
+                filtrosActuales.precio_max = parseInt(values[1]);
+                aplicarFiltrosAjax();
+            });
+            
+            // Permitir escribir en los inputs y actualizar el slider
+            minAmountInput.addEventListener('change', function() {
+                const value = parseInt(this.value.replace('$', '')) || 0;
+                const clampedValue = Math.max(0, Math.min(value, filtrosActuales.precio_max - 1));
+                priceSlider.noUiSlider.set([clampedValue, null]);
+                filtrosActuales.precio_min = clampedValue;
+                aplicarFiltrosAjax();
+            });
+            
+            maxAmountInput.addEventListener('change', function() {
+                const value = parseInt(this.value.replace('$', '')) || 500;
+                const clampedValue = Math.min(500, Math.max(value, filtrosActuales.precio_min + 1));
+                priceSlider.noUiSlider.set([null, clampedValue]);
+                filtrosActuales.precio_max = clampedValue;
+                aplicarFiltrosAjax();
+            });
+            
+            // Permitir edición manual de los inputs (remover readonly si existe)
+            minAmountInput.removeAttribute('readonly');
+            maxAmountInput.removeAttribute('readonly');
+            
+            console.log('✅ Slider de precio inicializado (noUiSlider) - Editable y filtra al soltar');
+        }
+
+        actualizarContadorFiltros();
+    });
+
+    // Función auxiliar para contar filtros activos
+    function actualizarContadorFiltros() {
+        let activeCount = 0;
+        if (filtrosActuales.categoria) activeCount++;
+        if (filtrosActuales.genero && filtrosActuales.genero !== 'all') activeCount++;
+        if (filtrosActuales.marca) activeCount++;
+        if (filtrosActuales.precio_min > 0 || filtrosActuales.precio_max < 500) activeCount++;
+        if (filtrosActuales.buscar) activeCount++;
+        
+        const countBadge = document.getElementById('filterCount');
+        if (countBadge) {
+            countBadge.textContent = activeCount > 0 ? activeCount : '';
+            if (activeCount > 0) {
+                countBadge.classList.add('active');
+            } else {
+                countBadge.classList.remove('active');
+            }
+        }
+    }
+
+    // Función para limpiar todos los filtros
+    function limpiarFiltros() {
+        filtrosActuales = {
+            categoria: null,
+            genero: null,
+            marca: null,
+            precio_min: 0,
+            precio_max: 500,
+            buscar: ''
+        };
+        
+        const searchInput = document.getElementById('search-input-shop');
+        if (searchInput) searchInput.value = '';
+        
+        // Actualizar visualmente cada tipo de filtro usando la función existente
+        actualizarBotonesActivos('categoria', null);
+        actualizarBotonesActivos('genero', null);
+        actualizarBotonesActivos('marca', null);
+        
+        // Resetear slider de precio
+        const priceSlider = document.getElementById('price-slider');
+        if (priceSlider && priceSlider.noUiSlider) {
+            priceSlider.noUiSlider.set([0, 500]);
+        }
+        const minAmount = document.getElementById('minamount');
+        const maxAmount = document.getElementById('maxamount');
+        if (minAmount) minAmount.value = '$0';
+        if (maxAmount) maxAmount.value = '$500';
+        
+        // Resetear ordenamiento
+        const sortSelect = document.getElementById('sortSelect');
+        if (sortSelect) sortSelect.value = 'newest';
+        
+        history.pushState({}, '', window.location.pathname);
+        aplicarFiltrosAjax();
+        actualizarContadorFiltros();
+    }
+    </script>
 
     <script>
     // Header sticky effect
@@ -707,13 +1061,9 @@ if($usuario_logueado) {
     });
     </script>
 
-    <script>
-    // Variables globales para manejar filtros
-    let filtrosActuales = {
-        categoria: <?php echo $filtro_categoria ?: 'null'; ?>,
-        genero: <?php echo $filtro_genero ? "'" . $filtro_genero . "'" : 'null'; ?>,
-        marca: <?php echo $filtro_marca ?: 'null'; ?>,
-        precio_min: <?php echo $filtro_precio_min; ?>,
+    <style>
+    /* Estilos para botones de filtro */
+    .filter-buttons-group {
         precio_max: <?php echo $filtro_precio_max; ?>,
         buscar: '<?php echo addslashes($filtro_buscar); ?>'
     };
@@ -789,8 +1139,8 @@ if($usuario_logueado) {
                     if (typeof initCartButtons === 'function') initCartButtons();
                     if (typeof initFavoriteButtons === 'function') initFavoriteButtons();
                     
-                    // Trigger evento para reinicializar Masonry
-                    $(document).trigger('productosActualizados');
+                    // Trigger evento para reinicializar Masonry - VANILLA JS
+                    document.dispatchEvent(new CustomEvent('productosActualizados'));
                     
                     console.log('✅ Products filtered:', data.count);
                 } else {
@@ -817,45 +1167,32 @@ if($usuario_logueado) {
         };
         
         // Limpiar input de búsqueda
-        document.getElementById('search-input-shop').value = '';
+        const searchInput = document.getElementById('search-input-shop');
+        if (searchInput) searchInput.value = '';
         
-        // Resetear todos los botones a su estado inicial
-        document.querySelectorAll('.filter-btn').forEach(function(btn) {
-            btn.classList.remove('active');
-        });
+        // Actualizar visualmente cada tipo de filtro usando la función existente
+        actualizarBotonesActivos('categoria', null);
+        actualizarBotonesActivos('genero', null);
+        actualizarBotonesActivos('marca', null);
         
-        // Activar solo los botones "Todas/Todos"
-        document.querySelectorAll('[data-filter-value=""]').forEach(function(btn) {
-            btn.classList.add('active');
-        });
-        
-        // Resetear slider de precio (con verificación robusta de inicialización)
+        // Resetear slider de precio
         try {
-            const priceSlider = $('#price-slider');
-            if (priceSlider.length > 0) {
-                // Verificar si el slider está inicializado
-                if (typeof priceSlider.slider === 'function') {
-                    try {
-                        // Verificar si ya tiene el widget inicializado
-                        if (priceSlider.data('ui-slider')) {
-                            priceSlider.slider('values', [0, 500]);
-                            $('#minamount').val('$0');
-                            $('#maxamount').val('$500');
-                        } else {
-                            // Si no está inicializado, solo resetear los valores visuales
-                            $('#minamount').val('$0');
-                            $('#maxamount').val('$500');
-                        }
-                    } catch(e) {
-                        console.log('Error al resetear slider:', e);
-                        // Solo resetear los valores visuales
-                        $('#minamount').val('$0');
-                        $('#maxamount').val('$500');
-                    }
-                }
+            const priceSlider = document.getElementById('price-slider');
+            if (priceSlider && priceSlider.noUiSlider) {
+                priceSlider.noUiSlider.set([0, 500]);
             }
+            const minAmount = document.getElementById('minamount');
+            const maxAmount = document.getElementById('maxamount');
+            if (minAmount) minAmount.value = '$0';
+            if (maxAmount) maxAmount.value = '$500';
         } catch(e) {
-            console.log('Error en limpiarFiltros slider:', e);
+            console.log('Error al resetear slider:', e);
+        }
+        
+        // Resetear ordenamiento a "Más Recientes"
+        const sortSelect = document.getElementById('sortSelect');
+        if (sortSelect) {
+            sortSelect.value = 'newest';
         }
         
         // Actualizar URL
@@ -863,51 +1200,74 @@ if($usuario_logueado) {
         
         // Recargar productos sin filtros
         aplicarFiltrosAjax();
+        
+        // Actualizar contador de filtros
+        actualizarContadorFiltros();
     }
 
-    // Búsqueda en tiempo real (con debounce)
+    // Búsqueda en tiempo real (con debounce) - VANILLA JS
     let searchTimeout;
-    $(document).ready(function() {
-        $('#search-input-shop').on('input', function() {
-            clearTimeout(searchTimeout);
-            const searchValue = $(this).val();
-            
-            searchTimeout = setTimeout(function() {
-                filtrosActuales.buscar = searchValue;
-                aplicarFiltrosAjax(); // Usar AJAX en lugar de redirect
-            }, 800); // Espera 800ms después de que el usuario deje de escribir
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Búsqueda con debounce - VANILLA JS
+        const searchInput = document.getElementById('search-input-shop');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                const searchValue = this.value;
+                
+                searchTimeout = setTimeout(function() {
+                    filtrosActuales.buscar = searchValue;
+                    aplicarFiltrosAjax();
+                }, 800);
+            });
+        }
 
-        // Inicializar slider de precio con valores del servidor
+        // Inicializar slider de precio - NOUI SLIDER (sin jQuery)
         const minPrice = <?php echo $filtro_precio_min; ?>;
         const maxPrice = <?php echo $filtro_precio_max; ?>;
         
-        $('#price-slider').slider({
-            range: true,
-            min: 0,
-            max: 500,
-            values: [minPrice, maxPrice],
-            slide: function(event, ui) {
-                $('#minamount').val('$' + ui.values[0]);
-                $('#maxamount').val('$' + ui.values[1]);
-            },
-            stop: function(event, ui) {
-                // Aplicar filtro vía AJAX cuando se suelta el slider
-                filtrosActuales.precio_min = ui.values[0];
-                filtrosActuales.precio_max = ui.values[1];
-                aplicarFiltrosAjax(); // Usar AJAX en lugar de redirect
-            }
-        });
+        const priceSlider = document.getElementById('price-slider');
+        if (priceSlider && typeof noUiSlider !== 'undefined') {
+            noUiSlider.create(priceSlider, {
+                start: [minPrice, maxPrice],
+                connect: true,
+                range: {
+                    'min': 0,
+                    'max': 500
+                },
+                step: 1,
+                format: {
+                    to: function(value) {
+                        return Math.round(value);
+                    },
+                    from: function(value) {
+                        return Number(value);
+                    }
+                }
+            });
+
+            const minAmountInput = document.getElementById('minamount');
+            const maxAmountInput = document.getElementById('maxamount');
+
+            // Actualizar inputs cuando el slider cambia
+            priceSlider.noUiSlider.on('update', function(values, handle) {
+                if (minAmountInput) minAmountInput.value = '$' + values[0];
+                if (maxAmountInput) maxAmountInput.value = '$' + values[1];
+            });
+
+            // Aplicar filtro cuando se suelta el slider
+            priceSlider.noUiSlider.on('change', function(values, handle) {
+                filtrosActuales.precio_min = parseInt(values[0]);
+                filtrosActuales.precio_max = parseInt(values[1]);
+                aplicarFiltrosAjax();
+            });
+        }
         
-        // Establecer valores iniciales
-        $('#minamount').val('$' + $('#price-slider').slider('values', 0));
-        $('#maxamount').val('$' + $('#price-slider').slider('values', 1));
+        // Actualizar contador de filtros al cargar
+        updateFilterCount();
     });
 
-    // ============================================
-    // FUNCIONES PARA FILTROS EN MÓVIL
-    // ============================================
-
+    // FUNCIONES PARA FILTROS EN MÓVIL - VANILLA JS
     function toggleMobileFilters() {
         const sidebar = document.querySelector('.col-lg-3.col-md-3');
         const overlay = document.getElementById('filtersOverlay');
@@ -925,7 +1285,6 @@ if($usuario_logueado) {
             } else {
                 overlay.classList.add('active');
             }
-            // Prevenir scroll del body
             document.body.style.overflow = 'hidden';
         }
     }
@@ -938,18 +1297,15 @@ if($usuario_logueado) {
         if (overlay) {
             overlay.classList.remove('active');
         }
-        // Restaurar scroll del body
         document.body.style.overflow = '';
     }
 
-    // Cerrar filtros al hacer clic en el pseudo-elemento ::before
+    // Cerrar filtros al hacer clic fuera
     document.addEventListener('click', function(e) {
         const sidebar = document.querySelector('.col-lg-3.col-md-3.show-filters');
         if (sidebar) {
             const sidebarInner = sidebar.querySelector('.shop__sidebar');
             const rect = sidebarInner.getBoundingClientRect();
-            
-            // Si el clic es en el área del ::before (arriba del contenido)
             if (e.clientY < rect.top) {
                 closeMobileFilters();
             }
@@ -959,7 +1315,6 @@ if($usuario_logueado) {
     // Actualizar contador de filtros activos
     function updateFilterCount() {
         let activeCount = 0;
-        
         if (filtrosActuales.categoria) activeCount++;
         if (filtrosActuales.genero && filtrosActuales.genero !== 'all') activeCount++;
         if (filtrosActuales.marca) activeCount++;
@@ -976,19 +1331,42 @@ if($usuario_logueado) {
             }
         }
     }
+    </script>
 
-    // Llamar a updateFilterCount cuando se apliquen filtros
-    const originalAplicarFiltro = window.aplicarFiltro;
-    if (originalAplicarFiltro) {
-        window.aplicarFiltro = function(tipo, valor) {
-            originalAplicarFiltro(tipo, valor);
-            updateFilterCount();
-        };
-    }
+    <script>
+    // Collapsible filters functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Manejar collapsibles de filtros
+        const filterHeaders = document.querySelectorAll('.filter-section-header');
+        
+        filterHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const target = document.querySelector(targetId);
+                
+                if (target) {
+                    if (target.classList.contains('show')) {
+                        target.classList.remove('show');
+                        this.setAttribute('aria-expanded', 'false');
+                    } else {
+                        target.classList.add('show');
+                        this.setAttribute('aria-expanded', 'true');
+                    }
+                }
+            });
+        });
+    });
+    </script>
 
-    // Actualizar contador al cargar la página
-    $(document).ready(function() {
-        updateFilterCount();
+    <script>
+    // Header sticky effect
+    window.addEventListener('scroll', function() {
+        const header = document.querySelector('.header');
+        if (window.scrollY > 100) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
     });
     </script>
 
@@ -1076,13 +1454,11 @@ if($usuario_logueado) {
 
     /* Imágenes de marca en los botones */
     .filter-btn .marca-icon {
-        width: 24px;
-        height: 24px;
+        width: 30px;
+        height: 30px;
         object-fit: contain;
         border-radius: 4px;
-        background: white;
         padding: 2px;
-        border: 1px solid #e0e0e0;
     }
     
     .filter-btn.active .marca-icon {
@@ -1158,6 +1534,358 @@ if($usuario_logueado) {
         font-size: 18px;
     }
 
+    /* Selector de ordenamiento */
+    .shop__product__option__sort label {
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .shop__product__option__sort label i {
+        color: #ca1515;
+        margin-right: 4px;
+    }
+
+    .shop__product__option__sort select {
+        transition: all 0.3s ease;
+        font-family: inherit;
+    }
+
+    .shop__product__option__sort select:hover {
+        border-color: #ca1515 !important;
+        box-shadow: 0 0 0 3px rgba(202, 21, 21, 0.1);
+    }
+
+    .shop__product__option__sort select:focus {
+        outline: none;
+        border-color: #ca1515 !important;
+        box-shadow: 0 0 0 3px rgba(202, 21, 21, 0.15);
+    }
+
+    /* Alineación de barra de herramientas */
+    .shop__product__option__left p {
+        margin: 0;
+        padding-top: 8px;
+    }
+
+    .shop__product__option__right label {
+        font-weight: 500;
+    }
+
+    .shop__product__option__right label i {
+        color: #ca1515;
+        margin-right: 4px;
+    }
+
+    /* Imágenes de marcas en filtros */
+    .marca-icon {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+        margin-right: 8px;
+        vertical-align: middle;
+        border-radius: 4px;
+    }
+
+    .filter-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    /* ============================================
+       NUEVO DISEÑO DE FILTROS - MODERNO Y COMPACTO
+       ============================================ */
+
+    .shop__sidebar {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 0;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        overflow: hidden;
+    }
+
+    /* Header de filtros */
+    .filters-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        border-bottom: 3px solid #ca1515;
+    }
+
+    .filters-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filters-header h3 i {
+        font-size: 16px;
+    }
+
+    .btn-clear-filters-compact {
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+    .btn-clear-filters-compact:hover {
+        background: rgba(255,255,255,0.25);
+        transform: rotate(180deg);
+    }
+
+    /* Sección de filtro */
+    .filter-section {
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .filter-section:last-child {
+        border-bottom: none;
+    }
+
+    .filter-section-header {
+        padding: 16px 20px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        transition: all 0.3s ease;
+        user-select: none;
+    }
+
+    .filter-section-header:hover {
+        background: #f8f9fa;
+    }
+
+    .filter-section-header h4 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .filter-section-header h4 i {
+        font-size: 13px;
+        color: #ca1515;
+    }
+
+    .toggle-icon {
+        font-size: 12px;
+        color: #999;
+        transition: transform 0.3s ease;
+    }
+
+    .filter-section-header[aria-expanded="true"] .toggle-icon {
+        transform: rotate(180deg);
+    }
+
+    .filter-section-body {
+        padding: 12px 20px 20px;
+        background: #fafafa;
+    }
+
+    /* Filtros tipo chip (botones pequeños) */
+    .filter-buttons-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .gender-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filter-chip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px 12px;
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .filter-chip i {
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .filter-chip span {
+        flex: 1;
+        text-align: center;
+    }
+
+    .filter-chip:hover {
+        border-color: #ca1515;
+        background: #fff5f5;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(202, 21, 21, 0.15);
+    }
+
+    .filter-chip.active {
+        background: linear-gradient(135deg, #ca1515 0%, #a01212 100%);
+        border-color: #ca1515;
+        color: white;
+        box-shadow: 0 4px 12px rgba(202, 21, 21, 0.3);
+    }
+
+    .filter-chip.active:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(202, 21, 21, 0.4);
+    }
+
+    /* Filtros tipo lista (marcas) */
+    .filter-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        max-height: 300px;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+
+    .filter-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .filter-list::-webkit-scrollbar-track {
+        background: #f0f0f0;
+        border-radius: 10px;
+    }
+
+    .filter-list::-webkit-scrollbar-thumb {
+        background: #ca1515;
+        border-radius: 10px;
+    }
+
+    .filter-list-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: white;
+        border: 1px solid #e8e8e8;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: left;
+    }
+
+    .filter-list-item:hover {
+        border-color: #ca1515;
+        background: #fff5f5;
+        transform: translateX(4px);
+    }
+
+    .filter-list-item.active {
+        border-color: #ca1515;
+        background: #fff5f5;
+    }
+
+    .check-icon {
+        font-size: 16px;
+        color: transparent;
+        transition: all 0.3s ease;
+    }
+
+    .filter-list-item.active .check-icon {
+        color: #ca1515;
+    }
+
+    .marca-icon-list {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+        border-radius: 4px;
+    }
+
+    .filter-list-text {
+        flex: 1;
+        font-size: 13px;
+        font-weight: 500;
+        color: #555;
+    }
+
+    .filter-list-item.active .filter-list-text {
+        color: #ca1515;
+        font-weight: 600;
+    }
+
+    /* Contenedor de precio */
+    .price-range-container {
+        background: white;
+        padding: 20px 15px;
+        border-radius: 8px;
+    }
+
+    .price-slider {
+        margin-bottom: 20px;
+    }
+
+    .price-inputs {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .price-input-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .price-input-group label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .price-input-group input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #2c3e50;
+        text-align: center;
+        background: #f8f9fa;
+        cursor: default;
+    }
+
+    .price-separator {
+        font-size: 18px;
+        font-weight: 600;
+        color: #ccc;
+        margin-top: 20px;
+    }
+
     /* Animación de carga */
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
@@ -1194,6 +1922,64 @@ if($usuario_logueado) {
     .ui-slider-horizontal .ui-slider-range {
         background: #2c3e50;
         border-radius: 3px;
+    }
+    
+    /* noUiSlider - Mejorar área táctil en móvil */
+    .noUi-target {
+        background: #e8e8e8;
+        border-radius: 8px;
+        border: none;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        height: 8px;
+    }
+    
+    .noUi-connect {
+        background: linear-gradient(135deg, #ca1515 0%, #a01010 100%);
+    }
+    
+    .noUi-handle {
+        width: 28px !important;
+        height: 28px !important;
+        border-radius: 50% !important;
+        background: white !important;
+        border: 4px solid #ca1515 !important;
+        box-shadow: 0 3px 12px rgba(202, 21, 21, 0.4), 0 0 0 8px rgba(202, 21, 21, 0.1) !important;
+        cursor: grab !important;
+        top: -10px !important;
+        outline: none !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .noUi-handle:active {
+        cursor: grabbing !important;
+        transform: scale(1.2) !important;
+        box-shadow: 0 4px 16px rgba(202, 21, 21, 0.6), 0 0 0 12px rgba(202, 21, 21, 0.15) !important;
+    }
+    
+    .noUi-handle:before,
+    .noUi-handle:after {
+        display: none !important;
+    }
+    
+    /* Área táctil expandida para móvil */
+    @media (max-width: 991px) {
+        .noUi-handle {
+            width: 36px !important;
+            height: 36px !important;
+            top: -14px !important;
+            border-width: 5px !important;
+            box-shadow: 0 4px 16px rgba(202, 21, 21, 0.5), 0 0 0 10px rgba(202, 21, 21, 0.12) !important;
+        }
+        
+        .noUi-handle:active {
+            transform: scale(1.25) !important;
+            box-shadow: 0 6px 20px rgba(202, 21, 21, 0.7), 0 0 0 15px rgba(202, 21, 21, 0.18) !important;
+        }
+        
+        .noUi-target {
+            height: 10px;
+            margin: 20px 0;
+        }
     }
 
     /* CORREGIR PARPADEO DE IMÁGENES */
@@ -1420,42 +2206,64 @@ if($usuario_logueado) {
             min-height: 300px;
         }
 
-        /* Optimizar filtros para móvil */
-        .filter-buttons-group {
-            gap: 6px;
+        /* Optimizar filtros para móvil - Reducir espaciado */
+        .filters-header {
+            padding: 14px 16px;
         }
 
-        .filter-btn {
+        .filters-header h3 {
+            font-size: 16px;
+        }
+
+        .filter-section-header {
+            padding: 12px 16px;
+        }
+
+        .filter-section-header h4 {
+            font-size: 13px;
+        }
+
+        .filter-section-body {
+            padding: 10px 16px 16px;
+        }
+
+        .filter-chip {
             font-size: 12px;
             padding: 8px 10px;
         }
 
-        .filter-btn i {
+        .filter-chip i {
             font-size: 12px;
         }
 
-        .section-title h4 {
-            font-size: 14px;
+        .filter-list-item {
+            padding: 8px 10px;
+            font-size: 12px;
         }
 
-        /* Botón limpiar más compacto */
-        .btn-clear-filters {
-            font-size: 11px;
-            padding: 8px 12px;
+        .marca-icon-list {
+            width: 18px;
+            height: 18px;
         }
 
-        /* Espaciado del shop section */
+        .price-range-container {
+            padding: 12px 10px;
+        }
+
+        .price-input-group input {
+            padding: 8px;
+            font-size: 13px;
+        }
+
+        /* Espaciado del shop section - Reducido */
         .shop.spad {
-            padding: 40px 0;
+            padding: 0 0 20px 0 !important;
         }
-
-        /* Breadcrumb más pequeño */
+        
+        /* Reducir padding del breadcrumb en móvil */
         .breadcrumb-option {
-            padding: 15px 0;
-        }
-
-        .breadcrumb__links {
-            font-size: 12px;
+            padding: 8px 0 !important;
+            margin-bottom: 10px !important;
         }
 
         /* Slider de precio más pequeño */
@@ -1486,7 +2294,12 @@ if($usuario_logueado) {
         }
 
         .shop.spad {
-            padding: 30px 0;
+            padding: 0 0 20px 0;
+        }
+        
+        .breadcrumb-option {
+            padding: 10px 0 !important;
+            margin-bottom: 10px !important;
         }
     }
 
@@ -1563,25 +2376,6 @@ if($usuario_logueado) {
             padding: 15px;
         }
 
-        /* Breadcrumb responsivo */
-        .breadcrumb-option {
-            background: #f8f9fa;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .breadcrumb__links {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 5px;
-            font-size: 12px;
-        }
-
-        .breadcrumb__links a,
-        .breadcrumb__links span {
-            font-size: 12px;
-        }
-
         /* Opciones de productos (ordenar, vista) */
         .shop__product__option {
             flex-direction: column;
@@ -1595,9 +2389,38 @@ if($usuario_logueado) {
             justify-content: space-between;
         }
 
+        .shop__product__option__left p {
+            padding-top: 0;
+            font-size: 14px;
+        }
+
+        /* Selector de ordenamiento en móvil */
+        .shop__product__option__sort {
+            margin-bottom: 0;
+        }
+
+        .shop__product__option__sort label,
+        .shop__product__option__right label {
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .shop__product__option__sort select {
+            width: 100%;
+            font-size: 13px !important;
+            padding: 10px 12px !important;
+        }
+
+        /* Imágenes de marcas más pequeñas en móvil */
+        .marca-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 6px;
+        }
+
         /* Búsqueda en móvil */
         .search-box-wrapper {
-            margin-bottom: 15px;
+            margin-bottom: 0;
         }
 
         .search-box-wrapper input {
@@ -1629,9 +2452,7 @@ if($usuario_logueado) {
         }
 
         /* Ajustar espaciado general */
-        .shop.spad {
-            padding: 30px 0;
-        }
+
 
         .container {
             padding-left: 15px;
@@ -1701,17 +2522,11 @@ if($usuario_logueado) {
         }
     }
 
-    /* Mejorar accesibilidad táctil */
+    /* Mejorar accesibilidad táctil en elementos de filtros */
     @media (hover: none) and (pointer: coarse) {
         .filter-btn,
         .btn-clear-filters,
         .product__item__pic__hover li a {
-            min-height: 44px;
-        }
-
-        .header__right__widget li a,
-        .header__right__widget li span {
-            min-width: 44px;
             min-height: 44px;
         }
     }
@@ -1889,12 +2704,12 @@ if($usuario_logueado) {
         bottom: -100%;
         left: 0;
         right: 0;
-        max-height: 85vh;
-        background: white;
-        border-radius: 20px 20px 0 0;
+        max-height: 90vh;
+        background: #ffffff;
+        border-radius: 24px 24px 0 0;
         z-index: 1001;
-        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-        box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.2);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.15);
         display: flex;
         flex-direction: column;
     }
@@ -1907,54 +2722,100 @@ if($usuario_logueado) {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 20px 25px;
-        border-bottom: 2px solid #e0e0e0;
-        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-        border-radius: 20px 20px 0 0;
+        padding: 24px 28px;
+        border-bottom: 1px solid #e8e8e8;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border-radius: 24px 24px 0 0;
+        position: relative;
+    }
+    
+    /* Barra decorativa superior */
+    .filters-modal-header::before {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 4px;
+        background: #d0d0d0;
+        border-radius: 2px;
     }
 
     .filters-modal-header h4 {
         margin: 0;
-        font-size: 18px;
-        font-weight: 700;
-        color: #333;
+        font-size: 20px;
+        font-weight: 800;
+        color: #111;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
+        letter-spacing: -0.5px;
     }
 
     .filters-modal-header i {
         color: #ca1515;
+        font-size: 22px;
     }
 
     .filters-modal-close {
-        background: #f0f0f0;
+        background: rgba(0,0,0,0.05);
         border: none;
-        width: 36px;
-        height: 36px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .filters-modal-close:hover {
-        background: #e0e0e0;
-        transform: rotate(90deg);
+        background: rgba(202, 21, 21, 0.1);
+        transform: rotate(90deg) scale(1.1);
+    }
+
+    .filters-modal-close:active {
+        transform: rotate(90deg) scale(0.95);
     }
 
     .filters-modal-close i {
-        font-size: 18px;
+        font-size: 20px;
         color: #666;
     }
 
     .filters-modal-body {
         flex: 1;
         overflow-y: auto;
-        padding: 20px 25px;
-        max-height: calc(85vh - 140px);
+        padding: 24px 28px;
+        max-height: calc(90vh - 160px);
+        background: #fafafa;
+    }
+    
+    /* Reducir padding en móvil */
+    @media (max-width: 576px) {
+        .filters-modal-body {
+            padding: 16px 14px;
+        }
+    }
+    
+    /* Scroll suave en modal */
+    .filters-modal-body::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .filters-modal-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .filters-modal-body::-webkit-scrollbar-thumb {
+        background: #d0d0d0;
+        border-radius: 3px;
+    }
+    
+    .filters-modal-body::-webkit-scrollbar-thumb:hover {
+        background: #b0b0b0;
     }
 
     .filters-modal-body .shop__sidebar {
@@ -1965,65 +2826,117 @@ if($usuario_logueado) {
     }
 
     .filters-modal-body .section-title h4 {
-        font-size: 16px;
-        color: #333;
+        font-size: 15px;
+        color: #111;
         font-weight: 700;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #e0e0e0;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #e8e8e8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
-
+    
+    /* Mejorar filtros dentro del modal */
     .filters-modal-body .filter-btn {
-        margin-bottom: 8px;
+        margin-bottom: 10px;
         font-size: 14px;
-        padding: 12px 16px;
+        padding: 14px 18px;
+        background: white;
+        border: 2px solid #e8e8e8;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        transition: all 0.3s ease;
+    }
+    
+    .filters-modal-body .filter-btn:hover {
+        border-color: #ca1515;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(202, 21, 21, 0.15);
+    }
+    
+    .filters-modal-body .filter-btn.active {
+        background: linear-gradient(135deg, #ca1515 0%, #a01010 100%);
+        border-color: #ca1515;
+        color: white;
+        box-shadow: 0 4px 16px rgba(202, 21, 21, 0.3);
     }
 
     .filters-modal-footer {
         display: flex;
-        gap: 12px;
-        padding: 15px 25px;
-        border-top: 2px solid #e0e0e0;
-        background: #f8f9fa;
+        gap: 14px;
+        padding: 20px 28px;
+        border-top: 1px solid #e8e8e8;
+        background: white;
+        box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+    }
+    
+    /* Reducir padding del footer en móvil */
+    @media (max-width: 576px) {
+        .filters-modal-footer {
+            padding: 14px 16px;
+            gap: 10px;
+        }
     }
 
     .btn-clear-filters-modal,
     .btn-apply-filters-modal {
         flex: 1;
-        padding: 14px 20px;
+        padding: 16px 24px;
         border: none;
-        border-radius: 50px;
+        border-radius: 14px;
         font-size: 15px;
         font-weight: 700;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: 10px;
+        letter-spacing: 0.3px;
+    }
+    
+    /* Reducir tamaño de botones en móvil */
+    @media (max-width: 576px) {
+        .btn-clear-filters-modal,
+        .btn-apply-filters-modal {
+            padding: 12px 16px;
+            font-size: 14px;
+            border-radius: 10px;
+            gap: 6px;
+        }
     }
 
     .btn-clear-filters-modal {
         background: white;
         color: #666;
-        border: 2px solid #e0e0e0;
+        border: 2px solid #e8e8e8;
     }
 
     .btn-clear-filters-modal:hover {
-        background: #f8f9fa;
+        background: #f8f8f8;
         border-color: #ca1515;
         color: #ca1515;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .btn-clear-filters-modal:active {
+        transform: translateY(0);
     }
 
     .btn-apply-filters-modal {
         background: linear-gradient(135deg, #ca1515 0%, #a01010 100%);
         color: white;
-        box-shadow: 0 4px 15px rgba(202, 21, 21, 0.3);
+        box-shadow: 0 4px 20px rgba(202, 21, 21, 0.4);
     }
 
     .btn-apply-filters-modal:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(202, 21, 21, 0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(202, 21, 21, 0.5);
+    }
+    
+    .btn-apply-filters-modal:active {
+        transform: translateY(-1px);
     }
 
     /* Ocultar sidebar original en móvil */
@@ -2036,10 +2949,7 @@ if($usuario_logueado) {
     /* ============================================
        MASONRY LAYOUT PARA PRODUCTOS
        ============================================ */
-    .productos-grid {
-        /* En desktop, comportamiento normal */
-    }
-
+    
     /* 2 columnas en móvil con masonry */
     @media (max-width: 991px) {
         .productos-grid {
@@ -2086,6 +2996,15 @@ if($usuario_logueado) {
     }
 
     @media (max-width: 576px) {
+        /* Ocultar contador de productos y buscador en móvil */
+        .shop__product__option__left {
+            display: none !important;
+        }
+        
+        .shop__product__option__right {
+            display: none !important;
+        }
+
         .productos-grid .grid-item {
             margin-bottom: 15px;
         }
@@ -2152,91 +3071,109 @@ if($usuario_logueado) {
 
     <script>
     // ============================================
-    // MODAL DE FILTROS PARA MÓVIL
+    // MODAL DE FILTROS PARA MÓVIL - VANILLA JS
     // ============================================
-    $(document).ready(function() {
-        const btnMobileFilters = $('#btnMobileFilters');
-        const filtersModal = $('#filtersModal');
-        const filtersOverlay = $('#filtersModalOverlay');
-        const closeModal = $('#closeFiltersModal');
-        const applyFilters = $('#applyFiltersModal');
-        const filtersContent = $('#filtersModalContent');
-        const sidebarOriginal = $('.shop__sidebar').first();
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnMobileFilters = document.getElementById('btnMobileFilters');
+        const filtersModal = document.getElementById('filtersModal');
+        const filtersOverlay = document.getElementById('filtersModalOverlay');
+        const closeModal = document.getElementById('closeFiltersModal');
+        const applyFilters = document.getElementById('applyFiltersModal');
+        const filtersContent = document.getElementById('filtersModalContent');
+        const sidebarOriginal = document.querySelector('.shop__sidebar');
 
         // Abrir modal
-        btnMobileFilters.on('click', function() {
-            // Clonar el sidebar original al modal
-            const sidebarClone = sidebarOriginal.clone();
-            filtersContent.html(sidebarClone);
-            
-            // Mostrar modal
-            filtersOverlay.addClass('active');
-            filtersModal.addClass('active');
-            $('body').css('overflow', 'hidden');
-        });
+        if (btnMobileFilters) {
+            btnMobileFilters.addEventListener('click', function() {
+                // Clonar el sidebar original al modal
+                if (sidebarOriginal) {
+                    const sidebarClone = sidebarOriginal.cloneNode(true);
+                    filtersContent.innerHTML = '';
+                    filtersContent.appendChild(sidebarClone);
+                }
+                
+                // Mostrar modal
+                filtersOverlay.classList.add('active');
+                filtersModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        }
 
         // Cerrar modal
         function cerrarModal() {
-            filtersOverlay.removeClass('active');
-            filtersModal.removeClass('active');
-            $('body').css('overflow', '');
+            filtersOverlay.classList.remove('active');
+            filtersModal.classList.remove('active');
+            document.body.style.overflow = '';
         }
 
-        closeModal.on('click', cerrarModal);
-        filtersOverlay.on('click', cerrarModal);
+        if (closeModal) {
+            closeModal.addEventListener('click', cerrarModal);
+        }
+        
+        if (filtersOverlay) {
+            filtersOverlay.addEventListener('click', cerrarModal);
+        }
 
         // Aplicar filtros y cerrar
-        applyFilters.on('click', function() {
-            cerrarModal();
-            // Los filtros se aplican automáticamente por los botones clonados
-        });
+        if (applyFilters) {
+            applyFilters.addEventListener('click', function() {
+                cerrarModal();
+                // Los filtros se aplican automáticamente por los botones clonados
+            });
+        }
 
         // Prevenir que el modal se cierre al hacer clic dentro de él
-        filtersModal.on('click', function(e) {
-            e.stopPropagation();
-        });
+        if (filtersModal) {
+            filtersModal.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
     });
 
     // ============================================
-    // SISTEMA DE INTERACCIÓN SEPARADO PC Y MÓVIL
+    // SISTEMA DE INTERACCIÓN SEPARADO PC Y MÓVIL - VANILLA JS
     // ============================================
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', function() {
         const esDispositivoMovil = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         
         if (esDispositivoMovil) {
             // ============================================
             // COMPORTAMIENTO PARA MÓVIL/TABLET
             // ============================================
-            $(document).on('click', '.product__item__pic', function(e) {
-                const $pic = $(this);
-                const $target = $(e.target);
+            document.addEventListener('click', function(e) {
+                const pic = e.target.closest('.product__item__pic');
                 
-                // Si se hace clic en un botón del product__hover, permitir acción
-                if ($target.closest('.product__hover').length) {
-                    return; // Dejar que el enlace funcione normalmente
-                }
-                
-                // Si ya tiene botones visibles
-                if ($pic.hasClass('show-mobile-actions')) {
-                    // Si hace clic en la imagen de nuevo, ir a detalles
-                    const productUrl = $pic.data('product-url');
-                    if (productUrl && !$target.closest('.product__hover').length) {
-                        window.location.href = productUrl;
+                if (pic) {
+                    const target = e.target;
+                    const hoverEl = target.closest('.product__hover');
+                    
+                    // Si se hace clic en un botón del product__hover, permitir acción
+                    if (hoverEl) {
+                        return; // Dejar que el enlace funcione normalmente
+                    }
+                    
+                    // Si ya tiene botones visibles
+                    if (pic.classList.contains('show-mobile-actions')) {
+                        // Si hace clic en la imagen de nuevo, ir a detalles
+                        const productUrl = pic.dataset.productUrl;
+                        if (productUrl && !hoverEl) {
+                            window.location.href = productUrl;
+                        }
+                    } else {
+                        // Ocultar botones de otros productos
+                        document.querySelectorAll('.product__item__pic').forEach(p => {
+                            p.classList.remove('show-mobile-actions');
+                        });
+                        // Mostrar botones de este producto
+                        pic.classList.add('show-mobile-actions');
+                        e.preventDefault();
+                        e.stopPropagation();
                     }
                 } else {
-                    // Ocultar botones de otros productos
-                    $('.product__item__pic').removeClass('show-mobile-actions');
-                    // Mostrar botones de este producto
-                    $pic.addClass('show-mobile-actions');
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-            });
-
-            // Cerrar botones al tocar fuera del producto
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('.product__item__pic').length) {
-                    $('.product__item__pic').removeClass('show-mobile-actions');
+                    // Cerrar botones al tocar fuera del producto
+                    document.querySelectorAll('.product__item__pic').forEach(p => {
+                        p.classList.remove('show-mobile-actions');
+                    });
                 }
             });
         } else {
@@ -2244,25 +3181,30 @@ if($usuario_logueado) {
             // COMPORTAMIENTO PARA PC/DESKTOP
             // ============================================
             // En PC, click directo va a detalles (hover muestra botones automáticamente con CSS)
-            $(document).on('click', '.product__item__pic', function(e) {
-                const $target = $(e.target);
+            document.addEventListener('click', function(e) {
+                const pic = e.target.closest('.product__item__pic');
                 
-                // Si se hace clic en un botón del product__hover, permitir acción
-                if ($target.closest('.product__hover').length) {
-                    return; // Dejar que el enlace funcione normalmente
-                }
-                
-                // Si se hace clic en la imagen, ir a detalles
-                const productUrl = $(this).data('product-url');
-                if (productUrl) {
-                    window.location.href = productUrl;
+                if (pic) {
+                    const target = e.target;
+                    const hoverEl = target.closest('.product__hover');
+                    
+                    // Si se hace clic en un botón del product__hover, permitir acción
+                    if (hoverEl) {
+                        return; // Dejar que el enlace funcione normalmente
+                    }
+                    
+                    // Si se hace clic en la imagen, ir a detalles
+                    const productUrl = pic.dataset.productUrl;
+                    if (productUrl) {
+                        window.location.href = productUrl;
+                    }
                 }
             });
         }
     });
 
     // ============================================
-    // MASONRY LAYOUT PARA PRODUCTOS
+    // MASONRY LAYOUT PARA PRODUCTOS - VANILLA JS
     // ============================================
     let masonryInstance = null;
 
@@ -2299,22 +3241,22 @@ if($usuario_logueado) {
         }
     }
 
-    // Inicializar masonry al cargar la página
-    $(document).ready(function() {
+    // Inicializar masonry al cargar la página - VANILLA JS
+    document.addEventListener('DOMContentLoaded', function() {
         initMasonry();
     });
 
-    // Reinicializar en resize con debounce
+    // Reinicializar en resize con debounce - VANILLA JS
     let resizeTimeout;
-    $(window).on('resize', function() {
+    window.addEventListener('resize', function() {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(function() {
             initMasonry();
         }, 250);
     });
 
-    // Reinicializar después de aplicar filtros AJAX
-    $(document).on('productosActualizados', function() {
+    // Reinicializar después de aplicar filtros - VANILLA JS
+    document.addEventListener('productosActualizados', function() {
         setTimeout(function() {
             initMasonry();
         }, 100);

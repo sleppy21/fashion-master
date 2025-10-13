@@ -1,0 +1,697 @@
+﻿/**
+ * MODAL VER/CREAR/EDITAR MARCA - DISEÑO IDÉNTICO A PRODUCTOS
+ * CSS completamente independiente sin conflictos
+ */
+
+/* ============================================
+   VARIABLES - IDÉNTICAS A PRODUCTOS
+   ============================================ */
+:root {
+    --cvm-primary: #1e293b;
+    --cvm-primary-dark: #0f172a;
+    --cvm-primary-light: #334155;
+    --cvm-secondary: #6366f1;
+    --cvm-accent: #f093fb;
+    --cvm-success: #10b981;
+    --cvm-warning: #d97706;
+    --cvm-danger: #ef4444;
+    --cvm-text-dark: #0f162b;
+    --cvm-text-medium: #e2e8f0;
+    --cvm-text-light: #cbd5e1;
+    --cvm-bg-light: #1e293b;
+    --cvm-bg-white: #1e293b;
+    --cvm-bg-dark: #0f172a;
+    --cvm-border: rgba(255, 255, 255, 0.1);
+    --cvm-shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.5);
+    --cvm-radius: 8px;
+    --cvm-radius-lg: 12px;
+    --cvm-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   MODAL PRINCIPAL - WRAPPER
+   ============================================ */
+.marca-view-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 99999 !important;
+    display: flex !important; /* ⚠️ DEBE ESTAR SIEMPRE - El estado visible/oculto se controla con opacity */
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+    background: rgba(0, 0, 0, 0.30) !important;
+    backdrop-filter: blur(3px) !important;
+    -webkit-backdrop-filter: blur(3px) !important;
+    /* Las animaciones (opacity, visibility) están en view-modal-animations.css */
+}
+
+/* Overlay de fondo */
+.marca-view-modal__overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    background: transparent !important;
+    cursor: pointer !important;
+    z-index: -1 !important;
+}
+
+/* Container principal */
+.marca-view-modal__container {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    max-height: 95vh !important;
+    background: #1e293b !important;
+    border-radius: 12px !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    z-index: 100000 !important;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.marca-view-modal__header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    background: #1e293b !important;
+    padding: 1.5rem 2rem !important;
+    color: white !important;
+    flex-shrink: 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    display: block !important;
+    /* ⚠️ NO FORZAR opacity aquí - interfiere con animaciones */
+    /* Las animaciones las controla view-modal-animations.css */
+}
+
+.marca-view-modal__header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.marca-view-modal__title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+    color: #ffffff !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.marca-view-modal__title-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.marca-view-modal__badge {
+    position: absolute;
+    top: 24px;
+    right: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.marca-view-modal__close {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1.25rem;
+    z-index: 10;
+}
+
+.marca-view-modal__close:hover {
+    transform: scale(1.1);
+}
+
+.marca-view-modal__close:active {
+    transform: scale(0.95);
+}
+
+/* ============================================
+   BODY
+   ============================================ */
+.marca-view-modal__body {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    padding: 2rem !important;
+    background: #1e293b !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.marca-view-modal__body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.marca-view-modal__body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.marca-view-modal__body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.marca-view-modal__body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.marca-view-modal__content {
+    display: grid !important;
+    grid-template-columns: 400px 1fr !important;
+    gap: 32px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+}
+
+/* ============================================
+   SECCIÓN DE IMAGEN
+   ============================================ */
+.marca-view-modal__image-section {
+    background: transparent !important;
+    border-radius: 8px !important;
+    padding: 24px !important;
+    box-shadow: none !important;
+    position: sticky !important;
+    top: 24px !important;
+    align-self: flex-start !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 5 !important;
+    height: fit-content !important;
+    max-height: calc(100vh - 48px) !important;
+}
+
+.marca-view-modal__image-container {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    margin: 16px 0;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease !important;
+    will-change: transform !important;
+}
+
+.marca-view-modal__image-container:hover {
+    transform: scale(1.02) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+.marca-view-modal__image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.marca-view-modal__image-placeholder {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    gap: 1rem !important;
+}
+
+.marca-view-modal__image-placeholder i {
+    font-size: 4rem !important;
+    opacity: 0.3 !important;
+}
+
+.marca-view-modal__image-name {
+    text-align: center !important;
+    font-weight: 600 !important;
+    font-size: 1.125rem !important;
+    color: #e2e8f0 !important;
+    padding: 1rem !important;
+    background: #334155 !important;
+    border-radius: 8px !important;
+}
+
+/* ============================================
+   SECCIÓN DE INFORMACIÓN
+   ============================================ */
+.marca-view-modal__info-section {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+}
+
+.marca-view-modal__card {
+    background: #334155;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: none;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.marca-view-modal__card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.marca-view-modal__card-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.125rem;
+}
+
+.marca-view-modal__card-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: white;
+}
+
+/* ============================================
+   GRID DE INFORMACIÓN
+   ============================================ */
+.marca-view-modal__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.marca-view-modal__field {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.marca-view-modal__field:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.marca-view-modal__field-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 8px;
+}
+
+.marca-view-modal__field-value {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: white;
+    word-break: break-word;
+}
+
+.marca-view-modal__field-value--code {
+    font-family: 'Courier New', monospace;
+    color: #10b981;
+    font-weight: 700;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.marca-view-modal__description {
+    grid-column: 1 / -1 !important;
+}
+
+.marca-view-modal__description-text {
+    color: #e2e8f0 !important;
+    line-height: 1.6 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    border: none !important;
+    margin: 0 !important;
+}
+
+/* Status badge */
+.marca-view-modal__status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.marca-view-modal__status-badge--active {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.marca-view-modal__status-badge--inactive {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+/* Status Badge */
+.marca-view-modal__status-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 20px !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+}
+
+.marca-view-modal__field-value--code {
+    font-family: 'Courier New', monospace;
+    color: #10b981;
+    font-weight: 700;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.marca-view-modal__description {
+    grid-column: 1 / -1 !important;
+}
+
+.marca-view-modal__description-text {
+    color: #e2e8f0 !important;
+    line-height: 1.6 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    border: none !important;
+    margin: 0 !important;
+}
+
+/* Status badge */
+.marca-view-modal__status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.marca-view-modal__status-badge--active {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.marca-view-modal__status-badge--inactive {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.marca-view-modal__footer {
+    padding: 1.5rem 2rem !important;
+    background: #1e293b !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 0.75rem !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 10 !important;
+    flex-shrink: 0 !important;
+}
+
+.marca-view-modal__btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+    border: 2px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 120px;
+    justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.marca-view-modal__btn--secondary {
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    border: 2px solid rgba(255, 255, 255, 0.6) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.marca-view-modal__btn--secondary:hover {
+    background: rgba(239, 68, 68, 0.8) !important;
+    border-color: rgba(239, 68, 68, 1) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+.marca-view-modal__btn--secondary:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2) !important;
+}
+
+.marca-view-modal__btn--primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+}
+
+.marca-view-modal__btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+}
+
+/* ============================================
+   FORMULARIO (CREAR/EDITAR)
+   ============================================ */
+.marca-view-modal__form-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+}
+
+.marca-view-modal__label {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: var(--cvm-text-light) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.marca-view-modal__input,
+.marca-view-modal__textarea,
+.marca-view-modal__select {
+    width: 100% !important;
+    padding: 0.75rem 1rem !important;
+    background: var(--cvm-bg-dark) !important;
+    border: 1px solid var(--cvm-border) !important;
+    border-radius: var(--cvm-radius) !important;
+    color: var(--cvm-text-medium) !important;
+    font-size: 1rem !important;
+    transition: var(--cvm-transition) !important;
+}
+
+.marca-view-modal__input:focus,
+.marca-view-modal__textarea:focus,
+.marca-view-modal__select:focus {
+    outline: none !important;
+    border-color: var(--cvm-secondary) !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+}
+
+.marca-view-modal__textarea {
+    resize: vertical !important;
+    min-height: 100px !important;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.marca-view-modal__footer {
+    padding: 1.5rem 2rem !important;
+    background: #1e293b !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 0.75rem !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 10 !important;
+    flex-shrink: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.marca-view-modal__btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--cvm-radius);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+    border: 2px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 120px;
+    justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.marca-view-modal__btn--secondary {
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    border: 2px solid rgba(255, 255, 255, 0.6) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.marca-view-modal__btn--secondary:hover {
+    background: rgba(239, 68, 68, 0.8) !important;
+    border-color: rgba(239, 68, 68, 1) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+.marca-view-modal__btn--secondary:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2) !important;
+}
+
+.marca-view-modal__btn--primary {
+    background: linear-gradient(135deg, var(--cvm-primary) 0%, var(--cvm-secondary) 100%);
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.marca-view-modal__btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+    .marca-view-modal__content {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .marca-view-modal__image-section {
+        max-width: 500px !important;
+        margin: 0 auto !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .marca-view-modal__grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .marca-view-modal__body {
+        padding: 1rem !important;
+    }
+    
+    .marca-view-modal__header {
+        padding: 1rem !important;
+    }
+    
+    .marca-view-modal__footer {
+        padding: 1rem !important;
+    }
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+@keyframes marcaModalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes marcaModalSlideUp {
+    from {
+        transform: translateY(20px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Bloquear scroll del body cuando modal está abierto */
+body.marca-modal-open {
+    overflow: hidden !important;
+}

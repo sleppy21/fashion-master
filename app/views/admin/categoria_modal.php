@@ -401,6 +401,68 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
 (function() {
     'use strict';
     
+    // ============================================
+    // FUNCIONES AUXILIARES PARA COMUNICACIÓN CON VENTANA PADRE
+    // ============================================
+    
+    // Función para obtener la ventana padre
+    // Como el modal se carga con fetch() e inyecta en overlay, usar window directamente
+    function getParentWindow() {
+        // El modal está inyectado en la misma página, no es iframe ni ventana nueva
+        // Las funciones ya están en window global
+        console.log('📡 Usando window (modal inyectado en página)');
+        return window;
+    }
+    
+    // Función para cerrar el modal
+    window.closeCategoriaModal = function() {
+        console.log('❌ Cerrando modal de categoría');
+        
+        // Llamar a la función global definida en admin.php
+        if (typeof window.closeCategoriaModal === 'function') {
+            // Prevenir recursión: esta función YA ES closeCategoriaModal
+            // Necesitamos llamar a la del overlay
+            const overlay = document.getElementById('categoria-modal-overlay');
+            if (overlay) {
+                overlay.classList.remove('show');
+                setTimeout(() => {
+                    overlay.remove();
+                    document.body.classList.remove('modal-open');
+                    
+                    // Recargar lista de categorías
+                    if (typeof window.loadCategorias === 'function') {
+                        window.loadCategorias();
+                    }
+                }, 300);
+            } else {
+                document.body.classList.remove('modal-open');
+            }
+        }
+    };
+    
+    // Función para actualizar una categoría individual
+    window.updateSingleCategoria = async function(id, data) {
+        console.log('🔄 Actualizando categoría en tabla:', id);
+        
+        // Recargar toda la lista (más simple)
+        if (typeof window.loadCategorias === 'function') {
+            window.loadCategorias();
+        }
+    };
+    
+    // Función para recargar la lista de categorías
+    window.loadCategoriasData = function() {
+        console.log('🔄 Recargando categorías');
+        
+        if (typeof window.loadCategorias === 'function') {
+            window.loadCategorias();
+        }
+    };
+    
+    // ============================================
+    // FIN FUNCIONES AUXILIARES
+    // ============================================
+    
     // ⭐ FUNCIÓN PRINCIPAL PARA GUARDAR (EVITA REFRESH DE PÁGINA)
     async function guardarCategoria() {
         console.log('🚀 Iniciando guardado de categoría (SIN REFRESH)');
@@ -427,13 +489,13 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         const categoriaId = formData.get('id_categoria');
         
         // ========== DEBUG: Mostrar TODO el FormData ==========
-        console.log('� === CONTENIDO COMPLETO DE FORMDATA ===');
+        console.log('📋 === CONTENIDO COMPLETO DE FORMDATA ===');
         for (let [key, value] of formData.entries()) {
             console.log(`  ${key}:`, value);
         }
         console.log('=========================================');
         
-        console.log('�📤 Enviando datos:', {
+        console.log('📤 Enviando datos:', {
             action: formData.get('action'),
             id: categoriaId,
             codigo: formData.get('codigo_categoria'),
@@ -600,29 +662,19 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                 if (data.success) {
                     console.log('✅ Categoría guardada');
                     
-                    // Actualizar tabla en PARENT window
+                    // Actualizar tabla usando funciones globales
                     if (data.data) {
                         if (isEdit && categoriaId) {
                             console.log('🔄 Actualizando en parent...');
-                            if (window.parent && typeof window.parent.updateSingleCategoria === 'function') {
-                                await window.parent.updateSingleCategoria(categoriaId, data.data);
-                            }
+                            await window.updateSingleCategoria(categoriaId, data.data);
                         } else {
                             console.log('🔄 Recargando tabla en parent...');
-                            if (window.parent && typeof window.parent.loadCategoriasData === 'function') {
-                                window.parent.loadCategoriasData();
-                            }
+                            window.loadCategoriasData();
                         }
                     }
                     
-                    // ⭐ CERRAR MODAL (PARENT)
-                    if (typeof window.closeCategoriaModal === 'function') {
-                        window.closeCategoriaModal();
-                    } else if (window.parent && typeof window.parent.closeCategoriaModal === 'function') {
-                        window.parent.closeCategoriaModal();
-                    } else {
-                        console.error('❌ closeCategoriaModal no disponible');
-                    }
+                    // ⭐ CERRAR MODAL
+                    window.closeCategoriaModal();
                     
                 } else {
                     // Mostrar error
@@ -1096,23 +1148,15 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                 if (data.data) {
                     if (isEdit && categoriaId) {
                         console.log('🔄 Actualizando categoría...');
-                        if (typeof window.updateSingleCategoria === 'function') {
-                            await window.updateSingleCategoria(categoriaId, data.data);
-                        }
+                        await window.updateSingleCategoria(categoriaId, data.data);
                     } else {
                         console.log('🔄 Recargando tabla...');
-                        if (typeof window.loadCategoriasData === 'function') {
-                            window.loadCategoriasData();
-                        }
+                        window.loadCategoriasData();
                     }
                 }
                 
                 // ⭐ CERRAR MODAL
-                if (typeof window.closeCategoriaModal === 'function') {
-                    window.closeCategoriaModal();
-                } else {
-                    console.error('❌ closeCategoriaModal no disponible');
-                }
+                window.closeCategoriaModal();
                 
             } else {
                 // Mostrar error

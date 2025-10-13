@@ -124,6 +124,8 @@ try {
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
     
+    <?php include 'includes/modern-libraries.php'; ?>
+    
     <!-- User Account Modal Styles -->
     <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
     
@@ -144,46 +146,6 @@ try {
            ESTILOS ESPECÍFICOS DEL CARRITO
            Los estilos del header responsive están en: header-responsive.css
            ============================================ */
-        
-        /* Optimización específica para cart.php en desktop */
-        @media (min-width: 992px) {
-            /* Espacio para el contenido después del header */
-            .breadcrumb-option {
-                margin-top: 0 !important;
-                padding-top: 15px !important;
-                padding-bottom: 15px !important;
-            }
-        }
-        
-        /* ============================================
-           BREADCRUMB CON BOTÓN
-           ============================================ */
-        .breadcrumb__links {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .breadcrumb__links-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .continue-shopping-btn {
-            font-size: 11px;
-            color: #666;
-            text-decoration: none;
-            transition: color 0.3s ease;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        
-        .continue-shopping-btn:hover {
-            color: #333;
-            text-decoration: underline;
-        }
         
         /* ============================================
            ESTILOS DE TABLA DE CARRITO - DESKTOP
@@ -1412,38 +1374,6 @@ try {
                 font-size: 14px;
             }
 
-            /* Breadcrumb responsivo */
-            .breadcrumb-option {
-                padding: 8px 0; /* Reducido aún más */
-                background: #f8f9fa;
-                margin-bottom: 0; /* Sin margen inferior */
-            }
-
-            .breadcrumb__links {
-                font-size: 13px;
-                gap: 15px;
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .breadcrumb__links-left {
-                width: 100%;
-            }
-            
-            .continue-shopping-btn {
-                font-size: 11px;
-                margin-top: 5px;
-            }
-
-            .breadcrumb__links a,
-            .breadcrumb__links span {
-                font-size: 13px;
-            }
-
-            .breadcrumb__links i {
-                font-size: 12px;
-            }
-
             /* Título de la sección */
             .shop-cart h2,
             .shop-cart h3 {
@@ -1519,21 +1449,6 @@ try {
 
             /* Botón continuar comprando - ya manejado en estilos principales */
 
-            .breadcrumb__links {
-                font-size: 11px;
-                gap: 8px;
-            }
-            
-            .continue-shopping-btn {
-                font-size: 10px;
-                margin-top: 3px;
-            }
-            
-            .breadcrumb-option {
-                padding: 5px 0; /* Muy reducido */
-                margin-bottom: 0;
-            }
-
             /* Espaciado general */
             .shop-cart.spad {
                 padding: 5px 0; /* Muy reducido */
@@ -1593,25 +1508,7 @@ try {
     <?php include 'includes/header-section.php'; ?>
     <!-- Header Section End -->
 
-    <!-- Breadcrumb Begin -->
-    <div class="breadcrumb-option">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="breadcrumb__links">
-                        <div class="breadcrumb__links-left">
-                            <a href="./index.php"><i class="fa fa-home"></i> Inicio</a>
-                            <span>Carrito de Compras</span>
-                        </div>
-                        <a href="shop.php" class="continue-shopping-btn">
-                            Continuar Comprando
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Breadcrumb End -->
+    <?php include 'includes/breadcrumb.php'; ?>
 
     <!-- Shop Cart Section Begin -->
     <section class="shop-cart spad">
@@ -1921,6 +1818,10 @@ try {
 
     <!-- Js Plugins -->
     <script src="public/assets/js/jquery-3.3.1.min.js"></script>
+    
+    <!-- Fetch API Handler Moderno - Reemplaza AJAX/jQuery -->
+    <script src="public/assets/js/fetch-api-handler.js"></script>
+    
     <script src="public/assets/js/bootstrap.min.js"></script>
     <script src="public/assets/js/jquery-ui.min.js"></script>
     <script src="public/assets/js/jquery.slicknav.js"></script>

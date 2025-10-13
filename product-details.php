@@ -146,6 +146,8 @@ $page_title = $producto['nombre_producto'];
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
     
+    <?php include 'includes/modern-libraries.php'; ?>
+    
     <!-- User Account Modal CSS -->
     <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
     
@@ -160,6 +162,9 @@ $page_title = $producto['nombre_producto'];
     
     <!-- Global Responsive Styles - TODO EL PROYECTO -->
     <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
+    
+    <!-- Breadcrumb Moderno - Diseño consistente -->
+    <link rel="stylesheet" href="public/assets/css/breadcrumb-modern.css?v=1.0" type="text/css">
     
     <!-- Product Details CSS -->
     <link rel="stylesheet" href="public/assets/css/product-details.css" type="text/css">
@@ -182,7 +187,7 @@ $page_title = $producto['nombre_producto'];
                         <a href="./index.php"><i class="fa fa-home"></i> Inicio</a>
                         <a href="./shop.php">Tienda</a>
                         <?php if(!empty($producto['nombre_categoria'])): ?>
-                        <a href="./shop.php?categoria=<?php echo $producto['id_categoria']; ?>"><?php echo htmlspecialchars($producto['nombre_categoria']); ?></a>
+                        <a href="./shop.php?c=<?php echo $producto['id_categoria']; ?>"><?php echo htmlspecialchars($producto['nombre_categoria']); ?></a>
                         <?php endif; ?>
                         <span><?php echo htmlspecialchars($producto['nombre_producto']); ?></span>
                     </div>
@@ -627,6 +632,10 @@ $page_title = $producto['nombre_producto'];
 
     <!-- Js Plugins -->
     <script src="public/assets/js/jquery-3.3.1.min.js"></script>
+    
+    <!-- Fetch API Handler Moderno - Reemplaza AJAX/jQuery -->
+    <script src="public/assets/js/fetch-api-handler.js"></script>
+    
     <script src="public/assets/js/bootstrap.min.js"></script>
     <script src="public/assets/js/jquery.magnific-popup.min.js"></script>
     <script src="public/assets/js/jquery-ui.min.js"></script>

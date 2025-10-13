@@ -33,10 +33,6 @@
         visibility: hidden;
     }
 }
-        opacity: 0;
-        visibility: hidden;
-    }
-}
 
 /* Slide In desde abajo SIN escala - SOLO FADE */
 @keyframes viewModalSlideIn {
@@ -267,13 +263,13 @@
 
 @keyframes badgePulseIn {
     0% {
-@keyframes badgePulseIn {
-    0% {
         opacity: 0;
     }
     100% {
         opacity: 1;
     }
+}
+
 .product-view-modal.show .product-view-modal__badge,
 .marca-view-modal.show .marca-view-modal__badge,
 .category-view-modal.show .category-view-modal__badge,
@@ -296,17 +292,18 @@
 
 @keyframes cardSlideUp {
     from {
-        transform: translateY(20px);
-        opacity: 0;
-    }
-@keyframes cardSlideUp {
-    from {
         opacity: 0;
     }
     to {
         opacity: 1;
     }
-}view-modal.show .view-modal__info-card {
+}
+
+.product-view-modal.show .product-view-modal__info-card,
+.marca-view-modal.show .marca-view-modal__info-card,
+.category-view-modal.show .category-view-modal__info-card,
+.categoria-view-modal.show .categoria-view-modal__info-card,
+.view-modal.show .view-modal__info-card {
     animation: cardSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
 }
 

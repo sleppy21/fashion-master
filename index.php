@@ -128,8 +128,13 @@ try {
     <!-- Global Responsive Styles - TODO EL PROYECTO -->
     <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
     
+    <!-- Breadcrumb Moderno - Diseño consistente -->
+    <link rel="stylesheet" href="public/assets/css/breadcrumb-modern.css?v=1.0" type="text/css">
+    
     <!-- Modern Design Improvements -->
     <link rel="stylesheet" href="public/assets/css/modern-improvements.css" type="text/css">
+    
+    <?php include 'includes/modern-libraries.php'; ?>
     
     <!-- Chat Widget Styles -->
     <link rel="stylesheet" href="public/assets/css/fashion-chat-button.css" type="text/css">
@@ -226,93 +231,29 @@ try {
     </div>
     <!-- Offcanvas Menu End -->
 
-    <!-- Header Section Begin -->
-    <header class="header">
-        <div class="container-fluid">
-            <div class="row">
-                                <div class="col-xl-3 col-lg-2">
-                    <div class="header__logo">
-                        <a href="./index.php"><img src="public/assets/img/logo.png" alt="SleppyStore"></a>
-                    </div>
-                </div>
-                <div class="col-xl-6 col-lg-7">
-                    <nav class="header__menu">
-                        <ul>
-                            <li class="active"><a href="./index.php">Inicio</a></li>
-                            <li><a href="#">Categorías</a>
-                                <ul class="dropdown">
-                                    <?php foreach($categorias as $categoria): ?>
-                                    <li><a href="shop.php?categoria=<?php echo urlencode($categoria['id_categoria']); ?>"><?php echo htmlspecialchars($categoria['nombre_categoria']); ?></a></li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </li>
-                            <li><a href="./shop.php">Tienda</a></li>
-                            <li><a href="./contact.php">Contacto</a></li>
-                            <li><a href="#destacados">Destacados</a></li>
-                            <?php if($usuario_logueado && $usuario_logueado['rol_usuario'] === 'admin'): ?>
-                            <li class="admin-menu-item"><a href="./admin.php" class="admin-link">
-                                 Admin
-                                <span class="admin-badge"></span>
-                            </a></li>
-                            <?php endif; ?>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="col-lg-3">
-                    <div class="header__right">
-                        <div class="header__right__auth">
-                            <?php if($usuario_logueado): ?>
-                                <a href="#" id="user-account-link">
-                                    <i class="fa fa-user-circle"></i>
-                                    <span>Hola, <?php echo htmlspecialchars($usuario_logueado['nombre_usuario']); ?></span>
-                                </a>
-                            <?php else: ?>
-                                <a href="login.php">Iniciar Sesión</a>
-                                <a href="register.php">Registrarse</a>
-                            <?php endif; ?>
-                        </div>
-                        <ul class="header__right__widget">
-                            <li><span class="icon_search search-switch"></span></li>
-                            <?php if($usuario_logueado): ?>
-                            <li><a href="#" id="favorites-link"><span class="icon_heart_alt"></span>
-                                <?php if($favorites_count > 0): ?>
-                                <div class="tip"><?php echo $favorites_count; ?></div>
-                                <?php endif; ?>
-                            </a></li>
-                            <?php else: ?>
-                            <li><a href="login.php"><span class="icon_heart_alt"></span></a></li>
-                            <?php endif; ?>
-                            <li><a href="cart.php"><span class="icon_bag_alt"></span>
-                                <?php if($cart_count > 0): ?>
-                                <div class="tip"><?php echo $cart_count; ?></div>
-                                <?php endif; ?>
-                            </a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="canvas__open">
-                <i class="fa fa-bars"></i>
-            </div>
-        </div>
-    </header>
-    <!-- Header Section End -->
+    <?php 
+    // ===================================================================
+    // HEADER RESPONSIVE - VERSIÓN 2.0 - INCLUIDO DESDE header-section.php
+    // Si ves código HTML estático aquí, limpia el cache del navegador
+    // ===================================================================
+    include 'includes/header-section.php'; 
+    ?>
 
     <!-- Product Section Begin -->
     <section class="product spad" id="destacados">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 col-md-4">
+                <div class="col-lg-4 col-md-4" data-aos="fade-right">
                     <div class="section-title">
                         <h4>Productos Destacados</h4>
                     </div>
                 </div>
-            <div class="col-lg-8 col-md-8">
+            <div class="col-lg-8 col-md-8" data-aos="fade-left">
                 <ul class="filter__controls">
                     <li class="active" data-filter="*">All</li>
-                    <li data-filter=".women">Women’s</li>
-                    <li data-filter=".men">Men’s</li>
-                    <li data-filter=".kid">Kid’s</li>
+                    <li data-filter=".women">Women's</li>
+                    <li data-filter=".men">Men's</li>
+                    <li data-filter=".kid">Kid's</li>
                     <li data-filter=".accessories">Accessories</li>
                     <li data-filter=".cosmetic">Cosmetics</li>
                 </ul>
@@ -356,7 +297,7 @@ try {
                     $contador++;
                     $es_nuevo = $contador <= 3;
                 ?>
-            <div class="col-lg-3 col-md-4 col-sm-6 mix <?php echo $gender_class; ?>">
+            <div class="col-lg-3 col-md-4 col-sm-6 mix <?php echo $gender_class; ?>" data-aos="fade-up" data-aos-delay="<?php echo ($contador * 50); ?>">
                 <div class="product__item <?php echo $tiene_descuento ? 'sale' : ''; ?>">
                     <div class="product__item__pic set-bg product-image-clickable" 
                          data-setbg="<?php echo htmlspecialchars($imagen_url); ?>"
@@ -416,12 +357,12 @@ try {
 <!-- Product Section End -->
 
 <!-- Banner Section Begin -->
-<section class="banner set-bg" data-setbg="public/assets/img/banner/banner-1.jpg">
+<section class="banner set-bg" data-setbg="public/assets/img/banner/banner-1.jpg" data-aos="fade-up">
     <div class="container">
         <div class="row">
             <div class="col-xl-7 col-lg-8 m-auto">
                 <div class="banner__slider owl-carousel">
-                    <div class="banner__item">
+                    <div class="banner__item" data-aos="zoom-in">
                         <div class="banner__text">
                             <span>The Chloe Collection</span>
                             <h1>The Project Jacket</h1>
@@ -453,7 +394,7 @@ try {
 <section class="trend spad">
     <div class="container">
         <div class="row">
-            <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="col-lg-4 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="100">
                 <div class="trend__content">
                     <div class="section-title">
                         <h4>Hot Trend</h4>
@@ -508,7 +449,7 @@ try {
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="col-lg-4 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="200">
                 <div class="trend__content">
                     <div class="section-title">
                         <h4>Best seller</h4>
@@ -563,7 +504,7 @@ try {
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="col-lg-4 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="300">
                 <div class="trend__content">
                     <div class="section-title">
                         <h4>Feature</h4>
@@ -627,12 +568,12 @@ try {
 <section class="discount">
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 p-0">
+            <div class="col-lg-6 p-0" data-aos="fade-right">
                 <div class="discount__pic">
                     <img src="public/assets/img/discount.jpg" alt="">
                 </div>
             </div>
-            <div class="col-lg-6 p-0">
+            <div class="col-lg-6 p-0" data-aos="fade-left">
                 <div class="discount__text">
                     <div class="discount__text__title">
                         <span>Discount</span>
@@ -669,28 +610,28 @@ try {
 <section class="services spad">
     <div class="container">
         <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="100">
                 <div class="services__item">
                     <i class="fa fa-car"></i>
                     <h6>Free Shipping</h6>
                     <p>For all oder over $99</p>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="200">
                 <div class="services__item">
                     <i class="fa fa-money"></i>
                     <h6>Money Back Guarantee</h6>
                     <p>If good have Problems</p>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="300">
                 <div class="services__item">
                     <i class="fa fa-support"></i>
                     <h6>Online Support 24/7</h6>
                     <p>Dedicated support</p>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="400">
                 <div class="services__item">
                     <i class="fa fa-headphones"></i>
                     <h6>Payment Secure</h6>
@@ -852,6 +793,10 @@ if($usuario_logueado) {
 
 <!-- Js Plugins -->
 <script src="public/assets/js/jquery-3.3.1.min.js"></script>
+
+<!-- Fetch API Handler Moderno - Reemplaza AJAX/jQuery para llamadas al servidor -->
+<script src="public/assets/js/fetch-api-handler.js"></script>
+
 <script src="public/assets/js/error-handler.js"></script>
 <script src="public/assets/js/bootstrap.min.js"></script>
 <script src="public/assets/js/jquery.magnific-popup.min.js"></script>
@@ -868,9 +813,6 @@ if($usuario_logueado) {
 
 <!-- Cart & Favorites Handler -->
 <script src="public/assets/js/cart-favorites-handler.js"></script>
-
-<!-- Product Navigation ya no es necesario - usando onclick directo -->
-<!-- <script src="public/assets/js/product-navigation.js"></script> -->
 
 <!-- Scroll Position Memory -->
 <script src="public/assets/js/scroll-position-memory.js"></script>

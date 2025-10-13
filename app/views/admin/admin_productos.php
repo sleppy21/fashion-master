@@ -72,10 +72,13 @@
             </div>
             <div class="filter-group">
                 <label class="filter-label">Fecha</label>
-                <select id="filter-fecha" class="filter-select" onchange="filterProducts()">
-                    <option value="">Todas las fechas</option>
-                    <!-- Se cargan dinámicamente -->
-                </select>
+                <button type="button" 
+                        id="filter-fecha" 
+                        class="filter-select-2"
+                        style="justify-content: flex-start;">
+                    <span id="filter-fecha-text">Seleccionar fechas</span>
+                </button>
+                <input type="hidden" id="filter-fecha-value">
             </div>
             <div class="filter-group">
                 <button class="btn-modern btn-outline" onclick="clearAllProductFilters()">
@@ -257,10 +260,13 @@
                     
                     <div class="modal-filter-group">
                         <label class="modal-filter-label">Fecha</label>
-                        <select id="modal-filter-fecha" class="modal-filter-select" onchange="window.filterProductsFromModal()">
-                            <option value="">Todas las fechas</option>
-                            <!-- Se cargan dinámicamente -->
-                        </select>
+                        <button type="button" 
+                                id="modal-filter-fecha" 
+                                class="modal-filter-select"
+                                style="justify-content: flex-start;">
+                            <span id="modal-filter-fecha-text">Seleccionar fechas</span>
+                        </button>
+                        <input type="hidden" id="modal-filter-fecha-value">
                     </div>
                 </div>
 
@@ -310,6 +316,12 @@ let productos = [];
 // Variables de paginación
 let currentPage = 1;
 let totalPages = 1;
+
+// Variable para tracking de vista actual (tabla o grid)
+window.products_currentView = 'table'; // Por defecto tabla
+
+// Variable global para fechas de productos (para Flatpickr)
+window.productsDatesArray = [];
 
 // ============ MOBILE FILTERS MODAL FUNCTIONS ============
 
@@ -370,49 +382,62 @@ window.closeFiltersModalOnOverlay = closeFiltersModalOnOverlay;
 
 // Sincronizar filtros del desktop al modal
 function syncFiltersToModal() {
-    if (typeof $ === 'undefined') return;
-    
     // Sincronizar búsqueda
-    const searchValue = $('#search-productos').val();
-    $('#modal-search-productos').val(searchValue);
+    const searchDesktop = document.getElementById('search-productos');
+    const searchModal = document.getElementById('modal-search-productos');
+    if (searchDesktop && searchModal) {
+        searchModal.value = searchDesktop.value;
+    }
     
     // Sincronizar filtros
-    const categoryValue = $('#filter-category').val();
-    const statusValue = $('#filter-status').val();
-    const stockValue = $('#filter-stock').val();
-    const fechaValue = $('#filter-fecha').val();
+    const categoryDesktop = document.getElementById('filter-category');
+    const statusDesktop = document.getElementById('filter-status');
+    const stockDesktop = document.getElementById('filter-stock');
+    const fechaDesktop = document.getElementById('filter-fecha');
     
-    $('#modal-filter-category').val(categoryValue);
-    $('#modal-filter-status').val(statusValue);
-    $('#modal-filter-stock').val(stockValue);
-    $('#modal-filter-fecha').val(fechaValue);
+    const categoryModal = document.getElementById('modal-filter-category');
+    const statusModal = document.getElementById('modal-filter-status');
+    const stockModal = document.getElementById('modal-filter-stock');
+    const fechaModal = document.getElementById('modal-filter-fecha');
+    
+    if (categoryDesktop && categoryModal) categoryModal.value = categoryDesktop.value;
+    if (statusDesktop && statusModal) statusModal.value = statusDesktop.value;
+    if (stockDesktop && stockModal) stockModal.value = stockDesktop.value;
+    if (fechaDesktop && fechaModal) fechaModal.value = fechaDesktop.value;
 }
 
 // Sincronizar filtros del modal al desktop
 function syncFiltersFromModal() {
-    if (typeof $ === 'undefined') return;
-    
     // Sincronizar búsqueda
-    const searchValue = $('#modal-search-productos').val();
-    $('#search-productos').val(searchValue);
+    const searchDesktop = document.getElementById('search-productos');
+    const searchModal = document.getElementById('modal-search-productos');
+    if (searchDesktop && searchModal) {
+        searchDesktop.value = searchModal.value;
+    }
     
     // Sincronizar filtros
-    const categoryValue = $('#modal-filter-category').val();
-    const statusValue = $('#modal-filter-status').val();
-    const stockValue = $('#modal-filter-stock').val();
-    const fechaValue = $('#modal-filter-fecha').val();
+    const categoryDesktop = document.getElementById('filter-category');
+    const statusDesktop = document.getElementById('filter-status');
+    const stockDesktop = document.getElementById('filter-stock');
+    const fechaDesktop = document.getElementById('filter-fecha');
     
-    $('#filter-category').val(categoryValue);
-    $('#filter-status').val(statusValue);
-    $('#filter-stock').val(stockValue);
-    $('#filter-fecha').val(fechaValue);
+    const categoryModal = document.getElementById('modal-filter-category');
+    const statusModal = document.getElementById('modal-filter-status');
+    const stockModal = document.getElementById('modal-filter-stock');
+    const fechaModal = document.getElementById('modal-filter-fecha');
+    
+    if (categoryDesktop && categoryModal) categoryDesktop.value = categoryModal.value;
+    if (statusDesktop && statusModal) statusDesktop.value = statusModal.value;
+    if (stockDesktop && stockModal) stockDesktop.value = stockModal.value;
+    if (fechaDesktop && fechaModal) fechaDesktop.value = fechaModal.value;
 }
 
 // Manejar búsqueda desde el modal
 function handleModalSearchInput() {
     const searchValue = document.getElementById('modal-search-productos').value;
-    if (typeof $ !== 'undefined') {
-        $('#search-productos').val(searchValue);
+    const searchDesktop = document.getElementById('search-productos');
+    if (searchDesktop) {
+        searchDesktop.value = searchValue;
     }
     handleSearchInput();
 }
@@ -437,18 +462,66 @@ window.filterProductsFromModal = filterProductsFromModal;
 
 // Limpiar todos los filtros desde el modal
 function clearModalFilters() {
-    if (typeof $ === 'undefined') return;
+    console.log('🧹 Limpiando filtros del modal');
     
-    // Limpiar filtros del modal
-    $('#modal-search-productos').val('');
-    $('#modal-filter-category').val('');
-    $('#modal-filter-status').val('');
-    $('#modal-filter-stock').val('');
-    $('#modal-filter-fecha').val('');
+    // Limpiar búsqueda
+    const modalSearch = document.getElementById('modal-search-productos');
+    if (modalSearch) modalSearch.value = '';
     
-    // Sincronizar con desktop y aplicar
-    syncFiltersFromModal();
-    clearAllProductFilters();
+    // Limpiar selects
+    const modalCategory = document.getElementById('modal-filter-category');
+    if (modalCategory) modalCategory.value = '';
+    
+    const modalStatus = document.getElementById('modal-filter-status');
+    if (modalStatus) modalStatus.value = '';
+    
+    const modalStock = document.getElementById('modal-filter-stock');
+    if (modalStock) modalStock.value = '';
+    
+    // Limpiar fecha (botón + hidden input)
+    const modalFechaValue = document.getElementById('modal-filter-fecha-value');
+    const modalFechaText = document.getElementById('modal-filter-fecha-text');
+    
+    if (modalFechaValue) modalFechaValue.value = '';
+    if (modalFechaText) {
+        modalFechaText.innerHTML = '<i class="fas fa-calendar-alt"></i> Seleccionar fechas';
+    }
+    
+    // Limpiar Flatpickr modal
+    if (window.productsDatePickerModal) {
+        window.productsDatePickerModal.clear();
+    }
+    
+    // Sincronizar con desktop
+    const desktopSearch = document.getElementById('search-productos');
+    if (desktopSearch) desktopSearch.value = '';
+    
+    const desktopCategory = document.getElementById('filter-category');
+    if (desktopCategory) desktopCategory.value = '';
+    
+    const desktopStatus = document.getElementById('filter-status');
+    if (desktopStatus) desktopStatus.value = '';
+    
+    const desktopStock = document.getElementById('filter-stock');
+    if (desktopStock) desktopStock.value = '';
+    
+    const desktopFechaValue = document.getElementById('filter-fecha-value');
+    const desktopFechaText = document.getElementById('filter-fecha-text');
+    
+    if (desktopFechaValue) desktopFechaValue.value = '';
+    if (desktopFechaText) {
+        desktopFechaText.innerHTML = '<i class="fas fa-calendar-alt"></i> Seleccionar fechas';
+    }
+    
+    // Limpiar Flatpickr desktop
+    if (window.productsDatePicker) {
+        window.productsDatePicker.clear();
+    }
+    
+    // Recargar productos sin filtros
+    loadProducts();
+    
+    console.log('✅ Filtros limpiados');
 }
 window.clearModalFilters = clearModalFilters;
 
@@ -575,7 +648,8 @@ async function loadProducts(forceCacheBust = false, preserveState = null) {
             const stock = $('#filter-stock').val();
             if (stock) params.append('stock_filter', stock);
             
-            const fecha = $('#filter-fecha').val();
+            // Usar el hidden input para la fecha
+            const fecha = $('#filter-fecha-value').val();
             if (fecha) params.append('fecha', fecha);
         } else {
             // Fallback vanilla JS
@@ -599,9 +673,10 @@ async function loadProducts(forceCacheBust = false, preserveState = null) {
                 params.append('stock_filter', stockSelect.value);
             }
             
-            const fechaSelect = document.getElementById('filter-fecha');
-            if (fechaSelect && fechaSelect.value) {
-                params.append('fecha', fechaSelect.value);
+            // Usar el hidden input para la fecha
+            const fechaValue = document.getElementById('filter-fecha-value');
+            if (fechaValue && fechaValue.value) {
+                params.append('fecha', fechaValue.value);
             }
         }
         
@@ -760,29 +835,48 @@ function loadProductDates(products) {
         // Convertir a array y ordenar de más reciente a más antigua
         const fechasUnicas = Array.from(fechasSet).sort((a, b) => b.localeCompare(a));
         
+        // Guardar fechas en variable global para Flatpickr
+        window.productsDatesArray = fechasUnicas;
+        console.log('📅 Fechas de productos guardadas:', window.productsDatesArray);
+        
+        // NO actualizar 'enable' - permitir seleccionar cualquier fecha para rangos
+        // Solo redibujar para actualizar los estilos visuales
+        if (window.productsDatePicker) {
+            window.productsDatePicker.redraw();
+            console.log('✅ Flatpickr desktop redibujado con', fechasUnicas.length, 'fechas marcadas');
+        }
+        
+        if (window.productsDatePickerModal) {
+            window.productsDatePickerModal.redraw();
+            console.log('✅ Flatpickr modal redibujado con', fechasUnicas.length, 'fechas marcadas');
+        }
+        
         // Guardar opción seleccionada actual
         const valorActual = fechaSelect.value;
         
-        // Limpiar y agregar opción predeterminada
-        fechaSelect.innerHTML = '<option value="">Todas las fechas</option>';
-        
-        // Agregar opciones de fechas
-        fechasUnicas.forEach(fecha => {
-            const option = document.createElement('option');
-            option.value = fecha;
-            // Formatear fecha para mostrar (DD/MM/YYYY)
-            const [year, month, day] = fecha.split('-');
-            option.textContent = `${day}/${month}/${year}`;
-            fechaSelect.appendChild(option);
-        });
-        
-        // Restaurar selección si existía
-        if (valorActual && fechasUnicas.includes(valorActual)) {
-            fechaSelect.value = valorActual;
+        // Solo actualizar SELECT si es SELECT (no INPUT de Flatpickr)
+        if (fechaSelect.tagName === 'SELECT') {
+            // Limpiar y agregar opción predeterminada
+            fechaSelect.innerHTML = '<option value="">Todas las fechas</option>';
+            
+            // Agregar opciones de fechas
+            fechasUnicas.forEach(fecha => {
+                const option = document.createElement('option');
+                option.value = fecha;
+                // Formatear fecha para mostrar (DD/MM/YYYY)
+                const [year, month, day] = fecha.split('-');
+                option.textContent = `${day}/${month}/${year}`;
+                fechaSelect.appendChild(option);
+            });
+            
+            // Restaurar selección si existía
+            if (valorActual && fechasUnicas.includes(valorActual)) {
+                fechaSelect.value = valorActual;
+            }
+            
+            // Sincronizar con el modal
+            loadModalFilterOptions();
         }
-        
-        // Sincronizar con el modal
-        loadModalFilterOptions();
     } catch (error) {
         console.error('❌ Error cargando fechas:', error);
     }
@@ -790,10 +884,17 @@ function loadProductDates(products) {
 
 // Función para mostrar productos en tabla
 function displayProducts(products, forceCacheBust = false, preserveState = null) {
-    // FORZAR vista grid en móvil
+    // FORZAR vista grid en móvil SIEMPRE
     const isMobile = window.innerWidth <= 768;
-    const currentView = isMobile ? 'grid' : getCurrentView();
     
+    if (isMobile) {
+        console.log('📱 Móvil detectado en displayProducts, usando grid');
+        displayProductsGrid(products);
+        return;
+    }
+    
+    // En desktop, usar la vista actual
+    const currentView = getCurrentView();
     if (currentView === 'grid') {
         // Si está en vista grid, actualizar grid
         displayProductsGrid(products);
@@ -1010,6 +1111,13 @@ function handleSearchInput() {
 function toggleView(viewType) {
     console.log('🔄 Cambiando vista a:', viewType);
     
+    // BLOQUEAR cambio a tabla en móvil
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile && viewType === 'table') {
+        console.warn('⛔ Vista tabla bloqueada en móvil');
+        return; // No permitir cambio
+    }
+    
     // CERRAR BURBUJA DE STOCK si está abierta (evita que quede con coordenadas incorrectas)
     closeStockBubble();
     
@@ -1037,11 +1145,13 @@ function toggleView(viewType) {
     if (viewType === 'grid') {
         tableContainer.style.display = 'none';
         document.querySelector('.products-grid').style.display = 'grid';
+        window.products_currentView = 'grid';
         // Recargar productos para asegurar datos actualizados
         loadProducts();
     } else {
         tableContainer.style.display = 'block';
         document.querySelector('.products-grid').style.display = 'none';
+        window.products_currentView = 'table';
         // Recargar productos para asegurar datos actualizados
         loadProducts();
     }
@@ -1869,7 +1979,7 @@ function forceCloseFloatingActions() {
 async function exportProducts() {
     
     try {
-        // // showNotification('Preparando exportación...', 'info');
+        showNotification('Preparando exportación...', 'info');
         
         const response = await fetch(`${CONFIG.apiUrl}?action=export`, {
             method: 'GET',
@@ -1889,7 +1999,7 @@ async function exportProducts() {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
             
-            // // showNotification('Productos exportados exitosamente', 'success');
+            showNotification('Productos exportados exitosamente', 'success');
         } else {
             throw new Error(`Error HTTP: ${response.status}`);
         }
@@ -1900,7 +2010,7 @@ async function exportProducts() {
         if (productos && productos.length > 0) {
             generateClientSideCSV();
         } else {
-            // // showNotification('No hay productos para exportar', 'warning');
+            showNotification('No hay productos para exportar', 'warning');
         }
     }
 }
@@ -1976,7 +2086,18 @@ function clearAllProductFilters() {
         $('#filter-category').val('');
         $('#filter-status').val('');
         $('#filter-stock').val('');
-        $('#filter-fecha').val('');
+        $('#filter-fecha-value').val('');
+        
+        // Limpiar Flatpickr
+        if (window.productsDatePicker) {
+            window.productsDatePicker.clear();
+        }
+        
+        // Resetear texto del botón de fecha
+        const filterFechaText = document.getElementById('filter-fecha-text');
+        if (filterFechaText) {
+            filterFechaText.textContent = 'Seleccionar fechas';
+        }
         
         // Efecto visual de limpieza
         $('.module-filters').addClass('filters-clearing');
@@ -1991,13 +2112,24 @@ function clearAllProductFilters() {
             'filter-category',
             'filter-status',
             'filter-stock',
-            'filter-fecha'
+            'filter-fecha-value'
         ];
         
         elements.forEach(id => {
             const element = document.getElementById(id);
             if (element) element.value = '';
         });
+        
+        // Limpiar Flatpickr
+        if (window.productsDatePicker) {
+            window.productsDatePicker.clear();
+        }
+        
+        // Resetear texto del botón de fecha
+        const filterFechaText = document.getElementById('filter-fecha-text');
+        if (filterFechaText) {
+            filterFechaText.textContent = 'Seleccionar fechas';
+        }
     }
     
     // Mostrar notificación
@@ -2998,6 +3130,9 @@ function initializeProductsModule() {
     if (isMobile) {
         console.log('📱 Dispositivo móvil detectado, preparando vista grid');
         
+        // Actualizar variable global de vista
+        window.products_currentView = 'grid';
+        
         // 1. Ocultar tabla INMEDIATAMENTE (antes que nada)
         const tableContainer = document.querySelector('.data-table-wrapper');
         if (tableContainer) {
@@ -3019,26 +3154,591 @@ function initializeProductsModule() {
             gridContainer.innerHTML = `
                 <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: #94a3b8;">
                     <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-                        <div class="spinner" style="border: 3px solid #e2e8f0; border-top-color: #667eea; width: 40px; height: 40px;"></div>
+                        <div class="spinner" style="border: 3px solid #e2e8f0; border-top-color: #3b82f6; width: 40px; height: 40px;"></div>
                         <span style="font-size: 14px;">Cargando productos...</span>
                     </div>
                 </div>
             `;
         }
         
-        // 4. Cambiar botones activos
+        // 4. Cambiar botones activos y BLOQUEAR en móvil
         const viewButtons = document.querySelectorAll('.view-btn');
         viewButtons.forEach(btn => {
             btn.classList.remove('active');
             if (btn.dataset.view === 'grid') {
                 btn.classList.add('active');
             }
+            
+            // BLOQUEAR botones en móvil (solo grid permitido)
+            if (btn.dataset.view === 'table') {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+                btn.title = 'Vista tabla no disponible en móvil';
+            }
+        });
+        
+        console.log('🔒 Botones de vista bloqueados en móvil (solo grid)');
+    } else {
+        // En desktop, asegurar que los botones estén desbloqueados
+        const viewButtons = document.querySelectorAll('.view-btn');
+        viewButtons.forEach(btn => {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+            btn.title = '';
         });
     }
     
     // Cargar categorías y productos
     loadCategories();
-    loadProducts();
+    
+    // En móvil, cargar productos y luego forzar vista grid INSTANTÁNEAMENTE
+    if (isMobile) {
+        loadProducts().then(() => {
+            console.log('🎯 Productos cargados, ejecutando toggleView(grid) automáticamente');
+            toggleView('grid'); // ← INSTANTÁNEO, sin timeout
+        });
+    } else {
+        loadProducts();
+    }
+    
+    // ========================================
+    // INICIALIZAR LIBRERÍAS MODERNAS
+    // ========================================
+    
+    // 1. Flatpickr para filtro de fecha - BOTÓN que abre calendario
+    const filterFecha = document.getElementById('filter-fecha');
+    const filterFechaValue = document.getElementById('filter-fecha-value');
+    const filterFechaText = document.getElementById('filter-fecha-text');
+    
+    if (filterFecha && typeof flatpickr !== 'undefined') {
+        console.log('📅 Inicializando Flatpickr en botón de fecha');
+        
+        // Crear input invisible para Flatpickr
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'text';
+        hiddenInput.style.display = 'none';
+        hiddenInput.id = 'flatpickr-hidden-input';
+        filterFecha.parentNode.appendChild(hiddenInput);
+        
+        // Variable para controlar si el calendario está abierto
+        let isCalendarOpen = false;
+        
+        // ⭐ DECLARAR calendarObserver ANTES de Flatpickr
+        const calendarObserver = new MutationObserver(function(mutations) {
+            // Re-marcar inmediatamente cuando haya cualquier cambio
+            const calendar = document.querySelector('.flatpickr-calendar:not(.inline)');
+            if (calendar && window.productsDatesArray && window.productsDatesArray.length > 0) {
+                const days = calendar.querySelectorAll('.flatpickr-day:not(.flatpickr-disabled)');
+                days.forEach(dayElem => {
+                    if (dayElem.dateObj) {
+                        const dateStr = dayElem.dateObj.toISOString().split('T')[0];
+                        if (window.productsDatesArray.includes(dateStr)) {
+                            if (!dayElem.classList.contains('has-products')) {
+                                dayElem.classList.add('has-products');
+                                dayElem.title = 'Hay productos en esta fecha';
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        
+        // ⭐ DECLARAR startObserving ANTES de Flatpickr
+        const startObserving = () => {
+            const calendar = document.querySelector('.flatpickr-calendar:not(.inline)');
+            if (calendar) {
+                calendarObserver.observe(calendar, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['class', 'aria-label']
+                });
+                
+                // FORZAR marcado inmediato después de iniciar observación
+                if (typeof markMonthsWithProducts === 'function') {
+                    markMonthsWithProducts();
+                }
+            }
+        };
+        
+        // Inicializar Flatpickr en el input invisible
+        window.productsDatePicker = flatpickr(hiddenInput, {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            allowInput: false,
+            inline: false,
+            position: "auto",
+            positionElement: filterFecha,
+            animate: true,
+            appendTo: document.body,
+            showMonths: 1,
+            enableTime: false,
+            // NO mostrar días de otros meses
+            showOtherMonths: false,
+            locale: {
+                firstDayOfWeek: 1,
+                weekdays: {
+                    shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                    longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+                },
+                months: {
+                    shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+                }
+            },
+            // NO filtrar HASTA que se complete el rango (2 fechas)
+            onChange: function(selectedDates, dateStr, instance) {
+                console.log('📅 Fechas seleccionadas:', selectedDates.length, dateStr);
+                
+                // Actualizar hidden input
+                if (filterFechaValue) filterFechaValue.value = dateStr;
+                
+                // Actualizar texto del botón
+                if (filterFechaText) {
+                    if (dateStr && selectedDates.length === 2) {
+                        const dates = dateStr.split(' to ');
+                        filterFechaText.textContent = `${dates[0]} → ${dates[1]}`;
+                    } else if (dateStr && selectedDates.length === 1) {
+                        filterFechaText.textContent = `${dateStr} (selecciona fin)`;
+                    } else {
+                        filterFechaText.textContent = 'Seleccionar fechas';
+                    }
+                }
+                
+                // FILTRAR SOLO cuando se seleccionen 2 fechas (rango completo)
+                if (selectedDates.length === 2) {
+                    console.log('✅ Rango completo seleccionado, filtrando...');
+                    filterProducts();
+                }
+            },
+            onReady: function(selectedDates, dateStr, instance) {
+                // FORZAR marcado múltiples veces para asegurar
+                setTimeout(() => markMonthsWithProducts(), 10);
+                setTimeout(() => markMonthsWithProducts(), 50);
+                setTimeout(() => markMonthsWithProducts(), 100);
+                setTimeout(() => startObserving(), 150);
+            },
+            onOpen: function() {
+                console.log('📅 Calendario abierto - LIMPIANDO filtros automáticamente');
+                isCalendarOpen = true;
+                filterFecha.classList.add('calendar-open');
+                
+                // ⭐ LIMPIAR fechas automáticamente al abrir (como hacer click en "Limpiar")
+                window.productsDatePicker.clear();
+                
+                // Limpiar valores
+                if (filterFechaValue) filterFechaValue.value = '';
+                if (filterFechaText) filterFechaText.textContent = 'Seleccionar fechas';
+                
+                // Re-cargar TODOS los productos (sin filtro de fecha)
+                filterProducts();
+                
+                // FORZAR marcado múltiples veces
+                setTimeout(() => markMonthsWithProducts(), 10);
+                setTimeout(() => markMonthsWithProducts(), 50);
+                setTimeout(() => markMonthsWithProducts(), 100);
+                setTimeout(() => startObserving(), 150);
+            },
+            onClose: function() {
+                console.log('📅 Calendario cerrado');
+                isCalendarOpen = false;
+                filterFecha.classList.remove('calendar-open');
+                calendarObserver.disconnect();
+            },
+            onMonthChange: function() {
+                // FORZAR marcado al cambiar mes
+                setTimeout(() => markMonthsWithProducts(), 10);
+                setTimeout(() => markMonthsWithProducts(), 50);
+                setTimeout(() => markMonthsWithProducts(), 100);
+            },
+            onYearChange: function() {
+                // FORZAR marcado al cambiar año
+                setTimeout(() => markMonthsWithProducts(), 10);
+                setTimeout(() => markMonthsWithProducts(), 50);
+                setTimeout(() => markMonthsWithProducts(), 100);
+            },
+            onDayCreate: function(dObj, dStr, fp, dayElem) {
+                // Marcar visualmente las fechas con productos
+                const dateStr = dayElem.dateObj.toISOString().split('T')[0];
+                if (window.productsDatesArray && window.productsDatesArray.includes(dateStr)) {
+                    dayElem.classList.add('has-products');
+                    dayElem.title = 'Hay productos en esta fecha';
+                }
+            }
+        });
+        
+        // Función para marcar meses con productos
+        function markMonthsWithProducts() {
+            if (!window.productsDatesArray || window.productsDatesArray.length === 0) return;
+            
+            const calendarEl = document.querySelector('.flatpickr-calendar:not(.inline)');
+            if (!calendarEl) return;
+            
+            // Obtener meses únicos de las fechas de productos
+            const monthsWithProducts = new Set();
+            window.productsDatesArray.forEach(dateStr => {
+                const [year, month] = dateStr.split('-');
+                monthsWithProducts.add(`${year}-${month}`);
+            });
+            
+            // Agregar indicador al mes actual del calendario
+            const currentMonthEl = calendarEl.querySelector('.flatpickr-current-month');
+            if (currentMonthEl) {
+                const yearInput = currentMonthEl.querySelector('.numInput');
+                const monthSelect = currentMonthEl.querySelector('.flatpickr-monthDropdown-months');
+                
+                if (yearInput && monthSelect) {
+                    const year = yearInput.value;
+                    const month = String(monthSelect.selectedIndex + 1).padStart(2, '0');
+                    const currentYearMonth = `${year}-${month}`;
+                    
+                    // Remover indicadores anteriores
+                    const oldIndicator = currentMonthEl.querySelector('.month-has-products-indicator');
+                    if (oldIndicator) oldIndicator.remove();
+                    
+                    // Agregar indicador si hay productos este mes (círculo verde como los días)
+                    if (monthsWithProducts.has(currentYearMonth)) {
+                        const indicator = document.createElement('span');
+                        indicator.className = 'month-has-products-indicator';
+                        indicator.innerHTML = '<span class="green-dot"></span>';
+                        indicator.title = 'Hay productos en este mes';
+                        currentMonthEl.appendChild(indicator);
+                    }
+                    
+                    // Hacer el año editable (NO readonly, NO convertir a texto)
+                    if (yearInput && yearInput.type === 'number') {
+                        // Mantener como number pero quitar las flechas con CSS
+                        yearInput.removeAttribute('readonly');
+                        yearInput.style.pointerEvents = 'auto';
+                        
+                        // Permitir que Flatpickr maneje el cambio de año automáticamente
+                        // al cambiar de mes (diciembre -> enero = siguiente año)
+                    }
+                    
+                    // Marcar opciones del dropdown con círculo verde
+                    const options = monthSelect.querySelectorAll('option');
+                    options.forEach((option, index) => {
+                        const monthNum = String(index + 1).padStart(2, '0');
+                        const yearMonth = `${year}-${monthNum}`;
+                        
+                        // Limpiar texto previo
+                        let originalText = option.textContent
+                            .replace(' ●', '').replace('●', '')
+                            .replace(' 🟢', '').replace('🟢', '')
+                            .replace(' 🔵', '').replace('🔵', '')
+                            .replace(' ⬤', '').replace('⬤', '')
+                            .trim();
+                        
+                        // Resetear estilos
+                        option.style.fontWeight = '500';
+                        
+                        // Si hay productos, usar el caracter ⬤ (círculo grande) que se ve mejor
+                        if (monthsWithProducts.has(yearMonth)) {
+                            // Usar espacio + caracter especial de círculo
+                            option.textContent = originalText;
+                            option.value = option.value; // Mantener el value
+                            // Agregar un prefijo visual
+                            option.textContent = '● ' + originalText;
+                            option.setAttribute('data-has-products', 'true');
+                            option.style.color = '#10b981'; // Todo el texto verde
+                            option.style.fontWeight = '600';
+                        } else {
+                            option.textContent = originalText;
+                            option.removeAttribute('data-has-products');
+                            option.style.color = 'white';
+                        }
+                    });
+                }
+            }
+            
+            // Re-marcar todos los días con productos (FORZAR)
+            const days = calendarEl.querySelectorAll('.flatpickr-day:not(.flatpickr-disabled)');
+            days.forEach(dayElem => {
+                if (dayElem.dateObj) {
+                    const dateStr = dayElem.dateObj.toISOString().split('T')[0];
+                    if (window.productsDatesArray.includes(dateStr)) {
+                        if (!dayElem.classList.contains('has-products')) {
+                            dayElem.classList.add('has-products');
+                            dayElem.title = 'Hay productos en esta fecha';
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Toggle calendario al hacer click en el botón
+        filterFecha.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (isCalendarOpen) {
+                window.productsDatePicker.close();
+            } else {
+                window.productsDatePicker.open();
+            }
+        });
+        
+        console.log('✅ Flatpickr inicializado en botón');
+    }
+    
+    // 2. Flatpickr para filtro de fecha en modal móvil - BOTÓN que abre calendario
+    const filterFechaModal = document.getElementById('modal-filter-fecha');
+    const filterFechaModalValue = document.getElementById('modal-filter-fecha-value');
+    const filterFechaModalText = document.getElementById('modal-filter-fecha-text');
+    
+    if (filterFechaModal && typeof flatpickr !== 'undefined') {
+        console.log('📅 Inicializando Flatpickr en botón de fecha modal');
+        
+        // Crear input invisible para Flatpickr
+        const hiddenInputModal = document.createElement('input');
+        hiddenInputModal.type = 'text';
+        hiddenInputModal.style.display = 'none';
+        hiddenInputModal.id = 'flatpickr-hidden-input-modal';
+        filterFechaModal.parentNode.appendChild(hiddenInputModal);
+        
+        // Variable para controlar si el calendario está abierto
+        let isModalCalendarOpen = false;
+        
+        // ⭐ DECLARAR calendarObserverModal ANTES de Flatpickr
+        const calendarObserverModal = new MutationObserver(function(mutations) {
+            // Re-marcar inmediatamente cuando haya cualquier cambio
+            const calendar = document.querySelector('.flatpickr-calendar:not(.inline)');
+            if (calendar && window.productsDatesArray && window.productsDatesArray.length > 0) {
+                const days = calendar.querySelectorAll('.flatpickr-day:not(.flatpickr-disabled)');
+                days.forEach(dayElem => {
+                    if (dayElem.dateObj) {
+                        const dateStr = dayElem.dateObj.toISOString().split('T')[0];
+                        if (window.productsDatesArray.includes(dateStr)) {
+                            if (!dayElem.classList.contains('has-products')) {
+                                dayElem.classList.add('has-products');
+                                dayElem.title = 'Hay productos en esta fecha';
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        
+        // ⭐ DECLARAR startObservingModal ANTES de Flatpickr
+        const startObservingModal = () => {
+            const calendar = document.querySelector('.flatpickr-calendar:not(.inline)');
+            if (calendar) {
+                calendarObserverModal.observe(calendar, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['class', 'aria-label']
+                });
+                
+                // FORZAR marcado inmediato después de iniciar observación
+                if (typeof markMonthsWithProducts === 'function') {
+                    markMonthsWithProducts();
+                }
+            }
+        };
+        
+        // Inicializar Flatpickr en el input invisible
+        window.productsDatePickerModal = flatpickr(hiddenInputModal, {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            allowInput: false,
+            inline: false,
+            position: "auto",
+            positionElement: filterFechaModal,
+            animate: true,
+            appendTo: document.body,
+            showMonths: 1,
+            enableTime: false,
+            // NO mostrar días de otros meses
+            showOtherMonths: false,
+            locale: {
+                firstDayOfWeek: 1,
+                weekdays: {
+                    shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                    longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+                },
+                months: {
+                    shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+                }
+            },
+            // NO filtrar HASTA que se complete el rango (2 fechas)
+            onChange: function(selectedDates, dateStr, instance) {
+                console.log('📅 Fechas modal seleccionadas:', selectedDates.length, dateStr);
+                
+                // Actualizar hidden input
+                if (filterFechaModalValue) filterFechaModalValue.value = dateStr;
+                
+                // Actualizar texto del botón modal SIN ICONOS
+                if (filterFechaModalText) {
+                    if (dateStr && selectedDates.length === 2) {
+                        const dates = dateStr.split(' to ');
+                        filterFechaModalText.textContent = `${dates[0]} → ${dates[1]}`;
+                    } else if (dateStr && selectedDates.length === 1) {
+                        filterFechaModalText.textContent = `${dateStr} (selecciona fin)`;
+                    } else {
+                        filterFechaModalText.textContent = 'Seleccionar fechas';
+                    }
+                }
+                
+                // Sincronizar con desktop
+                if (filterFechaValue) filterFechaValue.value = dateStr;
+                if (filterFechaText && selectedDates.length === 2) {
+                    const dates = dateStr.split(' to ');
+                    filterFechaText.textContent = `${dates[0]} → ${dates[1]}`;
+                } else if (filterFechaText && selectedDates.length === 1) {
+                    filterFechaText.textContent = `${dateStr} (selecciona fin)`;
+                } else if (filterFechaText) {
+                    filterFechaText.textContent = 'Seleccionar fechas';
+                }
+                
+                // FILTRAR SOLO cuando se seleccionen 2 fechas (rango completo)
+                if (selectedDates.length === 2) {
+                    console.log('✅ Rango completo seleccionado en modal, filtrando...');
+                    filterProducts();
+                }
+            },
+            onReady: function(selectedDates, dateStr, instance) {
+                // FORZAR marcado múltiples veces
+                setTimeout(() => markMonthsWithProducts(), 50);
+                setTimeout(() => markMonthsWithProducts(), 100);
+                setTimeout(() => markMonthsWithProducts(), 200);
+                setTimeout(() => startObservingModal(), 250);
+            },
+            onOpen: function() {
+                console.log('📅 Calendario modal abierto - LIMPIANDO filtros automáticamente');
+                isModalCalendarOpen = true;
+                filterFechaModal.classList.add('calendar-open');
+                
+                // ⭐ LIMPIAR fechas automáticamente al abrir (como hacer click en "Limpiar")
+                window.productsDatePickerModal.clear();
+                
+                // Limpiar valores modal
+                if (filterFechaModalValue) filterFechaModalValue.value = '';
+                if (filterFechaModalText) filterFechaModalText.textContent = 'Seleccionar fechas';
+                
+                // Sincronizar limpieza con desktop
+                if (filterFechaValue) filterFechaValue.value = '';
+                if (filterFechaText) filterFechaText.textContent = 'Seleccionar fechas';
+                
+                // Re-cargar TODOS los productos (sin filtro de fecha)
+                filterProducts();
+                
+                // FORZAR marcado múltiples veces
+                setTimeout(() => markMonthsWithProducts(), 50);
+                setTimeout(() => markMonthsWithProducts(), 100);
+                setTimeout(() => markMonthsWithProducts(), 200);
+                setTimeout(() => startObservingModal(), 250);
+            },
+            onClose: function() {
+                console.log('📅 Calendario modal cerrado');
+                isModalCalendarOpen = false;
+                filterFechaModal.classList.remove('calendar-open');
+                calendarObserverModal.disconnect();
+            },
+            onMonthChange: function() {
+                // FORZAR marcado al cambiar mes
+                setTimeout(() => markMonthsWithProducts(), 10);
+                setTimeout(() => markMonthsWithProducts(), 50);
+                setTimeout(() => markMonthsWithProducts(), 100);
+            },
+            onYearChange: function() {
+                // FORZAR marcado al cambiar año
+                setTimeout(() => markMonthsWithProducts(), 10);
+                setTimeout(() => markMonthsWithProducts(), 50);
+                setTimeout(() => markMonthsWithProducts(), 100);
+            },
+            onDayCreate: function(dObj, dStr, fp, dayElem) {
+                // Marcar visualmente las fechas con productos - SOLO CLASE
+                const dateStr = dayElem.dateObj.toISOString().split('T')[0];
+                if (window.productsDatesArray && window.productsDatesArray.includes(dateStr)) {
+                    dayElem.classList.add('has-products');
+                    dayElem.title = 'Hay productos en esta fecha';
+                }
+            }
+        });
+        
+        // Toggle calendario al hacer click en el botón
+        filterFechaModal.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (isModalCalendarOpen) {
+                window.productsDatePickerModal.close();
+            } else {
+                window.productsDatePickerModal.open();
+            }
+        });
+        
+        console.log('✅ Flatpickr modal inicializado en botón');
+    }
+    
+    // 3. Agregar animaciones AOS a elementos
+    const moduleHeader = document.querySelector('.admin-products-module .module-header');
+    if (moduleHeader && typeof AOS !== 'undefined') {
+        moduleHeader.setAttribute('data-aos', 'fade-down');
+        
+        // Animar filtros
+        const filterGroups = document.querySelectorAll('.filter-group');
+        filterGroups.forEach((group, index) => {
+            group.setAttribute('data-aos', 'fade-up');
+            group.setAttribute('data-aos-delay', (index * 50).toString());
+        });
+        
+        // Refrescar AOS después de agregar atributos
+        if (AOS.refresh) {
+            AOS.refresh();
+        }
+    }
+    
+    console.log('✅ Librerías modernas inicializadas en Productos');
+    
+    // ========================================
+    // LISTENER PARA CAMBIOS DE TAMAÑO (Mobile ↔ Desktop)
+    // ========================================
+    
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            const isMobileNow = window.innerWidth <= 768;
+            const viewButtons = document.querySelectorAll('.view-btn');
+            
+            if (isMobileNow) {
+                // Si cambió a móvil, forzar grid y bloquear botones
+                console.log('📱 Cambio a móvil detectado');
+                window.products_currentView = 'grid';
+                
+                viewButtons.forEach(btn => {
+                    if (btn.dataset.view === 'table') {
+                        btn.disabled = true;
+                        btn.style.opacity = '0.5';
+                        btn.style.cursor = 'not-allowed';
+                        btn.title = 'Vista tabla no disponible en móvil';
+                    }
+                });
+                
+                // Forzar vista grid
+                toggleView('grid');
+            } else {
+                // Si cambió a desktop, desbloquear botones
+                console.log('💻 Cambio a desktop detectado');
+                
+                viewButtons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                    btn.title = '';
+                });
+            }
+        }, 250);
+    });
+    
+    // ========================================
+    // FIN LIBRERÍAS MODERNAS
+    // ========================================
     
     // Inicializar funciones de UI que antes estaban en DOMContentLoaded/load
     if (typeof initializeTableScroll === 'function') {
@@ -4061,7 +4761,7 @@ window.destroyProductosModule = function() {
 
 <style>
 /* ===== FORZAR COLOR BLANCO EN BOTONES DEL HEADER - MÁXIMA PRIORIDAD ===== */
-.module-actions .btn-modern,
+.module-act#fffffffftn-modern,
 .module-actions .btn-modern.btn-primary,
 .module-actions .btn-modern.btn-secondary,
 .module-actions .btn-modern.btn-info,
@@ -4088,6 +4788,514 @@ window.destroyProductosModule = function() {
     .module-actions button,
     .module-actions button * {
         color: #ffffff !important;
+    }
+    
+    /* Ocultar SOLO filtros en móvil, mantener header visible */
+    .module-filters {
+        display: none !important;
+    }
+    
+    /* Ocultar botones de vista (tabla/grid) y acciones en lote en móvil */
+    .table-actions {
+        display: none !important;
+    }
+}
+
+/* ===== ESTILOS PARA BOTÓN DE FECHA FLATPICKR - MISMO ESTILO QUE SELECT ===== */
+#filter-fecha,
+#modal-filter-fecha {
+    /* Mismo estilo que .filter-select - fondo oscuro con texto blanco */
+    padding: 0.5rem 1rem;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: #0f162b !important; /* Fondo oscuro como los select */
+    color: #ffffff !important; /* Texto blanco */
+    transition: all 0.2s ease-in-out;
+    text-align: left;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+#filter-fecha:hover,
+#modal-filter-fecha:hover {
+    border-color: #2463eb;
+}
+
+#filter-fecha:focus,
+#modal-filter-fecha:focus,
+#filter-fecha.calendar-open,
+#modal-filter-fecha.calendar-open {
+    outline: none;
+    border-color: #1e40af;
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+#filter-fecha-text,
+#modal-filter-fecha-text {
+    font-size: 0.875rem;
+    color: #ffffff !important; /* Texto blanco */
+}
+
+/* ASEGURAR texto blanco en móvil */
+@media (max-width: 768px) {
+    #filter-fecha,
+    #modal-filter-fecha {
+        background: #2c3e50 !important;
+        color: #ffffff !important;
+    }
+    
+    #filter-fecha-text,
+    #modal-filter-fecha-text {
+        color: #ffffff !important;
+    }
+}
+
+/* Indicador de mes con productos - mismo estilo que los días */
+.month-has-products-indicator {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 8px;
+    position: relative;
+}
+
+.month-has-products-indicator .green-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: rgba(182, 185, 16, 0) !important;
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { 
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+/* Flatpickr con colores de la paleta del admin */
+.flatpickr-calendar {
+    background: #1e293b;
+    border: 1px solid #334155;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+    animation: flatpickrFadeIn 0.3s ease;
+    z-index: 99999 !important; /* Asegurar que aparezca encima de todo */
+}
+
+/* Mejorar posición en móvil - SIN SCROLL HORIZONTAL */
+@media (max-width: 768px) {
+    .flatpickr-calendar {
+        max-width: calc(100vw - 20px) !important; /* 10px de margen a cada lado */
+        width: auto !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        margin-top: 10px;
+    }
+    
+    /* Ajustar header en móvil */
+    .flatpickr-months .flatpickr-prev-month {
+        left: 8px !important;
+        width: 32px !important;
+        height: 32px !important;
+    }
+    
+    .flatpickr-months .flatpickr-next-month {
+        right: 8px !important;
+        width: 32px !important;
+        height: 32px !important;
+    }
+    
+    .flatpickr-current-month {
+        padding: 0 46px 0 42px !important; /* Menos padding en móvil */
+        gap: 6px !important;
+    }
+    
+    .flatpickr-current-month .flatpickr-monthDropdown-months {
+        min-width: 85px !important;
+        width: 85px !important;
+        font-size: 12px !important;
+        padding: 6px 8px !important;
+        margin: 0 4px 0 0 !important;
+    }
+    
+    .flatpickr-current-month .numInputWrapper {
+        min-width: 55px !important;
+        width: 55px !important;
+        font-size: 12px !important;
+        padding: 6px 8px !important;
+    }
+    
+    .flatpickr-calendar.arrowTop::before,
+    .flatpickr-calendar.arrowTop::after {
+        left: 50% !important;
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes flatpickrFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.flatpickr-months {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    border-radius: 12px 12px 0 0;
+    padding: 12px 16px;
+    position: relative;
+}
+
+/* Contenedor del mes actual */
+.flatpickr-months .flatpickr-month {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 40px !important;
+    position: relative;
+    width: 100%;
+}
+
+/* Botón flecha IZQUIERDA - Posición absoluta */
+.flatpickr-months .flatpickr-prev-month {
+    position: absolute !important;
+    left: 12px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    padding: 8px !important;
+    cursor: pointer;
+    z-index: 3;
+    width: 36px !important;
+    height: 36px !important;
+}
+
+/* Botón flecha DERECHA - Posición absoluta con más espacio */
+.flatpickr-months .flatpickr-next-month {
+    position: absolute !important;
+    right: 16px !important; /* Más espacio a la derecha */
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    padding: 8px !important;
+    cursor: pointer;
+    z-index: 3;
+    width: 36px !important;
+    height: 36px !important;
+}
+
+/* Contenedor central con mes y año - CENTRADO con más padding derecho */
+.flatpickr-current-month {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important; /* Separación entre mes y año reducida */
+    width: 100% !important;
+    color: white;
+    font-weight: 600;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+    padding: 0 56px 0 52px !important; /* Más espacio derecho (56px), menos izquierdo (52px) */
+}
+
+/* Dropdown de MES - ancho fijo con más espacio a la derecha */
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    flex-shrink: 0;
+    margin: 0 8px 0 0 !important; /* 8px de margen derecho */
+    min-width: 100px !important; /* Ancho reducido */
+    width: 100px !important;
+    text-align: center;
+}
+
+/* Input de AÑO - ancho fijo */
+.flatpickr-current-month .numInputWrapper {
+    flex-shrink: 0;
+    margin: 0 !important;
+    min-width: 65px !important; /* Ancho reducido */
+    width: 65px !important;
+}
+
+.flatpickr-weekdays {
+    background: #0f172a;
+    padding: 8px 0;
+}
+
+.flatpickr-weekday {
+    color: rgba(255, 255, 255, 0.5) !important; /* Blanco transparente */
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.flatpickr-days {
+    background: #1e293b;
+}
+
+.flatpickr-day {
+    color: #f1f5f9;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+/* OCULTAR días de otros meses */
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.flatpickr-day:hover:not(.flatpickr-disabled):not(.selected) {
+    background: #334155;
+    border-color: #3b82f6;
+    color: white;
+}
+
+/* Días seleccionados (inicio y fin del rango) */
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    border-color: #3b82f6 !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+/* Rango intermedio - MEJORADO sin rayas blancas */
+.flatpickr-day.inRange {
+    background: rgba(59, 130, 246, 0.25) !important;
+    border-color: transparent !important;
+    color: #e0e7ff !important;
+    box-shadow: none !important;
+}
+
+/* Hover sobre días en rango */
+.flatpickr-day.inRange:hover {
+    background: rgba(59, 130, 246, 0.35) !important;
+}
+
+/* Días con productos marcados - Indicador SIEMPRE visible */
+.flatpickr-day.has-products {
+    position: relative;
+}
+
+.flatpickr-day.has-products::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 3px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 5px !important;
+    height: 5px !important;
+    background: #10b981 !important;
+    border-radius: 50% !important;
+    z-index: 10 !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Si el día con productos está seleccionado, cambiar color del punto a blanco */
+.flatpickr-day.has-products.selected::after,
+.flatpickr-day.has-products.startRange::after,
+.flatpickr-day.has-products.endRange::after {
+    background: #ffffff !important;
+}
+
+/* Si está en el rango, mantener verde pero más visible */
+.flatpickr-day.has-products.inRange::after {
+    background: #10b981 !important;
+    box-shadow: 0 0 4px rgba(16, 185, 129, 0.6) !important;
+}
+
+/* Días deshabilitados */
+.flatpickr-day.flatpickr-disabled {
+    color: #475569;
+    opacity: 0.5;
+}
+
+/* Día de hoy */
+.flatpickr-day.today {
+    border-color: #3b82f6;
+    font-weight: 600;
+}
+
+.flatpickr-day.today:not(.selected) {
+    color: #3b82f6;
+}
+
+/* Botones de navegación - Mejorados con tamaño fijo */
+.flatpickr-prev-month,
+.flatpickr-next-month {
+    fill: white !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important; /* No se encogen */
+}
+
+.flatpickr-prev-month:hover,
+.flatpickr-next-month:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    fill: #e0e7ff !important;
+}
+
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+/* Dropdown de mes y año - MEJORADO con anchos fijos */
+.flatpickr-monthDropdown-months,
+.numInputWrapper {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 8px !important;
+    padding: 7px 10px !important; /* Padding reducido */
+    font-weight: 600 !important;
+    font-size: 13px !important; /* Tamaño de fuente reducido */
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+    text-align: center !important;
+}
+
+/* Input de año con ancho fijo */
+.numInputWrapper {
+    min-width: 65px !important;
+    width: 65px !important;
+}
+
+/* Dropdown de mes con ancho fijo */
+.flatpickr-monthDropdown-months {
+    min-width: 100px !important;
+    width: 100px !important;
+}
+
+.flatpickr-monthDropdown-months:hover,
+.numInputWrapper:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.flatpickr-monthDropdown-months:focus,
+.numInputWrapper:focus {
+    outline: none !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Opciones del dropdown de mes */
+.flatpickr-monthDropdown-months option {
+    background: #1e293b !important;
+    color: white !important;
+    padding: 8px !important;
+    font-size: 13px !important;
+}
+
+/* Opciones con productos - TODO EN VERDE (más simple y efectivo) */
+.flatpickr-monthDropdown-months option[data-has-products="true"] {
+    background: #1e293b !important;
+    color: #10b981 !important; /* Verde */
+    font-weight: 600 !important;
+}
+
+/* Opción seleccionada - fondo azul con texto blanco visible */
+.flatpickr-monthDropdown-months option:checked {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    -webkit-text-fill-color: white !important;
+}
+
+/* Opción al hacer hover */
+.flatpickr-monthDropdown-months option:hover {
+    background: #334155 !important;
+    color: white !important;
+    -webkit-text-fill-color: white !important;
+}
+
+/* Focus del select - corregir contraste */
+.flatpickr-monthDropdown-months:focus {
+    outline: none !important;
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    color: white !important;
+    border-color: #60a5fa !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Opciones cuando el select tiene focus */
+.flatpickr-monthDropdown-months:focus option {
+    background: #1e293b !important;
+    color: white !important;
+}
+
+/* Opciones con productos mantienen texto blanco, el emoji 🟢 es naturalmente verde */
+.flatpickr-monthDropdown-months option[data-has-products="true"] {
+    color: white !important;
+    background: #1e293b !important;
+}
+
+/* Input de año - Quitar flechas y hacerlo tipo texto */
+.numInputWrapper {
+    position: relative;
+}
+
+.numInputWrapper input {
+    background: transparent !important;
+    color: white !important;
+    border: none !important;
+    font-weight: 600 !important;
+    -moz-appearance: textfield !important; /* Firefox */
+    appearance: textfield !important;
+}
+
+/* Ocultar flechas en Chrome, Safari, Edge */
+.numInputWrapper input::-webkit-outer-spin-button,
+.numInputWrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+    display: none !important;
+}
+
+/* Ocultar las flechas de Flatpickr */
+.numInputWrapper span.arrowUp,
+.numInputWrapper span.arrowDown {
+    display: none !important;
+}
+
+/* Animación de cierre */
+.flatpickr-calendar.animate.close {
+    animation: flatpickrFadeOut 0.2s ease;
+}
+
+@keyframes flatpickrFadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
     }
 }
 

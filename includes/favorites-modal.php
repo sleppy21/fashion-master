@@ -24,6 +24,21 @@ if($usuario_logueado):
         error_log("Error al obtener favoritos: " . $e->getMessage());
         $favoritos_usuario = [];
     }
+
+    // Obtener IDs de productos que están en el carrito
+    $productos_en_carrito = [];
+    try {
+        $carrito_items = executeQuery("
+            SELECT id_producto 
+            FROM carrito 
+            WHERE id_usuario = ?
+        ", [$usuario_logueado['id_usuario']]);
+        if($carrito_items) {
+            $productos_en_carrito = array_column($carrito_items, 'id_producto');
+        }
+    } catch(Exception $e) {
+        error_log("Error al obtener carrito: " . $e->getMessage());
+    }
 ?>
 <!-- Favorites Modal Begin -->
 <div id="favorites-modal" class="favorites-modal" style="display: none; position: absolute; z-index: 99999;">
@@ -50,6 +65,7 @@ if($usuario_logueado):
                     }
                     $imagen_url = !empty($fav['url_imagen_producto']) ? $fav['url_imagen_producto'] : 'public/assets/img/default-product.jpg';
                     $sin_stock = $fav['stock_actual_producto'] <= 0;
+                    $en_carrito = in_array($fav['id_producto'], $productos_en_carrito);
                 ?>
                 <div class="favorite-item" data-id="<?php echo $fav['id_producto']; ?>" style="display: flex; gap: 10px; padding: 10px; background: white; border-radius: 8px; margin-bottom: 8px; border: 1px solid #e9ecef;">
                     <div class="favorite-image" 
@@ -73,11 +89,21 @@ if($usuario_logueado):
                         <small class="favorite-date" style="font-size: 10px; color: #999; margin-top: auto;">Agregado: <?php echo date('d/m/Y', strtotime($fav['fecha_agregado_favorito'])); ?></small>
                     </div>
                     <div class="favorite-actions" style="display: flex; flex-direction: column; gap: 5px; justify-content: center;">
-                        <button class="btn-favorite-cart" data-id="<?php echo $fav['id_producto']; ?>" <?php echo $sin_stock ? 'disabled' : ''; ?> style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; background: #2c3e50; color: white; display: flex; align-items: center; justify-content: center; font-size: 13px;">
-                            <i class="fa fa-shopping-cart"></i>
-                        </button>
-                        <button class="btn-favorite-remove" data-id="<?php echo $fav['id_producto']; ?>" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; background: #fee; color: #dc3545; display: flex; align-items: center; justify-content: center; font-size: 13px;">
-                            <i class="fa fa-trash"></i>
+                        <?php if($sin_stock): ?>
+                            <button class="btn-favorite-cart" disabled style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: not-allowed; background: #ccc; color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; opacity: 0.5;">
+                                <i class="fa fa-shopping-cart"></i>
+                            </button>
+                        <?php elseif($en_carrito): ?>
+                            <button class="btn-favorite-cart in-cart" data-id="<?php echo $fav['id_producto']; ?>" data-in-cart="true" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; background: #28a745; color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.3s ease;" title="En carrito - Clic para quitar">
+                                <i class="fa fa-check-circle"></i>
+                            </button>
+                        <?php else: ?>
+                            <button class="btn-favorite-cart" data-id="<?php echo $fav['id_producto']; ?>" data-in-cart="false" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; background: #2c3e50; color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.3s ease;" title="Agregar al carrito">
+                                <i class="fa fa-cart-plus"></i>
+                            </button>
+                        <?php endif; ?>
+                        <button class="btn-favorite-remove" data-id="<?php echo $fav['id_producto']; ?>" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; background: #fee; color: #dc3545; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.3s ease;" title="Quitar de favoritos">
+                            <i class="fa fa-heart-broken"></i>
                         </button>
                     </div>
                 </div>
