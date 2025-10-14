@@ -3,28 +3,10 @@
    Estilos premium para dropdown de favoritos
    ============================================ */
 
-/* Modal Container - Dropdown Style */
-.favorites-modal {
-    display: none;
-    position: absolute;
-    z-index: 99999;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* ================================================================
+   IMPORTANTE: display, position, z-index y animaciones 
+   manejadas por modals-animations.css
+   ================================================================ */
 
 /* Modal Content - Dropdown compacto con tamaño fijo */
 .favorites-modal-content {
@@ -39,11 +21,11 @@
     box-shadow: 
         0 10px 40px rgba(0, 0, 0, 0.15),
         0 0 0 1px rgba(0, 0, 0, 0.05);
-    animation: slideDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     overflow: hidden;
     z-index: 100000;
     display: flex;
     flex-direction: column;
+    /* Preparado para animación - sin opacity ni transform aquí */
 }
 
 /* Flecha superior del dropdown */

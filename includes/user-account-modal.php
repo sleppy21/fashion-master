@@ -7,9 +7,6 @@
 
 // Solo mostrar si hay un usuario logueado
 if($usuario_logueado): 
-    // Calcular inicial del nombre para el avatar
-    $inicial = strtoupper(substr($usuario_logueado['nombre_usuario'], 0, 1));
-    
     // Determinar rol en español
     $rol_texto = 'Cliente';
     $rol_icon = 'fa-user';
@@ -22,133 +19,141 @@ if($usuario_logueado):
     }
 ?>
 <!-- User Account Modal Begin -->
-<div id="user-account-modal" class="user-modal">
-    <div class="user-modal-overlay"></div>
+<div id="user-account-modal" class="user-modal" style="display: none;">
     <div class="user-modal-content">
-        <button class="user-modal-close" aria-label="Cerrar modal">
+        <button class="user-modal-close" aria-label="Cerrar modal" style="position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border: none; border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; transition: transform 0.3s ease;">
             <i class="fa fa-times"></i>
         </button>
         
-        <!-- Header con gradiente -->
-        <div class="user-modal-header">
-            <div class="header-background"></div>
-            <div class="user-avatar-container">
-                <div class="user-avatar-circle">
-                    <span class="avatar-initial"><?php echo $inicial; ?></span>
-                    <div class="avatar-status"></div>
+        <!-- Header -->
+        <div class="user-modal-header" style="padding: 15px; border-bottom: 2px solid; flex-shrink: 0;">
+            <h3 style="margin: 0 0 5px 0; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <i class="fa fa-user-circle"></i> Mi Cuenta
+            </h3>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <p style="margin: 0; font-size: 12px; font-weight: 500;">
+                    <?php echo htmlspecialchars($usuario_logueado['nombre_usuario'] . ' ' . ($usuario_logueado['apellido_usuario'] ?? '')); ?>
+                </p>
+                <p style="margin: 0; font-size: 11px; opacity: 0.8;">
+                    <i class="fa <?php echo $rol_icon; ?>" style="margin-right: 4px;"></i><?php echo $rol_texto; ?>
+                </p>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="user-modal-body" style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px; min-height: 0;">
+            <!-- Stats Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px;">
+                <div style="text-align: center; padding: 12px; border-radius: 8px; background: #f8f9fa;">
+                    <div style="font-size: 18px; font-weight: 700; color: #ca1515; margin-bottom: 4px;">
+                        <?php echo $cart_count; ?>
+                    </div>
+                    <div style="font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
+                        Carrito
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 12px; border-radius: 8px; background: #f8f9fa;">
+                    <div style="font-size: 18px; font-weight: 700; color: #ca1515; margin-bottom: 4px;">
+                        <?php echo $favorites_count; ?>
+                    </div>
+                    <div style="font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
+                        Favoritos
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 12px; border-radius: 8px; background: #f8f9fa;">
+                    <div style="font-size: 18px; font-weight: 700; color: #ca1515; margin-bottom: 4px;">
+                        <?php 
+                        $fecha_registro = !empty($usuario_logueado['fecha_registro']) ? strtotime($usuario_logueado['fecha_registro']) : time();
+                        $dias_miembro = floor((time() - $fecha_registro) / (60 * 60 * 24));
+                        echo $dias_miembro;
+                        ?>
+                    </div>
+                    <div style="font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
+                        Días
+                    </div>
                 </div>
             </div>
-            <div>
-                <h3 class="user-name"><?php echo htmlspecialchars($usuario_logueado['nombre_usuario']); ?></h3>
-                <div class="user-role-badge">
-                    <i class="fa <?php echo $rol_icon; ?>"></i>
-                    <span><?php echo $rol_texto; ?></span>
+
+            <!-- User Info -->
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- Email -->
+                <div style="padding: 10px; border-radius: 8px; background: #f8f9fa; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-envelope" style="color: #ca1515; font-size: 14px;"></i>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-size: 10px; margin-bottom: 2px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Email</div>
+                        <div style="font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo htmlspecialchars($usuario_logueado['email_usuario']); ?></div>
+                    </div>
+                </div>
+
+                <!-- Username -->
+                <div style="padding: 10px; border-radius: 8px; background: #f8f9fa; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-user" style="color: #ca1515; font-size: 14px;"></i>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-size: 10px; margin-bottom: 2px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Usuario</div>
+                        <div style="font-size: 12px; font-weight: 600;">@<?php echo htmlspecialchars($usuario_logueado['username_usuario']); ?></div>
+                    </div>
+                </div>
+
+                <!-- Phone -->
+                <div style="padding: 10px; border-radius: 8px; background: #f8f9fa; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-phone" style="color: #ca1515; font-size: 14px;"></i>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-size: 10px; margin-bottom: 2px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Teléfono</div>
+                        <div style="font-size: 12px; font-weight: 600;"><?php echo htmlspecialchars($usuario_logueado['telefono_usuario'] ?? 'No registrado'); ?></div>
+                    </div>
+                </div>
+
+                <!-- Member Since -->
+                <div style="padding: 10px; border-radius: 8px; background: #f8f9fa; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-calendar" style="color: #ca1515; font-size: 14px;"></i>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-size: 10px; margin-bottom: 2px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Miembro desde</div>
+                        <div style="font-size: 12px; font-weight: 600;">
+                            <?php 
+                            if(!empty($usuario_logueado['fecha_registro'])) {
+                                $fecha = new DateTime($usuario_logueado['fecha_registro']);
+                                echo $fecha->format('d/m/Y');
+                            } else {
+                                echo 'No disponible';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Last Access -->
+                <div style="padding: 10px; border-radius: 8px; background: #f8f9fa; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-clock-o" style="color: #ca1515; font-size: 14px;"></i>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-size: 10px; margin-bottom: 2px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Último acceso</div>
+                        <div style="font-size: 12px; font-weight: 600;">
+                            <?php 
+                            if(!empty($usuario_logueado['ultimo_acceso'])) {
+                                $fecha = new DateTime($usuario_logueado['ultimo_acceso']);
+                                echo $fecha->format('d/m/Y H:i');
+                            } else {
+                                echo date('d/m/Y H:i');
+                            }
+                            ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Body con información -->
-        <div class="user-modal-body">
-            <!-- Stats Cards -->
-            <div class="user-stats-grid">
-                <div class="stat-card stat-cart">
-                    <div class="stat-icon">
-                        <i class="fa fa-shopping-cart"></i>
-                    </div>
-                    <div class="stat-info">
-                        <span class="stat-number"><?php echo $cart_count; ?></span>
-                        <span class="stat-label">Carrito</span>
-                    </div>
-                </div>
-                <div class="stat-card stat-favorites">
-                    <div class="stat-icon">
-                        <i class="fa fa-heart"></i>
-                    </div>
-                    <div class="stat-info">
-                        <span class="stat-number"><?php echo $favorites_count; ?></span>
-                        <span class="stat-label">Favoritos</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Info Items -->
-            <div class="user-info-list">
-                <div class="user-info-item">
-                    <div class="info-icon">
-                        <i class="fa fa-user"></i>
-                    </div>
-                    <div class="info-content">
-                        <span class="info-label">Usuario</span>
-                        <span class="info-value">@<?php echo htmlspecialchars($usuario_logueado['nombre_usuario'] ?? ''); ?></span>
-                    </div>
-                </div>
-                
-                <div class="user-info-item">
-                    <div class="info-icon">
-                        <i class="fa fa-envelope"></i>
-                    </div>
-                    <div class="info-content">
-                        <span class="info-label">Correo electrónico</span>
-                        <span class="info-value"><?php echo htmlspecialchars($usuario_logueado['email_usuario']); ?></span>
-                    </div>
-                </div>
-
-                <?php if(!empty($usuario_logueado['telefono_usuario'])): ?>
-                <div class="user-info-item">
-                    <div class="info-icon">
-                        <i class="fa fa-phone"></i>
-                    </div>
-                    <div class="info-content">
-                        <span class="info-label">Teléfono</span>
-                        <span class="info-value"><?php echo htmlspecialchars($usuario_logueado['telefono_usuario']); ?></span>
-                    </div>
-                </div>
-                <?php endif; ?>
-
-                <div class="user-info-item">
-                    <div class="info-icon">
-                        <i class="fa fa-calendar"></i>
-                    </div>
-                    <div class="info-content">
-                        <span class="info-label">Miembro desde</span>
-                        <span class="info-value"><?php echo !empty($usuario_logueado['fecha_registro']) ? date('d/m/Y', strtotime($usuario_logueado['fecha_registro'])) : 'N/A'; ?></span>
-                    </div>
-                </div>
-
-                <?php if(!empty($usuario_logueado['ultimo_acceso'])): ?>
-                <div class="user-info-item">
-                    <div class="info-icon">
-                        <i class="fa fa-clock-o"></i>
-                    </div>
-                    <div class="info-content">
-                        <span class="info-label">Último acceso</span>
-                        <span class="info-value"><?php echo date('d/m/Y H:i', strtotime($usuario_logueado['ultimo_acceso'])); ?></span>
-                    </div>
-                </div>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <!-- Footer con acciones -->
-        <div class="user-modal-footer">
-            <a href="account.php" class="btn-action btn-primary">
-                <i class="fa fa-user"></i>
-                <span>Mi perfil</span>
-            </a>
-            
+        <!-- Footer -->
+        <div class="user-modal-footer" style="padding: 12px; border-top: 1px solid #e9ecef; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0;">
             <?php if($usuario_logueado['rol_usuario'] === 'admin'): ?>
-            <a href="admin.php" class="btn-action btn-admin">
-                <i class="fa fa-cog"></i>
-                <span>Panel Admin</span>
-            </a>
+                <a href="admin.php" class="btn-admin" style="padding: 10px; border-radius: 8px; background: #111; color: white; text-align: center; text-decoration: none; font-size: 13px; font-weight: 600; transition: background 0.3s ease;">
+                    <i class="fa fa-tachometer"></i> Panel Admin
+                </a>
             <?php endif; ?>
-            
-            <a href="logout.php" class="btn-action btn-logout">
-                <i class="fa fa-sign-out"></i>
-                <span>Cerrar sesión</span>
+            <a href="logout.php" class="btn-logout" style="padding: 10px; border-radius: 8px; background: #f8f9fa; color: #111; text-align: center; text-decoration: none; font-size: 13px; font-weight: 600; transition: background 0.3s ease;">
+                <i class="fa fa-sign-out"></i> Cerrar sesión
             </a>
         </div>
     </div>
 </div>
 <!-- User Account Modal End -->
+
 <?php endif; ?>

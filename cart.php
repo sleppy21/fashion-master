@@ -79,11 +79,15 @@ try {
 // Obtener contadores para el header
 $cart_count = count($cart_items);
 $favorites_count = 0;
+$notifications_count = 0;
 try {
     $favorites = executeQuery("SELECT COUNT(*) as total FROM favorito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
     $favorites_count = $favorites && !empty($favorites) ? (int)$favorites[0]['total'] : 0;
+    
+    $notifications = executeQuery("SELECT COUNT(*) as total FROM notificacion WHERE id_usuario = ? AND leida_notificacion = 0 AND estado_notificacion = 'activo'", [$usuario_logueado['id_usuario']]);
+    $notifications_count = ($notifications && count($notifications) > 0) ? ($notifications[0]['total'] ?? 0) : 0;
 } catch(Exception $e) {
-    error_log("Error al obtener favoritos: " . $e->getMessage());
+    error_log("Error al obtener favoritos/notificaciones: " . $e->getMessage());
 }
 
 // Obtener categorías para el menú
@@ -124,6 +128,7 @@ try {
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
     
+
     <?php include 'includes/modern-libraries.php'; ?>
     
     <!-- User Account Modal Styles -->
@@ -132,16 +137,31 @@ try {
     <!-- Favorites Modal Styles -->
     <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
     
-    <!-- Header Responsive Global Styles -->
-    <link rel="stylesheet" href="public/assets/css/header-responsive.css?v=2.0" type="text/css">
+    <!-- Dark Mode Styles -->
+    <link rel="stylesheet" href="public/assets/css/dark-mode.css" type="text/css">
     
-    <!-- Header Override - Máxima prioridad -->
-    <link rel="stylesheet" href="public/assets/css/header-override.css?v=2.0" type="text/css">
+    <!-- Modern Styles -->
+    <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="public/assets/css/notifications-modal.css">
+    
+    <!-- Header Fix - DEBE IR AL FINAL -->
+    <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
     
     <!-- Global Responsive Styles - TODO EL PROYECTO -->
-    <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
     
     <style>
+        /* ============================================
+           FONDO DEL BODY
+           ============================================ */
+        body {
+            background-color: #f8f5f2 !important;
+        }
+        
+        /* Dark mode */
+        body.dark-mode {
+            background-color: #1a1a1a !important;
+        }
+        
         /* ============================================
            ESTILOS ESPECÍFICOS DEL CARRITO
            Los estilos del header responsive están en: header-responsive.css
@@ -161,7 +181,7 @@ try {
             .shop__cart__table {
                 display: block;
                 background: white;
-                margin-bottom: 30px;
+                margin-bottom: 40px;
                 width: 100%;
                 border-radius: 16px;
                 padding: 20px;
@@ -599,40 +619,46 @@ try {
         }
 
         /* ========================================
-           ESTILOS PARA SIDEBAR DEL CARRITO
+           SIDEBAR DEL CARRITO - ESTILO MODERNO
            ======================================== */
         .cart-summary-sidebar {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(0, 0, 0, 0.15);
-            border-radius: 16px;
+            background: #ffffff;
+            border-radius: 20px;
             padding: 0;
             position: sticky;
-            top: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            top: 90px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .cart-summary-sidebar:hover {
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
         }
 
         /* Sección Código de Descuento */
         .discount-section {
-            padding: 25px;
-            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.5);
+            padding: 30px;
+            border-bottom: 1px solid #f0f0f0;
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
         }
         
         .discount-section h6 {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
-            color: rgba(0, 0, 0, 0.9);
-            margin-bottom: 15px;
+            color: #2c3e50;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            letter-spacing: 0.3px;
         }
         
         .discount-section h6 i {
-            color: rgba(0, 0, 0, 0.7);
-            font-size: 18px;
+            color: #667eea;
+            font-size: 16px;
         }
         
         .discount-form {
@@ -641,51 +667,56 @@ try {
         
         .input-group {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
         
         .discount-input {
             flex: 1;
-            padding: 12px 15px;
-            border: 2px solid rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
+            padding: 14px 18px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
             font-size: 14px;
-            transition: all 0.3s;
-            background: rgba(255, 255, 255, 0.8);
-            color: rgba(0, 0, 0, 0.9);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #ffffff;
+            color: #2c3e50;
+            font-weight: 500;
         }
         
         .discount-input:focus {
             outline: none;
-            border-color: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            background: #ffffff;
         }
         
         .discount-input::placeholder {
-            color: rgba(0, 0, 0, 0.4);
+            color: #95a5a6;
+            font-weight: 400;
         }
         
         .btn-apply-discount {
-            padding: 12px 24px;
-            background: transparent;
-            color: #000000d2;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            font-weight: 600;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
             font-size: 14px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(0, 0, 0, 0.36);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .btn-apply-discount:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(0, 0, 0, 0.55);
-
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-apply-discount:active {
+            transform: translateY(0);
         }
 
         #coupon-message {
@@ -727,26 +758,28 @@ try {
 
         /* Sección Totales */
         .cart-totals-section {
-            padding: 25px;
-            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.5);
+            padding: 30px;
+            border-bottom: 1px solid #f0f0f0;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
         }
         
         .cart-totals-section h5 {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
-            color: rgba(0, 0, 0, 0.9);
+            color: #2c3e50;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid rgba(0, 0, 0, 0.15);
+            border-bottom: 2px solid #e8e8e8;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .cart-totals-section h5 i {
-            color: rgba(0, 0, 0, 0.7);
-            font-size: 20px;
+            color: #667eea;
+            font-size: 18px;
         }
         
         .totals-list {
@@ -756,10 +789,11 @@ try {
         .total-row {
             display: flex;
             justify-content: space-between;
-            padding: 14px 0;
+            padding: 16px 0;
             font-size: 15px;
-            color: rgba(0, 0, 0, 0.8);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            color: #34495e;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
         }
         
         .total-row:last-child {
@@ -767,10 +801,13 @@ try {
         }
         
         .total-row.discount-row {
-            padding: 12px 15px;
-            margin: 10px -10px;
-            border-radius: 8px;
+            padding: 14px 18px;
+            margin: 10px -18px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
             display: none;
+            font-weight: 600;
         }
         
         .total-row.discount-row.active {
@@ -778,79 +815,117 @@ try {
         }
         
         .total-row.total-final {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
-            color: rgba(0, 0, 0, 0.9);
-            padding-top: 18px;
-            margin-top: 12px;
-            border-top: 2px solid rgba(0, 0, 0, 0.2);
+            color: #2c3e50;
+            padding-top: 20px;
+            margin-top: 15px;
+            border-top: 3px solid #667eea;
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            padding: 20px 15px 15px 15px;
+            margin: 15px -15px 0 -15px;
+            border-radius: 10px;
         }
         
         .total-row .amount {
-            font-weight: 600;
-            color: rgba(0, 0, 0, 0.9);
+            font-weight: 700;
+            color: #2c3e50;
         }
         
         .total-row.total-final .amount {
             font-size: 24px;
-            color: rgba(0, 0, 0, 0.9);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .btn-proceed-checkout {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
-            padding: 16px 20px;
-            background: transparent;
-            color: black;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 50px;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
             font-weight: 700;
             font-size: 16px;
             text-transform: uppercase;
             text-decoration: none;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(0, 0, 0, 0.58);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.35);
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-proceed-checkout::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-proceed-checkout:hover::before {
+            left: 100%;
         }
         
         .btn-proceed-checkout:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(0, 0, 0, 0.73);
-            color: black;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.45);
+            color: #ffffff;
+        }
+        
+        .btn-proceed-checkout:active {
+            transform: translateY(-1px);
         }
         
         .btn-proceed-checkout i {
-            font-size: 18px;
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn-proceed-checkout:hover i {
+            transform: translateX(5px);
         }
 
         /* Sección de Confianza y Seguridad */
         .trust-section {
-            padding: 25px;
-            background: linear-gradient(to bottom, #ffffffff 0%, #ffffffff 100%);
-            border-bottom-left-radius: 12px;
-            border-bottom-right-radius: 12px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
         }
         
         .trust-badge {
             display: flex;
             align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 18px;
-            padding: 12px;
-            background: white;
-            border-radius: 10px;
-            border: 2px solid #bbf7d0;
-            transition: all 0.3s ease;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 16px 18px;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 2px solid #e8f5e9;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
         
         .trust-badge:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
+            transform: translateX(8px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
+            border-color: #c8e6c9;
+        }
+        
+        .trust-badge:last-child {
+            margin-bottom: 0;
         }
         
         .trust-badge:last-of-type {
@@ -858,10 +933,16 @@ try {
         }
         
         .trust-badge i {
-            font-size: 24px;
-            color: #28a745;
-            min-width: 24px;
+            font-size: 26px;
+            color: #4caf50;
+            min-width: 26px;
             margin-top: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .trust-badge:hover i {
+            color: #667eea;
+            transform: scale(1.15);
         }
         
         .trust-text {
@@ -871,22 +952,23 @@ try {
         .trust-text strong {
             display: block;
             font-size: 14px;
-            color: #166534;
+            color: #2c3e50;
             font-weight: 700;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
+            letter-spacing: 0.3px;
         }
         
         .trust-text p {
             margin: 0;
             font-size: 12px;
-            color: #15803d;
-            line-height: 1.4;
+            color: #7f8c8d;
+            line-height: 1.5;
         }
 
         .secure-payments {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #bbf7d0;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid #e8e8e8;
         }
         
         .payment-icons {
@@ -907,6 +989,162 @@ try {
             filter: brightness(1.1);
         }
 
+        /* ========================================
+           MODO OSCURO - SIDEBAR CARRITO
+           ======================================== */
+        
+        /* Sidebar principal */
+        body.dark-mode .cart-summary-sidebar {
+            background: #2a2a2e;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Sección de descuento */
+        body.dark-mode .discount-section {
+            background: linear-gradient(135deg, #35353a 0%, #2a2a2e 100%);
+            border-bottom-color: #404040;
+        }
+        
+        body.dark-mode .discount-section h6 {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .discount-section h6 i {
+            color: #c9a67c;
+        }
+        
+        /* Input de descuento */
+        body.dark-mode .discount-input {
+            background: #35353a;
+            border-color: #404040;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .discount-input:focus {
+            border-color: #c9a67c;
+            background: #404040;
+            box-shadow: 0 0 0 4px rgba(201, 166, 124, 0.15);
+        }
+        
+        body.dark-mode .discount-input::placeholder {
+            color: #6c757d;
+        }
+        
+        /* Botón aplicar descuento */
+        body.dark-mode .btn-apply-discount {
+            background: #c9a67c !important;
+            box-shadow: 0 4px 15px rgba(201, 166, 124, 0.4);
+        }
+        
+        body.dark-mode .btn-apply-discount:hover {
+            box-shadow: 0 6px 20px #c9a67c !important;
+            background-color: #c9a67c !important;
+        }
+        
+        /* Sección de totales */
+        body.dark-mode .cart-totals-section {
+            background: linear-gradient(135deg, #2a2a2e 0%, #35353a 100%);
+            border-bottom-color: #404040;
+        }
+        
+        body.dark-mode .cart-totals-section h5 {
+            color: #e0e0e0;
+            border-bottom-color: #404040;
+        }
+        
+        body.dark-mode .cart-totals-section h5 i {
+            color: #c9a67c;
+        }
+        
+        /* Filas de totales */
+        body.dark-mode .total-row {
+            color: #b0b0b0;
+            border-bottom-color: #404040;
+        }
+        
+        body.dark-mode .total-row .amount {
+            color: #e0e0e0;
+        }
+        
+        /* Fila de descuento */
+        body.dark-mode .total-row.discount-row {
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+            color: #a5d6a7;
+        }
+        
+        /* Total final */
+        body.dark-mode .total-row.total-final {
+            background: linear-gradient(135deg, #35353a 0%, #2a2a2e 100%);
+            border-top-color: #c9a67c;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .total-row.total-final .amount {
+            background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Botón proceder al pago */
+        body.dark-mode .btn-proceed-checkout {
+            background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%);
+            box-shadow: 0 8px 25px rgba(201, 166, 124, 0.4);
+        }
+        
+        body.dark-mode .btn-proceed-checkout:hover {
+            box-shadow: 0 12px 35px rgba(201, 166, 124, 0.5);
+        }
+        
+        /* Sección de confianza */
+        body.dark-mode .trust-section {
+            background: linear-gradient(135deg, #35353a 0%, #2a2a2e 100%);
+        }
+        
+        body.dark-mode .trust-badge {
+            background: #35353a;
+            border-color: #2e7d32;
+        }
+        
+        body.dark-mode .trust-badge:hover {
+            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.2);
+            border-color: #c9a67c;
+        }
+        
+        body.dark-mode .trust-badge i {
+            color: #66bb6a;
+        }
+        
+        body.dark-mode .trust-badge:hover i {
+            color: #c9a67c;
+        }
+        
+        body.dark-mode .trust-text strong {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .trust-text p {
+            color: #9e9e9e;
+        }
+        
+        /* Pagos seguros */
+        body.dark-mode .secure-payments {
+            border-top-color: #404040;
+        }
+        
+        /* Mensaje de cupón */
+        body.dark-mode #coupon-message.success {
+            background: #1b5e20;
+            color: #a5d6a7;
+            border-color: #2e7d32;
+        }
+        
+        body.dark-mode #coupon-message.error {
+            background: #b71c1c;
+            color: #ef9a9a;
+            border-color: #c62828;
+        }
+
         /* Vista móvil - oculta por defecto */
         .cart-mobile-view {
             display: none;
@@ -925,7 +1163,7 @@ try {
         /* Desktop - espaciado optimizado */
         @media (min-width: 992px) {
             .shop-cart.spad {
-                padding-top: 40px;
+                padding-top: 30px;
                 padding-bottom: 60px;
             }
             
@@ -1814,9 +2052,34 @@ try {
     <?php 
     include 'includes/user-account-modal.php';
     include 'includes/favorites-modal.php';
+    include 'includes/notifications-modal.php';
     ?>
 
     <!-- Js Plugins -->
+    <script>
+        // BASE URL para peticiones AJAX - Compatible con ngrok y cualquier dominio
+        (function() {
+            var baseUrlFromPHP = '<?php echo defined("BASE_URL") ? BASE_URL : ""; ?>';
+            
+            // Si no hay BASE_URL definida en PHP, calcularla desde JavaScript
+            if (!baseUrlFromPHP || baseUrlFromPHP === '') {
+                var path = window.location.pathname;
+                var pathParts = path.split('/').filter(function(p) { return p !== ''; });
+                
+                // Buscar 'fashion-master' en el path
+                var basePath = '';
+                if (pathParts.includes('fashion-master')) {
+                    var index = pathParts.indexOf('fashion-master');
+                    basePath = '/' + pathParts.slice(0, index + 1).join('/');
+                }
+                
+                baseUrlFromPHP = window.location.origin + basePath;
+            }
+            
+            window.BASE_URL = baseUrlFromPHP;
+            console.log('🌐 BASE_URL configurado:', window.BASE_URL);
+        })();
+    </script>
     <script src="public/assets/js/jquery-3.3.1.min.js"></script>
     
     <!-- Fetch API Handler Moderno - Reemplaza AJAX/jQuery -->
@@ -1827,8 +2090,20 @@ try {
     <script src="public/assets/js/jquery.slicknav.js"></script>
     <script src="public/assets/js/main.js"></script>
     
+    <!-- Header Handler - Actualización en tiempo real de contadores -->
+    <script src="public/assets/js/header-handler.js?v=1.0"></script>
+    
+    <!-- Sistema Global de Contadores -->
+    <script src="public/assets/js/global-counters.js"></script>
+    
+    <!-- Real-time Updates System - DEBE IR ANTES que cart-favorites-handler -->
+    <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
+    
     <script src="public/assets/js/user-account-modal.js"></script>
     <script src="public/assets/js/cart-favorites-handler.js"></script>
+    
+    <!-- Dark Mode Script -->
+    <script src="public/assets/js/dark-mode.js"></script>
     
     <!-- Offcanvas Menu Global JS -->
     <script src="public/assets/js/offcanvas-menu.js"></script>
@@ -2171,5 +2446,7 @@ try {
     });
     </script>
     
+    <!-- Chatbot Widget -->
+    <?php include 'includes/chatbot-widget.php'; ?>
 </body>
 </html>

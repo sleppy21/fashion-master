@@ -4,13 +4,22 @@
  * Endpoint AJAX para gestionar favoritos
  */
 
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // No mostrar en pantalla, solo en logs
+
 session_start();
 require_once __DIR__ . '/../../config/conexion.php';
 
 header('Content-Type: application/json');
 
+// Log de inicio
+error_log("=== Inicio add_to_favorites.php ===");
+error_log("POST data: " . print_r($_POST, true));
+error_log("SESSION user_id: " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'NO EXISTE'));
+
 // Verificar que el usuario esté logueado
 if (!isset($_SESSION['user_id'])) {
+    error_log("Error: Usuario no logueado");
     echo json_encode([
         'success' => false,
         'message' => 'Debes iniciar sesión para agregar favoritos'
@@ -20,6 +29,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Verificar que se recibió el ID del producto
 if (!isset($_POST['id_producto']) || empty($_POST['id_producto'])) {
+    error_log("Error: ID de producto no válido");
     echo json_encode([
         'success' => false,
         'message' => 'ID de producto no válido'
@@ -29,6 +39,8 @@ if (!isset($_POST['id_producto']) || empty($_POST['id_producto'])) {
 
 $id_usuario = $_SESSION['user_id'];
 $id_producto = (int)$_POST['id_producto'];
+
+error_log("Procesando favorito - Usuario: $id_usuario, Producto: $id_producto");
 
 try {
     // Verificar si el producto existe
@@ -55,6 +67,7 @@ try {
     
     if ($existe && !empty($existe)) {
         // Eliminar de favoritos
+        error_log("Producto YA está en favoritos, eliminando...");
         executeQuery("
             DELETE FROM favorito 
             WHERE id_favorito = ?
@@ -62,8 +75,10 @@ try {
         
         $message = 'Eliminado de favoritos';
         $action = 'removed';
+        error_log("Favorito eliminado exitosamente");
     } else {
         // Agregar a favoritos
+        error_log("Producto NO está en favoritos, agregando...");
         executeQuery("
             INSERT INTO favorito (id_usuario, id_producto) 
             VALUES (?, ?)
@@ -71,6 +86,7 @@ try {
         
         $message = 'Agregado a favoritos';
         $action = 'added';
+        error_log("Favorito agregado exitosamente");
     }
     
     // Obtener total de favoritos
@@ -82,6 +98,8 @@ try {
     
     $total = $total_favoritos && !empty($total_favoritos) ? (int)$total_favoritos[0]['total'] : 0;
     
+    error_log("Total favoritos después de operación: $total");
+    
     echo json_encode([
         'success' => true,
         'message' => $message,
@@ -90,9 +108,12 @@ try {
     ]);
     
 } catch (Exception $e) {
+    error_log("=== ERROR EN FAVORITOS ===");
     error_log("Error al gestionar favoritos: " . $e->getMessage());
+    error_log("Stack trace: " . $e->getTraceAsString());
+    error_log("========================");
     echo json_encode([
         'success' => false,
-        'message' => 'Error al procesar la solicitud. Intenta nuevamente.'
+        'message' => 'Error al procesar favoritos: ' . $e->getMessage()
     ]);
 }

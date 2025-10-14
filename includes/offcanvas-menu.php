@@ -100,6 +100,12 @@
     <ul class="offcanvas__widget">
         <li><span class="icon_search search-switch"></span></li>
         <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
+        <li><a href="#" id="notifications-link-mobile" title="Notificaciones">
+            <i class="fa fa-bell"></i>
+            <?php if(isset($notifications_count) && $notifications_count > 0): ?>
+            <div class="tip"><?php echo $notifications_count; ?></div>
+            <?php endif; ?>
+        </a></li>
         <li><a href="#" id="favorites-link-mobile"><span class="icon_heart_alt"></span>
             <?php if(isset($favorites_count) && $favorites_count > 0): ?>
             <div class="tip"><?php echo $favorites_count; ?></div>

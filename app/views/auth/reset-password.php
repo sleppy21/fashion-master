@@ -22,8 +22,13 @@ try {
     $db = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
+    // Consulta mejorada con cálculo de tiempo en el servidor MySQL
     $stmt = $db->prepare("
-        SELECT id_token, usado, fecha_expiracion 
+        SELECT 
+            id_token, 
+            usado, 
+            fecha_expiracion,
+            TIMESTAMPDIFF(SECOND, NOW(), fecha_expiracion) as segundos_restantes
         FROM password_reset_tokens 
         WHERE token = :token
     ");
@@ -44,8 +49,8 @@ try {
         exit;
     }
     
-    // Verificar si el token expiró
-    if(strtotime($tokenData['fecha_expiracion']) < time()) {
+    // Verificar si el token expiró usando el tiempo del servidor MySQL
+    if($tokenData['segundos_restantes'] < 0) {
         $_SESSION['error'] = 'Este enlace de recuperación ha expirado. Por favor solicita uno nuevo.';
         header('Location: ' . url('forgot-password.php'));
         exit;
@@ -257,6 +262,6 @@ function e($string) {
     </script>
     
     <!-- Validación de Formularios -->
-    <script src="<?php echo url('public/assets/js/form-validation.js'); ?>"></script>
+    <script src="<?= asset('js/form-validation.js') ?>"></script>
 </body>
 </html>

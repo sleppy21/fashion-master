@@ -78,11 +78,15 @@ $total = $subtotal + $costo_envio;
 // Obtener contadores para el header
 $cart_count = count($cart_items);
 $favorites_count = 0;
+$notifications_count = 0;
 try {
     $favorites = executeQuery("SELECT COUNT(*) as total FROM favorito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
     $favorites_count = $favorites && !empty($favorites) ? (int)$favorites[0]['total'] : 0;
+    
+    $notifications = executeQuery("SELECT COUNT(*) as total FROM notificacion WHERE id_usuario = ? AND leida_notificacion = 0 AND estado_notificacion = 'activo'", [$usuario_logueado['id_usuario']]);
+    $notifications_count = ($notifications && count($notifications) > 0) ? ($notifications[0]['total'] ?? 0) : 0;
 } catch(Exception $e) {
-    error_log("Error al obtener favoritos: " . $e->getMessage());
+    error_log("Error al obtener favoritos/notificaciones: " . $e->getMessage());
 }
 
 // Obtener categorías para el menú
@@ -141,17 +145,21 @@ try {
     <link rel="stylesheet" href="public/assets/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
+    <!-- Header Standard - COMPACTO v5.0 -->
+    <link rel="stylesheet" href="public/assets/css/header-standard.css?v=5.0" type="text/css">
     <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
-    
-    <!-- Header Responsive Global CSS -->
-    <link rel="stylesheet" href="public/assets/css/header-responsive.css?v=2.0" type="text/css">
-    
-    <!-- Header Override - Máxima prioridad -->
-    <link rel="stylesheet" href="public/assets/css/header-override.css?v=2.0" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/dark-mode.css" type="text/css">
     
     <!-- Global Responsive Styles - TODO EL PROYECTO -->
     <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
+    
+    <!-- Modern Styles -->
+    <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="public/assets/css/notifications-modal.css">
+    
+    <!-- Header Fix - DEBE IR AL FINAL -->
+    <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
     
     <style>
         /* ============================================
@@ -393,7 +401,7 @@ try {
         }
         
         .btn-place-order {
-            background: #ca1515;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
             color: white;
             border: none;
             padding: 15px 40px;
@@ -407,9 +415,9 @@ try {
             transition: all 0.3s;
         }
         .btn-place-order:hover {
-            background: #b01010;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(202,21,21,0.3);
+            box-shadow: 0 4px 15px rgba(55, 61, 69, 0.7);
         }
         .btn-place-order:disabled {
             background: #ccc;
@@ -478,6 +486,7 @@ try {
         /* Ajuste para compensar el header fijo */
         body {
             padding-top: 0;
+            background-color: #f8f5f2;
         }
         
         /* Ajustar ancho de los selects de ubigeo */
@@ -487,8 +496,21 @@ try {
             width: 100% !important;
             max-width: 100% !important;
             min-width: 0 !important;
-            padding-right: 30px !important;
+            padding: 10px 35px 10px 15px !important;
+            height: auto !important;
+            min-height: 42px !important;
             overflow: visible !important;
+            box-sizing: border-box !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            appearance: none !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 12px center !important;
+            background-size: 14px !important;
+            font-size: 14px !important;
+            line-height: 1.5 !important;
+            color: #333 !important;
         }
         
         /* Asegurar que los selects no se corten */
@@ -496,14 +518,20 @@ try {
         select.form-control {
             width: 100% !important;
             box-sizing: border-box !important;
-            padding-right: 30px !important;
+            padding: 10px 35px 10px 15px !important;
+            height: auto !important;
+            min-height: 42px !important;
+            font-size: 14px !important;
+            line-height: 1.5 !important;
         }
         
         /* Ajustar el contenedor de los selects */
         .form-group select.form-control {
             display: block !important;
             width: 100% !important;
-            padding: 12px 30px 12px 15px !important;
+            padding: 10px 35px 10px 15px !important;
+            height: auto !important;
+            min-height: 42px !important;
             font-size: 14px !important;
             line-height: 1.5 !important;
             background-color: #fff !important;
@@ -517,6 +545,22 @@ try {
         .col-md-4 {
             padding-left: 15px !important;
             padding-right: 15px !important;
+            flex: 0 0 33.333333% !important;
+            max-width: 33.333333% !important;
+        }
+        
+        /* Asegurar que el row use flexbox correctamente */
+        .form-section .row {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            margin-left: -15px !important;
+            margin-right: -15px !important;
+        }
+        
+        /* Prevenir que form-group comprima el contenido */
+        .form-group {
+            margin-bottom: 1rem !important;
+            width: 100% !important;
         }
         
         /* Mejorar orden summary para que no se superponga con header */
@@ -849,7 +893,7 @@ try {
     </style>
 </head>
 
-<body>
+<body class="checkout-page">
     <?php include 'includes/offcanvas-menu.php'; ?>
 
     <?php include 'includes/header-section.php'; ?>
@@ -1187,8 +1231,19 @@ try {
     <script src="public/assets/js/bootstrap.min.js"></script>
     <script src="public/assets/js/jquery.slicknav.js"></script>
     <script src="public/assets/js/main.js"></script>
+    
+    <!-- Header Handler - Actualización en tiempo real de contadores -->
+    <script src="public/assets/js/header-handler.js?v=1.0"></script>
+    
+    <!-- Sistema Global de Contadores -->
+    <script src="public/assets/js/global-counters.js"></script>
+    
+    <!-- Real-time Updates System - DEBE IR ANTES que cart-favorites-handler -->
+    <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
+    
     <script src="public/assets/js/cart-favorites-handler.js"></script>
     <script src="public/assets/js/user-account-modal.js"></script>
+    <script src="public/assets/js/dark-mode.js"></script>
 
     <script>
         // ========================================
@@ -1436,7 +1491,10 @@ try {
     <?php if($usuario_logueado): ?>
     <?php include 'includes/user-account-modal.php'; ?>
     <?php include 'includes/favorites-modal.php'; ?>
+    <?php include 'includes/notifications-modal.php'; ?>
     <?php endif; ?>
 
+    <!-- Chatbot Widget -->
+    <?php include 'includes/chatbot-widget.php'; ?>
 </body>
 </html>

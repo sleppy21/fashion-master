@@ -77,6 +77,13 @@ class AuthController {
             $stmt = $this->db->prepare("UPDATE usuario SET ultimo_acceso = NOW() WHERE id_usuario = :id");
             $stmt->execute(['id' => $user['id_usuario']]);
             
+            // 🎯 NOTIFICACIÓN AUTOMÁTICA: Bienvenido de nuevo (CADA LOGIN)
+            require_once __DIR__ . '/../helpers/NotificationManager.php';
+            $nm = getNotificationManager($this->db);
+            
+            // Enviar notificación de bienvenida en CADA login
+            $nm->notifyWelcomeBack($user['id_usuario'], $user['nombre_usuario']);
+            
             // Si marcó "Recordar sesión", crear cookie
             if($remember) {
                 $token = bin2hex(random_bytes(32));
@@ -243,6 +250,16 @@ class AuthController {
             ]);
             
             if($result) {
+                $nuevo_id_usuario = $this->db->lastInsertId();
+                
+                // Crear notificación de bienvenida automática
+                require_once __DIR__ . '/../helpers/NotificationManager.php';
+                $nm = getNotificationManager($this->db);
+                $nm->notifyWelcome($nuevo_id_usuario, $nombre);
+                
+                // Notificación adicional sobre verificación de email
+                $nm->notifyEmailVerification($nuevo_id_usuario, $email);
+                
                 unset($_SESSION['form_data']);
                 $_SESSION['success'] = '¡Registro exitoso! Ya puedes iniciar sesión';
                 header('Location: ' . url('login.php'));
@@ -365,18 +382,28 @@ class AuthController {
         }
         
         try {
-            // Verificar token
+            // Verificar token - Validación mejorada compatible con cualquier dominio
             $stmt = $this->db->prepare("
-                SELECT * FROM password_reset_tokens 
-                WHERE token = :token 
-                AND usado = 0 
-                AND fecha_expiracion > NOW()
+                SELECT 
+                    prt.*,
+                    TIMESTAMPDIFF(SECOND, prt.fecha_creacion, NOW()) as segundos_transcurridos,
+                    TIMESTAMPDIFF(SECOND, NOW(), prt.fecha_expiracion) as segundos_restantes
+                FROM password_reset_tokens prt
+                WHERE prt.token = :token 
+                AND prt.usado = 0
             ");
             $stmt->execute(['token' => $token]);
             $resetToken = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if(!$resetToken) {
-                $_SESSION['error'] = 'El enlace de recuperación es inválido o ha expirado';
+                $_SESSION['error'] = 'El enlace de recuperación no existe o ya fue utilizado';
+                header('Location: ' . url('forgot-password.php'));
+                exit;
+            }
+            
+            // Verificar expiración (1 hora = 3600 segundos)
+            if ($resetToken['segundos_restantes'] < 0) {
+                $_SESSION['error'] = 'El enlace de recuperación ha expirado. Por favor solicita uno nuevo.';
                 header('Location: ' . url('forgot-password.php'));
                 exit;
             }

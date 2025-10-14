@@ -306,268 +306,7 @@ try {
             <div class="tab-content">
                 <!-- Dashboard Tab -->
                 <div class="tab-pane active" id="dashboard">
-                    <div class="dashboard-header" data-aos="fade-down">
-                        <h1>
-                            <i class="fas fa-tachometer-alt"></i>
-                            Dashboard Principal
-                            <span class="realtime-badge" id="realtime-indicator" style="
-                                display: inline-block;
-                                background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-                                color: white;
-                                padding: 5px 12px;
-                                border-radius: 20px;
-                                font-size: 12px;
-                                font-weight: 600;
-                                margin-left: 10px;
-                                vertical-align: middle;
-                                animation: pulse 2s infinite;
-                            ">
-                                <i class="fas fa-sync-alt" style="margin-right: 5px;"></i>
-                                Actualización automática
-                            </span>
-                        </h1>
-                        <p>
-                            Resumen general del sistema de Fashion Store
-                            <span id="last-update-time" style="
-                                display: inline-block;
-                                background: rgba(52, 152, 219, 0.1);
-                                padding: 3px 10px;
-                                border-radius: 10px;
-                                font-size: 11px;
-                                margin-left: 10px;
-                                color: #3498db;
-                            ">
-                                <i class="fas fa-clock"></i> Actualizado ahora
-                            </span>
-                        </p>
-                    </div>
-                    
-                    <style>
-                        @keyframes pulse {
-                            0%, 100% { opacity: 1; transform: scale(1); }
-                            50% { opacity: 0.8; transform: scale(1.05); }
-                        }
-                        
-                        @keyframes fadeInUpdate {
-                            from {
-                                opacity: 0;
-                                transform: translateY(-10px);
-                            }
-                            to {
-                                opacity: 1;
-                                transform: translateY(0);
-                            }
-                        }
-                        
-                        .stat-updated {
-                            animation: fadeInUpdate 0.5s ease;
-                        }
-                    </style>
-
-                    <!-- Tarjetas de estadísticas principales -->
-                    <div class="stats-grid">
-                        <div class="stat-card products" data-aos="fade-up" data-aos-delay="100">
-                            <div class="stat-icon">
-                                <i class="fas fa-tshirt"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3 id="total-productos" style="transition: all 0.3s ease;"><?php echo $total_productos; ?></h3>
-                                <p>Productos Activos</p>
-                                <div class="stat-trend <?php echo $productos_stock_bajo > 0 ? 'warning' : 'success'; ?>">
-                                    <?php if ($productos_stock_bajo > 0): ?>
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        <span><span id="productos-stock-bajo" style="transition: all 0.3s ease;"><?php echo $productos_stock_bajo; ?></span> con stock bajo</span>
-                                    <?php else: ?>
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Stock saludable</span>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="stat-card users" data-aos="fade-up" data-aos-delay="200">
-                            <div class="stat-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3 id="total-usuarios" style="transition: all 0.3s ease;"><?php echo $total_usuarios; ?></h3>
-                                <p>Usuarios Activos</p>
-                                <div class="stat-trend info">
-                                    <i class="fas fa-user-check"></i>
-                                    <span>Registrados en el sistema</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="stat-card sales" data-aos="fade-up" data-aos-delay="300">
-                            <div class="stat-icon">
-                                <i class="fas fa-dollar-sign"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3 id="valor-inventario" style="transition: all 0.3s ease;">S/. <?php echo number_format($valor_inventario, 0, ',', '.'); ?></h3>
-                                <p>Valor de Inventario</p>
-                                <div class="stat-trend success">
-                                    <i class="fas fa-chart-line"></i>
-                                    <span><?php echo $total_productos_sistema; ?> productos totales</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="stat-card orders" data-aos="fade-up" data-aos-delay="400">
-                            <div class="stat-icon">
-                                <i class="fas fa-tags"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3 id="total-categorias" style="transition: all 0.3s ease;"><?php echo $total_categorias; ?></h3>
-                                <p>Categorías Activas</p>
-                                <div class="stat-trend info">
-                                    <i class="fas fa-copyright"></i>
-                                    <span><span id="total-marcas" style="transition: all 0.3s ease;"><?php echo $total_marcas; ?></span> marcas activas</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Estadísticas secundarias (Pedidos, Reseñas, Favoritos, Ventas) -->
-                    <div class="stats-grid-secondary" style="margin-top: 20px;">
-                        <div class="stat-card-small pedidos" data-aos="fade-up" data-aos-delay="500">
-                            <div class="stat-icon-small">
-                                <i class="fas fa-shopping-cart"></i>
-                            </div>
-                            <div class="stat-content-small">
-                                <h4 id="total-pedidos">0</h4>
-                                <p>Total Pedidos</p>
-                                <small id="pedidos-pendientes">0 pendientes</small>
-                            </div>
-                        </div>
-
-                        <div class="stat-card-small resenas" data-aos="fade-up" data-aos-delay="550">
-                            <div class="stat-icon-small">
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <div class="stat-content-small">
-                                <h4 id="total-resenas">0</h4>
-                                <p>Reseñas Aprobadas</p>
-                                <small id="calificacion-promedio">0.0 ★ promedio</small>
-                            </div>
-                        </div>
-
-                        <div class="stat-card-small favoritos" data-aos="fade-up" data-aos-delay="600">
-                            <div class="stat-icon-small">
-                                <i class="fas fa-heart"></i>
-                            </div>
-                            <div class="stat-content-small">
-                                <h4 id="total-favoritos">0</h4>
-                                <p>Favoritos Totales</p>
-                                <small id="total-carrito">0 en carritos</small>
-                            </div>
-                        </div>
-
-                        <div class="stat-card-small ventas" data-aos="fade-up" data-aos-delay="650">
-                            <div class="stat-icon-small">
-                                <i class="fas fa-money-bill-wave"></i>
-                            </div>
-                            <div class="stat-content-small">
-                                <h4 id="ventas-mes">S/. 0</h4>
-                                <p>Ventas del Mes</p>
-                                <small id="productos-semana">0 productos esta semana</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Gráficos con Chart.js -->
-                    <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr)); gap: 20px; margin: 30px 0;">
-                        <!-- Gráfico de Stock -->
-                        <div class="chart-card" data-aos="fade-up" data-aos-delay="700" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
-                                <i class="fas fa-chart-pie"></i> Estado del Inventario
-                            </h3>
-                            <canvas id="stockChart" style="max-height: 300px;"></canvas>
-                        </div>
-
-                        <!-- Gráfico de Categorías -->
-                        <div class="chart-card" data-aos="fade-up" data-aos-delay="750" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
-                                <i class="fas fa-chart-bar"></i> Productos por Categoría
-                            </h3>
-                            <canvas id="categoryChart" style="max-height: 300px;"></canvas>
-                        </div>
-
-                        <!-- Gráfico de Distribución por Género -->
-                        <div class="chart-card" data-aos="fade-up" data-aos-delay="800" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
-                                <i class="fas fa-venus-mars"></i> Distribución por Género
-                            </h3>
-                            <canvas id="genderChart" style="max-height: 300px;"></canvas>
-                        </div>
-
-                        <!-- Gráfico de Ventas Mensuales -->
-                        <div class="chart-card chart-card-wide" data-aos="fade-up" data-aos-delay="850" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); grid-column: 1 / -1;">
-                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
-                                <i class="fas fa-chart-line"></i> Ventas de los Últimos 6 Meses
-                            </h3>
-                            <canvas id="salesChart" style="max-height: 300px;"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Actividad Reciente y Top Productos -->
-                    <div class="activity-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr)); gap: 20px; margin: 30px 0;">
-                        <!-- Actividad Reciente -->
-                        <div class="activity-card" data-aos="fade-up" data-aos-delay="900" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
-                                <i class="fas fa-history"></i> Actividad Reciente
-                            </h3>
-                            <div id="recent-activity" style="max-height: 400px; overflow-y: auto;">
-                                <p style="text-align: center; color: #999;">Cargando actividad...</p>
-                            </div>
-                        </div>
-
-                        <!-- Productos Más Favoritos -->
-                        <div class="activity-card" data-aos="fade-up" data-aos-delay="950" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
-                                <i class="fas fa-heart"></i> Productos Más Favoritos
-                            </h3>
-                            <div id="top-favorites" style="max-height: 400px; overflow-y: auto;">
-                                <p style="text-align: center; color: #999;">Cargando productos...</p>
-                            </div>
-                        </div>
-
-                        <!-- Productos Mejor Calificados -->
-                        <div class="activity-card" data-aos="fade-up" data-aos-delay="1000" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                            <h3 style="margin-bottom: 15px; color: #2c3e50; font-size: 16px;">
-                                <i class="fas fa-star"></i> Productos Mejor Calificados
-                            </h3>
-                            <div id="top-rated" style="max-height: 400px; overflow-y: auto;">
-                                <p style="text-align: center; color: #999;">Cargando calificaciones...</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Acciones rápidas -->
-                    <div class="quick-actions" data-aos="fade-up" data-aos-delay="700">
-                        <h2>
-                            <i class="fas fa-bolt"></i>
-                            Acciones Rápidas
-                        </h2>
-                        <div class="actions-grid">
-                            <button class="action-btn add-product" onclick="showCreateProductModal()">
-                                <i class="fas fa-plus-circle"></i>
-                                <span>Agregar Producto</span>
-                            </button>
-                            <button class="action-btn add-category" onclick="openNewCategoryModal()">
-                                <i class="fas fa-tag"></i>
-                                <span>Nueva Categoría</span>
-                            </button>
-                            <button class="action-btn manage-users" onclick="switchTab('usuarios')">
-                                <i class="fas fa-user-plus"></i>
-                                <span>Gestionar Usuarios</span>
-                            </button>
-                            <button class="action-btn settings" onclick="switchTab('configuracion')">
-                                <i class="fas fa-cogs"></i>
-                                <span>Configuración</span>
-                            </button>
-                        </div>
-                    </div>
+                    <?php include 'app/views/admin/admin_dashboard.php'; ?>
                 </div>
 
                 <!-- Productos Tab -->
@@ -2326,6 +2065,16 @@ try {
         function closeProductModal() {
             console.log('🚪 closeProductModal() PRINCIPAL iniciado');
             
+            // 💾 GUARDAR BORRADOR INMEDIATAMENTE ANTES DE CERRAR
+            try {
+                if (typeof window.saveFormDraft === 'function') {
+                    window.saveFormDraft();
+                    console.log('💾 Borrador guardado desde closeProductModal (admin.php)');
+                }
+            } catch (e) {
+                console.warn('⚠️ Error al guardar borrador en close:', e);
+            }
+            
             // Manejar modal Ver Producto (principal)
             const viewModal = document.querySelector('.product-view-modal');
             if (viewModal) {
@@ -3776,6 +3525,9 @@ try {
     console.log('✅ Todas las librerías modernas inicializadas correctamente');
     console.log('✅ Sistema de actualización en tiempo real configurado');
     </script>
+
+    <!-- Modales de Categorías -->
+    <?php include 'app/views/admin/categoria_modal.php'; ?>
 
 </body>
 </html>

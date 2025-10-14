@@ -264,6 +264,16 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
     // Función para cerrar el modal Ver Producto
     // ✅ SIMPLIFICADO: Solo usar closeProductModal global
     function closeViewProductModal() {
+        // 💾 GUARDAR BORRADOR ANTES DE CERRAR
+        try {
+            if (typeof window.saveFormDraft === 'function') {
+                window.saveFormDraft();
+                console.log('💾 Borrador guardado antes de cerrar modal');
+            }
+        } catch (e) {
+            console.warn('⚠️ Error al guardar borrador antes de cerrar:', e);
+        }
+        
         // Siempre llamar a la función global
         if (typeof window.closeProductModal === 'function') {
             window.closeProductModal();
@@ -335,6 +345,14 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('🔘 Click en overlay');
+                
+                // 💾 GUARDAR BORRADOR ANTES DE CERRAR
+                try {
+                    if (typeof window.saveFormDraft === 'function') {
+                        window.saveFormDraft();
+                    }
+                } catch (err) { }
+                
                 if (typeof window.closeProductModal === 'function') {
                     window.closeProductModal();
                 }
@@ -351,6 +369,14 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                 if (activeModal) {
                     e.preventDefault();
                     e.stopPropagation();
+                    
+                    // 💾 GUARDAR BORRADOR ANTES DE CERRAR
+                    try {
+                        if (typeof window.saveFormDraft === 'function') {
+                            window.saveFormDraft();
+                        }
+                    } catch (err) { }
+                    
                     if (typeof window.closeProductModal === 'function') {
                         window.closeProductModal();
                     } else {
@@ -469,9 +495,11 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                 <div class="form-group">
                     <textarea id="descripcion" 
                               name="descripcion_producto" 
-                              rows="4" 
+                              rows="3" 
                               maxlength="500"
+                              style="resize: none; overflow-y: hidden;"
                               placeholder="Describe las características principales del producto..."
+                              oninput="autoExpandTextarea(this)"
                               <?= $isView ? 'readonly' : '' ?>><?= $hasData ? htmlspecialchars($producto['descripcion_producto']) : '' ?></textarea>
                     <small class="form-text">Máximo 500 caracteres</small>
                 </div>
@@ -498,6 +526,10 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                                    required 
                                    min="0" 
                                    step="0.01"
+                                   class="no-spin"
+                                   pattern="[0-9]+(\.[0-9]{1,2})?"
+                                   onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46"
+                                   oninput="validarPrecio(this)"
                                    <?= $isView ? 'readonly' : '' ?>
                                    placeholder="0.00">
                         </div>
@@ -514,38 +546,35 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                                value="<?= $hasData ? $producto['stock_actual_producto'] : '' ?>"
                                required 
                                min="0"
+                               max="999"
+                               maxlength="3"
+                               class="no-spin"
+                               oninput="if(this.value.length > 3) this.value = this.value.slice(0, 3); if(parseInt(this.value) > 999) this.value = 999;"
                                <?= $isView ? 'readonly' : '' ?>
                                placeholder="0">
                     </div>
                     
                     <div class="form-group">
-                        <label for="codigo">
-                            <i class="fas fa-barcode"></i>
-                            Código
-                        </label>
-                        <input type="text" 
-                               id="codigo" 
-                               name="codigo" 
-                               value="<?= $hasData ? htmlspecialchars($producto['codigo']) : '' ?>"
-                               <?= $isView ? 'readonly' : '' ?>
-                               maxlength="50"
-                               placeholder="Código único del producto">
-                    </div>
-                    
-                    <div class="form-group">
                         <label for="descuento">
                             <i class="fas fa-percent"></i>
-                            Descuento (%)
+                            Descuento
                         </label>
-                        <input type="number" 
-                               id="descuento" 
-                               name="precio_descuento_producto" 
-                               value="<?= $hasData ? $producto['descuento_porcentaje_producto'] : '0' ?>"
-                               min="0" 
-                               max="100"
-                               step="0.01"
-                               <?= $isView ? 'readonly' : '' ?>
-                               placeholder="0.00">
+                        <div class="input-group">
+                            <input type="number" 
+                                   id="descuento" 
+                                   name="precio_descuento_producto" 
+                                   value="<?= $hasData ? $producto['descuento_porcentaje_producto'] : '' ?>"
+                                   min="0" 
+                                   max="100"
+                                   step="0.01"
+                                   class="no-spin"
+                                   pattern="[0-9]+(\.[0-9]{1,2})?"
+                                   onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46"
+                                   oninput="validarDescuento(this)"
+                                   <?= $isView ? 'readonly' : '' ?>
+                                   placeholder="Ej: 15.50">
+                            <span class="input-group-text">%</span>
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -606,7 +635,11 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                     <input type="file" id="imagen" name="imagen_producto" accept="image/*" style="display:none;">
                     <div id="imagePreview" class="image-preview-section" style="display:none;">
                         <div class="preview-image-display"><img id="previewImg" src="" alt="Preview de nueva imagen" class="preview-product-image"></div>
-                        <div class="preview-actions-section"><button type="button" class="btn-remove-image" onclick="removeImagePreview()"><i class="fas fa-trash"></i> Eliminar imagen</button></div>
+                        <div class="preview-actions-section">
+                            <button type="button" class="<?= $hasData ? 'btn-remove-image' : 'btn-change-image' ?>" onclick="<?= $hasData ? 'removeImagePreview()' : 'triggerFileInput()' ?>">
+                                <i class="fas fa-<?= $hasData ? 'trash' : 'camera' ?>"></i> <?= $hasData ? 'Eliminar' : 'Reemplazar' ?> imagen
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -898,6 +931,12 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         try { data = JSON.parse(text); } catch (err) { throw new Error('Respuesta no JSON: ' + err.message); }
 
         if (data.success) {
+          // 🗑️ LIMPIAR BORRADOR AL GUARDAR EXITOSAMENTE
+          try {
+            localStorage.removeItem('product_form_draft');
+            console.log('🗑️ Borrador limpiado tras guardar');
+          } catch (e) { }
+          
           // ⭐ GUARDAR TAB ACTIVO EN LOCALSTORAGE (PARENT)
           if (window.parent && window.parent.localStorage) {
             window.parent.localStorage.setItem('admin_active_tab', 'productos');
@@ -913,18 +952,30 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
             );
           }
           
-          // Primero recargar la tabla con el producto actualizado
+          // 🔄 ACTUALIZACIÓN EN TIEMPO REAL con producto completo
           if (data.product) {
+            console.log('📦 Producto recibido del backend:', data.product);
             reloadParentProductsTable(data.product);
-          }
-          
-          // ✅ CIERRE INMEDIATO - Sin delays
-          if (typeof window.closeProductModal === 'function') {
-            window.closeProductModal();
-          } else if (typeof window.parent !== 'undefined' && typeof window.parent.closeProductModal === 'function') {
-            window.parent.closeProductModal();
+            
+            // ⏱️ Pequeño delay para asegurar que la actualización se complete
+            setTimeout(() => {
+              // ✅ CERRAR MODAL después de actualizar
+              if (typeof window.closeProductModal === 'function') {
+                window.closeProductModal();
+              } else if (typeof window.parent !== 'undefined' && typeof window.parent.closeProductModal === 'function') {
+                window.parent.closeProductModal();
+              } else {
+                console.error('❌ closeProductModal no disponible');
+              }
+            }, 150); // 150ms para dar tiempo a la animación
           } else {
-            console.error('❌ closeProductModal no disponible');
+            console.warn('⚠️ No se recibió producto actualizado, cerrando sin actualizar');
+            // Si no hay producto, cerrar inmediatamente
+            if (typeof window.closeProductModal === 'function') {
+              window.closeProductModal();
+            } else if (typeof window.parent !== 'undefined' && typeof window.parent.closeProductModal === 'function') {
+              window.parent.closeProductModal();
+            }
           }
         } else {
           // ⭐ MOSTRAR NOTIFICACIÓN DE ERROR
@@ -957,23 +1008,59 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
      -------------------------- */
   function reloadParentProductsTable(updatedProduct = null) {
     
-    // Intentar actualización suave primero
+    // ✨ ACTUALIZACIÓN SUAVE con smooth-table-update
     try {
       // Acceder a window.parent o window dependiendo del contexto
       const targetWindow = (window.parent && window.parent !== window) ? window.parent : window;
       
+      console.log('🔍 Verificando actualización en tiempo real...');
+      console.log('   - targetWindow:', targetWindow !== window ? 'parent' : 'self');
+      console.log('   - smoothTableUpdater existe:', !!targetWindow.smoothTableUpdater);
+      console.log('   - updatedProduct:', updatedProduct);
+      
       if (targetWindow.smoothTableUpdater && updatedProduct) {
-        targetWindow.smoothTableUpdater.updateSingleProduct(updatedProduct.id_producto, updatedProduct)
-          .then(() => {
-          })
-          .catch(err => {
-            // Fallback a recarga completa
-            fallbackReload(targetWindow);
-          });
+        // 🆕 DETECTAR SI ES CREAR O EDITAR
+        const isCreate = !document.getElementById('productForm')?.querySelector('input[name="id_producto"]')?.value;
+        
+        console.log('   - Modo:', isCreate ? 'CREAR' : 'EDITAR');
+        console.log('   - ID del producto:', updatedProduct.id_producto);
+        
+        if (isCreate) {
+          // ⭐ CREAR NUEVO PRODUCTO EN TABLA
+          console.log('➕ Agregando nuevo producto con smooth-table-update:', updatedProduct);
+          return targetWindow.smoothTableUpdater.addNewProduct(updatedProduct)
+            .then(() => {
+              console.log('✅ Producto agregado exitosamente en tiempo real');
+            })
+            .catch(err => {
+              console.error('❌ Error al agregar producto:', err);
+              fallbackReload(targetWindow);
+            });
+        } else {
+          // ⭐ ACTUALIZAR PRODUCTO EXISTENTE EN TIEMPO REAL
+          console.log('✏️ Actualizando producto existente con smooth-table-update...');
+          console.log('   - Código anterior vs nuevo:', updatedProduct.codigo);
+          
+          return targetWindow.smoothTableUpdater.updateSingleProduct(updatedProduct.id_producto, updatedProduct)
+            .then(() => {
+              console.log('✅ Producto actualizado exitosamente en tiempo real');
+              console.log('   - Código actualizado a:', updatedProduct.codigo);
+            })
+            .catch(err => {
+              console.error('❌ Error al actualizar producto:', err);
+              console.error('   - Detalle:', err.message || err);
+              fallbackReload(targetWindow);
+            });
+        }
       } else {
+        console.warn('⚠️ smoothTableUpdater no disponible o sin producto, usando recarga completa');
+        if (!targetWindow.smoothTableUpdater) console.warn('   - smoothTableUpdater no existe');
+        if (!updatedProduct) console.warn('   - updatedProduct es null/undefined');
         fallbackReload(targetWindow);
       }
     } catch (err) {
+      console.error('❌ Error en reloadParentProductsTable:', err);
+      console.error('   - Stack:', err.stack);
     }
   }
   
@@ -1112,6 +1199,308 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
   };
 
   /* --------------------------
+     Auto-expandir textarea de descripción
+     -------------------------- */
+  window.autoExpandTextarea = function(textarea) {
+    if (!textarea) return;
+    
+    // Resetear altura para recalcular
+    textarea.style.height = 'auto';
+    
+    // Calcular nueva altura basada en scrollHeight
+    const newHeight = Math.min(textarea.scrollHeight, 300); // Máximo 300px
+    textarea.style.height = newHeight + 'px';
+  };
+
+  /* --------------------------
+     Validar campo precio (solo números)
+     -------------------------- */
+  window.validarPrecio = function(input) {
+    if (!input) return;
+    
+    const oldValue = input.value;
+    const cursorPos = input.selectionStart;
+    
+    // Remover cualquier caracter que no sea número o punto decimal
+    let value = oldValue.replace(/[^0-9.]/g, '');
+    
+    // Asegurar solo un punto decimal
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      // Mantener solo el primer punto
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+    
+    // Limitar a 2 decimales
+    if (parts.length === 2 && parts[1].length > 2) {
+      value = parts[0] + '.' + parts[1].substring(0, 2);
+    }
+    
+    // Validar que no sea negativo (solo al validar número completo)
+    if (value !== '' && value !== '.' && !value.endsWith('.')) {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue) && numValue < 0) {
+        value = '0';
+      }
+    }
+    
+    // Solo actualizar si cambió
+    if (value !== oldValue) {
+      input.value = value;
+      // Restaurar posición del cursor
+      const newCursorPos = Math.min(cursorPos, value.length);
+      input.setSelectionRange(newCursorPos, newCursorPos);
+    }
+  };
+
+  /* --------------------------
+     🔥 AUTOGUARDADO DE FORMULARIO EN LOCALSTORAGE
+     -------------------------- */
+  const DRAFT_KEY = 'product_form_draft';
+  let autoSaveTimeout = null;
+
+  // Guardar borrador automáticamente
+  window.saveFormDraft = function() {
+    const form = document.getElementById('productForm');
+    if (!form) return;
+    
+    // Solo guardar si es modo CREAR (no editar)
+    const isEdit = form.querySelector('input[name="id_producto"]')?.value;
+    if (isEdit) return;
+    
+    const formData = new FormData(form);
+    const draft = {};
+    
+    // Guardar todos los campos excepto archivos
+    for (let [key, value] of formData.entries()) {
+      if (!(value instanceof File)) {
+        draft[key] = value;
+      }
+    }
+    
+    // 🖼️ GUARDAR IMAGEN (preview base64 si existe)
+    try {
+      const fileInput = document.getElementById('imagen');
+      if (fileInput && fileInput.dataset.cropped) {
+        // Guardar la imagen procesada (base64)
+        draft._imagePreview = fileInput.dataset.cropped;
+        console.log('🖼️ Imagen guardada en borrador');
+      }
+    } catch (e) {
+      console.warn('⚠️ Error al guardar imagen:', e);
+    }
+    
+    // Guardar en localStorage
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+      console.log('💾 Borrador guardado automáticamente');
+    } catch (e) {
+      console.warn('⚠️ No se pudo guardar el borrador:', e);
+      // Si falla por tamaño, intentar sin imagen
+      if (e.name === 'QuotaExceededError' && draft._imagePreview) {
+        delete draft._imagePreview;
+        try {
+          localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+          console.log('💾 Borrador guardado sin imagen (límite de espacio)');
+        } catch (e2) {
+          console.error('❌ No se pudo guardar incluso sin imagen');
+        }
+      }
+    }
+  };
+
+  // Restaurar borrador al cargar formulario
+  window.restoreFormDraft = function(force = false) {
+    const form = document.getElementById('productForm');
+    if (!form) {
+      console.log('⚠️ No se encontró formulario para restaurar');
+      return false;
+    }
+    
+    // Solo restaurar si es modo CREAR
+    const isEdit = form.querySelector('input[name="id_producto"]')?.value;
+    if (isEdit) {
+      console.log('ℹ️ Modo EDITAR detectado, no se restaura borrador');
+      return false;
+    }
+    
+    try {
+      const draftJSON = localStorage.getItem(DRAFT_KEY);
+      if (!draftJSON) {
+        console.log('ℹ️ No hay borrador guardado en localStorage');
+        return false;
+      }
+      
+      console.log('🔍 Borrador encontrado en localStorage:', draftJSON.substring(0, 100) + '...');
+      
+      const draft = JSON.parse(draftJSON);
+      let hasData = false;
+      let restoredCount = 0;
+      
+      // Restaurar cada campo
+      for (let [key, value] of Object.entries(draft)) {
+        if (value && value !== '') {
+          const input = form.querySelector(`[name="${key}"]`);
+          if (input) {
+            // Solo restaurar si el campo está vacío o force=true
+            const currentValue = input.value || '';
+            const shouldRestore = force || currentValue === '' || currentValue === input.defaultValue;
+            
+            if (shouldRestore) {
+              hasData = true;
+              if (input.type === 'checkbox') {
+                input.checked = value === 'on' || value === true;
+              } else if (input.tagName === 'SELECT') {
+                input.value = value;
+              } else if (input.tagName === 'TEXTAREA') {
+                input.value = value;
+                // Auto-expandir textarea si tiene contenido
+                if (window.autoExpandTextarea) {
+                  window.autoExpandTextarea(input);
+                }
+              } else {
+                input.value = value;
+              }
+              restoredCount++;
+            }
+          }
+        }
+      }
+      
+      // 🖼️ RESTAURAR IMAGEN (si existe)
+      if (draft._imagePreview) {
+        try {
+          const fileInput = document.getElementById('imagen');
+          const preview = document.getElementById('imagePreview');
+          const previewImg = document.getElementById('previewImg');
+          const uploadArea = document.getElementById('uploadArea');
+          
+          if (fileInput && preview && previewImg) {
+            // Mostrar preview de la imagen guardada
+            previewImg.src = draft._imagePreview;
+            preview.style.display = 'block';
+            preview.style.opacity = '1';
+            
+            // Ocultar área de carga
+            if (uploadArea) {
+              uploadArea.style.display = 'none';
+            }
+            
+            // Guardar en el dataset del input para que se envíe al servidor
+            fileInput.dataset.cropped = draft._imagePreview;
+            
+            hasData = true;
+            restoredCount++;
+            console.log('🖼️ Imagen restaurada desde borrador');
+          }
+        } catch (e) {
+          console.warn('⚠️ Error al restaurar imagen:', e);
+        }
+      }
+      
+      if (hasData) {
+        console.log(`📂 Borrador restaurado (${restoredCount} campos)`);
+        return true;
+      } else {
+        console.log('ℹ️ No se encontraron campos para restaurar');
+        return false;
+      }
+    } catch (e) {
+      console.warn('⚠️ No se pudo restaurar el borrador:', e);
+      return false;
+    }
+  };
+
+  // Limpiar borrador
+  window.clearFormDraft = function() {
+    try {
+      localStorage.removeItem(DRAFT_KEY);
+      console.log('🗑️ Borrador eliminado');
+      
+      // Limpiar formulario
+      const form = document.getElementById('productForm');
+      if (form) {
+        form.reset();
+        
+        // Resetear textarea de descripción
+        const textarea = form.querySelector('#descripcion');
+        if (textarea && window.autoExpandTextarea) {
+          textarea.style.height = 'auto';
+          window.autoExpandTextarea(textarea);
+        }
+        
+        // Limpiar preview de imagen
+        if (typeof window.removeImagePreview === 'function') {
+          window.removeImagePreview();
+        }
+      }
+      
+      // Mostrar notificación
+      if (window.parent && typeof window.parent.showNotification === 'function') {
+        window.parent.showNotification('Borrador limpiado', 'success');
+      }
+    } catch (e) {
+      console.warn('⚠️ Error al limpiar borrador:', e);
+    }
+  };
+
+  // Autoguardado INMEDIATO con debounce corto (500ms para evitar lag)
+  window.triggerAutoSave = function() {
+    if (autoSaveTimeout) {
+      clearTimeout(autoSaveTimeout);
+    }
+    
+    autoSaveTimeout = setTimeout(() => {
+      window.saveFormDraft();
+    }, 500); // 500ms = medio segundo (mucho más rápido)
+  };
+
+  /* --------------------------
+     Validar campo descuento (solo números)
+     -------------------------- */
+  window.validarDescuento = function(input) {
+    if (!input) return;
+    
+    const oldValue = input.value;
+    const cursorPos = input.selectionStart;
+    
+    // Remover cualquier caracter que no sea número o punto decimal
+    let value = oldValue.replace(/[^0-9.]/g, '');
+    
+    // Asegurar solo un punto decimal
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      // Mantener solo el primer punto
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+    
+    // Limitar a 2 decimales
+    if (parts.length === 2 && parts[1].length > 2) {
+      value = parts[0] + '.' + parts[1].substring(0, 2);
+    }
+    
+    // Validar rango 0-100 (solo al validar número completo)
+    if (value !== '' && value !== '.' && !value.endsWith('.')) {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue)) {
+        if (numValue > 100) {
+          value = '100';
+        } else if (numValue < 0) {
+          value = '0';
+        }
+      }
+    }
+    
+    // Solo actualizar si cambió
+    if (value !== oldValue) {
+      input.value = value;
+      // Restaurar posición del cursor
+      const newCursorPos = Math.min(cursorPos, value.length);
+      input.setSelectionRange(newCursorPos, newCursorPos);
+    }
+  };
+
+  /* --------------------------
      Initializer
      -------------------------- */
   function initModalScripts(context = document) {
@@ -1123,6 +1512,101 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
 
     // enhance view modal animations & behavior
     try { pvEnhanceScoped(context); } catch (e) { }
+    
+    // 🔥 RESTAURAR BORRADOR AL CARGAR - Con múltiples intentos
+    try {
+      // Primer intento inmediato
+      if (window.restoreFormDraft) {
+        window.restoreFormDraft();
+      }
+      
+      // Segundo intento (por si el DOM no estaba listo)
+      setTimeout(() => {
+        if (window.restoreFormDraft) {
+          window.restoreFormDraft();
+        }
+      }, 200);
+      
+      // Tercer intento (seguridad extra)
+      setTimeout(() => {
+        if (window.restoreFormDraft) {
+          window.restoreFormDraft();
+        }
+      }, 500);
+    } catch (e) {
+      console.warn('⚠️ Error en restauración de borrador:', e);
+    }
+    
+    // 🔥 ACTIVAR AUTOGUARDADO en todos los campos del formulario
+    try {
+      const form = context.querySelector('#productForm');
+      if (form) {
+        const inputs = form.querySelectorAll('input, textarea, select');
+        let inputCount = 0;
+        
+        inputs.forEach(input => {
+          // Ignorar botones y archivos
+          if (input.type !== 'submit' && input.type !== 'button' && input.type !== 'file') {
+            // Campos de texto críticos: guardar con debounce
+            input.addEventListener('input', window.triggerAutoSave);
+            
+            // Selects y checkboxes: guardar INMEDIATAMENTE sin debounce
+            if (input.tagName === 'SELECT' || input.type === 'checkbox' || input.type === 'radio') {
+              input.addEventListener('change', function() {
+                if (window.saveFormDraft) {
+                  window.saveFormDraft();
+                  console.log('💾 Guardado inmediato desde', input.name);
+                }
+              });
+            } else {
+              input.addEventListener('change', window.triggerAutoSave);
+            }
+            
+            inputCount++;
+          }
+        });
+        console.log('✅ Autoguardado activado en', inputCount, 'campos');
+      }
+    } catch (e) {
+      console.warn('⚠️ Error al activar autoguardado:', e);
+    }
+    
+    // 🔥 GUARDAR BORRADOR AL HACER CLIC EN CANCELAR
+    try {
+      const cancelBtn = context.querySelector('.modal-footer .btn-secondary');
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+          console.log('🔘 Botón Cancelar clickeado');
+          
+          // 💾 GUARDAR BORRADOR ANTES DE CERRAR
+          try {
+            if (typeof window.saveFormDraft === 'function') {
+              window.saveFormDraft();
+              console.log('💾 Borrador guardado desde botón Cancelar');
+            }
+          } catch (err) {
+            console.warn('⚠️ Error al guardar desde Cancelar:', err);
+          }
+          
+          // Cerrar modal
+          if (typeof window.closeProductModal === 'function') {
+            window.closeProductModal();
+          }
+        });
+        console.log('✅ Listener agregado al botón Cancelar');
+      }
+    } catch (e) {
+      console.warn('⚠️ Error al configurar botón Cancelar:', e);
+    }
+    
+    // Inicializar auto-expand del textarea de descripción
+    try {
+      const descripcionTextarea = context.querySelector('#descripcion');
+      if (descripcionTextarea && window.autoExpandTextarea) {
+        // Expandir inicialmente si tiene contenido
+        window.autoExpandTextarea(descripcionTextarea);
+      }
+    } catch (e) { }
     
     // Hacer que la imagen sea fixed pero mantener su posición en el grid
     try {
@@ -1177,4 +1661,62 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
 
 })();
 </script>
+
+<style>
+/* ===== QUITAR FLECHAS DE INPUTS NUMÉRICOS ===== */
+input[type="number"].no-spin::-webkit-outer-spin-button,
+input[type="number"].no-spin::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"].no-spin {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* ===== ESTILOS PARA INPUT-GROUP CON $ y % ===== */
+.input-group {
+    display: flex;
+    align-items: stretch;
+}
+
+.input-group input {
+    flex: 1;
+    border-radius: 8px 0 0 8px !important;
+    border-right: none !important;
+}
+
+.input-group .input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #94a3b8;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+}
+
+/* Símbolo $ al inicio (precio) */
+.input-group .input-group-text:first-child {
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    border-left: 1px solid #334155;
+}
+
+.input-group .input-group-text:first-child + input {
+    border-left: none !important;
+    border-radius: 0 8px 8px 0 !important;
+}
+
+.input-group input:focus + .input-group-text {
+    border-color: #2563eb;
+    color: #60a5fa;
+    background-color: #1e3a5f;
+}
+</style>
+
 <?php endif; ?>

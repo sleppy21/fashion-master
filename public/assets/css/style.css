@@ -36,7 +36,7 @@ body {
 	height: 100%;
 	font-family: "Montserrat", sans-serif;
 	-webkit-font-smoothing: antialiased;
-	background-color: #f8f5f2;
+	background-color: #f8f5f2; /* Color por defecto para todas las páginas */
 }
 
 h1,
@@ -46,7 +46,7 @@ h4,
 h5,
 h6 {
 	margin: 0;
-	color: #2d2926;
+	color: #111111;
 	font-weight: 400;
 	font-family: "Montserrat", sans-serif;
 }
@@ -78,7 +78,7 @@ h6 {
 p {
 	font-size: 14px;
 	font-family: "Montserrat", sans-serif;
-	color: #4a4540;
+	color: #666666;
 	font-weight: 400;
 	line-height: 24px;
 	margin: 0 0 15px 0;
@@ -113,7 +113,6 @@ ol {
 
 .section-title {
 	margin-bottom: 45px;
-	background: rgba(255, 255, 255, 0.05); /* Fondo semitransparente para contraste */
 }
 
 .section-title h4 {
@@ -141,7 +140,7 @@ ol {
 }
 
 .spad {
-	padding-top: 100px;
+	padding-top: 30px;
 	padding-bottom: 100px;
 }
 
@@ -167,22 +166,19 @@ ol {
 	font-weight: 600;
 	padding: 12px 30px 10px;
 	color: #ffffff;
-	background: #8b5cf6;
-	transition: all 0.3s ease;
+	background: #ca1515;
 }
 
 .site-btn {
 	font-size: 14px;
 	color: #ffffff;
-	background: #8b5cf6;
+	background: #ca1515;
 	font-weight: 600;
 	border: none;
 	text-transform: uppercase;
 	display: inline-block;
 	padding: 12px 30px;
 	border-radius: 50px;
-	transition: all 0.3s ease;
-	box-shadow: 0 4px 6px rgba(139, 92, 246, 0.2);
 }
 
 /* Preloder */
@@ -328,7 +324,7 @@ ol {
 }
 
 .header__logo {
-	padding: 26px 0;
+	padding: 12px 0;
 }
 
 .header__logo a {
@@ -336,7 +332,7 @@ ol {
 }
 
 .header__menu {
-	padding: 30px 0 27px;
+	padding: 15px 0 12px;
 }
 
 .header__menu ul li {
@@ -373,17 +369,15 @@ ol {
 	left: 0;
 	top: 56px;
 	width: 150px;
-	background: #2d2926;
+	background: #111111;
 	text-align: left;
-	padding: 8px 0;
+	padding: 2px 0;
 	z-index: 9;
 	opacity: 0;
 	visibility: hidden;
 	-webkit-transition: all, 0.3s;
 	-o-transition: all, 0.3s;
 	transition: all, 0.3s;
-	border-radius: 8px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .header__menu ul li .dropdown li {
@@ -431,12 +425,17 @@ ol {
 
 .header__right {
 	text-align: right;
-	padding: 30px 0 27px;
+	padding: 15px 0 12px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 15px;
 }
 
 .header__right__auth {
-	display: inline-block;
-	margin-right: 25px;
+	display: inline-flex;
+	align-items: center;
+	max-width: 200px;
 }
 
 .header__right__auth a {
@@ -444,6 +443,23 @@ ol {
 	color: #666666;
 	position: relative;
 	margin-right: 8px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.header__right__auth a i {
+	flex-shrink: 0;
+}
+
+.header__right__auth a span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .header__right__auth a:last-child {
@@ -462,8 +478,46 @@ ol {
 	font-size: 13px;
 }
 
+/* Estilo especial para el enlace de cuenta de usuario */
+#user-account-link {
+	display: inline-flex !important;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 12px;
+	border-radius: 20px;
+	background: #f5f5f5;
+	transition: all 0.3s ease;
+	max-width: 180px;
+	font-weight: 500;
+}
+
+#user-account-link:after {
+	display: none !important;
+}
+
+#user-account-link:hover {
+	background: #e8e8e8;
+	transform: translateY(-1px);
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+#user-account-link i {
+	font-size: 16px;
+}
+
+#user-account-link span {
+	max-width: 140px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .header__right__widget {
-	display: inline-block;
+	display: inline-flex;
+	align-items: center;
+	gap: 15px;
+	margin: 0;
+	padding: 0;
 }
 
 .header__right__widget li {
@@ -483,21 +537,6 @@ ol {
 	font-size: 18px;
 	color: #111111;
 	position: relative;
-}
-
-.header__right__widget li a .tip {
-	position: absolute;
-	right: -12px;
-	top: -11px;
-	height: 18px;
-	width: 18px;
-	background: #111111;
-	font-size: 10px;
-	font-weight: 500;
-	color: #ffffff;
-	line-height: 18px;
-	text-align: center;
-	border-radius: 50%;
 }
 
 .offcanvas-menu-wrapper {
@@ -1001,6 +1040,7 @@ ol {
 
 .breadcrumb-option {
 	padding-top: 35px;
+	background-color: #f8f5f2;
 }
 
 .breadcrumb__links a {
@@ -1022,7 +1062,6 @@ ol {
 
 .breadcrumb__links a i {
 	margin-right: 5px;
-	font-size: 15px; /* Mismo tamaño que el texto del breadcrumb */
 }
 
 .breadcrumb__links span {
@@ -2138,7 +2177,7 @@ ol {
 
 .shop__cart__table tbody tr .cart__price {
 	font-size: 16px;
-	color: #000000de;
+	color: #ca1515;
 	font-weight: 600;
 	width: 190px;
 }
@@ -2165,7 +2204,7 @@ ol {
 
 .shop__cart__table tbody tr .cart__total {
 	font-size: 16px;
-	color: #000000ce;
+	color: #ca1515;
 	font-weight: 600;
 	width: 150px;
 }
@@ -2305,7 +2344,7 @@ ol {
 -----------------------*/
 
 .checkout {
-	padding-top: 80px;
+	padding-top: 10px;
 	padding-bottom: 70px;
 }
 
@@ -3687,4 +3726,96 @@ ol {
 		width: 100%;
 		font-size: 24px;
 	}
+}
+
+/* ========================================
+   MEJORAS RESPONSIVE PARA HEADER
+   ======================================== */
+
+/* Tablets y pantallas medianas */
+@media only screen and (max-width: 1199px) {
+	.header__right {
+		gap: 10px;
+	}
+	
+	.header__right__auth {
+		max-width: 150px;
+	}
+	
+	#user-account-link {
+		max-width: 140px;
+		padding: 5px 10px;
+		font-size: 11px;
+	}
+	
+	#user-account-link span {
+		max-width: 100px;
+	}
+	
+	.header__right__widget {
+		gap: 12px;
+	}
+	
+	.header__right__widget li a {
+		font-size: 16px;
+	}
+}
+
+/* Móviles grandes */
+@media only screen and (max-width: 991px) {
+	.header__right__auth {
+		max-width: 120px;
+	}
+	
+	#user-account-link {
+		max-width: 110px;
+		padding: 4px 8px;
+		font-size: 10px;
+	}
+	
+	#user-account-link span {
+		max-width: 80px;
+	}
+	
+	.header__right__widget {
+		gap: 10px;
+	}
+}
+
+/* Móviles pequeños */
+@media only screen and (max-width: 767px) {
+	.header__right {
+		padding: 10px 0 8px;
+		gap: 8px;
+	}
+	
+	.header__right__auth {
+		display: none; /* Ocultar en móvil, usar offcanvas menu */
+	}
+	
+	.header__right__widget {
+		gap: 8px;
+	}
+	
+	.header__right__widget li a {
+		font-size: 14px;
+	}
+	
+	.canvas__open {
+		margin-left: 10px;
+	}
+}
+
+/* Dark Mode para el enlace de usuario */
+body.dark-mode #user-account-link {
+	background: rgba(255, 255, 255, 0.1);
+	color: #fff;
+}
+
+body.dark-mode #user-account-link:hover {
+	background: rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .header__right__auth a {
+	color: #fff;
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-10-2025 a las 05:16:37
+-- Tiempo de generación: 14-10-2025 a las 23:30:38
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -40,14 +40,12 @@ CREATE TABLE `carrito` (
 --
 
 INSERT INTO `carrito` (`id_carrito`, `id_usuario`, `id_producto`, `cantidad_carrito`, `fecha_agregado_carrito`) VALUES
-(2, 7, 9, 2, '2025-10-10 01:00:31'),
-(4, 1, 6, 13, '2025-10-10 01:09:59'),
-(5, 1, 3, 1, '2025-10-10 15:53:57'),
-(6, 1, 5, 1, '2025-10-10 15:54:21'),
-(7, 1, 8, 4, '2025-10-10 15:54:24'),
-(8, 1, 2, 5, '2025-10-10 15:54:25'),
-(10, 7, 2, 2, '2025-10-10 21:44:05'),
-(13, 1, 9, 1, '2025-10-13 00:49:24');
+(39, 7, 9, 1, '2025-10-14 15:46:23'),
+(40, 7, 8, 3, '2025-10-14 15:53:39'),
+(97, 1, 9, 1, '2025-10-14 20:30:15'),
+(98, 1, 8, 1, '2025-10-14 20:30:16'),
+(99, 1, 11, 1, '2025-10-14 20:30:17'),
+(100, 1, 6, 4, '2025-10-14 20:30:18');
 
 -- --------------------------------------------------------
 
@@ -215,10 +213,10 @@ CREATE TABLE `favorito` (
 --
 
 INSERT INTO `favorito` (`id_favorito`, `id_usuario`, `id_producto`, `fecha_agregado_favorito`) VALUES
-(631, 7, 8, '2025-10-10 21:43:54'),
 (632, 7, 2, '2025-10-10 21:44:01'),
-(643, 1, 6, '2025-10-13 00:09:32'),
-(644, 1, 9, '2025-10-13 00:09:33');
+(653, 7, 6, '2025-10-13 03:29:39'),
+(721, 7, 8, '2025-10-14 17:40:13'),
+(822, 1, 9, '2025-10-14 19:51:16');
 
 -- --------------------------------------------------------
 
@@ -310,7 +308,100 @@ INSERT INTO `movimiento_stock` (`id_movimiento`, `id_producto`, `id_usuario`, `t
 (23, 2, NULL, 'salida', -4, 24, 20, 'Actualización automática de stock', NULL, '2025-10-10 23:15:08', NULL),
 (24, 3, NULL, 'entrada', 1, 8, 9, 'Actualización automática de stock', NULL, '2025-10-11 00:32:30', NULL),
 (25, 2, NULL, 'salida', -1, 20, 19, 'Actualización automática de stock', NULL, '2025-10-12 22:26:48', NULL),
-(26, 2, NULL, 'entrada', 11, 19, 30, 'Actualización automática de stock', NULL, '2025-10-12 23:28:28', NULL);
+(26, 2, NULL, 'entrada', 11, 19, 30, 'Actualización automática de stock', NULL, '2025-10-12 23:28:28', NULL),
+(27, 3, NULL, 'entrada', 21, 9, 30, 'Actualización automática de stock', NULL, '2025-10-13 04:55:00', NULL),
+(28, 2, NULL, 'salida', -15, 30, 15, 'Actualización automática de stock', NULL, '2025-10-13 04:55:12', NULL),
+(29, 1, NULL, 'entrada', 1, 0, 1, 'Actualización automática de stock', NULL, '2025-10-13 05:02:11', NULL),
+(30, 3, NULL, 'salida', -16, 30, 14, 'Actualización automática de stock', NULL, '2025-10-13 05:02:18', NULL),
+(31, 3, NULL, 'salida', -4, 14, 10, 'Actualización automática de stock', NULL, '2025-10-13 05:04:02', NULL),
+(32, 3, NULL, 'entrada', 4, 10, 14, 'Actualización automática de stock', NULL, '2025-10-13 05:04:15', NULL),
+(33, 1, NULL, 'entrada', 1, 1, 2, 'Actualización automática de stock', NULL, '2025-10-13 05:09:24', NULL),
+(34, 1, NULL, 'entrada', 1, 2, 3, 'Actualización automática de stock', NULL, '2025-10-13 05:13:46', NULL),
+(35, 1, NULL, 'salida', -1, 3, 2, 'Actualización automática de stock', NULL, '2025-10-13 15:51:07', NULL),
+(36, 1, NULL, 'entrada', 8, 2, 10, 'Actualización automática de stock', NULL, '2025-10-13 15:55:53', NULL),
+(37, 6, NULL, 'salida', -14, 18, 4, 'Actualización automática de stock', NULL, '2025-10-13 16:02:11', NULL),
+(38, 1, NULL, 'entrada', 1, 10, 11, 'Actualización automática de stock', NULL, '2025-10-13 16:05:37', NULL),
+(39, 1, NULL, 'salida', -1, 11, 10, 'Actualización automática de stock', NULL, '2025-10-13 16:10:03', NULL),
+(40, 1, NULL, 'entrada', 1, 10, 11, 'Actualización automática de stock', NULL, '2025-10-13 16:11:57', NULL),
+(41, 3, NULL, 'salida', -3, 14, 11, 'Actualización automática de stock', NULL, '2025-10-13 16:12:14', NULL),
+(42, 1, NULL, 'salida', -1, 11, 10, 'Actualización automática de stock', NULL, '2025-10-13 16:13:13', NULL),
+(43, 1, NULL, 'salida', -9, 10, 1, 'Actualización automática de stock', NULL, '2025-10-13 16:18:51', NULL),
+(44, 1, NULL, 'salida', -1, 1, 0, 'Actualización automática de stock', NULL, '2025-10-13 16:19:29', NULL),
+(45, 2, NULL, 'salida', -4, 15, 11, 'Actualización automática de stock', NULL, '2025-10-13 16:19:47', NULL),
+(46, 2, NULL, 'entrada', 1, 11, 12, 'Actualización automática de stock', NULL, '2025-10-13 16:22:24', NULL),
+(47, 3, NULL, 'entrada', 2, 11, 13, 'Actualización automática de stock', NULL, '2025-10-13 16:25:17', NULL),
+(48, 5, NULL, 'entrada', 2, 43, 45, 'Actualización automática de stock', NULL, '2025-10-13 16:28:12', NULL),
+(49, 5, NULL, 'entrada', 12, 45, 57, 'Actualización automática de stock', NULL, '2025-10-13 16:55:49', NULL),
+(50, 2, NULL, 'entrada', 2, 12, 14, 'Actualización automática de stock', NULL, '2025-10-13 17:37:28', NULL),
+(51, 3, NULL, 'salida', -1, 13, 12, 'Actualización automática de stock', NULL, '2025-10-13 20:11:31', NULL),
+(52, 10, NULL, 'entrada', 6, 1, 7, 'Actualización automática de stock', NULL, '2025-10-13 22:06:58', NULL),
+(58, 3, NULL, 'salida', -2, 12, 10, 'Actualización automática de stock', NULL, '2025-10-13 22:51:49', NULL),
+(59, 3, NULL, 'entrada', 1, 10, 11, 'Actualización automática de stock', NULL, '2025-10-13 22:52:01', NULL),
+(60, 3, NULL, 'entrada', 1, 11, 12, 'Actualización automática de stock', NULL, '2025-10-13 22:52:17', NULL),
+(62, 2, NULL, 'salida', -1, 14, 13, 'Actualización automática de stock', NULL, '2025-10-14 01:11:32', NULL),
+(64, 3, NULL, 'entrada', 1, 12, 13, 'Actualización automática de stock', NULL, '2025-10-14 01:18:30', NULL),
+(67, 1, NULL, 'entrada', 1, 0, 1, 'Actualización automática de stock', NULL, '2025-10-14 20:07:28', NULL),
+(68, 1, NULL, 'entrada', 1, 1, 2, 'Actualización automática de stock', NULL, '2025-10-14 20:07:50', NULL),
+(69, 1, NULL, 'entrada', 1, 2, 3, 'Actualización automática de stock', NULL, '2025-10-14 20:11:12', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `notificacion`
+--
+
+CREATE TABLE `notificacion` (
+  `id_notificacion` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `titulo_notificacion` varchar(150) DEFAULT NULL,
+  `mensaje_notificacion` text NOT NULL,
+  `tipo_notificacion` enum('info','alerta','advertencia','sistema') NOT NULL DEFAULT 'info',
+  `url_destino_notificacion` varchar(255) DEFAULT NULL,
+  `leida_notificacion` tinyint(1) NOT NULL DEFAULT 0,
+  `fecha_creacion_notificacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_lectura_notificacion` timestamp NULL DEFAULT NULL,
+  `prioridad_notificacion` enum('baja','media','alta') NOT NULL DEFAULT 'media',
+  `estado_notificacion` enum('activo','archivado','eliminado') NOT NULL DEFAULT 'activo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Sistema de notificaciones para usuarios';
+
+--
+-- Volcado de datos para la tabla `notificacion`
+--
+
+INSERT INTO `notificacion` (`id_notificacion`, `id_usuario`, `titulo_notificacion`, `mensaje_notificacion`, `tipo_notificacion`, `url_destino_notificacion`, `leida_notificacion`, `fecha_creacion_notificacion`, `fecha_lectura_notificacion`, `prioridad_notificacion`, `estado_notificacion`) VALUES
+(1, 1, 'Bienvenido a SleppyStore', 'Gracias por registrarte en nuestra tienda. Explora nuestros productos y ofertas especiales.', 'info', NULL, 0, '2025-10-13 20:58:02', NULL, 'media', 'eliminado'),
+(2, 1, 'Nueva oferta disponible', 'Tenemos un 20% de descuento en toda la categorÝa de camisas. No te lo pierdas!', 'alerta', NULL, 0, '2025-10-13 20:58:02', NULL, 'alta', 'eliminado'),
+(3, 1, 'Tu pedido estß en camino', 'Tu pedido #12345 ha sido enviado y llegarß en 2-3 dÝas hßbiles.', 'info', NULL, 0, '2025-10-13 20:58:02', NULL, 'media', 'eliminado'),
+(4, 2, 'íBienvenido a SleppyStore! ??', 'Hola Juan! Gracias por ser parte de nuestra tienda. Explora nuestros productos, ofertas especiales y disfruta de una experiencia de compra ·nica. íEstamos aquÝ para ayudarte!', 'info', NULL, 0, '2025-10-13 21:12:33', NULL, 'media', 'activo'),
+(5, 3, 'íBienvenido a SleppyStore! ??', 'Hola María! Gracias por ser parte de nuestra tienda. Explora nuestros productos, ofertas especiales y disfruta de una experiencia de compra ·nica. íEstamos aquÝ para ayudarte!', 'info', NULL, 0, '2025-10-13 21:12:33', NULL, 'media', 'activo'),
+(6, 4, 'íBienvenido a SleppyStore! ??', 'Hola Carlos! Gracias por ser parte de nuestra tienda. Explora nuestros productos, ofertas especiales y disfruta de una experiencia de compra ·nica. íEstamos aquÝ para ayudarte!', 'info', NULL, 0, '2025-10-13 21:12:33', NULL, 'media', 'activo'),
+(7, 5, 'íBienvenido a SleppyStore! ??', 'Hola Ana! Gracias por ser parte de nuestra tienda. Explora nuestros productos, ofertas especiales y disfruta de una experiencia de compra ·nica. íEstamos aquÝ para ayudarte!', 'info', NULL, 0, '2025-10-13 21:12:33', NULL, 'media', 'activo'),
+(8, 6, 'íBienvenido a SleppyStore! ??', 'Hola Sofía! Gracias por ser parte de nuestra tienda. Explora nuestros productos, ofertas especiales y disfruta de una experiencia de compra ·nica. íEstamos aquÝ para ayudarte!', 'info', NULL, 0, '2025-10-13 21:12:33', NULL, 'media', 'activo'),
+(9, 7, 'íBienvenido a SleppyStore! ??', 'Hola Julito! Gracias por ser parte de nuestra tienda. Explora nuestros productos, ofertas especiales y disfruta de una experiencia de compra ·nica. íEstamos aquÝ para ayudarte!', 'info', NULL, 0, '2025-10-13 21:12:33', NULL, 'media', 'activo'),
+(11, 1, '­ƒÄë Nueva promoci├│n disponible', 'Descubre nuestras ofertas especiales del mes. ┬íHasta 50% de descuento en productos seleccionados!', 'info', NULL, 1, '2025-10-13 21:35:34', '2025-10-13 21:55:36', 'media', 'eliminado'),
+(12, 1, 'ÔÜá´©Å Stock bajo en favoritos', 'Algunos productos de tu lista de favoritos tienen stock limitado. ┬íAprovecha antes de que se agoten!', 'alerta', NULL, 0, '2025-10-13 19:35:34', NULL, 'alta', 'eliminado'),
+(13, 1, 'ÔÜí Actualizaci├│n del sistema', 'Hemos mejorado la velocidad de carga y a├▒adido nuevas funciones. Explora las novedades.', 'sistema', NULL, 0, '2025-10-13 16:35:34', NULL, 'baja', 'eliminado'),
+(14, 1, '­ƒôª Tu pedido est├í en camino', 'El pedido #12345 ha sido enviado y llegar├í en 2-3 d├¡as h├íbiles. Puedes rastrear tu env├¡o en tiempo real.', 'info', NULL, 0, '2025-10-12 21:35:34', NULL, 'media', 'eliminado'),
+(15, 1, '­ƒÆ│ M├®todo de pago por vencer', 'Tu tarjeta registrada vence pronto. Actualiza tu m├®todo de pago para evitar interrupciones.', 'advertencia', NULL, 0, '2025-10-10 21:35:34', NULL, 'alta', 'eliminado'),
+(16, 1, '­ƒÄü Puntos de recompensa disponibles', 'Has acumulado 500 puntos. Canj├®alos por descuentos en tu pr├│xima compra.', 'info', NULL, 1, '2025-10-08 21:35:34', '2025-10-09 21:35:34', 'baja', 'eliminado'),
+(17, 1, '­ƒöÉ Inicio de sesi├│n detectado', 'Se detect├│ un inicio de sesi├│n desde un nuevo dispositivo. Si no fuiste t├║, cambia tu contrase├▒a inmediatamente.', 'alerta', NULL, 0, '2025-10-13 21:25:34', NULL, 'alta', 'eliminado'),
+(18, 1, '­ƒøá´©Å Mantenimiento programado', 'El sistema estar├í en mantenimiento el pr├│ximo s├íbado de 2:00 AM a 4:00 AM. Disculpa las molestias.', 'sistema', NULL, 0, '2025-10-11 21:35:34', NULL, 'media', 'eliminado'),
+(19, 1, '­ƒôº Verifica tu correo electr├│nico', 'Hemos enviado un enlace de verificaci├│n a tu correo. Por favor conf├¡rmalo para activar todas las funciones.', 'advertencia', NULL, 0, '2025-10-13 15:35:34', NULL, 'media', 'eliminado'),
+(20, 1, '­ƒîƒ Nuevo producto destacado', '┬íAcaba de llegar! El producto m├ís esperado del a├▒o ya est├í disponible. S├® de los primeros en tenerlo.', 'info', NULL, 0, '2025-10-13 21:05:34', NULL, 'alta', 'eliminado'),
+(21, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-13 22:12:48', NULL, 'baja', 'eliminado'),
+(22, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-14 00:59:07', NULL, 'baja', 'eliminado'),
+(23, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-14 14:17:32', NULL, 'baja', 'eliminado'),
+(24, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 1, '2025-10-14 15:26:49', '2025-10-14 19:17:28', 'baja', 'eliminado'),
+(25, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-14 15:27:12', NULL, 'baja', 'eliminado'),
+(26, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 1, '2025-10-14 15:29:18', '2025-10-14 19:07:06', 'baja', 'eliminado'),
+(27, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 1, '2025-10-14 15:30:25', '2025-10-14 19:02:38', 'baja', 'eliminado'),
+(28, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 1, '2025-10-14 15:31:09', '2025-10-14 19:02:37', 'baja', 'eliminado'),
+(29, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 1, '2025-10-14 15:34:09', '2025-10-14 19:02:35', 'baja', 'eliminado'),
+(30, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 1, '2025-10-14 15:35:19', '2025-10-14 15:48:14', 'baja', 'activo'),
+(31, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 1, '2025-10-14 17:22:54', '2025-10-14 18:31:08', 'baja', 'eliminado'),
+(32, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-14 17:29:16', NULL, 'baja', 'activo'),
+(33, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 1, '2025-10-14 17:46:13', '2025-10-14 18:30:23', 'baja', 'eliminado'),
+(34, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-14 20:07:22', NULL, 'baja', 'activo');
 
 -- --------------------------------------------------------
 
@@ -358,7 +449,7 @@ CREATE TABLE `password_reset_tokens` (
 --
 
 INSERT INTO `password_reset_tokens` (`id_token`, `id_usuario`, `token`, `email`, `fecha_creacion`, `fecha_expiracion`, `usado`, `ip_address`) VALUES
-(4, 7, 'ba784e453de5792cfe7ae30559d6083fd78fc5614e5c3b45e7d6236677fa366e', 'spiritboom672@gmail.com', '2025-10-09 23:25:51', '2025-10-10 00:25:51', 1, '::1');
+(7, 7, 'cf3a1b595cab69e29cc1c184e15e45f27ef1a61e265c6a1034c68f0dc88156f2', 'spiritboom672@gmail.com', '2025-10-14 15:34:56', '2025-10-14 16:34:56', 1, '::1');
 
 -- --------------------------------------------------------
 
@@ -414,6 +505,86 @@ CREATE TRIGGER `after_pedido_update_estado` AFTER UPDATE ON `pedido` FOR EACH RO
 END
 $$
 DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `trigger_estado_pedido` AFTER UPDATE ON `pedido` FOR EACH ROW BEGIN
+    DECLARE titulo_msg VARCHAR(255);
+    DECLARE mensaje_msg TEXT;
+    DECLARE tipo_msg VARCHAR(50);
+    
+    
+    IF OLD.estado_pedido != NEW.estado_pedido THEN
+        
+        
+        CASE NEW.estado_pedido
+            WHEN 'procesando' THEN
+                SET titulo_msg = CONCAT('???? Pedido #', NEW.id_pedido, ' en proceso');
+                SET mensaje_msg = 'Tu pedido est?? siendo preparado. Pronto lo enviaremos.';
+                SET tipo_msg = 'info';
+                
+            WHEN 'enviado' THEN
+                SET titulo_msg = CONCAT('???? Pedido #', NEW.id_pedido, ' enviado');
+                SET mensaje_msg = '??Tu pedido ya est?? en camino! Recibir??s un email con el c??digo de seguimiento.';
+                SET tipo_msg = 'info';
+                
+            WHEN 'entregado' THEN
+                SET titulo_msg = CONCAT('???? Pedido #', NEW.id_pedido, ' entregado');
+                SET mensaje_msg = '??Tu pedido ha sido entregado! Esperamos que disfrutes tus productos. ??Gracias por tu compra!';
+                SET tipo_msg = 'info';
+                
+            WHEN 'cancelado' THEN
+                SET titulo_msg = CONCAT('??? Pedido #', NEW.id_pedido, ' cancelado');
+                SET mensaje_msg = 'Tu pedido ha sido cancelado. Si no realizaste esta acci??n, por favor contacta con soporte.';
+                SET tipo_msg = 'alerta';
+                
+            ELSE
+                SET titulo_msg = CONCAT('???? Actualizaci??n pedido #', NEW.id_pedido);
+                SET mensaje_msg = CONCAT('El estado de tu pedido cambi?? a: ', NEW.estado_pedido);
+                SET tipo_msg = 'info';
+        END CASE;
+        
+        
+        INSERT INTO notificacion (
+            id_usuario,
+            titulo_notificacion,
+            mensaje_notificacion,
+            tipo_notificacion,
+            prioridad_notificacion,
+            url_destino
+        ) VALUES (
+            NEW.id_usuario,
+            titulo_msg,
+            mensaje_msg,
+            tipo_msg,
+            'alta',
+            CONCAT('order-confirmation.php?id=', NEW.id_pedido)
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `trigger_pedido_confirmado` AFTER INSERT ON `pedido` FOR EACH ROW BEGIN
+    
+    SET @nombre_usuario = (SELECT nombre_usuario FROM usuario WHERE id_usuario = NEW.id_usuario);
+    
+    INSERT INTO notificacion (
+        id_usuario,
+        titulo_notificacion,
+        mensaje_notificacion,
+        tipo_notificacion,
+        prioridad_notificacion,
+        url_destino
+    ) VALUES (
+        NEW.id_usuario,
+        CONCAT('??? Pedido #', NEW.id_pedido, ' confirmado'),
+        CONCAT('??Gracias por tu compra, ', @nombre_usuario, '! Tu pedido por $', ROUND(NEW.total_pedido, 2), ' ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.'),
+        'info',
+        'alta',
+        CONCAT('order-confirmation.php?id=', NEW.id_pedido)
+    );
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -448,18 +619,56 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`id_producto`, `nombre_producto`, `codigo`, `descripcion_producto`, `id_categoria`, `id_marca`, `precio_producto`, `descuento_porcentaje_producto`, `genero_producto`, `en_oferta_producto`, `stock_actual_producto`, `stock_minimo_producto`, `stock_maximo_producto`, `imagen_producto`, `url_imagen_producto`, `status_producto`, `estado`, `fecha_creacion_producto`, `fecha_actualizacion_producto`) VALUES
-(1, 'Camisa Casual Nike', 'CAM-NIKE-001', 'Camisa deportiva de algodón', 3, 4, 90.00, 10.00, 'M', 1, 0, 0, 0, 'product_68e1d018c5d29.jpg', '/fashion-master/public/assets/img/products/product_68e1d018c5d29.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-12 18:06:49'),
-(2, 'Pantalón Jean Levis 501', 'PAN-LEVIS-501', 'Jean clásico corte recto', 17, 5, 90.00, 0.00, 'Unisex', 0, 30, 0, 0, 'product_68e1d379ba460.jpg', '/fashion-master/public/assets/img/products/product_68e1d379ba460.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-12 23:28:50'),
-(3, 'dos amigues :\'D', 'ZAP-NIKE-AIR', 'Zapatillas deportivas con cámara de aire', 16, 1, 299.90, 15.00, 'Unisex', 1, 9, 0, 0, 'product_68e9a4892f2a9.jpg', '/fashion-master/public/assets/img/products/product_68e9a4892f2a9.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-11 00:32:30'),
-(4, 'Vestido Casual Zara', 'VES-ZARA-001', 'Vestido elegante para ocasiones especiales', 4, 3, 159.90, 20.00, 'F', 1, 8, 20, 100, '/fashion-master/public/assets/img/default-product.jpg', '/fashion-master/public/assets/img/default-product.jpg', 1, 'inactivo', '2025-09-30 19:47:49', '2025-10-04 00:50:05'),
-(5, 'Camisa Formal H&M', 'CAM-HM-002', 'Camisa de vestir para oficina', 4, 4, 69.90, 50.00, 'M', 0, 43, 0, 0, '/fashion-master/public/assets/img/default-product.jpg', '/fashion-master/public/assets/img/default-product.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-10 21:46:25'),
-(6, 'Zapatillas Adidas Stan Smith', 'ZAP-ADIDAS-SS', 'Zapatillas clásicas de tenis', 3, 2, 199.90, 5.00, 'Unisex', 0, 18, 20, 100, '/fashion-master/public/assets/img/default-product.jpg', '/fashion-master/public/assets/img/default-product.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-12 23:27:30'),
-(8, 'producto 1', 'sdadadsa', 'nada', 4, 4, 2.00, 100.00, 'Unisex', 0, 6, 0, 0, 'product_68e8578c49ec2.jpg', '/fashion-master/public/assets/img/products/product_68e8578c49ec2.jpg', 1, 'activo', '2025-10-03 04:46:28', '2025-10-10 00:47:08'),
-(9, 'prenda ejemplo', '2323', 'prenda comun', 1, 4, 1.00, 1.00, 'Unisex', 0, 67, 0, 0, 'product_68e95d0cf1494.jpg', '/fashion-master/public/assets/img/products/product_68e95d0cf1494.jpg', 1, 'activo', '2025-10-05 21:25:31', '2025-10-10 19:22:52');
+(1, 'Camisa Casual Nike', 'CAM-HMX-VES-001', 'Camisa deportiva de algodón\r\n\r\n\r\n\r\n', 5, 4, 90.00, 0.00, 'M', 0, 3, 20, 300, 'product_68e1d018c5d29.jpg', '/fashion-master/public/assets/img/products/product_68e1d018c5d29.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-14 20:11:12'),
+(2, 'Pantalón Jean Levis 501', 'PAN-LEV-HOL', 'Jean clásico corte recto', 16, 5, 90.00, 0.00, 'Unisex', 0, 13, 20, 300, 'product_68e1d379ba460.jpg', '/fashion-master/public/assets/img/products/product_68e1d379ba460.jpg', 1, 'inactivo', '2025-09-30 19:47:49', '2025-10-14 01:11:32'),
+(3, 'dos amigues :\'D', 'DOS-HMX-FFF', 'Zapatillas deportivas con cámara de aire', 17, 4, 299.90, 15.00, 'Unisex', 1, 13, 20, 300, 'product_68e9a4892f2a9.jpg', '/fashion-master/public/assets/img/products/product_68e9a4892f2a9.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-14 01:18:30'),
+(4, 'Vestido Casual Zara', 'VES-ZARA-001', 'Vestido elegante para ocasiones especiales', 4, 3, 159.90, 20.00, 'F', 1, 8, 20, 300, 'product_68ed1f1e21a90.jpg', '/fashion-master/public/assets/img/products/product_68ed1f1e21a90.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-13 21:54:14'),
+(5, 'Camisa Formal H&M', 'CAM-HMX-ACC', 'Camisa de vestir para oficina', 4, 4, 69.90, 50.00, 'M', 1, 57, 20, 300, 'product_68ee96914e8d1.jpg', '/fashion-master/public/assets/img/products/product_68ee96914e8d1.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-14 18:29:37'),
+(6, 'Zapatillas Adidas Stan Smith', 'ZAP-ADI-ZAP', 'Zapatillas clásicas de tenis', 3, 2, 199.90, 5.00, 'Unisex', 1, 4, 20, 300, 'product_68ee969cc8117.jpg', '/fashion-master/public/assets/img/products/product_68ee969cc8117.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-14 18:29:48'),
+(8, 'producto 1', 'sdadadsa', 'nada', 4, 4, 2.00, 100.00, 'Unisex', 0, 6, 20, 300, 'product_68e8578c49ec2.jpg', '/fashion-master/public/assets/img/products/product_68e8578c49ec2.jpg', 1, 'activo', '2025-10-03 04:46:28', '2025-10-13 17:35:39'),
+(9, 'prenda ejemplo', '2323', 'prenda comun', 1, 4, 1.00, 1.00, 'Unisex', 0, 67, 20, 300, 'product_68e95d0cf1494.jpg', '/fashion-master/public/assets/img/products/product_68e95d0cf1494.jpg', 1, 'activo', '2025-10-05 21:25:31', '2025-10-13 17:35:39'),
+(10, 'carrito a control remoto :c', 'CAR-ADI-HOL', 'un carrito bonito\r\n-pq si\r\n-me gusta\r\n-no es de geys\r\n-a fucking control remoto :0', 16, 2, 800.00, 15.00, 'Unisex', 0, 7, 20, 300, 'product_68ed2ee63865f.jpg', '/fashion-master/public/assets/img/products/product_68ed2ee63865f.jpg', 1, 'inactivo', '2025-10-13 16:55:02', '2025-10-13 22:07:35'),
+(11, 'producto de prueba', 'PRO-LEV-HOL', 'un productiño de pruebiña', 16, 5, 34.43, 16.00, 'Unisex', 0, 110, 20, 300, 'product_68ed35cfee743.jpg', '/fashion-master/public/assets/img/products/product_68ed35cfee743.jpg', 1, 'activo', '2025-10-13 17:24:31', '2025-10-13 17:35:39');
 
 --
 -- Disparadores `producto`
 --
+DELIMITER $$
+CREATE TRIGGER `trigger_descuento_favorito` AFTER UPDATE ON `producto` FOR EACH ROW BEGIN
+    
+    IF NEW.precio_producto < OLD.precio_producto * 0.95 THEN
+        
+        
+        SET @descuento = ROUND(((OLD.precio_producto - NEW.precio_producto) / OLD.precio_producto) * 100, 0);
+        
+        INSERT INTO notificacion (
+            id_usuario,
+            titulo_notificacion,
+            mensaje_notificacion,
+            tipo_notificacion,
+            prioridad_notificacion,
+            url_destino_notificacion
+        )
+        SELECT 
+            f.id_usuario,
+            CONCAT('???? ??', @descuento, '% OFF! - ', NEW.nombre_producto),
+            CONCAT('??Oferta especial! "', NEW.nombre_producto, '" baj?? de $', ROUND(OLD.precio_producto, 2), ' a solo $', ROUND(NEW.precio_producto, 2), '. ??Ahorra $', ROUND(OLD.precio_producto - NEW.precio_producto, 2), '!'),
+            'info',
+            'alta',
+            CONCAT('product-details.php?id=', NEW.id_producto)
+        FROM favorito f
+        WHERE f.id_producto = NEW.id_producto
+        AND NOT EXISTS (
+            
+            SELECT 1 FROM notificacion n
+            WHERE n.id_usuario = f.id_usuario
+            AND n.mensaje_notificacion LIKE CONCAT('%', NEW.nombre_producto, '%descuento%')
+            AND n.fecha_creacion_notificacion > DATE_SUB(NOW(), INTERVAL 72 HOUR)
+        );
+    END IF;
+END
+$$
+DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `trigger_producto_stock_update` AFTER UPDATE ON `producto` FOR EACH ROW BEGIN
             IF NEW.stock_actual_producto != OLD.stock_actual_producto THEN
@@ -484,6 +693,72 @@ CREATE TRIGGER `trigger_producto_stock_update` AFTER UPDATE ON `producto` FOR EA
                 );
             END IF;
         END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `trigger_stock_bajo` AFTER UPDATE ON `producto` FOR EACH ROW BEGIN
+    
+    IF OLD.stock_actual_producto > 5 AND NEW.stock_actual_producto <= 5 AND NEW.stock_actual_producto > 0 THEN
+        
+        INSERT INTO notificacion (
+            id_usuario,
+            titulo_notificacion,
+            mensaje_notificacion,
+            tipo_notificacion,
+            prioridad_notificacion,
+            url_destino_notificacion
+        )
+        SELECT 
+            f.id_usuario,
+            CONCAT('?????? ????ltimas unidades! - ', NEW.nombre_producto),
+            CONCAT('El producto "', NEW.nombre_producto, '" que tienes en favoritos solo tiene ', NEW.stock_actual_producto, ' unidades disponibles. ??Aprovecha antes de que se agote!'),
+            'advertencia',
+            'alta',
+            CONCAT('product-details.php?id=', NEW.id_producto)
+        FROM favorito f
+        WHERE f.id_producto = NEW.id_producto
+        AND NOT EXISTS (
+            
+            SELECT 1 FROM notificacion n
+            WHERE n.id_usuario = f.id_usuario
+            AND n.mensaje_notificacion LIKE CONCAT('%', NEW.nombre_producto, '%stock%')
+            AND n.fecha_creacion_notificacion > DATE_SUB(NOW(), INTERVAL 24 HOUR)
+        );
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `trigger_vuelta_stock` AFTER UPDATE ON `producto` FOR EACH ROW BEGIN
+    
+    IF OLD.stock_actual_producto = 0 AND NEW.stock_actual_producto > 0 THEN
+        
+        INSERT INTO notificacion (
+            id_usuario,
+            titulo_notificacion,
+            mensaje_notificacion,
+            tipo_notificacion,
+            prioridad_notificacion,
+            url_destino_notificacion
+        )
+        SELECT 
+            f.id_usuario,
+            CONCAT('??? ??Volvi?? el stock! - ', NEW.nombre_producto),
+            CONCAT('Buenas noticias: "', NEW.nombre_producto, '" que estaba agotado ahora tiene ', NEW.stock_actual_producto, ' unidades disponibles. ??C??mpralo antes de que se agote de nuevo!'),
+            'info',
+            'alta',
+            CONCAT('product-details.php?id=', NEW.id_producto)
+        FROM favorito f
+        WHERE f.id_producto = NEW.id_producto
+        AND NOT EXISTS (
+            
+            SELECT 1 FROM notificacion n
+            WHERE n.id_usuario = f.id_usuario
+            AND n.mensaje_notificacion LIKE CONCAT('%', NEW.nombre_producto, '%stock%')
+            AND n.fecha_creacion_notificacion > DATE_SUB(NOW(), INTERVAL 48 HOUR)
+        );
+    END IF;
+END
 $$
 DELIMITER ;
 
@@ -581,13 +856,38 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `username_usuario`, `password_usuario`, `email_usuario`, `nombre_usuario`, `apellido_usuario`, `telefono_usuario`, `fecha_nacimiento`, `genero_usuario`, `avatar_usuario`, `fecha_registro`, `ultimo_acceso`, `status_usuario`, `verificado_usuario`, `rol_usuario`, `estado_usuario`) VALUES
-(1, 'admin', 'admin123', 'admin@sleppystore.com', 'Administrador', 'Principal', '+51987654321', '1990-01-15', 'M', 'default-avatar.png', '2025-09-30 19:46:43', '2025-10-12 22:25:51', 1, 1, 'admin', 'activo'),
+(1, 'admin', 'admin123', 'admin@sleppystore.com', 'Administrador', 'Principal', '+51987654321', '1990-01-15', 'M', 'default-avatar.png', '2025-09-30 19:46:43', '2025-10-14 20:07:22', 1, 1, 'admin', 'activo'),
 (2, 'juan_perez', 'juan123', 'juan@email.com', 'Juan', 'Pérez', '+51912345678', '1992-03-20', 'M', 'default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
 (3, 'maria_garcia', 'maria123', 'maria@email.com', 'María', 'García', '+51923456789', '1988-07-10', 'F', 'default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
 (4, 'carlos_lopez', 'carlos123', 'carlos@email.com', 'Carlos', 'López', '+51934567890', '1995-11-25', 'M', 'default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 0, 'cliente', 'activo'),
 (5, 'ana_martinez', 'ana123', 'ana@email.com', 'Ana', 'Martínez', '+51945678901', '1993-05-08', 'F', 'default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'vendedor', 'activo'),
 (6, 'sofia_torres', 'sofia123', 'sofia@email.com', 'Sofía', 'Torres', '+51967890123', '1996-02-14', 'F', 'default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
-(7, 'julito', '123456', 'spiritboom672@gmail.com', 'Julito', 'sleppy21', '986079838', '2006-04-21', 'M', 'default-avatar.png', '2025-10-07 18:11:51', '2025-10-12 19:03:33', 1, 0, 'cliente', 'activo');
+(7, 'julito', '123456', 'spiritboom672@gmail.com', 'Julito', 'sleppy21', '986079838', '2006-04-21', 'M', 'default-avatar.png', '2025-10-07 18:11:51', '2025-10-14 17:29:16', 1, 0, 'cliente', 'activo');
+
+--
+-- Disparadores `usuario`
+--
+DELIMITER $$
+CREATE TRIGGER `after_usuario_insert` AFTER INSERT ON `usuario` FOR EACH ROW BEGIN
+    
+    INSERT INTO notificacion (
+        id_usuario,
+        titulo_notificacion,
+        mensaje_notificacion,
+        tipo_notificacion,
+        prioridad_notificacion,
+        url_destino_notificacion
+    ) VALUES (
+        NEW.id_usuario,
+        '??Bienvenido a SleppyStore! ????',
+        CONCAT('Hola ', NEW.nombre_usuario, '! Gracias por registrarte en nuestra tienda. Explora nuestros productos, ofertas especiales y disfruta de una experiencia de compra ??nica. ??Estamos aqu?? para ayudarte!'),
+        'info',
+        'media',
+        '/fashion-master/shop.php'
+    );
+END
+$$
+DELIMITER ;
 
 --
 -- Índices para tablas volcadas
@@ -692,6 +992,18 @@ ALTER TABLE `movimiento_stock`
   ADD KEY `idx_referencia` (`referencia_movimiento`);
 
 --
+-- Indices de la tabla `notificacion`
+--
+ALTER TABLE `notificacion`
+  ADD PRIMARY KEY (`id_notificacion`),
+  ADD KEY `idx_notif_usuario` (`id_usuario`),
+  ADD KEY `idx_notif_leida` (`leida_notificacion`),
+  ADD KEY `idx_notif_tipo` (`tipo_notificacion`),
+  ADD KEY `idx_notif_prioridad` (`prioridad_notificacion`),
+  ADD KEY `idx_notif_fecha` (`fecha_creacion_notificacion`),
+  ADD KEY `idx_notif_estado` (`estado_notificacion`);
+
+--
 -- Indices de la tabla `orden`
 --
 ALTER TABLE `orden`
@@ -773,7 +1085,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `carrito`
 --
 ALTER TABLE `carrito`
-  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria`
@@ -815,7 +1127,7 @@ ALTER TABLE `direccion`
 -- AUTO_INCREMENT de la tabla `favorito`
 --
 ALTER TABLE `favorito`
-  MODIFY `id_favorito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=645;
+  MODIFY `id_favorito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=847;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_pedido`
@@ -833,7 +1145,13 @@ ALTER TABLE `marca`
 -- AUTO_INCREMENT de la tabla `movimiento_stock`
 --
 ALTER TABLE `movimiento_stock`
-  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+
+--
+-- AUTO_INCREMENT de la tabla `notificacion`
+--
+ALTER TABLE `notificacion`
+  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `orden`
@@ -845,7 +1163,7 @@ ALTER TABLE `orden`
 -- AUTO_INCREMENT de la tabla `password_reset_tokens`
 --
 ALTER TABLE `password_reset_tokens`
-  MODIFY `id_token` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_token` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `pedido`
@@ -857,7 +1175,7 @@ ALTER TABLE `pedido`
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `resena`
@@ -928,6 +1246,12 @@ ALTER TABLE `historial_pedido`
 ALTER TABLE `movimiento_stock`
   ADD CONSTRAINT `fk_movimiento_producto` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_movimiento_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `notificacion`
+--
+ALTER TABLE `notificacion`
+  ADD CONSTRAINT `fk_notificacion_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `orden`

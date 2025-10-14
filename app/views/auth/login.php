@@ -255,6 +255,6 @@ unset($_SESSION['login_error'], $_SESSION['success_message'], $_SESSION['error']
     </script>
     
     <!-- Validación de Formularios -->
-    <script src="<?php echo url('public/assets/js/form-validation.js'); ?>"></script>
+    <script src="<?= asset('js/form-validation.js') ?>"></script>
 </body>
 </html>

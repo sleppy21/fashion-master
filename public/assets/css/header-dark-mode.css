@@ -1,0 +1,454 @@
+/**
+ * HEADER & OFFCANVAS MENU - DARK MODE
+ * Estilos completos para header y menú móvil en modo oscuro
+ */
+
+/* =================================================================
+   VARIABLES DE COLOR
+   ================================================================= */
+:root {
+    --dark-header-bg: #1e1e1e;
+    --dark-header-border: #333333;
+    --dark-text-primary: #e0e0e0;
+    --dark-text-secondary: #b0b0b0;
+    --dark-accent: #dc143c;
+    --dark-accent-hover: #ff1744;
+    --dark-dropdown-bg: #2a2a2a;
+    --dark-dropdown-hover: #333333;
+    --dark-shadow: rgba(0, 0, 0, 0.7);
+}
+
+/* =================================================================
+   HEADER PRINCIPAL - DARK MODE
+   ================================================================= */
+
+body.dark-mode .header {
+    background-color: var(--dark-header-bg) !important;
+    border-bottom: 1px solid var(--dark-header-border) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Logo */
+body.dark-mode .header__logo a {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Menú de navegación */
+body.dark-mode .header__menu ul li a {
+    color: var(--dark-text-primary) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .header__menu ul li a:hover {
+    color: var(--dark-accent-hover) !important;
+    background: rgba(220, 20, 60, 0.1) !important;
+}
+
+body.dark-mode .header__menu ul li.active a {
+    color: var(--dark-accent) !important;
+}
+
+/* Dropdowns del menú */
+body.dark-mode .header__menu .dropdown {
+    background: var(--dark-dropdown-bg) !important;
+    border: 1px solid var(--dark-header-border) !important;
+    box-shadow: 0 8px 30px var(--dark-shadow) !important;
+}
+
+body.dark-mode .header__menu .dropdown li a {
+    color: var(--dark-text-primary) !important;
+    border-left-color: transparent !important;
+}
+
+body.dark-mode .header__menu .dropdown li a:hover {
+    background: linear-gradient(90deg, rgba(220, 20, 60, 0.15) 0%, var(--dark-dropdown-hover) 100%) !important;
+    color: var(--dark-accent-hover) !important;
+    border-left-color: var(--dark-accent) !important;
+}
+
+/* Sección derecha del header */
+body.dark-mode .header__right {
+    background: transparent !important;
+}
+
+body.dark-mode .header__right__auth {
+    border-right-color: var(--dark-header-border) !important;
+}
+
+body.dark-mode .header__right__auth a {
+    color: var(--dark-text-primary) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .header__right__auth a:hover {
+    color: var(--dark-accent-hover) !important;
+    background: rgba(220, 20, 60, 0.1) !important;
+}
+
+body.dark-mode .header__right__auth a i {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Iconos del header */
+body.dark-mode .header__right__widget li a,
+body.dark-mode .header__right__widget li span {
+    color: var(--dark-text-primary) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .header__right__widget li a:hover,
+body.dark-mode .header__right__widget li span:hover {
+    color: var(--dark-accent-hover) !important;
+    transform: scale(1.1) !important;
+}
+
+body.dark-mode .header__right__widget i,
+body.dark-mode .header__right__widget span {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Tips (badges de notificación) - mantener negro con blanco */
+body.dark-mode .header__right__widget .tip {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1px solid var(--dark-accent) !important;
+    box-shadow: 0 0 8px rgba(220, 20, 60, 0.4) !important;
+}
+
+/* Botón de hamburguesa */
+body.dark-mode .canvas__open i {
+    color: var(--dark-text-primary) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .canvas__open:hover i {
+    color: var(--dark-accent-hover) !important;
+}
+
+/* Icono de búsqueda */
+body.dark-mode .icon_search {
+    color: var(--dark-text-primary) !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .icon_search:hover {
+    color: var(--dark-accent-hover) !important;
+}
+
+/* Badge de admin */
+body.dark-mode .admin-link {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .admin-link:hover {
+    color: var(--dark-accent-hover) !important;
+}
+
+body.dark-mode .admin-badge {
+    background: var(--dark-accent) !important;
+}
+
+/* =================================================================
+   OFFCANVAS MENU - MENÚ MÓVIL DARK MODE
+   ================================================================= */
+
+/* Overlay del menú móvil */
+body.dark-mode .offcanvas-menu-overlay {
+    background-color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Wrapper principal del offcanvas */
+body.dark-mode .offcanvas-menu-wrapper {
+    background: linear-gradient(180deg, #1e1e1e 0%, #252525 100%) !important;
+    border-left: 1px solid var(--dark-header-border) !important;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Botón de cerrar */
+body.dark-mode .offcanvas__close {
+    color: var(--dark-text-primary) !important;
+    background: var(--dark-dropdown-bg) !important;
+    border: 1px solid var(--dark-header-border) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .offcanvas__close:hover {
+    color: var(--dark-accent-hover) !important;
+    background: rgba(220, 20, 60, 0.2) !important;
+    border-color: var(--dark-accent) !important;
+    transform: rotate(90deg) !important;
+}
+
+/* Logo en offcanvas */
+body.dark-mode .offcanvas__logo {
+    border-bottom: 1px solid var(--dark-header-border) !important;
+}
+
+body.dark-mode .offcanvas__logo a {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Perfil de usuario compacto */
+body.dark-mode .offcanvas__user-compact {
+    background: linear-gradient(135deg, var(--dark-dropdown-bg) 0%, #2d2d2d 100%) !important;
+    border: 1px solid var(--dark-header-border) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode .offcanvas__user-compact:hover {
+    background: linear-gradient(135deg, #2d2d2d 0%, var(--dark-dropdown-hover) 100%) !important;
+    border-color: var(--dark-accent) !important;
+    box-shadow: 0 6px 20px rgba(220, 20, 60, 0.3) !important;
+}
+
+body.dark-mode .user-avatar-circle {
+    background: linear-gradient(135deg, var(--dark-accent) 0%, #b01030 100%) !important;
+    border: 2px solid rgba(220, 20, 60, 0.3) !important;
+    box-shadow: 0 0 15px rgba(220, 20, 60, 0.4) !important;
+}
+
+body.dark-mode .user-avatar-circle i {
+    color: #ffffff !important;
+}
+
+body.dark-mode .user-greeting {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .user-name {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Navegación del offcanvas */
+body.dark-mode .offcanvas__nav {
+    background: transparent !important;
+}
+
+body.dark-mode .offcanvas__nav ul li {
+    border-bottom: 1px solid var(--dark-header-border) !important;
+}
+
+body.dark-mode .offcanvas__nav ul li:last-child {
+    border-bottom: none !important;
+}
+
+body.dark-mode .offcanvas__nav ul li a {
+    color: var(--dark-text-primary) !important;
+    transition: all 0.3s ease !important;
+    background: transparent !important;
+}
+
+body.dark-mode .offcanvas__nav ul li a:hover {
+    color: var(--dark-accent-hover) !important;
+    background: rgba(220, 20, 60, 0.1) !important;
+    padding-left: 25px !important;
+}
+
+body.dark-mode .offcanvas__nav ul li a i {
+    color: var(--dark-text-secondary) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .offcanvas__nav ul li a:hover i {
+    color: var(--dark-accent-hover) !important;
+}
+
+/* Submenús del offcanvas */
+body.dark-mode .offcanvas-has-submenu > a {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .offcanvas-submenu {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-left: 3px solid var(--dark-accent) !important;
+}
+
+body.dark-mode .offcanvas-submenu li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-mode .offcanvas-submenu li a {
+    color: var(--dark-text-secondary) !important;
+    padding-left: 40px !important;
+}
+
+body.dark-mode .offcanvas-submenu li a:hover {
+    color: var(--dark-accent-hover) !important;
+    background: rgba(220, 20, 60, 0.15) !important;
+    padding-left: 45px !important;
+}
+
+/* Flecha de expansión de submenú */
+body.dark-mode .offcanvas-menu-toggle .fa-angle-down {
+    color: var(--dark-text-secondary) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .offcanvas-menu-toggle:hover .fa-angle-down {
+    color: var(--dark-accent-hover) !important;
+}
+
+body.dark-mode .offcanvas-has-submenu.active > a .fa-angle-down {
+    transform: rotate(180deg) !important;
+    color: var(--dark-accent) !important;
+}
+
+/* Iconos widget del offcanvas */
+body.dark-mode .offcanvas__widget {
+    border-top: 1px solid var(--dark-header-border) !important;
+    border-bottom: 1px solid var(--dark-header-border) !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+}
+
+body.dark-mode .offcanvas__widget li a,
+body.dark-mode .offcanvas__widget li span {
+    color: var(--dark-text-primary) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .offcanvas__widget li a:hover,
+body.dark-mode .offcanvas__widget li span:hover {
+    color: var(--dark-accent-hover) !important;
+    transform: scale(1.2) !important;
+}
+
+body.dark-mode .offcanvas__widget .tip {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1px solid var(--dark-accent) !important;
+    box-shadow: 0 0 8px rgba(220, 20, 60, 0.4) !important;
+}
+
+/* Botones de autenticación en offcanvas */
+body.dark-mode .offcanvas__auth {
+    background: var(--dark-dropdown-bg) !important;
+    border-top: 1px solid var(--dark-header-border) !important;
+    padding: 20px !important;
+}
+
+body.dark-mode .offcanvas__auth a {
+    color: var(--dark-text-primary) !important;
+    border: 1px solid var(--dark-header-border) !important;
+    background: transparent !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .offcanvas__auth a:first-child {
+    background: linear-gradient(135deg, var(--dark-accent) 0%, #b01030 100%) !important;
+    border-color: var(--dark-accent) !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .offcanvas__auth a:first-child:hover {
+    background: linear-gradient(135deg, var(--dark-accent-hover) 0%, var(--dark-accent) 100%) !important;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4) !important;
+    transform: translateY(-2px) !important;
+}
+
+body.dark-mode .offcanvas__auth a:last-child:hover {
+    background: var(--dark-dropdown-hover) !important;
+    border-color: var(--dark-text-primary) !important;
+    color: var(--dark-accent-hover) !important;
+}
+
+/* =================================================================
+   SEARCH MODAL - DARK MODE
+   ================================================================= */
+
+body.dark-mode .search-model {
+    background-color: rgba(0, 0, 0, 0.95) !important;
+}
+
+body.dark-mode .search-model-form input {
+    background-color: var(--dark-dropdown-bg) !important;
+    border: 2px solid var(--dark-header-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .search-model-form input:focus {
+    border-color: var(--dark-accent) !important;
+    box-shadow: 0 0 15px rgba(220, 20, 60, 0.3) !important;
+}
+
+body.dark-mode .search-model-form input::placeholder {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .search-close-switch {
+    color: var(--dark-text-primary) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .search-close-switch:hover {
+    color: var(--dark-accent-hover) !important;
+    transform: rotate(90deg) scale(1.2) !important;
+}
+
+/* =================================================================
+   RESPONSIVE - AJUSTES PARA MÓVIL
+   ================================================================= */
+
+@media (max-width: 991px) {
+    /* Botón hamburguesa en móvil */
+    body.dark-mode .canvas__open {
+        background: var(--dark-dropdown-bg) !important;
+        border: 1px solid var(--dark-header-border) !important;
+        border-radius: 8px !important;
+        padding: 8px 12px !important;
+    }
+    
+    body.dark-mode .canvas__open:hover {
+        background: rgba(220, 20, 60, 0.2) !important;
+        border-color: var(--dark-accent) !important;
+    }
+}
+
+/* =================================================================
+   ANIMACIONES Y TRANSICIONES
+   ================================================================= */
+
+body.dark-mode .header,
+body.dark-mode .header__menu,
+body.dark-mode .header__right,
+body.dark-mode .offcanvas-menu-wrapper {
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .header__menu ul li a,
+body.dark-mode .offcanvas__nav ul li a {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Efecto de brillo en hover */
+body.dark-mode .header__menu ul li a:hover,
+body.dark-mode .offcanvas__nav ul li a:hover {
+    text-shadow: 0 0 10px rgba(220, 20, 60, 0.5) !important;
+}
+
+/* =================================================================
+   MEJORAS VISUALES ADICIONALES
+   ================================================================= */
+
+/* Scroll suave en offcanvas */
+body.dark-mode .offcanvas-menu-wrapper {
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--dark-accent) var(--dark-dropdown-bg) !important;
+}
+
+body.dark-mode .offcanvas-menu-wrapper::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+body.dark-mode .offcanvas-menu-wrapper::-webkit-scrollbar-track {
+    background: var(--dark-dropdown-bg) !important;
+}
+
+body.dark-mode .offcanvas-menu-wrapper::-webkit-scrollbar-thumb {
+    background: var(--dark-accent) !important;
+    border-radius: 4px !important;
+}
+
+body.dark-mode .offcanvas-menu-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-accent-hover) !important;
+}

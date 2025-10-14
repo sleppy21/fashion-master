@@ -1,37 +1,46 @@
 /**
  * USER ACCOUNT MODAL - VERSIÓN DROPDOWN
  * Script para controlar el dropdown de cuenta de usuario
+ * 
+ * NOTA: Event listeners ahora manejados por header-section.php
+ * Este archivo solo mantiene funciones auxiliares
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Obtener elementos del DOM
+    // Verificar si las funciones globales ya están definidas (desde header-section.php)
+    if (window.toggleUserModal && typeof window.toggleUserModal === 'function') {
+        console.log('✅ User Account Dropdown initialized successfully');
+        // Las funciones ya están manejadas por header-section.php
+        // No agregar event listeners adicionales
+        return;
+    }
+    
+    console.warn('⚠️ header-section.php no cargado, usando funcionalidad limitada');
+    
+    // CÓDIGO LEGACY (solo si header-section.php no está cargado)
+    // NO SE EJECUTA en condiciones normales
+    
     const modal = document.getElementById('user-account-modal');
     const userLink = document.getElementById('user-account-link');
     const closeBtn = document.querySelector('.user-modal-close');
     
-    // Verificar que los elementos existan
     if (!modal || !userLink) {
-        return; // Salir si no hay usuario logueado
+        return;
     }
     
-    // Variable para controlar el estado de animación
     let isAnimating = false;
     
-    // Función para abrir el dropdown
     function openModal(e) {
         e.preventDefault();
         e.stopPropagation();
         
-        // Si está animando, no hacer nada
         if (isAnimating) return;
         
-        // Cerrar modal de favoritos si está abierto
         const favoritesModal = document.getElementById('favorites-modal');
         if (favoritesModal && favoritesModal.style.display === 'block') {
             favoritesModal.style.display = 'none';
         }
         
-        // Toggle: si ya está abierto, cerrarlo
         if (modal.style.display === 'block') {
             closeModal();
             return;
@@ -39,14 +48,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         isAnimating = true;
         
-        // Limpiar cualquier clase o estilo previo
         modal.classList.remove('active', 'closing');
         modal.style.display = 'block';
         
-        // Forzar reflow para que la animación funcione
         void modal.offsetWidth;
         
-        // Agregar clase para animaciones CSS
         requestAnimationFrame(() => {
             modal.classList.add('active');
             setTimeout(() => {
@@ -74,10 +80,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
     }
     
-    // Event listener para abrir modal
+    // SOLO agregar event listeners si estamos en modo legacy
     userLink.addEventListener('click', openModal);
     
-    // Event listener para cerrar con botón X
     if (closeBtn) {
         closeBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -86,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Cerrar dropdown al hacer clic fuera de él
     document.addEventListener('click', function(event) {
         const modalContent = document.querySelector('.user-modal-content');
         if (modal.style.display === 'block' && 
@@ -96,14 +100,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Cerrar dropdown con la tecla ESC
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape' && modal.style.display === 'block') {
             closeModal();
         }
     });
     
-    // Prevenir que los clics dentro del contenido cierren el modal
     const modalContent = document.querySelector('.user-modal-content');
     if (modalContent) {
         modalContent.addEventListener('click', function(e) {
@@ -111,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Animación para las stats cards al abrir el modal
     userLink.addEventListener('click', function() {
         setTimeout(animateStats, 100);
     });
@@ -167,6 +168,5 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Log de inicialización (remover en producción)
-    console.log('✅ User Account Dropdown initialized successfully');
+    console.log('⚠️ User Account Dropdown en modo LEGACY');
 });

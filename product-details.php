@@ -80,6 +80,7 @@ try {
 // Obtener cantidad de items en carrito y favoritos
 $cart_count = 0;
 $favorites_count = 0;
+$notifications_count = 0;
 if($usuario_logueado) {
     try {
         $cart_items = executeQuery("SELECT COUNT(*) as total FROM carrito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
@@ -87,8 +88,11 @@ if($usuario_logueado) {
         
         $favorites = executeQuery("SELECT COUNT(*) as total FROM favorito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
         $favorites_count = ($favorites && count($favorites) > 0) ? ($favorites[0]['total'] ?? 0) : 0;
+        
+        $notifications = executeQuery("SELECT COUNT(*) as total FROM notificacion WHERE id_usuario = ? AND leida_notificacion = 0 AND estado_notificacion = 'activo'", [$usuario_logueado['id_usuario']]);
+        $notifications_count = ($notifications && count($notifications) > 0) ? ($notifications[0]['total'] ?? 0) : 0;
     } catch(Exception $e) {
-        error_log("Error al obtener carrito/favoritos: " . $e->getMessage());
+        error_log("Error al obtener carrito/favoritos/notificaciones: " . $e->getMessage());
     }
 }
 
@@ -118,6 +122,18 @@ if($usuario_logueado) {
 // Si el usuario est� logueado, verificar si el producto est� en favoritos
 $es_favorito = in_array($producto_id, $favoritos_ids);
 
+// Verificar si el producto ya está en el carrito
+$producto_en_carrito = false;
+if($usuario_logueado) {
+    try {
+        $carrito_check = executeQuery("SELECT id_carrito FROM carrito WHERE id_usuario = ? AND id_producto = ?", 
+            [$usuario_logueado['id_usuario'], $producto_id]);
+        $producto_en_carrito = !empty($carrito_check);
+    } catch(Exception $e) {
+        error_log("Error al verificar carrito: " . $e->getMessage());
+    }
+}
+
 $page_title = $producto['nombre_producto'];
 ?>
 <!DOCTYPE html>
@@ -146,6 +162,9 @@ $page_title = $producto['nombre_producto'];
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
     
+    <!-- Header Standard - COMPACTO v5.0 -->
+    <link rel="stylesheet" href="public/assets/css/header-standard.css?v=5.0">
+    
     <?php include 'includes/modern-libraries.php'; ?>
     
     <!-- User Account Modal CSS -->
@@ -153,12 +172,6 @@ $page_title = $producto['nombre_producto'];
     
     <!-- Favorites Modal CSS -->
     <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
-    
-    <!-- Header Responsive Global CSS -->
-    <link rel="stylesheet" href="public/assets/css/header-responsive.css?v=2.0" type="text/css">
-    
-    <!-- Header Override - Máxima prioridad -->
-    <link rel="stylesheet" href="public/assets/css/header-override.css?v=2.0" type="text/css">
     
     <!-- Global Responsive Styles - TODO EL PROYECTO -->
     <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
@@ -168,6 +181,20 @@ $page_title = $producto['nombre_producto'];
     
     <!-- Product Details CSS -->
     <link rel="stylesheet" href="public/assets/css/product-details.css" type="text/css">
+    
+    <!-- Product Details Enhanced - Modo Claro Mejorado -->
+    <link rel="stylesheet" href="public/assets/css/product-details-enhanced.css?v=<?php echo time(); ?>" type="text/css">
+    
+    <!-- Shop Modern Styles -->
+    <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0">
+    <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="public/assets/css/notifications-modal.css">
+    
+    <!-- Dark Mode CSS - Force reload with timestamp -->
+    <link rel="stylesheet" href="public/assets/css/dark-mode.css?v=<?php echo time(); ?>" type="text/css">
+    
+    <!-- Header Fix - DEBE IR AL FINAL -->
+    <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -260,33 +287,74 @@ $page_title = $producto['nombre_producto'];
                             </ul>
                         </div>
                         
-                        <div class="product__details__button">
-                            <div class="quantity">
-                                <span>Cantidad:</span>
-                                <div class="pro-qty">
-                                    <span class="qtybtn qty-btn-detail qty-minus">-</span>
-                                    <input type="text" value="0" id="product-quantity">
-                                    <span class="qtybtn qty-btn-detail qty-plus" data-max="<?php echo $producto['stock_actual_producto']; ?>">+</span>
+                        <!-- Sección de Acciones Mejorada -->
+                        <div class="product__details__action">
+                            <!-- Selector de Cantidad Mejorado -->
+                            <div class="quantity-selector-modern">
+                                <label class="quantity-label">Cantidad:</label>
+                                <div class="quantity-input-group">
+                                    <button type="button" class="qty-btn qty-minus" id="qty-minus">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                    <input type="number" 
+                                           class="qty-input" 
+                                           id="product-quantity" 
+                                           value="1" 
+                                           min="1" 
+                                           max="<?php echo $producto['stock_actual_producto']; ?>"
+                                           readonly>
+                                    <button type="button" class="qty-btn qty-plus" id="qty-plus" data-max="<?php echo $producto['stock_actual_producto']; ?>">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
                                 </div>
+                                <span class="stock-info">
+                                    <?php if($producto['stock_actual_producto'] > 0): ?>
+                                        <i class="fa fa-check-circle"></i> 
+                                        <span class="stock-available"><?php echo $producto['stock_actual_producto']; ?> disponibles</span>
+                                    <?php else: ?>
+                                        <i class="fa fa-times-circle"></i> 
+                                        <span class="stock-out">Sin stock</span>
+                                    <?php endif; ?>
+                                </span>
                             </div>
-                            <?php if($usuario_logueado): ?>
-                            <a href="#" class="cart-btn add-to-cart" data-id="<?php echo $producto['id_producto']; ?>" <?php echo $producto['stock_actual_producto'] <= 0 ? 'style="opacity:0.5;" data-disabled="true"' : ''; ?>>
-                                <span class="icon_bag_alt"></span> Agregar al carrito
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href="#" class="add-to-favorites <?php echo $es_favorito ? 'active' : ''; ?>" 
-                                       data-id="<?php echo $producto['id_producto']; ?>"
-                                       title="<?php echo $es_favorito ? 'Quitar de favoritos' : 'Agregar a favoritos'; ?>">
-                                        <span class="icon_heart<?php echo $es_favorito ? '' : '_alt'; ?>"></span>
+                            
+                            <!-- Botones de Acción Mejorados -->
+                            <div class="action-buttons-modern">
+                                <?php if($usuario_logueado): ?>
+                                    <?php if($producto['stock_actual_producto'] > 0): ?>
+                                        <?php if($producto_en_carrito): ?>
+                                            <!-- Producto ya en el carrito -->
+                                            <button class="btn-add-cart-modern go-to-cart" 
+                                                    data-id="<?php echo $producto['id_producto']; ?>">
+                                                <i class="fa fa-shopping-cart"></i>
+                                                <span>Ir al Carrito</span>
+                                            </button>
+                                        <?php else: ?>
+                                            <!-- Producto no está en el carrito -->
+                                            <button class="btn-add-cart-modern add-to-cart" 
+                                                    data-id="<?php echo $producto['id_producto']; ?>">
+                                                <i class="fa fa-shopping-cart"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <button class="btn-add-cart-modern" disabled>
+                                            <i class="fa fa-ban"></i>
+                                            <span>Sin Stock</span>
+                                        </button>
+                                    <?php endif; ?>
+                                    
+                                    <button class="btn-favorite-modern add-to-favorites <?php echo $es_favorito ? 'active' : ''; ?>" 
+                                            data-id="<?php echo $producto['id_producto']; ?>"
+                                            title="<?php echo $es_favorito ? 'Quitar de favoritos' : 'Agregar a favoritos'; ?>">
+                                        <i class="fa fa-heart<?php echo $es_favorito ? '' : '-o'; ?>"></i>
+                                    </button>
+                                <?php else: ?>
+                                    <a href="login.php" class="btn-add-cart-modern">
+                                        <i class="fa fa-sign-in"></i>
+                                        <span>Iniciar Sesión para Comprar</span>
                                     </a>
-                                </li>
-                            </ul>
-                            <?php else: ?>
-                            <a href="login.php" class="cart-btn">
-                                <span class="icon_bag_alt"></span> Iniciar sesión para comprar
-                            </a>
-                            <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -449,7 +517,7 @@ $page_title = $producto['nombre_producto'];
             </div>
             
             <!-- Grid de productos relacionados con Masonry -->
-            <div class="row productos-grid-related" id="productosGridRelated">
+            <div class="row productos-grid-related shop-modern" id="productosGridRelated">
                 <?php
                 // Obtener productos relacionados de la misma categoría
                 $query_related = "SELECT p.id_producto, p.nombre_producto, p.precio_producto,
@@ -457,9 +525,13 @@ $page_title = $producto['nombre_producto'];
                                         COALESCE(p.descuento_porcentaje_producto, 0) as descuento_porcentaje_producto,
                                         p.en_oferta_producto,
                                         COALESCE(AVG(r.calificacion), 0) as calificacion_promedio,
-                                        COUNT(r.id_resena) as total_resenas
+                                        COUNT(r.id_resena) as total_resenas,
+                                        COALESCE(m.nombre_marca, 'Sin marca') as nombre_marca,
+                                        COALESCE(c.nombre_categoria, 'General') as nombre_categoria
                                  FROM producto p
                                  LEFT JOIN resena r ON p.id_producto = r.id_producto AND r.aprobada = 1
+                                 LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
+                                 LEFT JOIN marca m ON p.id_marca = m.id_marca
                                  WHERE p.id_categoria = ? 
                                  AND p.id_producto != ? 
                                  AND p.status_producto = 1
@@ -468,71 +540,25 @@ $page_title = $producto['nombre_producto'];
                                  LIMIT 6";
                 $productos_relacionados = executeQuery($query_related, [$producto['id_categoria'], $producto_id]);
                 
+                // Cargar componente de tarjetas modernas
+                require_once 'app/views/components/product-card.php';
+                
                 if(!empty($productos_relacionados)):
                     foreach($productos_relacionados as $prod):
-                        $precio_original_rel = $prod['precio_producto'];
-                        $tiene_descuento_rel = $prod['descuento_porcentaje_producto'] > 0;
-                        $precio_final_rel = $precio_original_rel;
-                        if($tiene_descuento_rel) {
-                            $precio_final_rel = $precio_original_rel - ($precio_original_rel * $prod['descuento_porcentaje_producto'] / 100);
-                        }
-                        $sin_stock_rel = $prod['stock_actual_producto'] <= 0;
                         $es_favorito_rel = in_array($prod['id_producto'], $favoritos_ids ?? []);
-                ?>
-                <div class="grid-item col-lg-3 col-md-4 col-6">
-                    <div class="product__item <?php echo $tiene_descuento_rel ? 'sale' : ''; ?>">
-                        <div class="product__item__pic set-bg product-image-clickable" 
-                             data-setbg="<?php echo htmlspecialchars($prod['url_imagen_producto']); ?>"
-                             data-id="<?php echo $prod['id_producto']; ?>"
-                             data-product-url="product-details.php?id=<?php echo $prod['id_producto']; ?>"
-                             style="background-image: url('<?php echo htmlspecialchars($prod['url_imagen_producto']); ?>'); background-size: cover; background-position: center; cursor: pointer;">
-                            <?php if($sin_stock_rel): ?>
-                                <div class="label stockout">Sin stock</div>
-                            <?php elseif($tiene_descuento_rel): ?>
-                                <div class="label sale">-<?php echo round($prod['descuento_porcentaje_producto']); ?>%</div>
-                            <?php endif; ?>
-                            <ul class="product__hover">
-                                <li><a href="product-details.php?id=<?php echo $prod['id_producto']; ?>" class="view-details-btn"><span class="icon_search"></span></a></li>
-                                <li>
-                                    <a href="#" class="add-to-favorites <?php echo $es_favorito_rel ? 'active' : ''; ?>" 
-                                       data-id="<?php echo $prod['id_producto']; ?>">
-                                        <span class="icon_heart<?php echo $es_favorito_rel ? '' : '_alt'; ?>"></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="add-to-cart" 
-                                       data-id="<?php echo $prod['id_producto']; ?>"
-                                       <?php echo $sin_stock_rel ? 'style="opacity:0.5;" data-disabled="true"' : ''; ?>>
-                                        <span class="icon_bag_alt"></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="product__item__text">
-                            <h6><span style="cursor: pointer;" onclick="window.location.href='product-details.php?id=<?php echo $prod['id_producto']; ?>'">
-                                <?php echo htmlspecialchars($prod['nombre_producto']); ?>
-                            </span></h6>
-                            <div class="rating">
-                                <?php 
-                                $rating = round($prod['calificacion_promedio']);
-                                for($i = 1; $i <= 5; $i++): 
-                                ?>
-                                <i class="fa fa-star<?php echo $i <= $rating ? '' : '-o'; ?>"></i>
-                                <?php endfor; ?>
-                                <?php if($prod['total_resenas'] > 0): ?>
-                                    <span style="font-size: 11px; color: #999; margin-left: 5px;">(<?php echo $prod['total_resenas']; ?>)</span>
-                                <?php endif; ?>
-                            </div>
-                            <div class="product__price">
-                                $<?php echo number_format($precio_final_rel, 2); ?>
-                                <?php if($tiene_descuento_rel): ?>
-                                <span>$<?php echo number_format($precio_original_rel, 2); ?></span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php 
+                        
+                        // Verificar si está en el carrito
+                        $in_cart = false;
+                        if ($usuario_logueado) {
+                            $cart_check = executeQuery(
+                                "SELECT id_producto FROM carrito WHERE id_usuario = ? AND id_producto = ?",
+                                [$usuario_logueado['id_usuario'], $prod['id_producto']]
+                            );
+                            $in_cart = !empty($cart_check);
+                        }
+                        
+                        // Renderizar tarjeta moderna (incluye su propio wrapper col)
+                        renderProductCard($prod, $es_favorito_rel, $usuario_logueado !== null, $in_cart);
                     endforeach;
                 else:
                 ?>
@@ -545,80 +571,7 @@ $page_title = $producto['nombre_producto'];
             </div>
         </div>
     </section>
-    <!-- Product Details Section End -->
-
-    <!-- Footer Section Begin -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-7">
-                    <div class="footer__about">
-                        <div class="footer__logo">
-                            <a href="./index.php"><img src="public/assets/img/logo.png" alt="SleppyStore"></a>
-                        </div>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        cilisis.</p>
-                        <div class="footer__payment">
-                            <a href="#"><img src="public/assets/img/payment/payment-1.png" alt=""></a>
-                            <a href="#"><img src="public/assets/img/payment/payment-2.png" alt=""></a>
-                            <a href="#"><img src="public/assets/img/payment/payment-3.png" alt=""></a>
-                            <a href="#"><img src="public/assets/img/payment/payment-4.png" alt=""></a>
-                            <a href="#"><img src="public/assets/img/payment/payment-5.png" alt=""></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-5">
-                    <div class="footer__widget">
-                        <h6>Quick links</h6>
-                        <ul>
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Blogs</a></li>
-                            <li><a href="#">Contact</a></li>
-                            <li><a href="#">FAQ</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-4">
-                    <div class="footer__widget">
-                        <h6>Account</h6>
-                        <ul>
-                            <li><a href="#">My Account</a></li>
-                            <li><a href="#">Orders Tracking</a></li>
-                            <li><a href="#">Checkout</a></li>
-                            <li><a href="#">Wishlist</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-8 col-sm-8">
-                    <div class="footer__newslatter">
-                        <h6>NEWSLETTER</h6>
-                        <form action="#">
-                            <input type="text" placeholder="Email">
-                            <button type="submit" class="site-btn">Subscribe</button>
-                        </form>
-                        <div class="footer__social">
-                            <a href="#"><i class="fa fa-facebook"></i></a>
-                            <a href="#"><i class="fa fa-twitter"></i></a>
-                            <a href="#"><i class="fa fa-youtube-play"></i></a>
-                            <a href="#"><i class="fa fa-instagram"></i></a>
-                            <a href="#"><i class="fa fa-pinterest"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    <div class="footer__copyright__text">
-                        <p>Copyright &copy; <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a></p>
-                    </div>
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                </div>
-            </div>
-        </div>
-    </footer>
-    <!-- Footer Section End -->
-
+    <!-- Product Details Section End --
     <!-- Search Begin -->
     <div class="search-model">
         <div class="h-100 d-flex align-items-center justify-content-center">
@@ -631,6 +584,30 @@ $page_title = $producto['nombre_producto'];
     <!-- Search End -->
 
     <!-- Js Plugins -->
+    <script>
+        // BASE URL para peticiones AJAX - Compatible con ngrok y cualquier dominio
+        (function() {
+            var baseUrlFromPHP = '<?php echo defined("BASE_URL") ? BASE_URL : ""; ?>';
+            
+            // Si no hay BASE_URL definida en PHP, calcularla desde JavaScript
+            if (!baseUrlFromPHP || baseUrlFromPHP === '') {
+                var path = window.location.pathname;
+                var pathParts = path.split('/').filter(function(p) { return p !== ''; });
+                
+                // Buscar 'fashion-master' en el path
+                var basePath = '';
+                if (pathParts.includes('fashion-master')) {
+                    var index = pathParts.indexOf('fashion-master');
+                    basePath = '/' + pathParts.slice(0, index + 1).join('/');
+                }
+                
+                baseUrlFromPHP = window.location.origin + basePath;
+            }
+            
+            window.BASE_URL = baseUrlFromPHP;
+            console.log('🌐 BASE_URL configurado:', window.BASE_URL);
+        })();
+    </script>
     <script src="public/assets/js/jquery-3.3.1.min.js"></script>
     
     <!-- Fetch API Handler Moderno - Reemplaza AJAX/jQuery -->
@@ -646,6 +623,15 @@ $page_title = $producto['nombre_producto'];
     <script src="public/assets/js/jquery.nicescroll.min.js"></script>
     <script src="public/assets/js/main.js"></script>
     
+    <!-- Header Handler - Actualización en tiempo real de contadores -->
+    <script src="public/assets/js/header-handler.js?v=1.0"></script>
+    
+    <!-- Sistema Global de Contadores -->
+    <script src="public/assets/js/global-counters.js"></script>
+    
+    <!-- Real-time Updates System - DEBE IR ANTES que cart-favorites-handler -->
+    <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
+    
     <!-- Cart & Favorites Handler -->
     <script src="public/assets/js/cart-favorites-handler.js"></script>
     
@@ -660,6 +646,40 @@ $page_title = $producto['nombre_producto'];
     <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
     <style>
+    /* ============================================
+       FONDO DEL BODY
+       ============================================ */
+    body {
+        background-color: #f8f5f2 !important;
+    }
+    
+    /* Dark mode */
+    body.dark-mode {
+        background-color: #1a1a1a !important;
+    }
+    
+    /* Breadcrumb con el mismo color de fondo */
+    .breadcrumb-option {
+        background-color: #f8f5f2 !important;
+        padding: 15px 0 10px 0;
+        margin-top: 1px;
+        margin-bottom: 0;
+    }
+    
+    body.dark-mode .breadcrumb-option {
+        background-color: #1a1a1a !important;
+    }
+    
+    /* Reducir espaciado en la sección de detalles */
+    .product-details {
+        padding-top: 20px !important;
+        padding-bottom: 40px !important;
+    }
+    
+    .product-details .spad {
+        padding-top: 20px !important;
+    }
+    
     /* ============================================
        ESTILOS ESPECÍFICOS DE PRODUCT-DETAILS
        ============================================ */
@@ -1143,6 +1163,487 @@ $page_title = $producto['nombre_producto'];
         });
 
         // ============================================
+        // FUNCIÓN DE NOTIFICACIÓN (FALLBACK)
+        // ============================================
+        // Esperar un poco para que cart-favorites-handler.js se cargue completamente
+        setTimeout(function() {
+            if (typeof window.showNotification !== 'function') {
+                console.warn('⚠️ showNotification no disponible después de esperar, creando fallback');
+                window.showNotification = function(message, type) {
+                    console.log('[NOTIFICACIÓN ' + type + ']:', message);
+                    alert(message);
+                };
+            } else {
+                console.log('✅ showNotification disponible globalmente');
+            }
+        }, 100);
+
+        // ============================================
+        // BOTONES DE CANTIDAD MODERNOS
+        // ============================================
+        const $qtyInput = $('#product-quantity');
+        const $qtyPlus = $('#qty-plus');
+        const $qtyMinus = $('#qty-minus');
+        const maxStock = parseInt($qtyPlus.data('max')) || 999;
+
+        // Botón +
+        $qtyPlus.on('click', function() {
+            let currentVal = parseInt($qtyInput.val()) || 1;
+            if (currentVal < maxStock) {
+                $qtyInput.val(currentVal + 1);
+                $qtyMinus.prop('disabled', false);
+            }
+            if (currentVal + 1 >= maxStock) {
+                $(this).prop('disabled', true);
+            }
+        });
+
+        // Botón -
+        $qtyMinus.on('click', function() {
+            let currentVal = parseInt($qtyInput.val()) || 1;
+            if (currentVal > 1) {
+                $qtyInput.val(currentVal - 1);
+                $qtyPlus.prop('disabled', false);
+            }
+            if (currentVal - 1 <= 1) {
+                $(this).prop('disabled', true);
+            }
+        });
+
+        // Validar input manual
+        $qtyInput.on('change', function() {
+            let val = parseInt($(this).val()) || 1;
+            if (val < 1) val = 1;
+            if (val > maxStock) val = maxStock;
+            $(this).val(val);
+            
+            // Actualizar estados de botones
+            $qtyMinus.prop('disabled', val <= 1);
+            $qtyPlus.prop('disabled', val >= maxStock);
+        });
+
+        // Estado inicial
+        $qtyMinus.prop('disabled', true);
+        if (maxStock <= 1) {
+            $qtyPlus.prop('disabled', true);
+        }
+
+        // ============================================
+        // FUNCIÓN PARA AGREGAR AL CARRITO CON ACTUALIZACIÓN EN TIEMPO REAL
+        // ============================================
+        // Verificar si el producto ya está en el carrito (desde PHP)
+        let productoEnCarrito = <?php echo $producto_en_carrito ? 'true' : 'false'; ?>;
+
+        // Evento para "Ir al Carrito" (cuando ya está en el carrito)
+        $(document).on('click', '.go-to-cart', function(e) {
+            e.preventDefault();
+            window.location.href = 'cart.php';
+        });
+
+        // ===== BOTONES DE PRODUCTOS RELACIONADOS =====
+        // DESHABILITADO - Ahora usa real-time-updates.js
+        // Los productos relacionados usan las tarjetas modernas con real-time-updates.js
+        console.log('✅ Botones de productos relacionados manejados por real-time-updates.js');
+        
+        /* CÓDIGO ANTIGUO DESHABILITADO
+        // Evento para "Agregar al Carrito" (cuando no está en el carrito)
+        $(document).on('click', '.add-to-cart', function(e) {
+            e.preventDefault();
+
+            const $btn = $(this);
+            const productoId = $btn.data('id');
+            const cantidad = parseInt($qtyInput.val()) || 1;
+
+            if (!productoId) {
+                console.error('ID de producto no encontrado');
+                if (window.showNotification) {
+                    window.showNotification('Error: ID de producto no válido', 'error');
+                }
+                return;
+            }
+
+            // Verificar si está deshabilitado
+            if ($btn.prop('disabled')) {
+                if (window.showNotification) {
+                    window.showNotification('Producto sin stock', 'warning');
+                }
+                return;
+            }
+
+            // Mostrar loading
+            const originalHTML = $btn.html();
+            $btn.html('<i class="fa fa-spinner fa-spin"></i> <span>Agregando...</span>');
+            $btn.prop('disabled', true);
+
+            console.log('Agregando al carrito:', {productoId, cantidad});
+
+            // Hacer petición AJAX
+            const baseUrl = window.BASE_URL || '';
+            fetch(baseUrl + '/app/actions/add_to_cart.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'id_producto=' + productoId + '&cantidad=' + cantidad
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Carrito response:', data);
+                
+                if (data.success) {
+                    // Mostrar notificación de éxito
+                    if (window.showNotification) {
+                        window.showNotification(data.message || 'Producto agregado al carrito', 'success');
+                    }
+                    
+                    // Actualizar contador en tiempo real
+                    actualizarContadoresTiempoReal('carrito');
+                    
+                    // Actualizar modal de favoritos para reflejar el estado del carrito
+                    actualizarModalFavoritos();
+                    
+                    // Cambiar el botón a "Ir al Carrito" inmediatamente
+                    productoEnCarrito = true;
+                    $btn.html('<i class="fa fa-shopping-cart"></i> <span>Ir al Carrito</span>');
+                    $btn.removeClass('add-to-cart').addClass('go-to-cart');
+                    $btn.prop('disabled', false);
+                    
+                } else {
+                    // Error del servidor
+                    if (window.showNotification) {
+                        window.showNotification(data.message || 'Error al agregar al carrito', 'error');
+                    }
+                    console.error('Error en carrito:', data.message);
+                    $btn.html(originalHTML);
+                    $btn.prop('disabled', false);
+                }
+            })
+            .catch(error => {
+                console.error('Error catch carrito:', error);
+                if (window.showNotification) {
+                    window.showNotification('Error de conexión al procesar el carrito', 'error');
+                }
+                $btn.html(originalHTML);
+                $btn.prop('disabled', false);
+            });
+        });
+        FIN CÓDIGO ANTIGUO DESHABILITADO */
+
+        // ============================================
+        // FUNCIÓN PARA FAVORITOS CON ACTUALIZACIÓN EN TIEMPO REAL
+        // ============================================
+        // DESHABILITADO - Ahora usa real-time-updates.js
+        console.log('✅ Favoritos manejados por real-time-updates.js');
+        
+        /* CÓDIGO ANTIGUO DESHABILITADO
+        $(document).on('click', '.add-to-favorites', function(e) {
+            e.preventDefault();
+            
+            const $btn = $(this);
+            const productoId = $btn.data('id');
+            
+            if (!productoId) {
+                console.error('ID de producto no encontrado');
+                if (window.showNotification) {
+                    window.showNotification('Error: ID de producto no válido', 'error');
+                }
+                return;
+            }
+
+            // Mostrar loading
+            const $icon = $btn.find('i, span');
+            const iconOriginal = $icon.attr('class');
+            
+            // Si es un icono FA (i), mostrar spinner
+            if ($icon.is('i')) {
+                $icon.attr('class', 'fa fa-spinner fa-spin');
+            } else {
+                // Si es span (icon_heart_alt), agregar clase de loading visual
+                $btn.css('opacity', '0.6');
+            }
+            
+            $btn.css('pointer-events', 'none');
+
+            console.log('Agregando/quitando favorito:', productoId);
+
+            // Hacer petición AJAX
+            const baseUrl = window.BASE_URL || '';
+            fetch(baseUrl + '/app/actions/add_to_favorites.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'id_producto=' + productoId
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Favoritos response:', data);
+                
+                if (data.success) {
+                    // Determinar si se agregó o quitó
+                    const esAgregar = data.action === 'added';
+                    
+                    // Actualizar estado visual del botón clickeado
+                    if (esAgregar) {
+                        $btn.addClass('active');
+                        // Manejar iconos FA (i)
+                        if ($icon.is('i')) {
+                            $icon.attr('class', 'fa fa-heart');
+                        }
+                        // Manejar iconos theme (span)
+                        else if ($icon.is('span')) {
+                            $icon.attr('class', 'icon_heart');
+                        }
+                        $btn.attr('title', 'Quitar de favoritos');
+                    } else {
+                        $btn.removeClass('active');
+                        // Manejar iconos FA (i)
+                        if ($icon.is('i')) {
+                            $icon.attr('class', 'fa fa-heart-o');
+                        }
+                        // Manejar iconos theme (span)
+                        else if ($icon.is('span')) {
+                            $icon.attr('class', 'icon_heart_alt');
+                        }
+                        $btn.attr('title', 'Agregar a favoritos');
+                    }
+                    
+                    // Actualizar TODOS los iconos de este producto (productos relacionados y principal)
+                    actualizarIconosFavoritos(productoId, esAgregar);
+                    
+                    // Mostrar notificación
+                    if (window.showNotification) {
+                        window.showNotification(data.message, 'success');
+                    }
+                    
+                    // Actualizar contador de favoritos en tiempo real
+                    actualizarContadoresTiempoReal('favoritos');
+                    
+                    // Actualizar modal de favoritos
+                    actualizarModalFavoritos();
+                    
+                } else {
+                    // Restaurar ícono original en caso de error
+                    if ($icon && $icon.length > 0) {
+                        $icon.attr('class', iconOriginal);
+                    }
+                    
+                    if (window.showNotification) {
+                        window.showNotification(data.message || 'Error al actualizar favoritos', 'error');
+                    }
+                    console.error('Error en favoritos:', data.message);
+                }
+            })
+            .catch(error => {
+                // Restaurar ícono original en caso de error
+                if ($icon && $icon.length > 0) {
+                    $icon.attr('class', iconOriginal);
+                }
+                $btn.css('opacity', '');
+                
+                console.error('Error catch favoritos:', error);
+                if (window.showNotification) {
+                    window.showNotification('Error de conexión al procesar favoritos', 'error');
+                }
+            })
+            .finally(() => {
+                $btn.css('pointer-events', '');
+                $btn.css('opacity', '');
+            });
+        });
+        FIN CÓDIGO ANTIGUO DESHABILITADO */
+
+        // ============================================
+        // FUNCIÓN PARA ACTUALIZAR CONTADORES EN TIEMPO REAL
+        // ============================================
+        function actualizarContadoresTiempoReal(tipo) {
+            console.log('Actualizando contadores:', tipo);
+            const baseUrl = window.BASE_URL || '';
+            
+            if (tipo === 'carrito' || tipo === 'ambos') {
+                fetch(baseUrl + '/app/actions/get_cart_count.php')
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log('Contador carrito actualizado:', data);
+                        if (data.success) {
+                            const count = parseInt(data.count) || 0;
+                            
+                            // Buscar el link del carrito
+                            const $cartLink = $('a[href*="cart.php"]').first();
+                            let $tip = $cartLink.find('.tip');
+                            
+                            if (count > 0) {
+                                if ($tip.length === 0) {
+                                    // Crear el elemento .tip si no existe
+                                    $tip = $('<div class="tip"></div>');
+                                    $cartLink.append($tip);
+                                }
+                                $tip.text(count).show();
+                            } else {
+                                // Ocultar si es 0
+                                $tip.hide();
+                            }
+                            
+                            console.log('Contador de carrito actualizado a:', count);
+                        }
+                    })
+                    .catch(err => console.error('Error al actualizar contador carrito:', err));
+            }
+            
+            if (tipo === 'favoritos' || tipo === 'ambos') {
+                const baseUrl = window.BASE_URL || '';
+                fetch(baseUrl + '/app/actions/get_favorites_count.php')
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log('Contador favoritos actualizado:', data);
+                        if (data.success) {
+                            const count = parseInt(data.count) || 0;
+                            
+                            // Buscar el link de favoritos
+                            const $favLink = $('#favorites-link');
+                            let $tip = $favLink.find('.tip');
+                            
+                            if (count > 0) {
+                                if ($tip.length === 0) {
+                                    // Crear el elemento .tip si no existe
+                                    $tip = $('<div class="tip"></div>');
+                                    $favLink.append($tip);
+                                }
+                                $tip.text(count).show();
+                            } else {
+                                // Ocultar si es 0
+                                $tip.hide();
+                            }
+                            
+                            console.log('Contador de favoritos actualizado a:', count);
+                        }
+                    })
+                    .catch(err => console.error('Error al actualizar contador favoritos:', err));
+            }
+        }
+
+        // ============================================
+        // FUNCIÓN PARA ACTUALIZAR MODAL DE FAVORITOS
+        // ============================================
+        function actualizarModalFavoritos() {
+            const $modalBody = $('.favorites-modal-body');
+            if ($modalBody.length === 0) {
+                console.log('Modal de favoritos no encontrado en el DOM');
+                return;
+            }
+
+            console.log('Actualizando modal de favoritos...');
+            
+            const baseUrl = window.BASE_URL || '';
+            fetch(baseUrl + '/app/actions/get_favorites.php')
+                .then(res => res.json())
+                .then(data => {
+                    console.log('Modal favoritos response:', data);
+                    if (data.success) {
+                        $modalBody.html(data.html);
+                        console.log('✅ Modal de favoritos actualizado');
+                    }
+                })
+                .catch(err => console.error('Error al actualizar modal favoritos:', err));
+        }
+
+        // ============================================
+        // ACTUALIZAR ICONOS DE FAVORITOS EN PRODUCTOS RELACIONADOS
+        // ============================================
+        function actualizarIconosFavoritos(productoId, esAgregar) {
+            console.log('Actualizando iconos para producto:', productoId, 'Agregar:', esAgregar);
+            
+            // Buscar todos los botones de favoritos para este producto
+            $(`.add-to-favorites[data-id="${productoId}"]`).each(function() {
+                const $btn = $(this);
+                const $iconFA = $btn.find('i');
+                const $iconTheme = $btn.find('span');
+                
+                if (esAgregar) {
+                    // Agregar a favoritos
+                    $btn.addClass('active');
+                    
+                    // Actualizar icono Font Awesome
+                    if ($iconFA.length > 0) {
+                        $iconFA.removeClass('fa-heart-o').addClass('fa-heart');
+                    }
+                    
+                    // Actualizar icono del theme
+                    if ($iconTheme.length > 0) {
+                        $iconTheme.removeClass('icon_heart_alt').addClass('icon_heart');
+                    }
+                    
+                    $btn.attr('title', 'Quitar de favoritos');
+                } else {
+                    // Quitar de favoritos
+                    $btn.removeClass('active');
+                    
+                    // Actualizar icono Font Awesome
+                    if ($iconFA.length > 0) {
+                        $iconFA.removeClass('fa-heart').addClass('fa-heart-o');
+                    }
+                    
+                    // Actualizar icono del theme
+                    if ($iconTheme.length > 0) {
+                        $iconTheme.removeClass('icon_heart').addClass('icon_heart_alt');
+                    }
+                    
+                    $btn.attr('title', 'Agregar a favoritos');
+                }
+            });
+            
+            console.log('✅ Iconos actualizados para producto:', productoId);
+        }
+
+        // ============================================
+        // ACTUALIZAR BOTÓN DE CARRITO EN LA PÁGINA
+        // ============================================
+        function actualizarBotonCarritoPagina(productoId, enCarrito) {
+            console.log('Actualizando botón de carrito en página:', productoId, 'En carrito:', enCarrito);
+            
+            // Buscar el botón de carrito (puede tener clase add-to-cart o go-to-cart)
+            let $btn = $('.add-to-cart');
+            if ($btn.length === 0) {
+                $btn = $('.go-to-cart');
+            }
+            
+            if ($btn.length === 0) {
+                console.log('⚠️ Botón de carrito no encontrado en la página');
+                return;
+            }
+            
+            const currentProductId = $btn.data('id');
+            
+            // Solo actualizar si es el producto actual
+            if (currentProductId == productoId) {
+                if (enCarrito) {
+                    // Cambiar a "Ir al Carrito"
+                    productoEnCarrito = true;
+                    $btn.html('<i class="fa fa-shopping-cart"></i> <span>Ir al Carrito</span>');
+                    $btn.removeClass('add-to-cart').addClass('go-to-cart');
+                } else {
+                    // Cambiar a "Agregar al Carrito"
+                    productoEnCarrito = false;
+                    $btn.html('<i class="fa fa-shopping-cart"></i> <span>Agregar al Carrito</span>');
+                    $btn.removeClass('go-to-cart').addClass('add-to-cart');
+                }
+                console.log('✅ Botón de carrito actualizado en la página');
+            }
+        }
+
+        // ============================================
         // SISTEMA DE INTERACCIÓN SEPARADO PC Y MÓVIL
         // ============================================
         const esDispositivoMovil = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -1190,18 +1691,58 @@ $page_title = $producto['nombre_producto'];
                 }
             });
         }
+
+        // ============================================
+        // EXPONER FUNCIONES GLOBALMENTE para cart-favorites-handler.js
+        // ============================================
+        window.actualizarIconosFavoritos = actualizarIconosFavoritos;
+        window.actualizarBotonCarritoPagina = actualizarBotonCarritoPagina;
+        
+        console.log('✅ Funciones de sincronización exportadas globalmente');
     });
     </script>
 
     <!-- Global Offcanvas Menu JavaScript -->
     <script src="public/assets/js/offcanvas-menu.js"></script>
+    
+    <!-- Dark Mode JavaScript -->
+    <script src="public/assets/js/dark-mode.js"></script>
+
+    <script>
+    // Asegurar que las tarjetas de productos relacionados funcionen
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('✅ Product-details: Tarjetas modernas cargadas');
+        
+        // Desactivar AOS animations en productos relacionados para mejor performance
+        const relatedProducts = document.querySelectorAll('.productos-grid-related .product-card-modern');
+        relatedProducts.forEach(card => {
+            card.removeAttribute('data-aos');
+        });
+        
+        // DEBUG: Verificar que los botones existen
+        const cartButtons = document.querySelectorAll('.productos-grid-related .add-to-cart');
+        const favButtons = document.querySelectorAll('.productos-grid-related .add-to-favorites');
+        console.log('🛒 Botones de carrito encontrados:', cartButtons.length);
+        console.log('❤️ Botones de favoritos encontrados:', favButtons.length);
+        
+        // DEBUG: Listener global para verificar clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.productos-grid-related')) {
+                console.log('🖱️ Click en productos relacionados:', e.target);
+            }
+        }, true); // Usar capture phase
+    });
+    </script>
 
     <?php if($usuario_logueado): ?>
     <!-- Modales -->
     <?php include 'includes/user-account-modal.php'; ?>
     <?php include 'includes/favorites-modal.php'; ?>
+    <?php include 'includes/notifications-modal.php'; ?>
     <?php endif; ?>
 
+    <!-- Chatbot Widget -->
+    <?php include 'includes/chatbot-widget.php'; ?>
 </body>
 
 </html>

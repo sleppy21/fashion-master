@@ -1,0 +1,2536 @@
+/**
+ * MODO OSCURO - DARK MODE
+ * Sistema de tema oscuro para todo el sitio
+ */
+
+/* Variables de color para modo oscuro */
+:root {
+    --dark-bg-primary: #1a1a1a;
+    --dark-bg-secondary: #2d2d2d;
+    --dark-bg-tertiary: #3a3a3a;
+    --dark-bg-card: #252525;
+    --dark-text-primary: #e8e8e8;
+    --dark-text-secondary: #b0b0b0;
+    --dark-border: #404040;
+    --dark-accent: #dc143c;
+    --dark-accent-hover: #b01030;
+    --dark-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* Aplicar modo oscuro cuando body tiene la clase */
+body.dark-mode {
+    background-color: var(--dark-bg-primary);
+    color: var(--dark-text-primary);
+}
+
+/* Header - ESTILOS PRIORITARIOS CON !important */
+body.dark-mode .header {
+    background-color: #1e1e1e !important;
+    background: #1e1e1e !important;
+    border-bottom: 1px solid #333333 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .header .container-fluid {
+    background-color: transparent !important;
+}
+
+body.dark-mode .header .row {
+    background-color: transparent !important;
+}
+
+body.dark-mode .header__menu ul li a {
+    color: #e0e0e0 !important;
+    background: transparent !important;
+}
+
+body.dark-mode .header__menu ul li a:hover {
+    color: #ff1744 !important;
+    background: rgba(220, 20, 60, 0.1) !important;
+}
+
+body.dark-mode .header__right {
+    background: transparent !important;
+}
+
+body.dark-mode .header__right__auth {
+    border-right-color: #404040 !important;
+}
+
+body.dark-mode .header__right__auth a {
+    color: #e0e0e0 !important;
+    background: transparent !important;
+}
+
+body.dark-mode .header__right__auth a:hover {
+    color: #ff1744 !important;
+    background: rgba(220, 20, 60, 0.1) !important;
+}
+
+body.dark-mode .header__right__auth a i {
+    color: #b0b0b0 !important;
+}
+
+body.dark-mode .header__right__widget {
+    background: transparent !important;
+}
+
+body.dark-mode .header__right__widget li a,
+body.dark-mode .header__right__widget li span {
+    color: #e0e0e0 !important;
+    background: transparent !important;
+}
+
+body.dark-mode .header__right__widget li a:hover,
+body.dark-mode .header__right__widget li span:hover {
+    color: #ff1744 !important;
+}
+
+body.dark-mode .header__right__widget i,
+body.dark-mode .header__right__widget span {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .header__logo a {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .header span,
+body.dark-mode .header p {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .header .tip {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1px solid #dc143c !important;
+}
+
+body.dark-mode .canvas__open i {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .canvas__open:hover i {
+    color: #ff1744 !important;
+}
+
+/* Dropdowns */
+body.dark-mode .header__menu .dropdown {
+    background: #2a2a2a !important;
+    background-color: #2a2a2a !important;
+    border: 1px solid #333333 !important;
+    border-color: #333333 !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7) !important;
+}
+
+body.dark-mode .header__menu .dropdown li {
+    background: transparent !important;
+}
+
+body.dark-mode .header__menu .dropdown li a {
+    color: #e0e0e0 !important;
+    background: transparent !important;
+    border-left-color: transparent !important;
+}
+
+body.dark-mode .header__menu .dropdown li a:hover {
+    background: linear-gradient(90deg, rgba(220, 20, 60, 0.15) 0%, #333333 100%) !important;
+    color: #ff1744 !important;
+    border-left-color: #dc143c !important;
+}
+
+/* Hero Section */
+body.dark-mode .hero__items {
+    background-color: var(--dark-bg-secondary);
+}
+
+body.dark-mode .hero__text h2 {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .hero__text p {
+    color: var(--dark-text-secondary);
+}
+
+/* Banners */
+body.dark-mode .banner__item {
+    background-color: var(--dark-bg-tertiary);
+}
+
+body.dark-mode .banner__item h2,
+body.dark-mode .banner__item span {
+    color: var(--dark-text-primary);
+}
+
+/* Products */
+body.dark-mode .product__item {
+    background-color: var(--dark-bg-secondary);
+    border: 1px solid var(--dark-border);
+}
+
+body.dark-mode .product__item:hover {
+    box-shadow: 0 4px 15px var(--dark-shadow);
+}
+
+body.dark-mode .product__item__text h6,
+body.dark-mode .product__item__text h6 a {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .product__item__text h6:hover,
+body.dark-mode .product__item__text h6 a:hover {
+    color: var(--dark-accent);
+}
+
+body.dark-mode .product__price {
+    color: var(--dark-text-primary);
+}
+
+/* Product Details */
+body.dark-mode .product__details__text h4 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .product__details__text h3 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .product__details__text p {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .product__details__text span {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .product__details__price {
+    color: var(--dark-accent) !important;
+}
+
+body.dark-mode .product__details__widget ul li span {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .product__details__widget ul li p {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .product__details__action {
+    background-color: var(--dark-bg-secondary);
+    border: 1px solid var(--dark-border);
+    border-radius: 15px;
+}
+
+/* ============================================
+   TABS REDISEÑADOS - MODO OSCURO Y CLARO
+   Diseño moderno con glassmorphism y animaciones
+   ============================================ */
+
+/* Espaciado y separación entre sección de acciones y tabs */
+body.dark-mode .product__details__action {
+    margin-bottom: 50px !important;
+    position: relative;
+    padding-bottom: 30px !important;
+}
+
+/* Eliminar ::after y ::before de la sección de acciones */
+body.dark-mode .product__details__action::after,
+body.dark-mode .product__details__action::before {
+    display: none !important;
+    content: none !important;
+}
+
+/* Contenedor principal de tabs */
+body.dark-mode .product__details__tab {
+    background: linear-gradient(145deg, rgba(26, 26, 26, 0.95), rgba(45, 45, 45, 0.9)) !important;
+    border-radius: 20px !important;
+    padding: 30px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 50px !important;
+}
+
+/* Nav tabs mejorados */
+body.dark-mode .product__details__tab .nav-tabs {
+    border-bottom: none !important;
+    margin-bottom: 30px !important;
+    padding-bottom: 0 !important;
+}
+
+/* Eliminar el ::before de Bootstrap en los tabs */
+body.dark-mode .product__details__tab .nav-tabs::before,
+body.dark-mode .product__details__tab .nav-tabs::after {
+    display: none !important;
+    content: none !important;
+}
+
+body.dark-mode .product__details__tab .nav-tabs .nav-link {
+    color: var(--dark-text-secondary) !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 15px 30px !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+    margin-right: 10px;
+}
+
+body.dark-mode .product__details__tab .nav-tabs .nav-link:hover {
+    color: var(--dark-text-primary) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+body.dark-mode .product__details__tab .nav-tabs .nav-link.active {
+    color: var(--dark-accent) !important;
+    background: rgba(220, 20, 60, 0.05) !important;
+    border-bottom: none !important;
+    border-radius: 10px 10px 0 0 !important;
+    box-shadow: 0 -2px 10px rgba(220, 20, 60, 0.2) !important;
+}
+
+/* Tab content */
+body.dark-mode .product__details__tab .tab-content {
+    background: transparent !important;
+    color: var(--dark-text-primary) !important;
+    padding: 20px 0 !important;
+    border: none !important;
+    border-top: none !important;
+}
+
+body.dark-mode .product__details__tab .tab-pane {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+body.dark-mode .product__details__tab p,
+body.dark-mode .product__details__tab h6,
+body.dark-mode .product__details__tab span {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .product__details__tab h6 {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    margin-bottom: 20px !important;
+    color: var(--dark-text-primary) !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+body.dark-mode .product__details__tab h6:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--dark-accent), transparent);
+    border-radius: 2px;
+}
+
+/* ============================================
+   PRODUCT DETAILS - OVERRIDES PARA ESTILOS INLINE
+   Estas reglas anulan backgrounds y colores inline usados en product-details.php
+   ============================================ */
+
+/* Caja de descripción principal - REDISEÑADA */
+html body.dark-mode .product__details__tab .tab-pane > div[style],
+html body.dark-mode .product__details__tab .tab-pane > div,
+body.dark-mode .product__details__tab .tab-pane > div[style],
+body.dark-mode .product__details__tab .tab-pane > div {
+    background: linear-gradient(145deg, rgba(58, 58, 58, 0.4), rgba(45, 45, 45, 0.6)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: var(--dark-text-primary) !important;
+    padding: 30px !important;
+    border-radius: 15px !important;
+    margin-bottom: 25px !important;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+html body.dark-mode .product__details__tab .tab-pane > div[style]:before,
+body.dark-mode .product__details__tab .tab-pane > div[style]:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--dark-accent), transparent);
+    opacity: 0.5;
+}
+
+/* Texto dentro de la caja de descripción */
+html body.dark-mode .product__details__tab .tab-pane > div p,
+body.dark-mode .product__details__tab .tab-pane > div p {
+    color: var(--dark-text-primary) !important;
+    font-size: 15px !important;
+    line-height: 1.8 !important;
+    letter-spacing: 0.3px;
+}
+
+/* Tarjetas Premium (garantía/envío/devoluciones) - REDISEÑADAS */
+html body.dark-mode .product__details__tab .row .col-md-4 > div,
+body.dark-mode .product__details__tab .row .col-md-4 > div,
+body.dark-mode .product__details__tab .row .col-md-4 > div[style] {
+    background: linear-gradient(145deg, rgba(58, 58, 58, 0.5), rgba(45, 45, 45, 0.7)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: var(--dark-text-primary) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 15px !important;
+    padding: 30px 20px !important;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+html body.dark-mode .product__details__tab .row .col-md-4 > div:before,
+body.dark-mode .product__details__tab .row .col-md-4 > div:before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+html body.dark-mode .product__details__tab .row .col-md-4 > div:hover,
+body.dark-mode .product__details__tab .row .col-md-4 > div:hover {
+    border-color: var(--dark-accent) !important;
+    box-shadow: 0 12px 35px rgba(220, 20, 60, 0.3), 0 0 20px rgba(220, 20, 60, 0.1) !important;
+    transform: translateY(-8px) scale(1.02);
+}
+
+html body.dark-mode .product__details__tab .row .col-md-4 > div:hover:before,
+body.dark-mode .product__details__tab .row .col-md-4 > div:hover:before {
+    opacity: 1;
+}
+
+/* Iconos y textos dentro de las tarjetas */
+body.dark-mode .product__details__tab .row .col-md-4 i {
+    transition: all 0.3s ease !important;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+body.dark-mode .product__details__tab .row .col-md-4 > div:hover i {
+    transform: scale(1.15) rotate(5deg);
+}
+
+body.dark-mode .product__details__tab .row .col-md-4 h6,
+body.dark-mode .product__details__tab .row .col-md-4 p {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Iconos específicos con colores vibrantes y gradientes */
+html body.dark-mode .product__details__tab .fa-shield,
+body.dark-mode .product__details__tab .fa-shield {
+    color: #10b981 !important;
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+}
+
+html body.dark-mode .product__details__tab .fa-truck,
+body.dark-mode .product__details__tab .fa-truck {
+    color: #3b82f6 !important;
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+html body.dark-mode .product__details__tab .fa-refresh,
+body.dark-mode .product__details__tab .fa-refresh {
+    color: #f59e0b !important;
+    text-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+}
+
+/* Lista de especificaciones - REDISEÑADA con estilo premium */
+html body.dark-mode .product__details__tab .tab-pane ul,
+body.dark-mode .product__details__tab .tab-pane ul {
+    background: transparent !important;
+    color: var(--dark-text-primary) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+html body.dark-mode .product__details__tab .tab-pane ul li,
+body.dark-mode .product__details__tab .tab-pane ul li {
+    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+    padding: 20px 15px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+html body.dark-mode .product__details__tab .tab-pane ul li:before,
+body.dark-mode .product__details__tab .tab-pane ul li:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--dark-accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+html body.dark-mode .product__details__tab .tab-pane ul li:hover,
+body.dark-mode .product__details__tab .tab-pane ul li:hover {
+    background: linear-gradient(90deg, rgba(220, 20, 60, 0.05), transparent) !important;
+    padding-left: 20px !important;
+    border-color: rgba(220, 20, 60, 0.2) !important;
+}
+
+html body.dark-mode .product__details__tab .tab-pane ul li:hover:before,
+body.dark-mode .product__details__tab .tab-pane ul li:hover:before {
+    opacity: 1;
+}
+
+html body.dark-mode .product__details__tab .tab-pane ul li strong,
+body.dark-mode .product__details__tab .tab-pane ul li strong {
+    color: var(--dark-text-primary) !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+}
+
+html body.dark-mode .product__details__tab .tab-pane ul li strong i,
+body.dark-mode .product__details__tab .tab-pane ul li strong i {
+    color: var(--dark-accent) !important;
+    margin-right: 12px !important;
+    font-size: 16px !important;
+    transition: transform 0.3s ease;
+}
+
+html body.dark-mode .product__details__tab .tab-pane ul li:hover strong i,
+body.dark-mode .product__details__tab .tab-pane ul li:hover strong i {
+    transform: scale(1.2) rotate(10deg);
+}
+
+html body.dark-mode .product__details__tab .tab-pane ul li span,
+body.dark-mode .product__details__tab .tab-pane ul li span {
+    color: var(--dark-text-secondary) !important;
+    font-size: 14px !important;
+}
+
+/* Color verde para stock disponible con glow effect */
+html body.dark-mode .product__details__tab .tab-pane ul li span[style*="#2ecc71"],
+body.dark-mode .product__details__tab .tab-pane ul li span[style*="#2ecc71"] {
+    color: #10b981 !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+/* Precio en detalles - asegurar lectura en modo oscuro */
+html body.dark-mode .product__details__price,
+body.dark-mode .product__details__price {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Botones y acciones: adaptar colores */
+html body.dark-mode .product__details__action .btn-add-cart-modern,
+body.dark-mode .product__details__action .btn-add-cart-modern {
+    background: linear-gradient(135deg, var(--dark-accent) 0%, #a01010 100%) !important;
+    color: white !important;
+    border-color: var(--dark-accent) !important;
+}
+
+/* Botón "Ir al Carrito" - VERDE */
+html body.dark-mode .product__details__action .btn-add-cart-modern.go-to-cart,
+body.dark-mode .product__details__action .btn-add-cart-modern.go-to-cart {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: white !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+html body.dark-mode .product__details__action .btn-add-cart-modern.go-to-cart:hover,
+body.dark-mode .product__details__action .btn-add-cart-modern.go-to-cart:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4) !important;
+    transform: translateY(-2px);
+}
+
+/* Botón de Favoritos - MEJORADO */
+html body.dark-mode .product__details__action .btn-favorite-modern,
+body.dark-mode .product__details__action .btn-favorite-modern {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 2px solid var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+    transition: all 0.3s ease !important;
+}
+
+html body.dark-mode .product__details__action .btn-favorite-modern:hover,
+body.dark-mode .product__details__action .btn-favorite-modern:hover {
+    background: rgba(220, 20, 60, 0.1) !important;
+    border-color: var(--dark-accent) !important;
+    color: var(--dark-accent) !important;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.2) !important;
+    transform: scale(1.05);
+}
+
+/* Botón de Favoritos ACTIVO */
+html body.dark-mode .product__details__action .btn-favorite-modern.active,
+body.dark-mode .product__details__action .btn-favorite-modern.active {
+    background: linear-gradient(135deg, var(--dark-accent) 0%, #a01010 100%) !important;
+    border-color: var(--dark-accent) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4) !important;
+}
+
+html body.dark-mode .product__details__action .btn-favorite-modern.active:hover,
+body.dark-mode .product__details__action .btn-favorite-modern.active:hover {
+    background: linear-gradient(135deg, #a01010 0%, #800c0c 100%) !important;
+    box-shadow: 0 6px 20px rgba(220, 20, 60, 0.5) !important;
+}
+
+/* Inputs / cantidad */
+html body.dark-mode .quantity-input-group,
+body.dark-mode .quantity-input-group {
+    background-color: transparent !important;
+}
+
+/* Reviews - REDISEÑADAS con estilo premium */
+html body.dark-mode .review-item,
+body.dark-mode .review-item {
+    background: linear-gradient(145deg, rgba(58, 58, 58, 0.5), rgba(45, 45, 45, 0.7)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: var(--dark-text-primary) !important;
+    padding: 25px !important;
+    border-radius: 15px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    margin-bottom: 20px !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+html body.dark-mode .review-item:before,
+body.dark-mode .review-item:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transition: left 0.5s ease;
+}
+
+html body.dark-mode .review-item:hover,
+body.dark-mode .review-item:hover {
+    border-color: var(--dark-accent) !important;
+    box-shadow: 0 12px 35px rgba(220, 20, 60, 0.3), 0 0 20px rgba(220, 20, 60, 0.1) !important;
+    transform: translateX(8px) scale(1.01);
+}
+
+html body.dark-mode .review-item:hover:before,
+body.dark-mode .review-item:hover:before {
+    left: 100%;
+}
+
+html body.dark-mode .review-item strong,
+body.dark-mode .review-item strong {
+    color: var(--dark-text-primary) !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+}
+
+html body.dark-mode .review-item h6,
+body.dark-mode .review-item h6 {
+    color: var(--dark-text-primary) !important;
+    font-weight: 600 !important;
+    margin-top: 15px !important;
+    margin-bottom: 10px !important;
+}
+
+html body.dark-mode .review-item p,
+body.dark-mode .review-item p {
+    color: var(--dark-text-secondary) !important;
+    line-height: 1.6 !important;
+}
+
+html body.dark-mode .review-item .text-muted,
+body.dark-mode .review-item .text-muted {
+    color: var(--dark-text-secondary) !important;
+    opacity: 0.6;
+    font-size: 13px;
+}
+
+html body.dark-mode .review-item .text-success,
+body.dark-mode .review-item .text-success {
+    color: #10b981 !important;
+    font-weight: 600 !important;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+html body.dark-mode .review-item hr,
+body.dark-mode .review-item hr {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    margin: 20px 0;
+}
+
+/* Estrellas de rating con efecto glow */
+html body.dark-mode .review-item .fa-star,
+body.dark-mode .review-item .fa-star {
+    color: #fbbf24 !important;
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.5);
+    margin-right: 2px;
+}
+
+html body.dark-mode .review-item .fa-star-o,
+body.dark-mode .review-item .fa-star-o {
+    color: rgba(251, 191, 36, 0.25) !important;
+    margin-right: 2px;
+}
+
+/* Forzar color de pequeños textos inline (ej. color: #666) */
+html body.dark-mode [style*="color: #666"],
+body.dark-mode [style*="color: #666"] {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Forzar color negro a blanco (#000 → blanco) */
+html body.dark-mode [style*="color: #000"],
+html body.dark-mode [style*="color: #111"],
+body.dark-mode [style*="color: #000"],
+body.dark-mode [style*="color: #111"] {
+    color: var(--dark-text-primary) !important;
+}
+
+
+/* Product Description Section */
+body.dark-mode .description-section,
+body.dark-mode .description-box,
+body.dark-mode .feature-card {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .description-section h3,
+body.dark-mode .description-section h4,
+body.dark-mode .description-section h5,
+body.dark-mode .description-section h6 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .description-section p,
+body.dark-mode .description-section span {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .feature-card {
+    border: 1px solid var(--dark-border) !important;
+}
+
+body.dark-mode .feature-card:hover {
+    background-color: var(--dark-bg-tertiary) !important;
+}
+
+body.dark-mode .qty-input {
+    background-color: var(--dark-bg-tertiary);
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border);
+}
+
+body.dark-mode .qty-btn {
+    background-color: var(--dark-bg-tertiary);
+    border-color: var(--dark-border);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .qty-btn:hover:not(:disabled) {
+    background-color: var(--dark-accent);
+    border-color: var(--dark-accent);
+}
+
+body.dark-mode .stock-info {
+    color: var(--dark-text-secondary);
+}
+
+/* Cart */
+body.dark-mode .cart__table {
+    background-color: var(--dark-bg-secondary);
+}
+
+body.dark-mode .cart__table thead {
+    background-color: var(--dark-bg-tertiary);
+    border-bottom: 2px solid var(--dark-border);
+}
+
+body.dark-mode .cart__table th {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .cart__table td {
+    color: var(--dark-text-primary) !important;
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.dark-mode .cart__table tbody tr {
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+body.dark-mode .cart__table tbody tr:hover {
+    background-color: var(--dark-bg-tertiary) !important;
+}
+
+body.dark-mode .cart__total {
+    background-color: var(--dark-bg-secondary);
+    border: 1px solid var(--dark-border);
+}
+
+body.dark-mode .cart__total h6 {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .cart__total ul li {
+    color: var(--dark-text-primary);
+    border-bottom: 1px solid var(--dark-border);
+}
+
+/* Cart Page - Estilos específicos */
+body.dark-mode .shop__cart__table {
+    background: var(--dark-bg-secondary) !important;
+}
+
+body.dark-mode .shop__cart__table thead th {
+    background: var(--dark-bg-tertiary) !important;
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .shop__cart__table tbody td {
+    background: var(--dark-bg-secondary) !important;
+    border-color: transparent !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .shop__cart__table tbody tr {
+    background: var(--dark-bg-secondary) !important;
+}
+
+body.dark-mode .shop__cart__table tbody tr:hover td {
+    background: var(--dark-bg-tertiary) !important;
+}
+
+/* Cart - Empty state */
+body.dark-mode .cart-empty {
+    background-color: var(--dark-bg-primary);
+}
+
+body.dark-mode .cart-empty h3 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .cart-empty p {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .cart-empty i {
+    color: var(--dark-border) !important;
+}
+
+/* Cart Summary Sidebar */
+body.dark-mode .cart-summary-sidebar {
+    background: rgba(45, 45, 45, 0.6) !important;
+    border-color: var(--dark-border) !important;
+    backdrop-filter: blur(10px);
+}
+
+body.dark-mode .discount-section {
+    background: rgba(58, 58, 58, 0.5) !important;
+    border-bottom-color: var(--dark-border) !important;
+}
+
+body.dark-mode .discount-section h6 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .discount-section h6 i {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .discount-input {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .discount-input:focus {
+    border-color: var(--dark-accent) !important;
+    box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.2) !important;
+}
+
+body.dark-mode .discount-input::placeholder {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .btn-apply-discount {
+    background: transparent !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border) !important;
+}
+
+body.dark-mode .btn-apply-discount:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: var(--dark-text-primary) !important;
+}
+
+/* Cart Totals Section */
+body.dark-mode .cart-totals-section {
+    background: rgba(58, 58, 58, 0.5) !important;
+    border-bottom-color: var(--dark-border) !important;
+}
+
+body.dark-mode .cart-totals-section h5 {
+    color: var(--dark-text-primary) !important;
+    border-bottom-color: var(--dark-border) !important;
+}
+
+body.dark-mode .cart-totals-section h5 i {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .totals-row {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .totals-label {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .totals-value {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .discount-value {
+    color: #10b981 !important;
+}
+
+body.dark-mode .total-row {
+    border-top-color: var(--dark-border) !important;
+}
+
+body.dark-mode .total-label,
+body.dark-mode .total-amount {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Mobile Cart Footer */
+body.dark-mode .mobile-cart-footer {
+    background: rgba(45, 45, 45, 0.98) !important;
+    border-top-color: var(--dark-border) !important;
+}
+
+body.dark-mode .mobile-cart-footer__label {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .mobile-cart-footer__amount {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .mobile-cart-footer__savings {
+    color: #10b981 !important;
+}
+
+/* Coupon Messages */
+body.dark-mode #coupon-message.success {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #10b981 !important;
+    border-color: #10b981 !important;
+}
+
+body.dark-mode #coupon-message.error {
+    background: rgba(220, 20, 60, 0.2) !important;
+    color: var(--dark-accent) !important;
+    border-color: var(--dark-accent) !important;
+}
+
+/* Cart Mobile Items */
+body.dark-mode .cart-mobile-item {
+    background: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border) !important;
+}
+
+body.dark-mode .cart-mobile-item__header {
+    border-bottom-color: var(--dark-border) !important;
+}
+
+body.dark-mode .cart-mobile-item__title {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .cart-mobile-item__brand {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .cart-mobile-item__price {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .cart-mobile-item__price-original {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .cart-mobile-item__quantity-label {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .cart-mobile-item__total-label {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .cart-mobile-item__total-amount {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .cart-mobile-item__remove-btn {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .cart-mobile-item__remove-btn:hover {
+    background: var(--dark-bg-tertiary) !important;
+    color: var(--dark-accent) !important;
+}
+
+/* Cart Trust Section */
+body.dark-mode .trust-section {
+    background: rgba(58, 58, 58, 0.5) !important;
+}
+
+body.dark-mode .trust-badge {
+    background: rgba(16, 185, 129, 0.1) !important;
+    border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+body.dark-mode .trust-badge i {
+    color: #10b981 !important;
+}
+
+body.dark-mode .trust-text strong {
+    color: #10b981 !important;
+}
+
+body.dark-mode .trust-text p {
+    color: #059669 !important;
+}
+
+body.dark-mode .secure-payments {
+    border-top-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Cart Product Item */
+body.dark-mode .cart__product__item__title h6 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .cart__product__item__title p {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .cart__price {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .cart__total {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Quantity Controls */
+body.dark-mode .quantity-controls {
+    background: var(--dark-bg-tertiary) !important;
+}
+
+body.dark-mode .qty-btn {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .qty-btn:hover:not(:disabled) {
+    background: var(--dark-accent) !important;
+    border-color: var(--dark-accent) !important;
+    color: white !important;
+}
+
+body.dark-mode .quantity-input {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Remove Cart Item Button */
+body.dark-mode .remove-cart-item {
+    background: rgba(220, 20, 60, 0.1) !important;
+    color: var(--dark-accent) !important;
+}
+
+body.dark-mode .remove-cart-item:hover {
+    background: var(--dark-accent) !important;
+    color: white !important;
+}
+
+/* Cart Totals List */
+body.dark-mode .totals-list {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .total-row {
+    color: var(--dark-text-primary) !important;
+    border-bottom-color: var(--dark-border) !important;
+}
+
+body.dark-mode .total-row.total-final {
+    color: var(--dark-text-primary) !important;
+    border-top-color: var(--dark-border) !important;
+}
+
+body.dark-mode .total-row .amount {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .total-row.total-final .amount {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .total-row.discount-row {
+    background: rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Proceed to Checkout Button - mantener gradiente rojo */
+body.dark-mode .btn-proceed-checkout,
+body.dark-mode .mobile-checkout-btn {
+    /* Mantener el gradiente rojo original - no aplicar modo oscuro */
+    background: #c9a67c !important;
+    color: white !important;
+}
+
+body.dark-mode .btn-proceed-checkout:hover,
+body.dark-mode .mobile-checkout-btn:hover {
+    background: #c9a67c !important;
+    color: white !important;
+}
+
+/* Checkout */
+body.dark-mode .checkout__form {
+    background-color: var(--dark-bg-card);
+    padding: 30px;
+    border-radius: 10px;
+}
+
+/* Form Sections */
+body.dark-mode .form-section {
+    background-color: var(--dark-bg-card) !important;
+}
+
+body.dark-mode .form-section h5,
+body.dark-mode .form-section h4,
+body.dark-mode .form-section h3 {
+    color: var(--dark-text-primary) !important;
+    border-bottom-color: var(--dark-accent) !important;
+}
+
+body.dark-mode .form-section i {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .form-group label {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .form-group small,
+body.dark-mode .form-text {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .checkout__form h5,
+body.dark-mode .checkout__form h4,
+body.dark-mode .checkout__form h3 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .checkout__form input,
+body.dark-mode .checkout__form select,
+body.dark-mode .checkout__form textarea {
+    background-color: #202020 !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .checkout__form input::placeholder,
+body.dark-mode .checkout__form select::placeholder,
+body.dark-mode .checkout__form textarea::placeholder {
+    color: var(--dark-text-secondary) !important;
+    opacity: 0.7;
+}
+
+body.dark-mode .checkout__form input:focus,
+body.dark-mode .checkout__form select:focus,
+body.dark-mode .checkout__form textarea:focus {
+    border-color: var(--dark-accent) !important;
+    background-color: #1a1a1a !important;
+    color: var(--dark-text-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.2) !important;
+}
+
+body.dark-mode .checkout__form label {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .checkout__order {
+    background-color: var(--dark-bg-secondary) !important;
+    border: 1px solid var(--dark-border);
+}
+
+body.dark-mode .checkout__order h5,
+body.dark-mode .checkout__order h4 {
+    color: var(--dark-text-primary) !important;
+    border-bottom-color: var(--dark-border) !important;
+}
+
+body.dark-mode .checkout__order ul li {
+    color: var(--dark-text-primary) !important;
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.dark-mode .checkout__order .product-name,
+body.dark-mode .checkout__order .product-total {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .checkout__order span {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Checkout Steps */
+body.dark-mode .checkout-steps {
+    border-bottom-color: var(--dark-border) !important;
+}
+
+body.dark-mode .checkout-step::before {
+    background: var(--dark-border) !important;
+}
+
+body.dark-mode .step-number {
+    background: var(--dark-bg-tertiary) !important;
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .checkout-step.active .step-number {
+    background: var(--dark-accent) !important;
+    color: white !important;
+}
+
+body.dark-mode .checkout-step.completed .step-number {
+    background: #10b981 !important;
+    color: white !important;
+}
+
+body.dark-mode .step-title {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .checkout-step.active .step-title {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Order Summary */
+body.dark-mode .order-summary {
+    background: var(--dark-bg-card) !important;
+    border-color: var(--dark-border) !important;
+}
+
+body.dark-mode .order-summary h5 {
+    color: var(--dark-text-primary) !important;
+    border-bottom-color: var(--dark-border) !important;
+}
+
+body.dark-mode .order-item {
+    border-bottom-color: var(--dark-border) !important;
+    background: transparent !important;
+}
+
+body.dark-mode .order-item-name {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .order-item-details {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .order-item-price {
+    color: var(--dark-accent) !important;
+}
+
+body.dark-mode .order-totals {
+    border-top-color: var(--dark-border) !important;
+}
+
+body.dark-mode .order-total-row {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .order-total-row.total {
+    color: var(--dark-text-primary) !important;
+    border-top-color: var(--dark-border) !important;
+}
+
+/* Payment Methods */
+body.dark-mode .payment-method {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .payment-method:hover {
+    border-color: var(--dark-accent) !important;
+    background: rgba(220, 20, 60, 0.1) !important;
+}
+
+body.dark-mode .payment-method.selected {
+    border-color: var(--dark-accent) !important;
+    background: rgba(220, 20, 60, 0.1) !important;
+}
+
+/* Comprobante Type */
+body.dark-mode .comprobante-type {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .comprobante-type:hover {
+    border-color: var(--dark-accent) !important;
+}
+
+body.dark-mode .comprobante-type.selected {
+    border-color: var(--dark-accent) !important;
+    background: rgba(220, 20, 60, 0.1) !important;
+}
+
+body.dark-mode .comprobante-icon {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .comprobante-type.selected .comprobante-icon {
+    color: var(--dark-accent) !important;
+}
+
+/* Alerts */
+body.dark-mode .alert-danger {
+    background: rgba(220, 20, 60, 0.2) !important;
+    border-color: var(--dark-accent) !important;
+    color: #ff6b6b !important;
+}
+
+body.dark-mode .alert-success {
+    background: rgba(16, 185, 129, 0.2) !important;
+    border-color: #10b981 !important;
+    color: #10b981 !important;
+}
+
+body.dark-mode .alert-warning {
+    background: rgba(251, 191, 36, 0.2) !important;
+    border-color: #fbbf24 !important;
+    color: #fbbf24 !important;
+}
+
+/* Mobile Checkout Footer */
+body.dark-mode .mobile-checkout-footer {
+    background: rgba(45, 45, 45, 0.98) !important;
+    border-top-color: var(--dark-border) !important;
+}
+
+body.dark-mode .mobile-checkout-footer__label {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .mobile-checkout-footer__amount {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Mobile Cart Preview */
+body.dark-mode .mobile-cart-preview {
+    background: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border) !important;
+}
+
+body.dark-mode .mobile-cart-preview h6 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .preview-item {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+}
+
+body.dark-mode .preview-item-name {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .preview-item-qty {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .preview-item-price {
+    color: var(--dark-accent) !important;
+}
+
+/* Sections */
+body.dark-mode section {
+    background-color: var(--dark-bg-primary);
+}
+
+body.dark-mode .section-title h2 {
+    color: var(--dark-text-primary);
+}
+
+/* Footer */
+body.dark-mode .footer {
+    background-color: var(--dark-bg-secondary);
+    border-top: 1px solid var(--dark-border);
+}
+
+body.dark-mode .footer__widget h6 {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .footer__widget ul li a {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode .footer__widget ul li a:hover {
+    color: var(--dark-accent);
+}
+
+body.dark-mode .footer__copyright__text {
+    color: var(--dark-text-secondary);
+    border-top: 1px solid var(--dark-border);
+}
+
+/* Modals */
+body.dark-mode .modal-content {
+    background-color: var(--dark-bg-secondary);
+    border-color: var(--dark-border);
+}
+
+body.dark-mode .modal-header {
+    background-color: var(--dark-bg-tertiary);
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.dark-mode .modal-title {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .modal-body {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .close {
+    color: var(--dark-text-primary);
+}
+
+/* Search */
+body.dark-mode .search-model {
+    background-color: rgba(0, 0, 0, 0.95);
+}
+
+body.dark-mode .search-model-form input {
+    background-color: var(--dark-bg-tertiary);
+    border-color: var(--dark-border);
+    color: var(--dark-text-primary);
+}
+
+/* Offcanvas Menu - MENÚ MÓVIL */
+body.dark-mode .offcanvas-menu-overlay {
+    background-color: rgba(0, 0, 0, 0.85) !important;
+}
+
+body.dark-mode .offcanvas-menu-wrapper {
+    background: linear-gradient(180deg, #1e1e1e 0%, #252525 100%) !important;
+    background-color: #1e1e1e !important;
+    border-left: 1px solid #333333 !important;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.7) !important;
+}
+
+body.dark-mode .offcanvas__close {
+    color: #e0e0e0 !important;
+    background: #2a2a2a !important;
+    border: 1px solid #333333 !important;
+}
+
+body.dark-mode .offcanvas__close:hover {
+    color: #ff1744 !important;
+    background: rgba(220, 20, 60, 0.2) !important;
+    border-color: #dc143c !important;
+}
+
+body.dark-mode .offcanvas__logo {
+    border-bottom: 1px solid #333333 !important;
+}
+
+body.dark-mode .offcanvas__logo a {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .offcanvas__nav ul li {
+    border-bottom: 1px solid #333333 !important;
+}
+
+body.dark-mode .offcanvas__nav ul li a,
+body.dark-mode .offcanvas__menu ul li a {
+    color: #e0e0e0 !important;
+    background: transparent !important;
+}
+
+body.dark-mode .offcanvas__nav ul li a:hover,
+body.dark-mode .offcanvas__menu ul li a:hover {
+    color: #ff1744 !important;
+    background: rgba(220, 20, 60, 0.1) !important;
+}
+
+body.dark-mode .offcanvas__nav ul li a i {
+    color: #b0b0b0 !important;
+}
+
+body.dark-mode .offcanvas__nav ul li a:hover i {
+    color: #ff1744 !important;
+}
+
+body.dark-mode .offcanvas__widget {
+    border-top: 1px solid #333333 !important;
+    border-bottom: 1px solid #333333 !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+}
+
+body.dark-mode .offcanvas__widget li a,
+body.dark-mode .offcanvas__widget li span {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .offcanvas__widget li a:hover,
+body.dark-mode .offcanvas__widget li span:hover {
+    color: #ff1744 !important;
+}
+
+body.dark-mode .offcanvas__widget .tip {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1px solid #dc143c !important;
+}
+
+body.dark-mode .offcanvas__auth {
+    background: #2a2a2a !important;
+    border-top: 1px solid #333333 !important;
+}
+
+body.dark-mode .offcanvas__auth a {
+    color: #e0e0e0 !important;
+    border: 1px solid #333333 !important;
+    background: transparent !important;
+}
+
+body.dark-mode .offcanvas__auth a:first-child {
+    background: linear-gradient(135deg, #dc143c 0%, #b01030 100%) !important;
+    border-color: #dc143c !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .offcanvas__auth a:first-child:hover {
+    background: linear-gradient(135deg, #ff1744 0%, #dc143c 100%) !important;
+}
+
+body.dark-mode .offcanvas__auth a:last-child:hover {
+    background: #333333 !important;
+    border-color: #e0e0e0 !important;
+    color: #ff1744 !important;
+}
+
+body.dark-mode .offcanvas__user-compact {
+    background: linear-gradient(135deg, #2a2a2a 0%, #2d2d2d 100%) !important;
+    border: 1px solid #333333 !important;
+}
+
+body.dark-mode .offcanvas__user-compact:hover {
+    background: linear-gradient(135deg, #2d2d2d 0%, #333333 100%) !important;
+    border-color: #dc143c !important;
+}
+
+body.dark-mode .user-avatar-circle {
+    background: linear-gradient(135deg, #dc143c 0%, #b01030 100%) !important;
+    border: 2px solid rgba(220, 20, 60, 0.3) !important;
+}
+
+body.dark-mode .user-avatar-circle i {
+    color: #ffffff !important;
+}
+
+body.dark-mode .user-greeting {
+    color: #b0b0b0 !important;
+}
+
+body.dark-mode .user-name {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .offcanvas-submenu {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-left: 3px solid #dc143c !important;
+}
+
+body.dark-mode .offcanvas-submenu li a {
+    color: #b0b0b0 !important;
+}
+
+body.dark-mode .offcanvas-submenu li a:hover {
+    color: #ff1744 !important;
+    background: rgba(220, 20, 60, 0.15) !important;
+}
+
+/* ============================================
+   BOTONES - ADAPTACIÓN COMPLETA MODO OSCURO
+   ============================================ */
+
+/* Botones principales */
+body.dark-mode .primary-btn,
+body.dark-mode .btn-primary,
+body.dark-mode .site-btn {
+    background: linear-gradient(135deg, var(--dark-bg-tertiary) 0%, var(--dark-bg-secondary) 100%) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .primary-btn:hover,
+body.dark-mode .btn-primary:hover,
+body.dark-mode .site-btn:hover {
+    background: linear-gradient(135deg, var(--dark-accent) 0%, #a01010 100%) !important;
+    border-color: var(--dark-accent) !important;
+    color: white !important;
+}
+
+/* Botones de acción (agregar al carrito, etc) */
+body.dark-mode .cart-btn,
+body.dark-mode .add-to-cart,
+body.dark-mode .primary-btn.cart-btn {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .cart-btn:hover,
+body.dark-mode .add-to-cart:hover {
+    background: var(--dark-accent) !important;
+    border-color: var(--dark-accent) !important;
+    color: white !important;
+}
+
+/* Botones secundarios */
+body.dark-mode .btn-secondary,
+body.dark-mode .btn-outline {
+    background: transparent !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .btn-secondary:hover,
+body.dark-mode .btn-outline:hover {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-text-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Botones de filtro móvil */
+body.dark-mode .btn-mobile-filters {
+    background: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .btn-mobile-filters:hover {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-accent) !important;
+}
+
+/* Botones de aplicar filtros */
+body.dark-mode .btn-apply-filters-modal {
+    background: linear-gradient(135deg, var(--dark-accent) 0%, #a01010 100%) !important;
+    border-color: var(--dark-accent) !important;
+    color: white !important;
+}
+
+body.dark-mode .btn-apply-filters-modal:hover {
+    background: linear-gradient(135deg, #a01010 0%, #800c0c 100%) !important;
+}
+
+/* Botones de cerrar modal */
+body.dark-mode .filters-modal-close,
+body.dark-mode .btn-close {
+    background: var(--dark-bg-tertiary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .filters-modal-close:hover {
+    background: var(--dark-accent) !important;
+    color: white !important;
+}
+
+/* Inputs generales */
+body.dark-mode input[type="text"],
+body.dark-mode input[type="email"],
+body.dark-mode input[type="password"],
+body.dark-mode input[type="number"],
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: var(--dark-bg-tertiary);
+    border-color: var(--dark-border);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode input[type="text"]:focus,
+body.dark-mode input[type="email"]:focus,
+body.dark-mode input[type="password"]:focus,
+body.dark-mode input[type="number"]:focus,
+body.dark-mode select:focus,
+body.dark-mode textarea:focus {
+    border-color: var(--dark-accent);
+    background-color: var(--dark-bg-tertiary);
+}
+
+/* Placeholders */
+body.dark-mode ::placeholder {
+    color: var(--dark-text-secondary) !important;
+    opacity: 0.6;
+}
+
+/* Reglas generales para asegurar todos los textos */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode p {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode span {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode label {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode a {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode a:hover {
+    color: var(--dark-accent) !important;
+}
+
+body.dark-mode li {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode div {
+    color: var(--dark-text-primary);
+}
+
+/* Específicos para elementos comunes */
+body.dark-mode .text-muted {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .small,
+body.dark-mode small {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .card {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .card-body {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .list-group-item {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .table {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .table th,
+body.dark-mode .table td {
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .form-control {
+    background-color: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .form-control:focus {
+    background-color: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-accent) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .form-label {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Formularios - secciones adicionales */
+body.dark-mode .form-section {
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+body.dark-mode .form-section h5,
+body.dark-mode .form-section h4 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .form-section i {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .form-group label {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .form-group small,
+body.dark-mode .form-text {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .text-info {
+    color: #60a5fa !important;
+}
+
+/* Order/Checkout items específicos */
+body.dark-mode .order-item,
+body.dark-mode .product-item {
+    background-color: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+}
+
+body.dark-mode .order-item h6,
+body.dark-mode .order-item p,
+body.dark-mode .order-item span {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .order-total,
+body.dark-mode .subtotal,
+body.dark-mode .shipping {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Select options */
+body.dark-mode option {
+    background-color: var(--dark-bg-tertiary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode select {
+    background-color: #202020 !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode select:focus {
+    background-color: #1a1a1a !important;
+    border-color: var(--dark-accent) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Select con clase form-control específicamente */
+body.dark-mode .form-control select,
+body.dark-mode select.form-control {
+    background-color: #202020 !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23e8e8e8' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 10px center !important;
+    background-size: 12px !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+}
+
+body.dark-mode .form-control select:focus,
+body.dark-mode select.form-control:focus {
+    background-color: #1a1a1a !important;
+    border-color: var(--dark-accent) !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23dc143c' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+}
+
+/* Selects de ubigeo específicos */
+body.dark-mode #departamento,
+body.dark-mode #provincia,
+body.dark-mode #distrito {
+    background-color: #202020 !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode #departamento:focus,
+body.dark-mode #provincia:focus,
+body.dark-mode #distrito:focus {
+    background-color: #1a1a1a !important;
+    border-color: var(--dark-accent) !important;
+}
+
+body.dark-mode #departamento option,
+body.dark-mode #provincia option,
+body.dark-mode #distrito option {
+    background-color: #2d2d2d !important;
+    color: var(--dark-text-primary) !important;
+    padding: 8px !important;
+}
+
+body.dark-mode #departamento option:hover,
+body.dark-mode #provincia option:hover,
+body.dark-mode #distrito option:hover {
+    background-color: var(--dark-bg-tertiary) !important;
+}
+
+body.dark-mode #departamento option:checked,
+body.dark-mode #provincia option:checked,
+body.dark-mode #distrito option:checked {
+    background-color: var(--dark-accent) !important;
+    color: white !important;
+}
+
+/* Icons en general */
+body.dark-mode i,
+body.dark-mode .fa {
+    color: var(--dark-text-primary);
+}
+
+/* Breadcrumb */
+body.dark-mode .breadcrumb {
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+body.dark-mode .breadcrumb-item,
+body.dark-mode .breadcrumb-item a {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .breadcrumb-item.active {
+    color: var(--dark-accent) !important;
+}
+
+/* Breadcrumb personalizado (.breadcrumb-option) */
+body.dark-mode .breadcrumb-option {
+    background-color: #1a1a1a !important;
+}
+
+body.dark-mode .breadcrumb__links a {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .breadcrumb__links a:hover {
+    color: var(--dark-accent) !important;
+}
+
+body.dark-mode .breadcrumb__links a:after {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .breadcrumb__links span {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Transición suave */
+body,
+.header,
+.product__item,
+.modal-content,
+input,
+select,
+textarea {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ============================================
+   SHOP PAGE - ADAPTACIÓN COMPLETA
+   ============================================ */
+
+/* Sidebar de filtros */
+body.dark-mode .shop__sidebar {
+    background: var(--dark-bg-secondary) !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3) !important;
+}
+
+/* Header de filtros */
+body.dark-mode .filters-header {
+    background: linear-gradient(135deg, var(--dark-bg-tertiary) 0%, var(--dark-bg-secondary) 100%) !important;
+    border-bottom-color: var(--dark-accent) !important;
+}
+
+body.dark-mode .filters-header h3 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .btn-clear-filters-compact {
+    background: rgba(255,255,255,0.1) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    color: #be9b71 !important;
+}
+
+body.dark-mode .btn-clear-filters-compact:hover {
+    background: rgba(255,255,255,0.2) !important;
+}
+
+/* Botón limpiar filtros principal */
+body.dark-mode .btn-clear-filters {
+    background: linear-gradient(135deg, var(--dark-bg-tertiary) 0%, var(--dark-bg-secondary) 100%) !important;
+    border-color: var(--dark-border) !important;
+    color: be9b71 !important;
+}
+
+body.dark-mode .btn-clear-filters:hover {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-accent) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Secciones de filtro */
+body.dark-mode .filter-section {
+    border-bottom-color: var(--dark-border) !important;
+}
+
+body.dark-mode .filter-section-header {
+    background: var(--dark-bg-secondary) !important;
+}
+
+body.dark-mode .filter-section-header:hover {
+    background: var(--dark-bg-tertiary) !important;
+}
+
+body.dark-mode .filter-section-header h4 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .filter-section-header h4 i {
+    color: var(--dark-accent) !important;
+}
+
+body.dark-mode .toggle-icon {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .filter-section-body {
+    background: var(--dark-bg-card) !important;
+}
+
+/* Filter Chips */
+body.dark-mode .filter-chip {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .filter-chip:hover {
+    border-color: #c9a67c !important; /* Tono dorado */
+    background: rgba(201, 166, 124, 0.1) !important;
+}
+
+body.dark-mode .filter-chip.active {
+    background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%) !important;
+    border-color: #c9a67c !important;
+    color: white !important;
+}
+
+/* Filter Buttons */
+body.dark-mode .filter-btn {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .filter-btn:hover {
+    background: var(--dark-bg-card) !important;
+    border-color: var(--dark-text-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .filter-btn.active {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-accent) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Filter List Items */
+body.dark-mode .filter-list-item {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+}
+
+body.dark-mode .filter-list-item:hover {
+    border-color: #c9a67c !important;
+    background: rgba(201, 166, 124, 0.1) !important;
+}
+
+body.dark-mode .filter-list-item.active {
+    border-color: #c9a67c !important;
+    background: rgba(201, 166, 124, 0.1) !important;
+}
+
+body.dark-mode .filter-list-text {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .filter-list-item.active .filter-list-text {
+    color: #c9a67c !important;
+}
+
+body.dark-mode .check-icon {
+    color: transparent !important;
+}
+
+body.dark-mode .filter-list-item.active .check-icon {
+    color: #c9a67c !important;
+}
+
+/* Scrollbar en dark mode */
+body.dark-mode .filter-list::-webkit-scrollbar-track {
+    background: var(--dark-bg-tertiary) !important;
+}
+
+body.dark-mode .filter-list::-webkit-scrollbar-thumb {
+    background: #c9a67c !important;
+}
+
+/* Price Range Container */
+body.dark-mode .price-range-container {
+    background: var(--dark-bg-tertiary) !important;
+}
+
+body.dark-mode .price-inputs {
+    background: var(--dark-bg-secondary) !important;
+}
+
+body.dark-mode .price-input-group {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+}
+
+body.dark-mode .price-input-group input {
+    background: transparent !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .price-input-group span {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* ========================================
+   SORT DROPDOWN - MODO OSCURO
+   ======================================== */
+
+/* Botón de ordenar */
+body.dark-mode .btn-sort {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .btn-sort:hover {
+    border-color: #c9a67c !important; /* Tono dorado/cálido */
+    color: #c9a67c !important;
+    box-shadow: 0 4px 12px rgba(201, 166, 124, 0.2) !important;
+}
+
+/* Menú desplegable */
+body.dark-mode .sort-menu {
+    background: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .sort-menu button {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .sort-menu button:hover {
+    background: rgba(201, 166, 124, 0.15) !important; /* Fondo dorado suave */
+    color: #c9a67c !important;
+}
+
+body.dark-mode .sort-menu button.active {
+    background: rgba(201, 166, 124, 0.25) !important;
+    color: #c9a67c !important;
+    font-weight: 600;
+}
+
+body.dark-mode .sort-menu button i {
+    color: inherit;
+}
+
+/* Product Items */
+body.dark-mode .product__item,
+body.dark-mode .product__item.sale {
+    background-color: var(--dark-bg-secondary) !important;
+    background-image: none !important;
+    background: var(--dark-bg-secondary) !important;
+    border: 1px solid var(--dark-border);
+}
+
+/* CRÍTICO: Eliminar cualquier fondo rojo del texto del producto - MÁXIMA ESPECIFICIDAD */
+html body.dark-mode .product__item__text,
+html body.dark-mode .product__item.sale .product__item__text,
+html body.dark-mode div.product__item__text,
+html body.dark-mode .product__item div.product__item__text,
+body.dark-mode.dark-mode .product__item__text,
+body.dark-mode.dark-mode .product__item.sale .product__item__text {
+    background-color: transparent !important;
+    background-image: none !important;
+    background: transparent !important;
+}
+
+body.dark-mode .product__item:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    border-color: var(--dark-accent);
+}
+
+body.dark-mode .product__item__text h6,
+body.dark-mode .product__item__text h6 a {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .product__item__text h6:hover,
+body.dark-mode .product__item__text h6 a:hover {
+    color: var(--dark-accent) !important;
+}
+
+/* Precios de productos - BLANCO en modo oscuro - MÁXIMA ESPECIFICIDAD */
+html body.dark-mode .product__item.sale .product__item__text .product__price,
+html body.dark-mode .product__item .product__item__text .product__price,
+html body.dark-mode .product__item__text .product__price,
+html body.dark-mode .product__item .product__price,
+body.dark-mode .product__item.sale .product__item__text .product__price,
+body.dark-mode .product__item .product__item__text .product__price,
+body.dark-mode .product__item__text .product__price,
+body.dark-mode .product__item .product__price,
+body.dark-mode .product__price {
+    color: #e8e8e8 !important;
+    font-weight: 700 !important;
+}
+
+/* Precio tachado (precio original) - gris */
+html body.dark-mode .product__item.sale .product__item__text .product__price span,
+html body.dark-mode .product__item .product__price span,
+body.dark-mode .product__item.sale .product__item__text .product__price span,
+body.dark-mode .product__item .product__price span,
+body.dark-mode .product__price span {
+    color: #b0b0b0 !important;
+    opacity: 0.7 !important;
+    text-decoration: line-through !important;
+    font-weight: normal !important;
+}
+
+body.dark-mode .product__item__text p {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Sale badge mantiene color rojo */
+body.dark-mode .sale {
+    background: var(--dark-accent) !important;
+}
+
+/* Sorting y Pagination */
+body.dark-mode .shop__product__option__right {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .shop__product__option__right p {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .shop__product__option__right select {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Pagination */
+body.dark-mode .pagination {
+    background: var(--dark-bg-secondary) !important;
+}
+
+body.dark-mode .pagination a {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .pagination a:hover {
+    background: var(--dark-accent) !important;
+    border-color: var(--dark-accent) !important;
+    color: white !important;
+}
+
+body.dark-mode .pagination a.active {
+    background: var(--dark-accent) !important;
+    border-color: var(--dark-accent) !important;
+    color: white !important;
+}
+
+/* Loading Spinner */
+body.dark-mode .fa-spinner {
+    color: var(--dark-accent) !important;
+}
+
+/* Empty State */
+body.dark-mode .no-products-message {
+    background: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .no-products-message i {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .no-products-message h4 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .no-products-message p {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Ratings y estrellas */
+body.dark-mode .rating i,
+body.dark-mode .product__rating i {
+    color: #fbbf24 !important; /* Dorado para estrellas */
+}
+
+body.dark-mode .rating span {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Alert boxes */
+body.dark-mode .alert-info {
+    background: rgba(96, 165, 250, 0.2) !important;
+    border-color: #60a5fa !important;
+    color: #93c5fd !important;
+}
+
+body.dark-mode .alert-info i {
+    color: #60a5fa !important;
+}
+
+/* Links en productos */
+body.dark-mode .product__item a {
+    color: var(--dark-text-primary) !important;
+    text-decoration: none !important;
+}
+
+body.dark-mode .product__item a:hover {
+    color: var(--dark-accent) !important;
+}
+
+/* ============================================
+   PRODUCT HOVER - BOTONES DE ACCIÓN
+   ============================================ */
+
+/* Contenedor de botones hover */
+body.dark-mode .product__hover {
+    background: rgba(45, 45, 45, 0.95) !important;
+}
+
+body.dark-mode .product__hover li a {
+    background: var(--dark-bg-tertiary) !important;
+    border-color: var(--dark-border) !important;
+}
+
+body.dark-mode .product__hover li a:hover {
+    background: var(--dark-accent) !important;
+    border-color: var(--dark-accent) !important;
+}
+
+/* Iconos dentro de product hover */
+body.dark-mode .product__hover .icon_search,
+body.dark-mode .product__hover .icon_heart_alt,
+body.dark-mode .product__hover .icon_heart,
+body.dark-mode .product__hover .icon_bag_alt {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .product__hover li a:hover .icon_search,
+body.dark-mode .product__hover li a:hover .icon_heart_alt,
+body.dark-mode .product__hover li a:hover .icon_heart,
+body.dark-mode .product__hover li a:hover .icon_bag_alt {
+    color: white !important;
+}
+
+/* Botón de favoritos activo */
+body.dark-mode .add-to-favorites.active {
+    background: var(--dark-accent) !important;
+}
+
+body.dark-mode .add-to-favorites.active .icon_heart {
+    color: white !important;
+}
+
+/* ============================================
+   FIX PRECIO ROJO - FORZAR BLANCO
+   ============================================ */
+
+/* IMPORTANTE: El CSS original tiene .product__item.sale con color rojo #ca1515
+   Usamos doble body.dark-mode para MÁXIMA especificidad */
+
+/* Precios - DOBLE ESPECIFICIDAD para garantizar sobrescritura del rojo */
+body.dark-mode body.dark-mode .product__price,
+body.dark-mode body.dark-mode .product__item .product__price,
+body.dark-mode body.dark-mode .product__item__text .product__price,
+body.dark-mode body.dark-mode div.product__price,
+body.dark-mode body.dark-mode .product__item .product__item__text .product__price,
+body.dark-mode body.dark-mode .product__item.sale .product__item__text .product__price,
+body.dark-mode.dark-mode .product__price,
+body.dark-mode.dark-mode .product__item .product__price,
+body.dark-mode.dark-mode .product__item__text .product__price,
+body.dark-mode.dark-mode .product__item.sale .product__item__text .product__price {
+    color: #e8e8e8 !important;
+    font-weight: 700 !important;
+}
+
+/* Precio tachado - gris claro con MÁXIMA especificidad */
+body.dark-mode body.dark-mode .product__price > span,
+body.dark-mode body.dark-mode .product__price span,
+body.dark-mode body.dark-mode .product__item .product__price span,
+body.dark-mode body.dark-mode .product__item__text .product__price span,
+body.dark-mode.dark-mode .product__price > span,
+body.dark-mode.dark-mode .product__price span,
+body.dark-mode.dark-mode .product__item .product__price span {
+    color: #b0b0b0 !important;
+    opacity: 0.7 !important;
+    text-decoration: line-through !important;
+    font-weight: normal !important;
+}
+
+/* Labels y spans inline - adaptar al modo oscuro */
+body.dark-mode .product__item label[style*="color"],
+body.dark-mode .product__item span[style*="color: #999"],
+body.dark-mode .product__item span[style*="color: #666"],
+body.dark-mode .rating span[style*="color"] {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* ============================================
+   FRANJA TRANSPARENTE - PRODUCT HOVER
+   ============================================ */
+body.dark-mode .product__hover {
+    background: transparent !important;
+}
+
+/* ============================================
+   DEBUG: FORZAR PRECIOS BLANCOS - ÚLTIMA PALABRA
+   ============================================ */
+
+/* CONFLICTO ENCONTRADO: .product__item.sale .product__item__text .product__price { color: #ca1515; }
+   Especificidad original: 0,0,4,0 (4 clases)
+   Nuestra solución: 0,0,6,0+ (6+ clases) con !important */
+
+/* Máxima especificidad posible - Triplica el selector */
+html body.dark-mode.dark-mode.dark-mode .product__item.sale .product__item__text .product__price,
+html body.dark-mode.dark-mode .product__item.sale .product__item__text .product__price,
+html body.dark-mode .product__item.sale .product__item__text .product__price,
+body.dark-mode.dark-mode.dark-mode .product__item.sale .product__price,
+body.dark-mode.dark-mode .product__item.sale .product__price,
+body.dark-mode .product__item.sale .product__price,
+html body.dark-mode [class*="product"] [class*="price"]:not(span),
+html body.dark-mode [class*="product"] div[class*="price"]:not(span),
+html body.dark-mode div[class*="product__price"],
+html body.dark-mode .product__item div.product__price,
+body.dark-mode [class*="product"] [class*="price"]:not(span),
+body.dark-mode [class*="product"] div[class*="price"]:not(span),
+body.dark-mode div[class*="product__price"],
+body.dark-mode .product__item.sale div.product__price,
+body.dark-mode .product__item div.product__price,
+body.dark-mode .product__price {
+    color: #e8e8e8 !important;
+    font-weight: 700 !important;
+}
+
+/* Evitar que el span (precio tachado) sea blanco - MÁXIMA ESPECIFICIDAD */
+html body.dark-mode .product__item.sale .product__item__text .product__price span,
+html body.dark-mode .product__item .product__price span,
+html body.dark-mode [class*="product"] [class*="price"] span,
+html body.dark-mode div[class*="product__price"] span,
+body.dark-mode [class*="product"] [class*="price"] span,
+body.dark-mode div[class*="product__price"] span,
+body.dark-mode .product__price span {
+    color: #b0b0b0 !important;
+    text-decoration: line-through !important;
+    font-weight: normal !important;
+    opacity: 0.7 !important;
+}
+
+/* ============================================
+   SOLUCIÓN NUCLEAR - FORZAR PRECIOS BLANCOS
+   Especificidad máxima absoluta
+   ============================================ */
+
+/* TODOS LOS PRECIOS - BLANCOS - ESPECIFICIDAD EXTREMA */
+html body.dark-mode.dark-mode.dark-mode.dark-mode .product__item.sale .product__item__text .product__price,
+html body.dark-mode.dark-mode.dark-mode .product__item.sale .product__item__text .product__price,
+html body.dark-mode.dark-mode.dark-mode.dark-mode .product__item .product__item__text .product__price,
+html body.dark-mode.dark-mode.dark-mode .product__item .product__item__text .product__price,
+html body.dark-mode.dark-mode.dark-mode.dark-mode .product__price,
+html body.dark-mode.dark-mode.dark-mode .product__price,
+html body.dark-mode.dark-mode.dark-mode .product__item .product__price,
+html body.dark-mode.dark-mode.dark-mode .product__item__text .product__price {
+    color: #e8e8e8 !important;
+    font-weight: 700 !important;
+}
+
+/* PRECIO TACHADO - GRIS */
+html body.dark-mode.dark-mode.dark-mode.dark-mode .product__price span,
+html body.dark-mode.dark-mode.dark-mode .product__price span,
+html body.dark-mode.dark-mode.dark-mode.dark-mode .product__item .product__price span,
+html body.dark-mode.dark-mode.dark-mode .product__item .product__price span {
+    color: #b0b0b0 !important;
+    text-decoration: line-through !important;
+    font-weight: normal !important;
+    opacity: 0.7 !important;
+}
+

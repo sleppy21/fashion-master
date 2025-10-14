@@ -117,9 +117,9 @@ async function updateFavoritesCount() {
         const data = await fetchGET('app/actions/get_favorites_count.php');
         
         if (data.success) {
-            // Actualizar el contador de favoritos
+            // Actualizar el contador de favoritos con formato correcto
             document.querySelectorAll('.favorites-count').forEach(el => {
-                el.textContent = data.count;
+                el.textContent = data.count_text || (data.count + (data.count === 1 ? ' producto' : ' productos'));
             });
         }
     } catch (error) {

@@ -24,10 +24,12 @@ try {
     ", [$user_id]);
     
     $count = ($result && count($result) > 0) ? intval($result[0]['total']) : 0;
+    $count_text = $count == 1 ? '1 producto' : $count . ' productos';
     
     echo json_encode([
         'success' => true,
-        'count' => $count
+        'count' => $count,
+        'count_text' => $count_text
     ]);
     
 } catch(Exception $e) {

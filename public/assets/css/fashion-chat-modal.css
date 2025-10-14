@@ -20,6 +20,175 @@
     --fs-radius: 8px;
     --fs-radius-lg: 12px;
     --fs-transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Gradiente morado del proyecto */
+    --gradient-purple: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* ========================================
+   BOTÓN FLOTANTE DEL CHAT - DISEÑO MEJORADO
+   ======================================== */
+
+.fs-chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9998;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.fs-chat-widget.fs-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.fs-chat-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--gradient-purple);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4),
+                0 4px 8px rgba(118, 75, 162, 0.2);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.fs-chat-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.fs-chat-button:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5),
+                0 6px 12px rgba(118, 75, 162, 0.3);
+}
+
+.fs-chat-button:hover::before {
+    opacity: 1;
+}
+
+.fs-chat-button:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3),
+                0 2px 6px rgba(118, 75, 162, 0.2);
+}
+
+.fs-chat-button.fs-active {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Icono del chatbot */
+.fs-chat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.fs-chat-icon svg {
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* Texto del botón */
+.fs-chat-text {
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    letter-spacing: 0.3px;
+}
+
+/* Pulso de animación */
+.fs-chat-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    animation: fs-pulse-animation 2s infinite;
+    pointer-events: none;
+}
+
+@keyframes fs-pulse-animation {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0;
+    }
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .fs-chat-widget {
+        bottom: 16px;
+        right: 16px;
+    }
+    
+    .fs-chat-button {
+        padding: 12px 18px;
+        font-size: 14px;
+        gap: 10px;
+    }
+    
+    .fs-chat-icon {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .fs-chat-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .fs-chat-text {
+        display: none;
+    }
+    
+    .fs-chat-button {
+        width: 56px;
+        height: 56px;
+        padding: 0;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    
+    .fs-chat-icon {
+        width: 32px;
+        height: 32px;
+    }
 }
 
 /* Container del chat responsive con animación suave */
@@ -29,7 +198,7 @@
     right: 10px;
     width: min(400px, calc(100vw - 20px));
     height: min(600px, calc(100vh - 120px));
-    background: #ffffff;
+    background: var(--fs-bg-primary);
     color: var(--fs-text-primary);
     border-radius: var(--fs-radius-lg);
     box-shadow: var(--fs-shadow-lg);
@@ -54,7 +223,7 @@
 
 /* Header del chat - Proporciones optimizadas */
 .fs-chat-header {
-    background: #ffffff;
+    background: var(--fs-bg-primary);
     color: var(--fs-text-primary);
     padding: 16px 20px;
     display: flex;
@@ -158,7 +327,7 @@
 }
 
 .fs-chat-close:hover {
-    background: #ffffff;
+    background: var(--fs-bg-secondary);
     color: var(--fs-text-primary);
     border-color:#00000077;
     transform: scale(1.05) rotate(90deg);
@@ -172,7 +341,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    background: #fafafa;
+    background: var(--fs-bg-chat);
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-behavior: smooth;
@@ -249,7 +418,7 @@
 
 .fs-message-content {
     max-width: 280px;
-    background: #ffffff;
+    background: var(--fs-bg-secondary);
     padding: 12px 16px;
     border-radius: 16px;
     position: relative;
@@ -840,4 +1009,339 @@ body.fs-chat-open {
         height: 580px;
         right: 10px;
     }
+}
+
+/* ========================================
+   BOTÓN DE ENVÍO - ESTILOS FALTANTES
+   ======================================== */
+
+/* Botón de enviar - Diseño moderno */
+.fs-chat-send {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #000000 0%, #2a2a2a 100%);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.fs-chat-send:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #2a2a2a 0%, #000000 100%);
+}
+
+.fs-chat-send:active {
+    transform: scale(0.95);
+}
+
+.fs-chat-send:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Estados del botón de envío */
+.fs-send-state {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.fs-send-state.fs-send-ready {
+    display: flex;
+}
+
+.fs-chat-send[data-state="waiting"] .fs-send-ready {
+    display: none;
+}
+
+.fs-chat-send[data-state="waiting"] .fs-send-waiting {
+    display: flex;
+}
+
+.fs-chat-send[data-state="responding"] .fs-send-ready {
+    display: none;
+}
+
+.fs-chat-send[data-state="responding"] .fs-send-responding {
+    display: flex;
+}
+
+/* Spinner orbital para estado "waiting" */
+.fs-orbital-spinner {
+    position: relative;
+    width: 24px;
+    height: 24px;
+}
+
+.fs-orbital-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.fs-orbital-dot {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+}
+
+.fs-orbital-dot.fs-dot-1 {
+    animation: fs-orbit 1.2s linear infinite;
+}
+
+.fs-orbital-dot.fs-dot-2 {
+    animation: fs-orbit 1.2s linear infinite;
+    animation-delay: -0.4s;
+}
+
+.fs-orbital-dot.fs-dot-3 {
+    animation: fs-orbit 1.2s linear infinite;
+    animation-delay: -0.8s;
+}
+
+@keyframes fs-orbit {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) translateX(10px) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg) translateX(10px) rotate(-360deg);
+    }
+}
+
+/* Spinner para estado "responding" */
+.fs-stop-container {
+    position: relative;
+    width: 24px;
+    height: 24px;
+}
+
+.fs-stop-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: fs-spin 0.8s linear infinite;
+}
+
+@keyframes fs-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Icono profesional de envío con animaciones */
+.fs-professional-send {
+    display: block;
+}
+
+/* Ajustes responsive para el botón */
+@media (max-width: 575.98px) {
+    .fs-chat-send {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+}
+
+/* ========================================
+   MODO OSCURO - DARK MODE
+   ======================================== */
+
+body.dark-mode {
+    /* Variables para dark mode */
+    --fs-bg-primary: #1a1a1a;
+    --fs-bg-secondary: #242424;
+    --fs-bg-chat: #1e1e1e;
+    --fs-text-primary: #ffffff;
+    --fs-text-secondary: #e0e0e0;
+    --fs-text-muted: #999999;
+    --fs-border: #3a3a3a;
+    --fs-border-light: #2a2a2a;
+    --fs-accent: #c9a67c;
+    --fs-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+    --fs-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Botón flotante en dark mode */
+body.dark-mode .fs-chat-button {
+    background: linear-gradient(135deg, #c9a67c 0%, #d4b896 100%);
+    box-shadow: 0 8px 24px rgba(201, 166, 124, 0.4),
+                0 4px 8px rgba(212, 184, 150, 0.2);
+}
+
+body.dark-mode .fs-chat-button:hover {
+    box-shadow: 0 12px 32px rgba(201, 166, 124, 0.5),
+                0 6px 12px rgba(212, 184, 150, 0.3);
+}
+
+body.dark-mode .fs-chat-button.fs-active {
+    background: linear-gradient(135deg, #d4b896 0%, #c9a67c 100%);
+}
+
+/* Container del chat en dark mode */
+body.dark-mode .fs-chat-container {
+    background: var(--fs-bg-primary);
+    color: var(--fs-text-primary);
+    border: 1px solid var(--fs-border);
+    box-shadow: var(--fs-shadow-lg);
+}
+
+/* Header del chat en dark mode */
+body.dark-mode .fs-chat-header {
+    background: var(--fs-bg-secondary);
+    border-bottom: 1px solid var(--fs-border);
+}
+
+body.dark-mode .fs-chat-avatar {
+    background: var(--fs-accent);
+}
+
+body.dark-mode .fs-chat-status {
+    color: var(--fs-text-secondary);
+}
+
+body.dark-mode .fs-status-dot {
+    background: #4ade80;
+}
+
+/* Mensajes en dark mode */
+body.dark-mode .fs-chat-messages {
+    background: var(--fs-bg-chat);
+}
+
+body.dark-mode .fs-bot-message .fs-message-content {
+    background: var(--fs-bg-secondary);
+    color: var(--fs-text-primary);
+    border: 1px solid var(--fs-border-light);
+}
+
+body.dark-mode .fs-user-message .fs-message-content {
+    background: linear-gradient(135deg, #c9a67c 0%, #d4b896 100%);
+    color: #1a1a1a;
+}
+
+body.dark-mode .fs-message-time {
+    color: var(--fs-text-muted);
+}
+
+/* Botones de sugerencias en dark mode */
+body.dark-mode .fs-suggestion-btn {
+    background: var(--fs-bg-secondary);
+    color: var(--fs-text-primary);
+    border: 1px solid var(--fs-border);
+}
+
+body.dark-mode .fs-suggestion-btn:hover {
+    background: var(--fs-accent);
+    color: #1a1a1a;
+    border-color: var(--fs-accent);
+}
+
+/* Input en dark mode */
+body.dark-mode .fs-chat-input-wrapper {
+    background: var(--fs-bg-secondary);
+    border: 1.5px solid var(--fs-border);
+}
+
+body.dark-mode .fs-chat-input-wrapper:focus-within {
+    border-color: var(--fs-accent);
+    box-shadow: 0 0 0 3px rgba(201, 166, 124, 0.1);
+}
+
+body.dark-mode .fs-chat-input-wrapper textarea {
+    background: transparent;
+    color: var(--fs-text-primary);
+}
+
+body.dark-mode .fs-chat-input-wrapper textarea::placeholder {
+    color: var(--fs-text-muted);
+}
+
+/* Botón de envío en dark mode */
+body.dark-mode .fs-chat-send {
+    background: linear-gradient(135deg, #c9a67c 0%, #d4b896 100%);
+    box-shadow: 0 2px 8px rgba(201, 166, 124, 0.3);
+}
+
+body.dark-mode .fs-chat-send:hover {
+    box-shadow: 0 4px 12px rgba(201, 166, 124, 0.4);
+}
+
+/* Indicador de typing en dark mode */
+body.dark-mode .fs-typing-indicator {
+    background: var(--fs-bg-secondary);
+    color: var(--fs-text-secondary);
+}
+
+/* Scrollbar en dark mode */
+body.dark-mode .fs-chat-messages::-webkit-scrollbar-track {
+    background: var(--fs-bg-secondary);
+}
+
+body.dark-mode .fs-chat-messages::-webkit-scrollbar-thumb {
+    background: var(--fs-border);
+}
+
+body.dark-mode .fs-chat-messages::-webkit-scrollbar-thumb:hover {
+    background: var(--fs-accent);
+}
+
+/* Botón de cerrar en dark mode */
+body.dark-mode .fs-chat-close {
+    background: var(--fs-bg-secondary);
+    color: var(--fs-text-primary);
+}
+
+body.dark-mode .fs-chat-close:hover {
+    background: var(--fs-accent);
+    color: #1a1a1a;
+}
+
+/* Mensaje de error en dark mode */
+body.dark-mode .fs-error-message {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+/* Mensaje de bienvenida en dark mode */
+body.dark-mode .fs-welcome-message {
+    background: var(--fs-bg-secondary);
+    border-color: var(--fs-border);
+}
+
+/* Estado respondiendo en dark mode */
+body.dark-mode .fs-chat-input-wrapper.fs-bot-responding {
+    background: rgba(36, 36, 36, 0.9);
+    border-color: var(--fs-border);
 }

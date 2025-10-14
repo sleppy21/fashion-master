@@ -33,8 +33,8 @@
         </div>
     </div>
 
-    <!-- Filtros y búsqueda -->
-    <div class="module-filters">
+    <!-- Filtros y búsqueda (sidebar responsive) -->
+    <div class="module-filters modern-sidebar">
         <div class="search-container">
             <div class="search-input-group">
                 <i class="fas fa-search search-icon"></i>
@@ -51,6 +51,13 @@
                 <label class="filter-label">Categoría</label>
                 <select id="filter-category" class="filter-select" onchange="filterProducts()">
                     <option value="">Todas las categorías</option>
+                    <!-- Se cargan dinámicamente -->
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Marca</label>
+                <select id="filter-marca" class="filter-select" onchange="filterProducts()">
+                    <option value="">Todas las marcas</option>
                     <!-- Se cargan dinámicamente -->
                 </select>
             </div>
@@ -124,32 +131,32 @@
                 <table class="data-table products-table">
                     <thead class="table-header">
                         <tr>
-                            <th class="sortable" data-sort="id">
-                                <span>ID</span>
+                            <th class="sortable" data-sort="numero" data-type="number">
+                                <span>N°</span>
                             </th>
                             <th class="no-sort">Imagen</th>
-                            <th class="sortable" data-sort="nombre">
+                            <th class="sortable" data-sort="nombre" data-type="text">
                                 <span>Producto</span>
                             </th>
-                            <th class="sortable" data-sort="codigo">
+                            <th class="sortable" data-sort="codigo" data-type="text">
                                 <span>Código</span>
                             </th>
-                            <th class="sortable" data-sort="categoria">
+                            <th class="sortable" data-sort="categoria" data-type="text">
                                 <span>Categoría</span>
                             </th>
-                            <th class="sortable" data-sort="marca">
+                            <th class="sortable" data-sort="marca" data-type="text">
                                 <span>Marca</span>
                             </th>
-                            <th class="sortable" data-sort="precio">
+                            <th class="sortable" data-sort="precio" data-type="number">
                                 <span>Precio</span>
                             </th>
-                            <th class="sortable" data-sort="stock">
+                            <th class="sortable" data-sort="stock" data-type="stock">
                                 <span>Stock</span>
                             </th>
-                            <th class="sortable" data-sort="estado">
+                            <th class="sortable" data-sort="estado" data-type="text">
                                 <span>Estado</span>
                             </th>
-                            <th class="sortable" data-sort="fecha">
+                            <th class="sortable" data-sort="fecha" data-type="date">
                                 <span>Fecha</span>
                             </th>
                             <th class="no-sort actions-column">Acciones</th>
@@ -196,94 +203,18 @@
         </div>
     </div>
 
-    <!-- ========================================
-         MOBILE ONLY: Botón y Modal de Filtros
-         ======================================== -->
-    
-    <!-- Botón flotante para abrir filtros (solo mobile) -->
-    <button class="mobile-filter-btn" id="mobile-filter-btn" onclick="window.toggleFiltersModal()" style="display: none;">
-        <i class="fas fa-filter"></i>
-    </button>
+</div> <!-- FIN admin-module -->
 
-    <!-- Modal de filtros (solo mobile) -->
-    <div class="filters-modal" id="filters-modal" onclick="if(event.target.id === 'filters-modal') window.closeFiltersModal()">
-        <div class="filters-modal-content" onclick="event.stopPropagation();">
-            <div class="filters-modal-header">
-                <h3 class="filters-modal-title">
-                    <i class="fas fa-filter"></i> Filtros
-                </h3>
-                <button class="filters-modal-close" onclick="window.closeFiltersModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="filters-modal-body">
-                <!-- Búsqueda -->
-                <div class="modal-search-container">
-                    <div class="modal-search-input-group">
-                        <i class="fas fa-search modal-search-icon"></i>
-                        <input type="text" id="modal-search-productos" class="modal-search-input" 
-                               placeholder="Buscar productos..." oninput="window.handleModalSearchInput()">
-                        <button class="modal-search-clear" onclick="window.clearModalSearch()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
+<!-- ========================================
+     MOBILE ONLY: Botón y Modal de Filtros
+     (FUERA del módulo para que persista)
+     ======================================== -->
 
-                <!-- Filtros -->
-                <div class="modal-filters-grid">
-                    <div class="modal-filter-group">
-                        <label class="modal-filter-label">Categoría</label>
-                        <select id="modal-filter-category" class="modal-filter-select" onchange="window.filterProductsFromModal()">
-                            <option value="">Todas las categorías</option>
-                            <!-- Se cargan dinámicamente -->
-                        </select>
-                    </div>
-                    
-                    <div class="modal-filter-group">
-                        <label class="modal-filter-label">Estado</label>
-                        <select id="modal-filter-status" class="modal-filter-select" onchange="window.filterProductsFromModal()">
-                            <option value="">Todos los estados</option>
-                            <option value="1">Activo</option>
-                            <option value="0">Inactivo</option>
-                        </select>
-                    </div>
-                    
-                    <div class="modal-filter-group">
-                        <label class="modal-filter-label">Stock</label>
-                        <select id="modal-filter-stock" class="modal-filter-select" onchange="window.filterProductsFromModal()">
-                            <option value="">Todo el stock</option>
-                            <option value="agotado">Agotado</option>
-                            <option value="bajo">Stock bajo</option>
-                        </select>
-                    </div>
-                    
-                    <div class="modal-filter-group">
-                        <label class="modal-filter-label">Fecha</label>
-                        <button type="button" 
-                                id="modal-filter-fecha" 
-                                class="modal-filter-select"
-                                style="justify-content: flex-start;">
-                            <span id="modal-filter-fecha-text">Seleccionar fechas</span>
-                        </button>
-                        <input type="hidden" id="modal-filter-fecha-value">
-                    </div>
-                </div>
-
-                <!-- Acciones -->
-                <div class="modal-filter-actions">
-                    <button class="btn-modern btn-outline" onclick="window.clearModalFilters()">
-                        <i class="fas fa-filter-circle-xmark"></i> Limpiar
-                    </button>
-                    <button class="btn-modern btn-primary" onclick="window.closeFiltersModal()">
-                        <i class="fas fa-check"></i> Aplicar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
+<!-- Botón flotante de filtros móvil -->
+<button class="btn-mobile-filters" id="btnMobileFilters" aria-label="Abrir filtros">
+    <i class="fa fa-filter"></i>
+    <span class="filter-count" id="filterCount">0</span>
+</button>
 
 <script>
 // ============ CONFIGURACIÓN ============
@@ -317,57 +248,166 @@ let productos = [];
 let currentPage = 1;
 let totalPages = 1;
 
+// Variables de ordenamiento
+let currentSortColumn = null;
+let currentSortOrder = 'asc'; // 'asc' o 'desc'
+
 // Variable para tracking de vista actual (tabla o grid)
 window.products_currentView = 'table'; // Por defecto tabla
 
 // Variable global para fechas de productos (para Flatpickr)
 window.productsDatesArray = [];
 
-// ============ MOBILE FILTERS MODAL FUNCTIONS ============
+// ============ MOBILE FILTERS SIDEBAR (shop.php style) ============
 
-// Mostrar/ocultar botón de filtros móvil basado en el tamaño de pantalla
+// Botón flotante de filtros móvil - Mostrar/ocultar según tamaño de pantalla
 function toggleMobileFilterButton() {
-    const mobileFilterBtn = document.querySelector('.mobile-filter-btn');
+    const btn = document.getElementById('btnMobileFilters');
     const isMobile = window.innerWidth <= 768;
     
-    console.log('📱 toggleMobileFilterButton - isMobile:', isMobile, 'width:', window.innerWidth);
+    console.log('📱 toggleMobileFilterButton:', {
+        btnExists: !!btn,
+        isMobile: isMobile,
+        width: window.innerWidth
+    });
     
-    if (mobileFilterBtn) {
-        if (isMobile) {
-            mobileFilterBtn.style.display = 'flex';
-            console.log('✅ Botón flotante MOSTRADO');
-        } else {
-            mobileFilterBtn.style.display = 'none';
-            console.log('✅ Botón flotante OCULTO');
-        }
+    if (btn) {
+        btn.style.display = isMobile ? 'flex' : 'none';
+        console.log('✅ Botón flotante ' + (isMobile ? 'MOSTRADO' : 'OCULTO'));
     } else {
-        console.error('❌ Botón flotante no encontrado en DOM');
+        console.error('❌ Botón btnMobileFilters NO encontrado en DOM');
     }
 }
 
-// Abrir/cerrar modal de filtros
-function toggleFiltersModal() {
-    console.log('🔵 toggleFiltersModal llamado');
-    const modal = document.getElementById('filters-modal');
-    if (modal) {
-        modal.classList.toggle('active');
-        console.log('🔵 Modal active:', modal.classList.contains('active'));
-        if (modal.classList.contains('active')) {
-            document.body.style.overflow = 'hidden';
-            syncFiltersToModal();
-        } else {
+// Inicializar control del sidebar móvil
+function initMobileFiltersSidebar() {
+    const btnMobileFilters = document.getElementById('btnMobileFilters');
+    const sidebar = document.querySelector('.modern-sidebar');
+    
+    console.log('🎯 initMobileFiltersSidebar:', {
+        btnExists: !!btnMobileFilters,
+        sidebarExists: !!sidebar,
+        sidebarClasses: sidebar ? sidebar.className : 'N/A'
+    });
+    
+    if (btnMobileFilters && sidebar) {
+        console.log('✅ Sidebar móvil inicializado correctamente');
+        
+        // Toggle sidebar al hacer click en el botón
+        btnMobileFilters.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            console.log('🔵 Click en botón flotante');
+            
+            if (sidebar.classList.contains('show-mobile')) {
+                // Cerrar sidebar
+                sidebar.classList.remove('show-mobile');
+                document.body.style.overflow = '';
+                
+                // Mostrar botón con animación
+                setTimeout(() => {
+                    btnMobileFilters.classList.remove('hidden');
+                }, 300);
+                
+                console.log('🔒 Sidebar CERRADO');
+            } else {
+                // Abrir sidebar
+                sidebar.classList.add('show-mobile');
+                document.body.style.overflow = 'hidden';
+                
+                // Ocultar botón con animación
+                btnMobileFilters.classList.add('hidden');
+                
+                console.log('🔓 Sidebar ABIERTO');
+            }
+        });
+        
+        // Cerrar al hacer click fuera del sidebar
+        document.addEventListener('click', function(e) {
+            if (sidebar.classList.contains('show-mobile') && 
+                !sidebar.contains(e.target) && 
+                !btnMobileFilters.contains(e.target)) {
+                sidebar.classList.remove('show-mobile');
+                document.body.style.overflow = '';
+                
+                // Mostrar botón con animación
+                setTimeout(() => {
+                    btnMobileFilters.classList.remove('hidden');
+                }, 300);
+                
+                console.log('🔒 Sidebar cerrado por click fuera');
+            }
+        });
+        
+        // Botón de cerrar dentro del sidebar
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'sidebar-close-btn';
+        closeBtn.innerHTML = '<i class="fa fa-times"></i>';
+        closeBtn.onclick = function() {
+            sidebar.classList.remove('show-mobile');
             document.body.style.overflow = '';
-        }
+            setTimeout(() => {
+                btnMobileFilters.classList.remove('hidden');
+            }, 300);
+        };
+        
+        // Insertar botón de cerrar al inicio del sidebar
+        sidebar.insertBefore(closeBtn, sidebar.firstChild);
     } else {
-        console.error('❌ Modal no encontrado');
+        console.error('❌ No se pudo inicializar sidebar móvil:', {
+            btnMissing: !btnMobileFilters,
+            sidebarMissing: !sidebar
+        });
     }
+}
+
+// Actualizar contador de filtros activos
+function updateFilterCount() {
+    const filterCount = document.getElementById('filterCount');
+    if (!filterCount) {
+        console.warn('⚠️ filterCount badge no encontrado');
+        return;
+    }
+    
+    let count = 0;
+    
+    // Contar filtros activos
+    const categoryFilter = document.getElementById('filter-category');
+    const marcaFilter = document.getElementById('filter-marca');
+    const statusFilter = document.getElementById('filter-status');
+    const stockFilter = document.getElementById('filter-stock');
+    const fechaFilter = document.getElementById('filter-fecha-value');
+    const searchInput = document.getElementById('search-productos');
+    
+    if (categoryFilter && categoryFilter.value) count++;
+    if (marcaFilter && marcaFilter.value) count++;
+    if (statusFilter && statusFilter.value) count++;
+    if (stockFilter && stockFilter.value) count++;
+    if (fechaFilter && fechaFilter.value) count++;
+    if (searchInput && searchInput.value.trim()) count++;
+    
+    // Actualizar badge
+    filterCount.textContent = count;
+    filterCount.style.display = count > 0 ? 'flex' : 'none';
+    
+    console.log('🔢 Contador de filtros actualizado:', count);
+}
+
+// ============ FUNCIONES LEGACY (mantener compatibilidad) ============
+
+function toggleFiltersModal() {
+    // Redirigir a la nueva función
+    const sidebar = document.querySelector('.modern-sidebar');
+    const btn = document.getElementById('btnMobileFilters');
+    if (btn) btn.click();
 }
 window.toggleFiltersModal = toggleFiltersModal;
 
 function closeFiltersModal() {
-    const modal = document.getElementById('filters-modal');
-    if (modal) {
-        modal.classList.remove('active');
+    const sidebar = document.querySelector('.modern-sidebar');
+    if (sidebar) {
+        sidebar.classList.remove('show-mobile');
         document.body.style.overflow = '';
     }
 }
@@ -379,79 +419,6 @@ function closeFiltersModalOnOverlay(event) {
     }
 }
 window.closeFiltersModalOnOverlay = closeFiltersModalOnOverlay;
-
-// Sincronizar filtros del desktop al modal
-function syncFiltersToModal() {
-    // Sincronizar búsqueda
-    const searchDesktop = document.getElementById('search-productos');
-    const searchModal = document.getElementById('modal-search-productos');
-    if (searchDesktop && searchModal) {
-        searchModal.value = searchDesktop.value;
-    }
-    
-    // Sincronizar filtros
-    const categoryDesktop = document.getElementById('filter-category');
-    const statusDesktop = document.getElementById('filter-status');
-    const stockDesktop = document.getElementById('filter-stock');
-    const fechaDesktop = document.getElementById('filter-fecha');
-    
-    const categoryModal = document.getElementById('modal-filter-category');
-    const statusModal = document.getElementById('modal-filter-status');
-    const stockModal = document.getElementById('modal-filter-stock');
-    const fechaModal = document.getElementById('modal-filter-fecha');
-    
-    if (categoryDesktop && categoryModal) categoryModal.value = categoryDesktop.value;
-    if (statusDesktop && statusModal) statusModal.value = statusDesktop.value;
-    if (stockDesktop && stockModal) stockModal.value = stockDesktop.value;
-    if (fechaDesktop && fechaModal) fechaModal.value = fechaDesktop.value;
-}
-
-// Sincronizar filtros del modal al desktop
-function syncFiltersFromModal() {
-    // Sincronizar búsqueda
-    const searchDesktop = document.getElementById('search-productos');
-    const searchModal = document.getElementById('modal-search-productos');
-    if (searchDesktop && searchModal) {
-        searchDesktop.value = searchModal.value;
-    }
-    
-    // Sincronizar filtros
-    const categoryDesktop = document.getElementById('filter-category');
-    const statusDesktop = document.getElementById('filter-status');
-    const stockDesktop = document.getElementById('filter-stock');
-    const fechaDesktop = document.getElementById('filter-fecha');
-    
-    const categoryModal = document.getElementById('modal-filter-category');
-    const statusModal = document.getElementById('modal-filter-status');
-    const stockModal = document.getElementById('modal-filter-stock');
-    const fechaModal = document.getElementById('modal-filter-fecha');
-    
-    if (categoryDesktop && categoryModal) categoryDesktop.value = categoryModal.value;
-    if (statusDesktop && statusModal) statusDesktop.value = statusModal.value;
-    if (stockDesktop && stockModal) stockDesktop.value = stockModal.value;
-    if (fechaDesktop && fechaModal) fechaDesktop.value = fechaModal.value;
-}
-
-// Manejar búsqueda desde el modal
-function handleModalSearchInput() {
-    const searchValue = document.getElementById('modal-search-productos').value;
-    const searchDesktop = document.getElementById('search-productos');
-    if (searchDesktop) {
-        searchDesktop.value = searchValue;
-    }
-    handleSearchInput();
-}
-window.handleModalSearchInput = handleModalSearchInput;
-
-// Limpiar búsqueda desde el modal
-function clearModalSearch() {
-    document.getElementById('modal-search-productos').value = '';
-    if (typeof $ !== 'undefined') {
-        $('#search-productos').val('');
-    }
-    clearProductSearch();
-}
-window.clearModalSearch = clearModalSearch;
 
 // Filtrar productos desde el modal
 function filterProductsFromModal() {
@@ -477,6 +444,9 @@ function clearModalFilters() {
     
     const modalStock = document.getElementById('modal-filter-stock');
     if (modalStock) modalStock.value = '';
+    
+    const modalMarca = document.getElementById('modal-filter-marca');
+    if (modalMarca) modalMarca.value = '';
     
     // Limpiar fecha (botón + hidden input)
     const modalFechaValue = document.getElementById('modal-filter-fecha-value');
@@ -505,6 +475,9 @@ function clearModalFilters() {
     const desktopStock = document.getElementById('filter-stock');
     if (desktopStock) desktopStock.value = '';
     
+    const desktopMarca = document.getElementById('filter-marca');
+    if (desktopMarca) desktopMarca.value = '';
+    
     const desktopFechaValue = document.getElementById('filter-fecha-value');
     const desktopFechaText = document.getElementById('filter-fecha-text');
     
@@ -519,37 +492,11 @@ function clearModalFilters() {
     }
     
     // Recargar productos sin filtros
-    loadProducts();
+    clearAllProductFilters();
     
     console.log('✅ Filtros limpiados');
 }
 window.clearModalFilters = clearModalFilters;
-
-// Cargar opciones de filtros en el modal
-function loadModalFilterOptions() {
-    if (typeof $ === 'undefined') return;
-    
-    // Copiar opciones de categorías
-    const categoryOptions = $('#filter-category').html();
-    $('#modal-filter-category').html(categoryOptions);
-    
-    // Copiar opciones de fecha
-    const fechaOptions = $('#filter-fecha').html();
-    $('#modal-filter-fecha').html(fechaOptions);
-}
-
-// Inicializar en carga de página
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🟢 DOMContentLoaded - Inicializando modal de filtros');
-    
-    toggleMobileFilterButton();
-    
-    // Escuchar cambios de tamaño de ventana
-    window.addEventListener('resize', toggleMobileFilterButton);
-    
-    // Cargar opciones de filtros en el modal cuando se carguen en desktop
-    setTimeout(loadModalFilterOptions, 1000);
-});
 
 // ============ END MOBILE FILTERS MODAL FUNCTIONS ============
 
@@ -642,6 +589,9 @@ async function loadProducts(forceCacheBust = false, preserveState = null) {
             const category = $('#filter-category').val();
             if (category) params.append('category', category);
             
+            const marca = $('#filter-marca').val();
+            if (marca) params.append('marca', marca);
+            
             const status = $('#filter-status').val();
             if (status !== '') params.append('status', status);
             
@@ -663,6 +613,11 @@ async function loadProducts(forceCacheBust = false, preserveState = null) {
                 params.append('category', categorySelect.value);
             }
             
+            const marcaSelect = document.getElementById('filter-marca');
+            if (marcaSelect && marcaSelect.value) {
+                params.append('marca', marcaSelect.value);
+            }
+            
             const statusSelect = document.getElementById('filter-status');
             if (statusSelect && statusSelect.value !== '') {
                 params.append('status', statusSelect.value);
@@ -678,6 +633,12 @@ async function loadProducts(forceCacheBust = false, preserveState = null) {
             if (fechaValue && fechaValue.value) {
                 params.append('fecha', fechaValue.value);
             }
+        }
+        
+        // Agregar parámetros de ordenamiento si existen
+        if (currentSortColumn) {
+            params.append('sort_by', currentSortColumn);
+            params.append('sort_order', currentSortOrder);
         }
         
         const finalUrl = `${CONFIG.apiUrl}?${params}`;
@@ -761,6 +722,349 @@ async function loadProducts(forceCacheBust = false, preserveState = null) {
 window.loadProducts = loadProducts;
 window.loadProductos = loadProducts;
 
+// 🎯 Función para cargar productos con SMOOTH UPDATE (sin recargar tabla)
+async function loadProductsSmooth() {
+    if (!window.smoothTableUpdater) {
+        console.warn('⚠️ smoothTableUpdater no disponible, usando carga normal');
+        return loadProducts();
+    }
+    
+    try {
+        // Construir URL con parámetros
+        const params = new URLSearchParams({
+            action: 'list',
+            page: currentPage,
+            limit: 10
+        });
+        
+        // Agregar filtros si existen
+        const search = document.getElementById('search-productos')?.value || '';
+        if (search) params.append('search', search);
+        
+        const category = document.getElementById('filter-category')?.value || '';
+        if (category) params.append('category', category);
+        
+        const marca = document.getElementById('filter-marca')?.value || '';
+        if (marca) params.append('marca', marca);
+        
+        const status = document.getElementById('filter-status')?.value || '';
+        if (status !== '') params.append('status', status);
+        
+        const stock = document.getElementById('filter-stock')?.value || '';
+        if (stock) params.append('stock_filter', stock);
+        
+        const fecha = document.getElementById('filter-fecha-value')?.value || '';
+        if (fecha) params.append('fecha', fecha);
+        
+        // Agregar parámetros de ordenamiento si existen
+        if (currentSortColumn) {
+            params.append('sort_by', currentSortColumn);
+            params.append('sort_order', currentSortOrder);
+        }
+        
+        const finalUrl = `${CONFIG.apiUrl}?${params}`;
+        
+        console.log('🎯 Cargando productos con smooth update:', finalUrl);
+        
+        const response = await fetch(finalUrl);
+        const data = await response.json();
+        
+        if (data.success && data.data) {
+            // 🎨 SMOOTH UPDATE: Actualizar productos uno por uno sin recargar la tabla
+            await window.smoothTableUpdater.updateMultipleProducts(data.data);
+            
+            // Actualizar estadísticas y paginación
+            updateStats(data.pagination);
+            updatePaginationInfo(data.pagination);
+            // updatePaginationControls(); // TODO: Implementar si es necesario
+            
+            // Actualizar fechas del calendario SIN redibujar (invisible)
+            if (typeof loadProductDates === 'function') {
+                loadProductDates(data.data);
+            }
+            
+            console.log('✅ Productos actualizados con smooth update');
+        }
+    } catch (error) {
+        console.error('❌ Error en loadProductsSmooth:', error);
+        // Fallback a carga normal
+        loadProducts();
+    }
+}
+
+window.loadProductsSmooth = loadProductsSmooth;
+
+// ============ FUNCIONES DE ORDENAMIENTO ============
+
+/**
+ * Ordena la tabla localmente (cliente) sin hacer petición al servidor
+ * @param {string} column - Columna a ordenar
+ * @param {string} type - Tipo de dato (text, number, date, stock)
+ * 
+ * COMPORTAMIENTO ESPECIAL DE LA COLUMNA N°:
+ * - N° siempre muestra 1, 2, 3... (posición visual, NO el ID real del producto)
+ * - Primer click: Mantiene orden actual (ASC)
+ * - Segundo click: Invierte orden completo (DESC)
+ * - Tercer click: Vuelve al orden original (ASC)
+ * 
+ * Ejemplo con productos ID 1, 3, 6, 7 (después de soft delete del ID 6):
+ * ASC:  N°1 (ID:1), N°2 (ID:3), N°3 (ID:7)
+ * DESC: N°1 (ID:7), N°2 (ID:3), N°3 (ID:1)  ← Orden invertido
+ */
+function sortTableLocally(column, type) {
+    console.log(`🔄 Ordenando por ${column} (${type}) - Orden: ${currentSortOrder}`);
+    
+    // Obtener todas las filas de la tabla
+    const tbody = document.getElementById('productos-table-body');
+    if (!tbody) return;
+    
+    const rows = Array.from(tbody.querySelectorAll('tr:not(.loading-row):not(.empty-row)'));
+    
+    if (rows.length === 0) {
+        console.log('⚠️ No hay filas para ordenar');
+        return;
+    }
+    
+    // Mapeo de columnas a índices
+    const columnIndexMap = {
+        'numero': 0,      // N°
+        'nombre': 2,      // Producto
+        'codigo': 3,      // Código
+        'categoria': 4,   // Categoría
+        'marca': 5,       // Marca
+        'precio': 6,      // Precio
+        'stock': 7,       // Stock
+        'estado': 8,      // Estado
+        'fecha': 9        // Fecha
+    };
+    
+    const columnIndex = columnIndexMap[column];
+    if (columnIndex === undefined) {
+        console.error('❌ Columna no válida:', column);
+        return;
+    }
+    
+    // ⚡ CASO ESPECIAL: Columna N° simplemente invierte el orden completo
+    if (column === 'numero') {
+        // SIEMPRE invertir el array en cada click (no importa si es ASC o DESC)
+        rows.reverse();
+        
+        const totalRows = rows.length;
+        
+        // Limpiar tbody
+        tbody.innerHTML = '';
+        
+        // Re-insertar filas con números invertidos visualmente
+        rows.forEach((row, index) => {
+            // Actualizar N° de fila
+            const numeroCell = row.children[0];
+            if (numeroCell) {
+                // Si es DESC, mostrar números invertidos (N → 1)
+                // Si es ASC, mostrar números normales (1 → N)
+                if (currentSortOrder === 'desc') {
+                    numeroCell.textContent = totalRows - index; // 10, 9, 8, 7...
+                } else {
+                    numeroCell.textContent = index + 1; // 1, 2, 3, 4...
+                }
+            }
+            
+            // Agregar animación
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(-10px)';
+            tbody.appendChild(row);
+            
+            // Animar entrada
+            setTimeout(() => {
+                row.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+                row.style.opacity = '1';
+                row.style.transform = 'translateX(0)';
+            }, index * 20);
+        });
+        
+        console.log(`✅ Tabla ordenada por N° (${currentSortOrder === 'asc' ? 'Orden original 1→N' : 'Orden invertido N→1'})`);
+        return; // Salir de la función
+    }
+    
+    // Ordenar filas (para otras columnas)
+    rows.sort((rowA, rowB) => {
+        const cellA = rowA.children[columnIndex];
+        const cellB = rowB.children[columnIndex];
+        
+        if (!cellA || !cellB) return 0;
+        
+        let valueA, valueB;
+        
+        switch (type) {
+            case 'number':
+                // Para precio
+                valueA = parseFloat(cellA.textContent.replace(/[^0-9.-]/g, '')) || 0;
+                valueB = parseFloat(cellB.textContent.replace(/[^0-9.-]/g, '')) || 0;
+                break;
+                
+            case 'stock':
+                // Para stock: primero por nivel (normal > bajo > agotado), luego por cantidad
+                const stockA = cellA.querySelector('.stock-number');
+                const stockB = cellB.querySelector('.stock-number');
+                
+                const numA = stockA ? parseInt(stockA.textContent) || 0 : 0;
+                const numB = stockB ? parseInt(stockB.textContent) || 0 : 0;
+                
+                // Determinar nivel de stock
+                const getLevelPriority = (num) => {
+                    if (num === 0) return 0; // Agotado (prioridad baja)
+                    if (num < 10) return 1;  // Bajo (prioridad media)
+                    return 2;                // Normal (prioridad alta)
+                };
+                
+                const levelA = getLevelPriority(numA);
+                const levelB = getLevelPriority(numB);
+                
+                // Si están en diferente nivel, ordenar por nivel
+                if (levelA !== levelB) {
+                    valueA = levelA;
+                    valueB = levelB;
+                } else {
+                    // Si están en el mismo nivel, ordenar por cantidad
+                    valueA = numA;
+                    valueB = numB;
+                }
+                break;
+                
+            case 'date':
+                // Para fecha
+                const dateStrA = cellA.textContent.trim();
+                const dateStrB = cellB.textContent.trim();
+                valueA = dateStrA === '-' ? 0 : new Date(dateStrA).getTime();
+                valueB = dateStrB === '-' ? 0 : new Date(dateStrB).getTime();
+                break;
+                
+            case 'text':
+            default:
+                // Para texto (producto, código, categoría, marca, estado)
+                valueA = cellA.textContent.trim().toLowerCase();
+                valueB = cellB.textContent.trim().toLowerCase();
+                break;
+        }
+        
+        // Comparar valores
+        if (valueA < valueB) return currentSortOrder === 'asc' ? -1 : 1;
+        if (valueA > valueB) return currentSortOrder === 'asc' ? 1 : -1;
+        return 0;
+    });
+    
+    // Limpiar tbody
+    tbody.innerHTML = '';
+    
+    // Re-insertar filas ordenadas con animación suave
+    rows.forEach((row, index) => {
+        // Actualizar N° de fila
+        const numeroCell = row.children[0];
+        if (numeroCell) {
+            numeroCell.textContent = index + 1;
+        }
+        
+        // Agregar animación
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(-10px)';
+        tbody.appendChild(row);
+        
+        // Animar entrada
+        setTimeout(() => {
+            row.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+            row.style.opacity = '1';
+            row.style.transform = 'translateX(0)';
+        }, index * 20); // Escalonar animación
+    });
+    
+    console.log(`✅ Tabla ordenada por ${column} (${currentSortOrder})`);
+}
+
+/**
+ * Maneja el click en una columna sortable
+ */
+function handleSortClick(column, type) {
+    // ⚡ CASO ESPECIAL: Columna N° siempre alterna en cada click
+    if (column === 'numero') {
+        // Establecer columna actual
+        currentSortColumn = 'numero';
+        // Alternar orden en cada click (la inversión visual siempre ocurre)
+        currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+        // Otras columnas: comportamiento normal
+        if (currentSortColumn === column) {
+            currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+        } else {
+            // Nueva columna, comenzar con ascendente
+            currentSortColumn = column;
+            currentSortOrder = 'asc';
+        }
+    }
+    
+    // Actualizar iconos de ordenamiento
+    updateSortIcons(column);
+    
+    // Ordenar localmente (más rápido, sin petición al servidor)
+    sortTableLocally(column, type);
+}
+
+/**
+ * Actualiza el estado visual de las columnas para mostrar cuál está ordenada
+ */
+function updateSortIcons(activeColumn) {
+    const headers = document.querySelectorAll('th.sortable');
+    
+    headers.forEach(header => {
+        const column = header.getAttribute('data-sort');
+        
+        if (column === activeColumn) {
+            // Columna activa - agregar clase sorted
+            header.classList.add('sorted');
+            
+            // Opcional: agregar indicador de dirección en el atributo
+            header.setAttribute('data-sort-direction', currentSortOrder);
+        } else {
+            // Columna inactiva
+            header.classList.remove('sorted');
+            header.removeAttribute('data-sort-direction');
+        }
+    });
+}
+
+/**
+ * Inicializa los eventos de ordenamiento en las columnas
+ */
+function initializeSortingEvents() {
+    const sortableHeaders = document.querySelectorAll('th.sortable');
+    
+    sortableHeaders.forEach(header => {
+        const column = header.getAttribute('data-sort');
+        const type = header.getAttribute('data-type') || 'text';
+        
+        // Remover eventos anteriores
+        header.replaceWith(header.cloneNode(true));
+    });
+    
+    // Re-obtener headers después de clonar
+    const newHeaders = document.querySelectorAll('th.sortable');
+    
+    newHeaders.forEach(header => {
+        const column = header.getAttribute('data-sort');
+        const type = header.getAttribute('data-type') || 'text';
+        
+        header.style.cursor = 'pointer';
+        header.style.userSelect = 'none';
+        
+        header.addEventListener('click', () => {
+            handleSortClick(column, type);
+        });
+    });
+    
+    console.log('✅ Eventos de ordenamiento inicializados en', newHeaders.length, 'columnas');
+}
+
+window.initializeSortingEvents = initializeSortingEvents;
+window.handleSortClick = handleSortClick;
+
 // Función para cargar categorías en el filtro
 async function loadCategories() {
     try {
@@ -804,9 +1108,6 @@ async function loadCategories() {
                     option.textContent = categoria.nombre_categoria;
                     categorySelect.appendChild(option);
                 });
-                
-                // Sincronizar con el modal
-                loadModalFilterOptions();
             }
         }
     } catch (error) {
@@ -815,6 +1116,56 @@ async function loadCategories() {
 }
 
 window.loadCategories = loadCategories;
+
+// Función para cargar marcas en el filtro
+async function loadMarcas() {
+    try {
+        const url = `${CONFIG.apiUrl}?action=get_marcas`;
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            cache: 'no-cache'
+        });
+                
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+        }
+        
+        const responseText = await response.text();
+        
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (jsonError) {
+            console.error('❌ Error al parsear JSON de marcas:', jsonError);
+            throw new Error('Respuesta del servidor no es JSON válido');
+        }
+        
+        if (data.success && data.data) {
+            const marcaSelect = document.getElementById('filter-marca');
+            if (marcaSelect) {
+                // Limpiar opciones existentes excepto "Todas las marcas"
+                marcaSelect.innerHTML = '<option value="">Todas las marcas</option>';
+                
+                // Agregar marcas
+                data.data.forEach(marca => {
+                    const option = document.createElement('option');
+                    option.value = marca.id_marca;
+                    option.textContent = marca.nombre_marca;
+                    marcaSelect.appendChild(option);
+                });
+            }
+        }
+    } catch (error) {
+        console.error('❌ Error cargando marcas:', error);
+    }
+}
+
+window.loadMarcas = loadMarcas;
 
 // Función para cargar fechas únicas de productos en el filtro
 function loadProductDates(products) {
@@ -837,19 +1188,15 @@ function loadProductDates(products) {
         
         // Guardar fechas en variable global para Flatpickr
         window.productsDatesArray = fechasUnicas;
-        console.log('📅 Fechas de productos guardadas:', window.productsDatesArray);
+        // console.log('📅 Fechas de productos guardadas:', window.productsDatesArray); // Comentado para reducir spam
         
-        // NO actualizar 'enable' - permitir seleccionar cualquier fecha para rangos
-        // Solo redibujar para actualizar los estilos visuales
-        if (window.productsDatePicker) {
-            window.productsDatePicker.redraw();
-            console.log('✅ Flatpickr desktop redibujado con', fechasUnicas.length, 'fechas marcadas');
-        }
+        // ⚡ NO REDIBUJAR - Solo actualizar datos internos (invisible al usuario)
+        // El redibujado solo se hará cuando el usuario abra el calendario
+        // Esto elimina el parpadeo visual durante los filtros
         
-        if (window.productsDatePickerModal) {
-            window.productsDatePickerModal.redraw();
-            console.log('✅ Flatpickr modal redibujado con', fechasUnicas.length, 'fechas marcadas');
-        }
+        // ✅ Flatpickr se actualiza automáticamente cuando se abre gracias a onDayCreate
+        // console.log('✅ Fechas actualizadas silenciosamente sin redibujar');
+        
         
         // Guardar opción seleccionada actual
         const valorActual = fechaSelect.value;
@@ -873,9 +1220,6 @@ function loadProductDates(products) {
             if (valorActual && fechasUnicas.includes(valorActual)) {
                 fechaSelect.value = valorActual;
             }
-            
-            // Sincronizar con el modal
-            loadModalFilterOptions();
         }
     } catch (error) {
         console.error('❌ Error cargando fechas:', error);
@@ -921,7 +1265,7 @@ function displayProducts(products, forceCacheBust = false, preserveState = null)
     tbody.innerHTML = products.map((producto, index) => {
         return `
         <tr oncontextmenu="return false;" ondblclick="editProduct(${producto.id_producto})" style="cursor: pointer;" data-product-id="${producto.id_producto}">
-            <td>${producto.id_producto}</td>
+            <td><strong>${index + 1}</strong></td>
             <td onclick="event.stopPropagation();" ondblclick="event.stopPropagation(); showImageFullSize('${getProductImageUrl(producto, forceCacheBust)}', '${(producto.nombre_producto || '').replace(/'/g, "\\'")}')"; style="cursor: zoom-in;">
                 <div class="product-image-small">
                     <img src="${getProductImageUrl(producto, forceCacheBust)}" 
@@ -959,7 +1303,7 @@ function displayProducts(products, forceCacheBust = false, preserveState = null)
                     ${producto.estado === 'activo' ? 'Activo' : 'Inactivo'}
                 </span>
             </td>
-            <td>${producto.fecha_creacion_formato || producto.fecha_creacion_producto}</td>
+            <td>${producto.fecha_creacion_producto ? producto.fecha_creacion_producto.split(' ')[0] : '-'}</td>
             <td>
                 <div class="action-buttons">
                     <button class="btn-action btn-menu" onclick="event.stopPropagation(); showActionMenu(${producto.id_producto}, '${(producto.nombre_producto || '').replace(/'/g, "\\'")}', ${producto.stock_actual_producto}, '${producto.estado}', event)" title="Acciones">
@@ -969,17 +1313,20 @@ function displayProducts(products, forceCacheBust = false, preserveState = null)
             </td>
         </tr>`;
     }).join('');
+    
+    // 🔄 Inicializar eventos de ordenamiento después de renderizar la tabla
+    setTimeout(() => {
+        if (typeof initializeSortingEvents === 'function') {
+            initializeSortingEvents();
+        }
+    }, 100);
 }
 
 // Función para obtener clase de stock
+// NOTA: Función getStockClass eliminada - usar calcularEstadoStock() centralizada en smooth-table-update.js
 function getStockClass(producto) {
-    const stock = parseInt(producto.stock_actual_producto) || 0;
-    const stockMinimo = parseInt(producto.stock_minimo_producto); // Tomar valor directo de BD
-    const stockMaximo = parseInt(producto.stock_maximo_producto); // Tomar valor directo de BD
-    
-    if (stock === 0) return 'stock-agotado';
-    if (stockMinimo && stock <= stockMinimo) return 'stock-bajo';
-    return 'stock-normal'; // Verde para stock > stock_minimo
+    // ✅ Usar función centralizada
+    return calcularEstadoStock(producto).clase;
 }
 
 // Función para actualizar estadísticas
@@ -1033,8 +1380,14 @@ function filterProducts() {
     
     const search = $('#search-productos').val() || '';
     const category = $('#filter-category').val() || '';
+    const marca = $('#filter-marca').val() || '';
     const status = $('#filter-status').val() || '';
     const stock = $('#filter-stock').val() || '';
+    
+    // Actualizar contador de filtros activos
+    if (typeof updateFilterCount === 'function') {
+        updateFilterCount();
+    }
     
     // Mostrar indicador de carga
     showSearchLoading();
@@ -1042,19 +1395,27 @@ function filterProducts() {
     // Reset página actual
     currentPage = 1;
     
-    // Recargar productos con filtros
-    loadProducts();
+    // 🎯 SMOOTH UPDATE: Recargar productos con transición suave
+    if (typeof loadProductsSmooth === 'function' && window.smoothTableUpdater) {
+        console.log('✨ Usando smooth update para filtros');
+        loadProductsSmooth();
+    } else {
+        console.warn('⚠️ Smooth update no disponible, usando carga normal');
+        loadProducts();
+    }
 }
 
 // Función de filtrado con vanilla JS como fallback
 function filterProductsVanilla() {
     const searchInput = document.getElementById('search-productos');
     const categorySelect = document.getElementById('filter-category');
+    const marcaSelect = document.getElementById('filter-marca');
     const statusSelect = document.getElementById('filter-status');
     const stockSelect = document.getElementById('filter-stock');
     
     const search = searchInput ? searchInput.value || '' : '';
     const category = categorySelect ? categorySelect.value || '' : '';
+    const marca = marcaSelect ? marcaSelect.value || '' : '';
     const status = statusSelect ? statusSelect.value || '' : '';
     const stock = stockSelect ? stockSelect.value || '' : '';
     
@@ -1064,8 +1425,14 @@ function filterProductsVanilla() {
     // Reset página actual
     currentPage = 1;
     
-    // Recargar productos con filtros
-    loadProducts();
+    // 🎯 SMOOTH UPDATE: Recargar productos con transición suave
+    if (typeof loadProductsSmooth === 'function' && window.smoothTableUpdater) {
+        console.log('✨ Usando smooth update para filtros (vanilla)');
+        loadProductsSmooth();
+    } else {
+        console.warn('⚠️ Smooth update no disponible, usando carga normal (vanilla)');
+        loadProducts();
+    }
 }
 
 // Función para manejar búsqueda en tiempo real con jQuery
@@ -1108,7 +1475,7 @@ function handleSearchInput() {
 }
 
 // Función para cambiar vista (tabla/grid)
-function toggleView(viewType) {
+function toggleView(viewType, skipAnimation = false) {
     console.log('🔄 Cambiando vista a:', viewType);
     
     // BLOQUEAR cambio a tabla en móvil
@@ -1116,6 +1483,20 @@ function toggleView(viewType) {
     if (isMobile && viewType === 'table') {
         console.warn('⛔ Vista tabla bloqueada en móvil');
         return; // No permitir cambio
+    }
+    
+    // 💾 GUARDAR vista en localStorage
+    try {
+        localStorage.setItem('products_view_preference', viewType);
+        console.log('💾 Vista guardada en localStorage:', viewType);
+    } catch (e) {
+        console.warn('⚠️ No se pudo guardar vista en localStorage:', e);
+    }
+    
+    // LIMPIAR CACHE del smooth updater al cambiar vista
+    if (window.smoothTableUpdater) {
+        window.smoothTableUpdater.clearCache();
+        console.log('🧹 Cache del updater limpiado al cambiar vista');
     }
     
     // CERRAR BURBUJA DE STOCK si está abierta (evita que quede con coordenadas incorrectas)
@@ -1142,18 +1523,65 @@ function toggleView(viewType) {
         }
     });
     
+    // 🎨 TRANSICIÓN SUAVE entre vistas
+    const fadeOutDuration = skipAnimation ? 0 : 200;
+    const fadeInDuration = skipAnimation ? 0 : 300;
+    
     if (viewType === 'grid') {
-        tableContainer.style.display = 'none';
-        document.querySelector('.products-grid').style.display = 'grid';
-        window.products_currentView = 'grid';
-        // Recargar productos para asegurar datos actualizados
-        loadProducts();
+        // Fade out tabla
+        tableContainer.style.transition = `opacity ${fadeOutDuration}ms ease, transform ${fadeOutDuration}ms ease`;
+        tableContainer.style.opacity = '0';
+        tableContainer.style.transform = 'scale(0.98)';
+        
+        setTimeout(() => {
+            tableContainer.style.display = 'none';
+            document.querySelector('.products-grid').style.display = 'grid';
+            window.products_currentView = 'grid';
+            
+            // Fade in grid
+            const grid = document.querySelector('.products-grid');
+            grid.style.opacity = '0';
+            grid.style.transform = 'scale(0.98)';
+            grid.style.transition = `opacity ${fadeInDuration}ms ease, transform ${fadeInDuration}ms ease`;
+            
+            setTimeout(() => {
+                grid.style.opacity = '1';
+                grid.style.transform = 'scale(1)';
+            }, 10);
+            
+            // Recargar productos
+            setTimeout(() => {
+                loadProducts();
+            }, fadeInDuration);
+        }, fadeOutDuration);
+        
     } else {
-        tableContainer.style.display = 'block';
-        document.querySelector('.products-grid').style.display = 'none';
-        window.products_currentView = 'table';
-        // Recargar productos para asegurar datos actualizados
-        loadProducts();
+        // Fade out grid
+        const grid = document.querySelector('.products-grid');
+        grid.style.transition = `opacity ${fadeOutDuration}ms ease, transform ${fadeOutDuration}ms ease`;
+        grid.style.opacity = '0';
+        grid.style.transform = 'scale(0.98)';
+        
+        setTimeout(() => {
+            grid.style.display = 'none';
+            tableContainer.style.display = 'block';
+            window.products_currentView = 'table';
+            
+            // Fade in tabla
+            tableContainer.style.opacity = '0';
+            tableContainer.style.transform = 'scale(0.98)';
+            tableContainer.style.transition = `opacity ${fadeInDuration}ms ease, transform ${fadeInDuration}ms ease`;
+            
+            setTimeout(() => {
+                tableContainer.style.opacity = '1';
+                tableContainer.style.transform = 'scale(1)';
+            }, 10);
+            
+            // Recargar productos
+            setTimeout(() => {
+                loadProducts();
+            }, fadeInDuration);
+        }, fadeOutDuration);
     }
 }
 
@@ -1188,21 +1616,9 @@ function displayProductsGrid(products) {
     
     gridContainer.innerHTML = products.map(producto => {
         const stock = parseInt(producto.stock_actual_producto) || 0;
-        const stockMinimo = parseInt(producto.stock_minimo_producto); // Tomar valor directo de BD
-        const stockMaximo = parseInt(producto.stock_maximo_producto); // Tomar valor directo de BD
-        let stockClass = 'stock-normal'; // ⭐ Por defecto verde
-        let stockText = 'Normal';
         
-        if (stock === 0) {
-            stockClass = 'stock-agotado';
-            stockText = 'Agotado';
-        } else if (stockMinimo && stock <= stockMinimo) {
-            stockClass = 'stock-bajo';
-            stockText = 'Bajo';
-        } else {
-            stockClass = 'stock-normal'; // ⭐ Verde explícito para stock > stock_minimo
-            stockText = 'Normal';
-        }
+        // ✅ Usar función centralizada para calcular estado del stock
+        const estadoStock = calcularEstadoStock(producto);
         
         // Generar HTML de imagen SIEMPRE usando la misma función que la tabla
         const imageUrl = getProductImageUrl(producto);
@@ -1233,8 +1649,8 @@ function displayProductsGrid(products) {
                     </div>
                     
                     <div class="product-card-stock">
-                        <span class="${stockClass}">
-                            <i class="fas fa-box"></i> ${stock} unidades (${stockText})
+                        <span class="${estadoStock.clase}">
+                            <i class="fas fa-box"></i> ${stock} unidades (${estadoStock.texto})
                         </span>
                     </div>
                     
@@ -1347,12 +1763,38 @@ function applyMasonryLayout() {
 let productos_activeFloatingContainer = null;
 let productos_activeProductId = null;
 let productos_isAnimating = false;
+let productos_isClosing = false; // Nueva bandera para estado de cierre
 let productos_animationTimeout = null;
 let productos_floatingButtons = [];
 let productos_centerButton = null;
+let productos_lastClickTime = 0;
+let productos_clickDebounceDelay = 300; // 300ms entre clicks
+let productos_cancelableTimeouts = []; // Array para almacenar timeouts cancelables
 
 // Función principal para mostrar botones flotantes
 function showActionMenu(productId, productName, stock, estado, event) {
+    // Si está cerrando suavemente, permitir cancelación y apertura rápida
+    if (productos_isClosing) {
+        console.log('Cancelando cierre suave para abrir nuevo menú...');
+        cancelSoftClose();
+        // Reducir debounce para apertura más rápida después de cancelar
+        productos_lastClickTime = Date.now() - productos_clickDebounceDelay + 50;
+    }
+    
+    // Debounce: prevenir clicks muy rápidos
+    const currentTime = Date.now();
+    if (currentTime - productos_lastClickTime < productos_clickDebounceDelay) {
+        console.log('Click muy rápido, ignorando...');
+        return;
+    }
+    productos_lastClickTime = currentTime;
+    
+    // Si está abriendo, no permitir
+    if (productos_isAnimating && !productos_isClosing) {
+        console.log('Ya hay una animación de apertura en curso...');
+        return;
+    }
+    
     // CERRAR BURBUJA DE STOCK SI ESTÁ ABIERTA
     const existingBubbles = document.querySelectorAll('.stock-update-bubble');
     existingBubbles.forEach(bubble => {
@@ -1376,19 +1818,33 @@ function showActionMenu(productId, productName, stock, estado, event) {
         }
     });
     
-    // Prevenir múltiples ejecuciones
-    if (productos_isAnimating) return;
-    
-    // Si ya está abierto para el mismo producto, cerrarlo
+    // Si ya está abierto para el mismo producto, cerrarlo suavemente
     if (productos_activeFloatingContainer && productos_activeProductId === productId) {
         closeFloatingActionsAnimated();
         return;
     }
     
-    // Cerrar cualquier menú anterior
-    if (productos_activeFloatingContainer) {
+    // Cerrar cualquier menú anterior con cierre rápido cancelable
+    if (productos_activeFloatingContainer && productos_activeProductId !== productId) {
         closeFloatingActionsAnimated();
+        // Esperar menos tiempo ya que el cierre es más rápido
+        setTimeout(() => {
+            // Verificar si el cierre no fue cancelado
+            if (!productos_isClosing || !productos_activeFloatingContainer) {
+                openNewMenu(productId, productName, stock, estado, event);
+            }
+        }, 400);
+        return;
     }
+    
+    // Abrir directamente si no hay menú activo
+    openNewMenu(productId, productName, stock, estado, event);
+}
+
+// Función auxiliar para abrir un nuevo menú
+function openNewMenu(productId, productName, stock, estado, event) {
+    // Limpiar cualquier contenedor huérfano antes de abrir
+    cleanupOrphanedContainers();
     
     // Obtener el botón que disparó el evento - MEJORADO
     let triggerButton = null;
@@ -1411,6 +1867,15 @@ function showActionMenu(productId, productName, stock, estado, event) {
     }
     
     if (!triggerButton) {
+        console.warn('No se encontró el botón trigger para el producto', productId);
+        productos_isAnimating = false;
+        return;
+    }
+    
+    // Verificar que el botón aún existe en el DOM
+    if (!document.contains(triggerButton)) {
+        console.warn('El botón trigger ya no está en el DOM');
+        productos_isAnimating = false;
         return;
     }
     
@@ -1419,6 +1884,32 @@ function showActionMenu(productId, productName, stock, estado, event) {
     
     // Crear contenedor flotante con animaciones
     createAnimatedFloatingContainer(triggerButton, productId, productName, stock, estado);
+}
+
+// Función para limpiar contenedores huérfanos
+function cleanupOrphanedContainers() {
+    const orphanedContainers = document.querySelectorAll('.animated-floating-container');
+    orphanedContainers.forEach(container => {
+        try {
+            if (container !== productos_activeFloatingContainer) {
+                container.remove();
+            }
+        } catch (e) {
+            console.warn('Error eliminando contenedor huérfano:', e);
+        }
+    });
+    
+    // Limpiar botones huérfanos también
+    const orphanedButtons = document.querySelectorAll('.animated-floating-button, .animated-center-button');
+    orphanedButtons.forEach(button => {
+        try {
+            if (!button.closest('.animated-floating-container')) {
+                button.remove();
+            }
+        } catch (e) {
+            console.warn('Error eliminando botón huérfano:', e);
+        }
+    });
 }
 
 // Crear el contenedor flotante con animaciones avanzadas
@@ -1453,13 +1944,13 @@ function createAnimatedFloatingContainer(triggerButton, productId, productName, 
     
     // Estilos del contenedor principal
     productos_activeFloatingContainer.style.cssText = `
-        position: absolute !important;
-        z-index: 999999 !important;
+        position: fixed !important;
+        z-index: 9999999 !important;
         pointer-events: none !important;
         top: 0 !important;
         left: 0 !important;
-        width: auto !important;
-        height: auto !important;
+        width: 100vw !important;
+        height: 100vh !important;
         display: block !important;
     `;
     
@@ -1488,12 +1979,8 @@ function createAnimatedFloatingContainer(triggerButton, productId, productName, 
         createAnimatedButton(action, index, angle, radius);
     });
     
-    // Agregar al contenedor de la tabla
-    if (tableContainer) {
-        tableContainer.appendChild(productos_activeFloatingContainer);
-    } else {
-        document.body.appendChild(productos_activeFloatingContainer);
-    }
+    // Agregar directamente al body para evitar problemas de z-index con la tabla
+    document.body.appendChild(productos_activeFloatingContainer);
     
     // Actualizar posiciones iniciales
     updateAnimatedButtonPositions();
@@ -1503,8 +1990,39 @@ function createAnimatedFloatingContainer(triggerButton, productId, productName, 
     // Event listeners con animaciones
     setupAnimatedEventListeners();
     
+    // 🎯 Iniciar tracking continuo inmediato (antes de la animación)
+    startContinuousTracking();
+    
     // Iniciar animación de entrada
     startOpenAnimation();
+}
+
+// 🎯 Sistema de tracking continuo inmediato
+let productos_trackingInterval = null;
+
+function startContinuousTracking() {
+    // Limpiar interval anterior si existe
+    if (productos_trackingInterval) {
+        clearInterval(productos_trackingInterval);
+    }
+    
+    // Actualizar posiciones cada 16ms (~60fps) para tracking ultra suave
+    productos_trackingInterval = setInterval(() => {
+        if (productos_activeFloatingContainer && !productos_isClosing) {
+            updateAnimatedButtonPositions();
+        } else {
+            // Si ya no hay contenedor, limpiar interval
+            clearInterval(productos_trackingInterval);
+            productos_trackingInterval = null;
+        }
+    }, 16); // 60 FPS
+}
+
+function stopContinuousTracking() {
+    if (productos_trackingInterval) {
+        clearInterval(productos_trackingInterval);
+        productos_trackingInterval = null;
+    }
 }
 
 // Crear botón central con tres puntitos (para cerrar)
@@ -1514,7 +2032,7 @@ function createCenterButton() {
     productos_centerButton.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
     
     productos_centerButton.style.cssText = `
-        position: absolute !important;
+        position: fixed !important;
         width: 45px !important;
         height: 45px !important;
         border-radius: 50% !important;
@@ -1524,7 +2042,7 @@ function createCenterButton() {
         align-items: center !important;
         justify-content: center !important;
         cursor: pointer !important;
-        z-index: 1000000 !important;
+        z-index: 10000000 !important;
         font-size: 16px !important;
         box-shadow: none !important;
         pointer-events: auto !important;
@@ -1547,10 +2065,10 @@ function createCenterButton() {
         productos_centerButton.style.background = 'transparent';
     });
     
-    // Click para cerrar
+    // Click para cerrar - RÁPIDO
     productos_centerButton.addEventListener('click', (e) => {
         e.stopPropagation();
-        closeFloatingActionsAnimated();
+        closeFloatingActionsAnimatedFast(); // Usar versión rápida al hacer click directo
     });
     
     productos_activeFloatingContainer.appendChild(productos_centerButton);
@@ -1575,7 +2093,7 @@ function createAnimatedButton(action, index, angle, radius) {
     };
     
     button.style.cssText = `
-        position: absolute !important;
+        position: fixed !important;
         width: 55px !important;
         height: 55px !important;
         border-radius: 50% !important;
@@ -1585,7 +2103,7 @@ function createAnimatedButton(action, index, angle, radius) {
         align-items: center !important;
         justify-content: center !important;
         cursor: pointer !important;
-        z-index: 1000001 !important;
+        z-index: 10000001 !important;
         font-size: 20px !important;
         box-shadow: 0 6px 20px ${action.color}40 !important;
         pointer-events: auto !important;
@@ -1600,7 +2118,7 @@ function createAnimatedButton(action, index, angle, radius) {
     button.addEventListener('mouseenter', () => {
         button.style.transform = 'scale(1.2) rotate(15deg)';
         button.style.boxShadow = `0 10px 30px ${action.color}60`;
-        button.style.zIndex = '1000003';
+        button.style.zIndex = '10000003';
         
         // Crear ripple effect
         createRippleEffect(button, action.color);
@@ -1612,7 +2130,7 @@ function createAnimatedButton(action, index, angle, radius) {
     button.addEventListener('mouseleave', () => {
         button.style.transform = 'scale(1) rotate(0deg)';
         button.style.boxShadow = `0 6px 20px ${action.color}40`;
-        button.style.zIndex = '1000001';
+        button.style.zIndex = '10000001';
         
         // Ocultar tooltip
         hideTooltip();
@@ -1755,32 +2273,12 @@ function updateAnimatedButtonPositions() {
         return;
     }
     
-    // Obtener el contenedor padre donde están los botones
-    const container = productos_activeFloatingContainer.parentElement;
-    if (!container) {
-        return;
-    }
-    
-    // Asegurar que el contenedor tenga position relative
-    const containerStyle = window.getComputedStyle(container);
-    if (containerStyle.position === 'static') {
-        container.style.position = 'relative';
-    }
-    
-    // Obtener posiciones relativas
-    const containerRect = container.getBoundingClientRect();
+    // Usar getBoundingClientRect para obtener posición fija en la ventana
     const triggerRect = productos_activeFloatingContainer.triggerButton.getBoundingClientRect();
     
-    // Calcular posición relativa del trigger respecto al contenedor
-    const centerX = triggerRect.left - containerRect.left + triggerRect.width / 2;
-    const centerY = triggerRect.top - containerRect.top + triggerRect.height / 2;
-    
-    // Ajustar por scroll del contenedor si es necesario
-    const scrollLeft = container.scrollLeft || 0;
-    const scrollTop = container.scrollTop || 0;
-    
-    const finalCenterX = centerX + scrollLeft;
-    const finalCenterY = centerY + scrollTop;
+    // Calcular centro del botón trigger en coordenadas de ventana (fixed)
+    const finalCenterX = triggerRect.left + triggerRect.width / 2;
+    const finalCenterY = triggerRect.top + triggerRect.height / 2;
     
     // Actualizar posición del botón central
     if (productos_centerButton) {
@@ -1820,13 +2318,13 @@ function startOpenAnimation() {
         setTimeout(() => {
             button.style.transform = 'scale(1) rotate(0deg)';
             button.style.opacity = '1';
-        }, 200 + (index * 100)); // 100ms de delay entre cada botón
+        }, 200 + (index * 100));
     });
     
-    // Finalizar animación
+    // Finalizar animación de apertura - bloquear cierre hasta que termine la entrada
     setTimeout(() => {
         productos_isAnimating = false;
-    }, 200 + (productos_floatingButtons.length * 100) + 400);
+    }, 200 + (productos_floatingButtons.length * 100) + 200); // Bloquear hasta que termine la animación
 }
 
 // Event listeners animados
@@ -1834,90 +2332,340 @@ function setupAnimatedEventListeners() {
     // Cerrar al hacer click fuera con animación
     const handleClick = (e) => {
         if (productos_activeFloatingContainer && !productos_activeFloatingContainer.contains(e.target)) {
-            closeFloatingActionsAnimated();
+            // Verificar que no es el botón trigger
+            const isTriggerButton = e.target.closest('.btn-menu');
+            if (!isTriggerButton) {
+                closeFloatingActionsAnimated();
+            }
         }
     };
     
-    // Actualizar posiciones en resize
+    // Actualizar posiciones en resize con throttle
+    let resizeTimeout;
     const handleResize = () => {
-        if (productos_activeFloatingContainer) {
-            setTimeout(() => {
+        if (!productos_activeFloatingContainer) return;
+        
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (productos_activeFloatingContainer && !productos_isAnimating) {
                 updateAnimatedButtonPositions();
-            }, 100);
-        }
+            }
+        }, 150);
     };
     
-    // Manejar scroll del contenedor padre
+    // Manejar scroll - actualizar posiciones en tiempo real
+    let scrollTimeout;
     const handleScroll = () => {
-        if (productos_activeFloatingContainer) {
+        if (!productos_activeFloatingContainer) return;
+        
+        // Actualizar posiciones inmediatamente para tracking fluido
+        if (!productos_isAnimating && !productos_isClosing) {
             updateAnimatedButtonPositions();
         }
+        
+        // También verificar si el trigger sigue visible (con throttle)
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            if (productos_activeFloatingContainer && productos_activeFloatingContainer.triggerButton) {
+                const rect = productos_activeFloatingContainer.triggerButton.getBoundingClientRect();
+                const isVisible = rect.top >= -50 && rect.bottom <= (window.innerHeight + 50);
+                
+                if (!isVisible) {
+                    // Si el trigger ya no es visible, cerrar el menú suavemente
+                    closeFloatingActionsAnimated();
+                }
+            }
+        }, 150);
     };
     
-    document.addEventListener('click', handleClick);
+    // Agregar listeners
+    setTimeout(() => {
+        document.addEventListener('click', handleClick);
+    }, 100); // Delay para evitar que el click que abre el menú lo cierre
+    
     window.addEventListener('resize', handleResize, { passive: true });
     
-    // Agregar listener de scroll al contenedor padre
-    const container = productos_activeFloatingContainer.parentElement;
-    if (container) {
-        container.addEventListener('scroll', handleScroll, { passive: true });
-    }
+    // Agregar listener de scroll a múltiples contenedores posibles
+    const scrollableContainers = [
+        document.querySelector('.data-table-wrapper'),  // Tabla de productos
+        document.querySelector('.scrollable-table'),    // Tabla scrollable
+        document.querySelector('.admin-main'),          // ✨ Contenedor principal de admin.php
+        document.querySelector('main'),                 // Tag main genérico
+        document.body,                                  // Body del documento
+        window                                          // Ventana global
+    ];
+    
+    scrollableContainers.forEach(container => {
+        if (container) {
+            container.addEventListener('scroll', handleScroll, { passive: true });
+        }
+    });
     
     // Limpiar listeners cuando se cierre
     productos_activeFloatingContainer.cleanup = () => {
         document.removeEventListener('click', handleClick);
         window.removeEventListener('resize', handleResize);
-        if (container) {
-            container.removeEventListener('scroll', handleScroll);
-        }
+        
+        clearTimeout(resizeTimeout);
+        clearTimeout(scrollTimeout);
+        
+        scrollableContainers.forEach(container => {
+            if (container) {
+                container.removeEventListener('scroll', handleScroll);
+            }
+        });
     };
 }
 
-// Cerrar menú flotante con animación avanzada
-function closeFloatingActionsAnimated() {
-    if (!productos_activeFloatingContainer || productos_isAnimating) return;
+// ✨ Función para crear efecto de partículas
+function createParticleEffect(sourceElement, centerX, centerY) {
+    const particleCount = 8; // Número de partículas por botón
+    const colors = ['#007bff', '#0056b3', '#66a3ff', '#ffffff'];
+    
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'floating-particle';
+        
+        // Posición inicial en el centro del botón
+        particle.style.cssText = `
+            position: fixed;
+            left: ${centerX}px;
+            top: ${centerY}px;
+            width: 6px;
+            height: 6px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000000;
+            opacity: 1;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+        `;
+        
+        document.body.appendChild(particle);
+        
+        // Calcular dirección aleatoria
+        const angle = (Math.PI * 2 * i) / particleCount + (Math.random() - 0.5) * 0.5;
+        const distance = 30 + Math.random() * 40;
+        const deltaX = Math.cos(angle) * distance;
+        const deltaY = Math.sin(angle) * distance;
+        
+        // Animar partícula
+        requestAnimationFrame(() => {
+            particle.style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            particle.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0)`;
+            particle.style.opacity = '0';
+        });
+        
+        // Limpiar después de la animación
+        setTimeout(() => {
+            if (particle && particle.parentNode) {
+                particle.parentNode.removeChild(particle);
+            }
+        }, 400);
+    }
+}
+
+// ⚡ Cerrar menú flotante con animación RÁPIDA pero fluida
+function closeFloatingActionsAnimatedFast() {
+    // Si no hay contenedor activo, no hacer nada
+    if (!productos_activeFloatingContainer) {
+        productos_isAnimating = false;
+        stopContinuousTracking();
+        return;
+    }
+    
+    // Si ya está cerrando, no hacer nada
+    if (productos_isClosing) {
+        return;
+    }
+    
+    // Si está animando la apertura, no permitir cerrar
+    if (productos_isAnimating) {
+        return;
+    }
     
     productos_isAnimating = true;
+    productos_isClosing = true;
     
-    // Limpiar timeout anterior si existe
+    // Detener tracking continuo
+    stopContinuousTracking();
+    
+    // Limpiar timeouts
     if (productos_animationTimeout) {
         clearTimeout(productos_animationTimeout);
+        productos_animationTimeout = null;
     }
     
-    // Ocultar tooltip si existe
     hideTooltip();
     
-    // Animar salida de botones flotantes (en orden inverso)
-    productos_floatingButtons.forEach((button, index) => {
-        setTimeout(() => {
-            button.style.transform = 'scale(0) rotate(-180deg)';
-            button.style.opacity = '0';
-        }, index * 50);
-    });
+    const containerToClose = productos_activeFloatingContainer;
+    const buttonsToClose = [...productos_floatingButtons];
+    const centerButtonToClose = productos_centerButton;
     
-    // Animar salida del botón central
-    if (productos_centerButton) {
-        setTimeout(() => {
-            productos_centerButton.style.transform = 'scale(0) rotate(-360deg)';
-            productos_centerButton.style.opacity = '0';
-        }, productos_floatingButtons.length * 50 + 100);
+    productos_cancelableTimeouts.forEach(timeout => clearTimeout(timeout));
+    productos_cancelableTimeouts = [];
+    
+    // � ANIMACIÓN DE IMPLOSIÓN CON EFECTO PARTÍCULAS
+    // Obtener posición del centro
+    let centerX = 0, centerY = 0;
+    if (centerButtonToClose && document.contains(centerButtonToClose)) {
+        const rect = centerButtonToClose.getBoundingClientRect();
+        centerX = rect.left + rect.width / 2;
+        centerY = rect.top + rect.height / 2;
     }
     
-    // Limpiar después de que termine la animación
-    productos_animationTimeout = setTimeout(() => {
-        if (productos_activeFloatingContainer) {
-            if (productos_activeFloatingContainer.cleanup) {
-                productos_activeFloatingContainer.cleanup();
-            }
+    // Animar botones hacia el centro con delay escalonado
+    buttonsToClose.forEach((button, index) => {
+        if (button && document.contains(button)) {
+            const timeout = setTimeout(() => {
+                try {
+                    if (!productos_isClosing) return;
+                    
+                    // Obtener posición actual del botón
+                    const buttonRect = button.getBoundingClientRect();
+                    const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+                    const buttonCenterY = buttonRect.top + buttonRect.height / 2;
+                    
+                    // Calcular distancia al centro
+                    const deltaX = centerX - buttonCenterX;
+                    const deltaY = centerY - buttonCenterY;
+                    
+                    // 🎨 Efecto de partículas antes de la implosión
+                    createParticleEffect(button, buttonCenterX, buttonCenterY);
+                    
+                    // Animación de implosión hacia el centro
+                    button.style.transition = 'all 0.25s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                    button.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0) rotate(360deg)`;
+                    button.style.opacity = '0';
+                    button.style.filter = 'blur(3px)';
+                } catch (e) {
+                    console.warn('Error animando botón:', e);
+                }
+            }, index * 30); // 30ms de delay entre cada botón
             
-            productos_activeFloatingContainer.remove();
-            productos_activeFloatingContainer = null;
-            productos_centerButton = null;
-            productos_floatingButtons = [];
-            productos_activeProductId = null;
-            productos_isAnimating = false;
+            productos_cancelableTimeouts.push(timeout);
         }
-    }, productos_floatingButtons.length * 50 + 400);
+    });
+    
+    // Botón central hace un "pulso" y desaparece
+    if (centerButtonToClose && document.contains(centerButtonToClose)) {
+        const timeout = setTimeout(() => {
+            try {
+                if (!productos_isClosing) return;
+                
+                // Pulso rápido antes de desaparecer
+                centerButtonToClose.style.transition = 'all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                centerButtonToClose.style.transform = 'scale(1.3) rotate(180deg)';
+                
+                // Luego desaparece
+                setTimeout(() => {
+                    if (centerButtonToClose && document.contains(centerButtonToClose)) {
+                        centerButtonToClose.style.transition = 'all 0.15s cubic-bezier(0.4, 0.0, 0.2, 1)';
+                        centerButtonToClose.style.transform = 'scale(0) rotate(360deg)';
+                        centerButtonToClose.style.opacity = '0';
+                        centerButtonToClose.style.filter = 'blur(4px)';
+                    }
+                }, 150);
+            } catch (e) {
+                console.warn('Error animando botón central:', e);
+            }
+        }, buttonsToClose.length * 30 + 50);
+        
+        productos_cancelableTimeouts.push(timeout);
+    }
+    
+    // Cleanup optimizado
+    const cleanupDelay = buttonsToClose.length * 30 + 350;
+    productos_animationTimeout = setTimeout(() => {
+        if (!productos_isClosing) return;
+        
+        try {
+            if (containerToClose && document.contains(containerToClose)) {
+                if (containerToClose.cleanup) {
+                    containerToClose.cleanup();
+                }
+                containerToClose.remove();
+            }
+        } catch (e) {
+            console.warn('Error removiendo contenedor:', e);
+        }
+        
+        productos_activeFloatingContainer = null;
+        productos_centerButton = null;
+        productos_floatingButtons = [];
+        productos_activeProductId = null;
+        productos_isAnimating = false;
+        productos_isClosing = false;
+        productos_cancelableTimeouts = [];
+        
+        cleanupOrphanedContainers();
+    }, cleanupDelay);
+    
+    productos_cancelableTimeouts.push(productos_animationTimeout);
+}
+
+// Cerrar menú flotante con animación (usa la versión rápida para todo)
+function closeFloatingActionsAnimated() {
+    // Usar la animación rápida pero fluida para todos los casos
+    closeFloatingActionsAnimatedFast();
+}
+
+// Función para cancelar cierre suave y restaurar botones
+function cancelSoftClose() {
+    console.log('🔄 Cancelando cierre suave...');
+    
+    // Cancelar todos los timeouts pendientes
+    productos_cancelableTimeouts.forEach(timeout => {
+        if (timeout) clearTimeout(timeout);
+    });
+    productos_cancelableTimeouts = [];
+    
+    if (productos_animationTimeout) {
+        clearTimeout(productos_animationTimeout);
+        productos_animationTimeout = null;
+    }
+    
+    // Marcar que ya no está cerrando
+    productos_isClosing = false;
+    
+    // Si hay botones que están en medio de animación de cierre, restaurarlos suavemente
+    if (productos_floatingButtons.length > 0) {
+        productos_floatingButtons.forEach((button, index) => {
+            if (button && document.contains(button)) {
+                try {
+                    // Restaurar transición suave
+                    button.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    
+                    // Restaurar estado visible con delay escalonado
+                    setTimeout(() => {
+                        button.style.transform = 'scale(1) rotate(0deg)';
+                        button.style.opacity = '1';
+                    }, index * 30);
+                } catch (e) {
+                    console.warn('Error restaurando botón:', e);
+                }
+            }
+        });
+    }
+    
+    // Restaurar botón central
+    if (productos_centerButton && document.contains(productos_centerButton)) {
+        try {
+            productos_centerButton.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            setTimeout(() => {
+                productos_centerButton.style.transform = 'scale(1) rotate(360deg)';
+                productos_centerButton.style.opacity = '1';
+            }, productos_floatingButtons.length * 30);
+        } catch (e) {
+            console.warn('Error restaurando botón central:', e);
+        }
+    }
+    
+    // Resetear flag de animación después de restaurar
+    setTimeout(() => {
+        productos_isAnimating = false;
+        console.log('✅ Restauración completada, listo para nueva acción');
+    }, productos_floatingButtons.length * 30 + 300);
 }
 
 // Mantener compatibilidad con función anterior
@@ -2084,6 +2832,7 @@ function clearAllProductFilters() {
         // Limpiar todos los campos con jQuery
         $('#search-productos').val('');
         $('#filter-category').val('');
+        $('#filter-marca').val(''); // ✅ Limpiar filtro de marca
         $('#filter-status').val('');
         $('#filter-stock').val('');
         $('#filter-fecha-value').val('');
@@ -2110,6 +2859,7 @@ function clearAllProductFilters() {
         const elements = [
             'search-productos',
             'filter-category',
+            'filter-marca', // ✅ Limpiar filtro de marca
             'filter-status',
             'filter-stock',
             'filter-fecha-value'
@@ -2131,6 +2881,19 @@ function clearAllProductFilters() {
             filterFechaText.textContent = 'Seleccionar fechas';
         }
     }
+    
+    // 🔄 Limpiar estado de ordenamiento de columnas
+    currentSortColumn = null;
+    currentSortOrder = 'asc';
+    
+    // Remover clases 'sorted' de todas las columnas
+    const sortedHeaders = document.querySelectorAll('th.sortable.sorted');
+    sortedHeaders.forEach(header => {
+        header.classList.remove('sorted');
+        header.removeAttribute('data-sort-direction');
+    });
+    
+    console.log('✅ Estado de ordenamiento limpiado');
     
     // Mostrar notificación
     // showNotification('Filtros limpiados', 'info');
@@ -2835,19 +3598,37 @@ function updateStock(id, currentStock, event) {
         })
         .then(response => response.json())
         .then(data => {
+            console.log('📦 Respuesta del servidor (update_stock):', data);
+            
             if (data.success) {
+                console.log('✅ Stock actualizado exitosamente en BD');
+                console.log('📊 Producto recibido:', data.product);
+                
                 // Mostrar notificación de éxito
                 if (typeof showNotification === 'function') {
-                    // showNotification(`✅ Stock actualizado a ${newStock} unidades`, 'success');
+                    showNotification(`✅ Stock actualizado a ${newStock} unidades`, 'success');
                 }
                 
-                // Usar actualización suave si está disponible
+                // Usar actualización SUAVE sin recargar toda la tabla
                 if (window.smoothTableUpdater && data.product) {
-                    console.log('🎯 Usando actualización suave para cambiar stock del producto:', id);
-                    window.smoothTableUpdater.updateSingleProduct(data.product);
+                    console.log('🎯 Usando SmoothTableUpdater para actualizar solo el stock del producto:', id);
+                    console.log('� Verificando smoothTableUpdater:', typeof window.smoothTableUpdater);
+                    
+                    try {
+                        // Actualizar solo este producto especificando que cambió el campo 'stock'
+                        // Parámetros: (productId, updatedData, changedFields)
+                        window.smoothTableUpdater.updateSingleProduct(data.product.id_producto, data.product, ['stock']);
+                        console.log('✅ Actualización suave completada - solo campo stock');
+                    } catch (error) {
+                        console.error('❌ Error en smoothTableUpdater:', error);
+                        console.log('🔄 Fallback: recargando tabla completa...');
+                        loadProducts(true);
+                    }
                 } else {
-                    console.log('⚠️ SmoothTableUpdater no disponible o producto no retornado - usando recarga tradicional');
-                    // Actualizar lista inmediatamente
+                    console.warn('⚠️ SmoothTableUpdater no disponible o producto no retornado');
+                    console.warn('   - smoothTableUpdater existe:', !!window.smoothTableUpdater);
+                    console.warn('   - producto recibido:', !!data.product);
+                    console.log('🔄 Fallback: recargando tabla completa...');
                     loadProducts(true);
                 }
                 
@@ -2857,8 +3638,9 @@ function updateStock(id, currentStock, event) {
                     if (stockBubble && stockBubble.parentNode) stockBubble.remove();
                 }, 400);
             } else {
+                console.error('❌ Error del servidor:', data.error || 'Error desconocido');
                 if (typeof showNotification === 'function') {
-                    // showNotification('❌ Error al actualizar stock', 'error');
+                    showNotification('❌ Error al actualizar stock: ' + (data.error || 'Error desconocido'), 'error');
                 }
                 if (overlay && overlay.parentNode) overlay.remove();
                 if (stockBubble && stockBubble.parentNode) stockBubble.remove();
@@ -3125,6 +3907,17 @@ function initializeProductsModule() {
     // Verificar que los elementos necesarios existen
     const tbody = document.getElementById('productos-table-body');
     
+    // 💾 RESTAURAR vista desde localStorage
+    let savedView = null;
+    try {
+        savedView = localStorage.getItem('products_view_preference');
+        if (savedView) {
+            console.log('💾 Vista guardada encontrada:', savedView);
+        }
+    } catch (e) {
+        console.warn('⚠️ No se pudo leer localStorage:', e);
+    }
+    
     // Detectar si es móvil y preparar vista grid ANTES de cargar
     const isMobile = window.innerWidth <= 768;
     if (isMobile) {
@@ -3190,17 +3983,36 @@ function initializeProductsModule() {
         });
     }
     
-    // Cargar categorías y productos
+    // Cargar categorías, marcas y productos
     loadCategories();
+    loadMarcas();
+    
+    // Inicializar modal de filtros móvil
+    console.log('🔧 Inicializando modal de filtros móvil...');
+    toggleMobileFilterButton();
+    window.addEventListener('resize', toggleMobileFilterButton);
+    
+    // Inicializar control del sidebar móvil (shop.php style)
+    initMobileFiltersSidebar();
     
     // En móvil, cargar productos y luego forzar vista grid INSTANTÁNEAMENTE
     if (isMobile) {
         loadProducts().then(() => {
             console.log('🎯 Productos cargados, ejecutando toggleView(grid) automáticamente');
-            toggleView('grid'); // ← INSTANTÁNEO, sin timeout
+            toggleView('grid', true); // skipAnimation = true para móvil
         });
     } else {
-        loadProducts();
+        // En desktop, restaurar vista guardada o usar tabla por defecto
+        if (savedView && (savedView === 'grid' || savedView === 'table')) {
+            console.log('🔄 Restaurando vista guardada:', savedView);
+            loadProducts().then(() => {
+                // Usar skipAnimation para carga inicial (más rápido)
+                toggleView(savedView, true);
+            });
+        } else {
+            // Vista por defecto: tabla
+            loadProducts();
+        }
     }
     
     // ========================================
@@ -3324,6 +4136,9 @@ function initializeProductsModule() {
                 console.log('📅 Calendario abierto - LIMPIANDO filtros automáticamente');
                 isCalendarOpen = true;
                 filterFecha.classList.add('calendar-open');
+                
+                // ⚡ REDIBUJAR SILENCIOSAMENTE para actualizar marcas (solo cuando se abre)
+                window.productsDatePicker.redraw();
                 
                 // ⭐ LIMPIAR fechas automáticamente al abrir (como hacer click en "Limpiar")
                 window.productsDatePicker.clear();
@@ -3612,6 +4427,9 @@ function initializeProductsModule() {
                 isModalCalendarOpen = true;
                 filterFechaModal.classList.add('calendar-open');
                 
+                // ⚡ REDIBUJAR SILENCIOSAMENTE para actualizar marcas (solo cuando se abre)
+                window.productsDatePickerModal.redraw();
+                
                 // ⭐ LIMPIAR fechas automáticamente al abrir (como hacer click en "Limpiar")
                 window.productsDatePickerModal.clear();
                 
@@ -3751,6 +4569,14 @@ function initializeProductsModule() {
         setupDeleteModalBackdropClose();
     }
     
+    // 🔄 Inicializar eventos de ordenamiento de columnas
+    setTimeout(() => {
+        if (typeof initializeSortingEvents === 'function') {
+            initializeSortingEvents();
+            console.log('✅ Eventos de ordenamiento inicializados en módulo');
+        }
+    }, 200);
+    
     // Función de debugging para verificar funciones disponibles
     window.debugProductsFunctions = function() {
         const functions = [
@@ -3804,8 +4630,14 @@ window.createGridView = createGridView;
 window.displayProductsGrid = displayProductsGrid;
 window.closeFloatingActions = closeFloatingActions;
 window.closeFloatingActionsAnimated = closeFloatingActionsAnimated;
+window.closeFloatingActionsAnimatedFast = closeFloatingActionsAnimatedFast;
+window.cancelSoftClose = cancelSoftClose;
+window.openNewMenu = openNewMenu;
+window.cleanupOrphanedContainers = cleanupOrphanedContainers;
 window.createAnimatedFloatingContainer = createAnimatedFloatingContainer;
 window.updateAnimatedButtonPositions = updateAnimatedButtonPositions;
+window.startContinuousTracking = startContinuousTracking;
+window.stopContinuousTracking = stopContinuousTracking;
 window.forceCloseFloatingActions = forceCloseFloatingActions;
 window.showImageFullSize = showImageFullSize;
 
@@ -4782,17 +5614,187 @@ window.destroyProductosModule = function() {
     color: #ffffff !important;
 }
 
+/* ========================================
+   BOTÓN FLOTANTE DE FILTROS MÓVIL (shop.php style)
+   ======================================== */
+.btn-mobile-filters {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    cursor: pointer;
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.3s ease, opacity 0.3s ease, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+.btn-mobile-filters:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+}
+
+.btn-mobile-filters:active {
+    transform: scale(0.95);
+}
+
+/* Animación al ocultar botón */
+.btn-mobile-filters.hidden {
+    opacity: 0 !important;
+    transform: scale(0) rotate(180deg) !important;
+    pointer-events: none !important;
+}
+
+.btn-mobile-filters .filter-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #dc3545;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* ========================================
+   SIDEBAR RESPONSIVE (shop.php style)
+   ======================================== */
 @media (max-width: 768px) {
+    .btn-mobile-filters {
+        display: flex !important;
+    }
+    
+    .modern-sidebar {
+        display: none !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 320px !important;
+        max-width: 85vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        z-index: 99999 !important;
+        overflow-y: auto !important;
+        transform: translateX(-100%) !important;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3) !important;
+        background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
+        padding: 1rem !important;
+        will-change: transform !important;
+    }
+    
+    .modern-sidebar.show-mobile {
+        display: block !important;
+        transform: translateX(0) !important;
+    }
+    
+    /* Overlay oscuro cuando sidebar está abierto */
+    .modern-sidebar.show-mobile::before {
+        content: '' !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background: rgba(0, 0, 0, 0.6) !important;
+        z-index: -1 !important;
+        animation: fadeIn 0.3s ease !important;
+    }
+    
+    /* Botón de cerrar dentro del sidebar */
+    .sidebar-close-btn {
+        position: absolute !important;
+        top: 1rem !important;
+        right: 1rem !important;
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50% !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+        font-size: 18px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        z-index: 10 !important;
+    }
+    
+    .sidebar-close-btn:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        transform: rotate(90deg) !important;
+    }
+    
+    .sidebar-close-btn:active {
+        transform: rotate(90deg) scale(0.9) !important;
+    }
+    
+    /* Animación del overlay */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    
+    /* Mejorar el diseño de los filtros dentro del sidebar */
+    .modern-sidebar .search-container {
+        margin-bottom: 1rem !important;
+    }
+    
+    .modern-sidebar .filters-grid {
+        margin-top: 3rem !important; /* Espacio para el botón de cerrar */
+    }
+    
+    .modern-sidebar .filter-group label {
+        color: #cbd5e1 !important;
+        font-weight: 600 !important;
+    }
+    
+    .modern-sidebar .filter-select {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: #ffffff !important;
+    }
+    
+    .modern-sidebar .filter-select:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    }
+    
     .module-actions .btn-modern,
     .module-actions .btn-modern *,
     .module-actions button,
     .module-actions button * {
         color: #ffffff !important;
-    }
-    
-    /* Ocultar SOLO filtros en móvil, mantener header visible */
-    .module-filters {
-        display: none !important;
     }
     
     /* Ocultar botones de vista (tabla/grid) y acciones en lote en móvil */
@@ -5395,39 +6397,95 @@ window.destroyProductosModule = function() {
     scroll-behavior: smooth;
 }
 
-/* ===== FORZAR PRIMER PLANO PARA ELEMENTOS FLOTANTES ===== */
-.animated-floating-container,
-.animated-floating-button,
+/* ===== FORZAR PRIMER PLANO PARA ELEMENTOS FLOTANTES - MÁXIMA PRIORIDAD ===== */
+.animated-floating-container {
+    z-index: 9999999 !important;
+    position: fixed !important;
+}
+
+.animated-floating-button {
+    z-index: 10000001 !important;
+    position: fixed !important;
+}
+
+.animated-center-button {
+    z-index: 10000000 !important;
+    position: fixed !important;
+}
+
 .stock-update-bubble {
-    z-index: 999999 !important;
+    z-index: 1000001 !important;
     position: relative !important;
 }
 
 .delete-confirmation-overlay {
-    z-index: 1000002 !important;
+    z-index: 10000002 !important;
     position: fixed !important;
 }
 
-.animated-floating-container * {
-    z-index: 999999 !important;
+/* NO aplicar z-index genérico al contenedor */
+.animated-floating-container .animated-center-button {
+    z-index: 10000000 !important;
+}
+
+.animated-floating-container .animated-floating-button {
+    z-index: 10000001 !important;
 }
 
 /* Asegurar que los tooltips también estén en primer plano */
 .floating-tooltip {
-    z-index: 1000000 !important;
+    z-index: 10000005 !important;
 }
 
-/* Forzar primer plano en elementos específicos que pueden interferir */
+/* Mantener modales en nivel inferior */
 .modal-content,
 .modal-overlay,
 #product-modal-overlay {
     z-index: 99999 !important;
 }
 
-/* Asegurar que las burbujas estén por encima de modales */
-.animated-floating-container,
-.stock-update-bubble {
-    z-index: 1000001 !important;
+/* ===== ESTILOS PARA ORDENAMIENTO DE COLUMNAS ===== */
+th.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+th.sortable:hover {
+    background: rgba(36, 99, 235, 0.1);
+}
+
+th.sortable:active {
+    background: rgba(36, 99, 235, 0.2);
+}
+
+th.sortable.sorted {
+    background: rgba(36, 99, 235, 0.15);
+    color: #2463eb;
+    font-weight: 600;
+}
+
+/* Indicador de dirección de ordenamiento (opcional) */
+th.sortable.sorted[data-sort-direction="asc"]::after {
+    content: " ↑";
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+th.sortable.sorted[data-sort-direction="desc"]::after {
+    content: " ↓";
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+/* Animación para filas ordenadas */
+tbody tr {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+tbody tr.sorting {
+    opacity: 0.5;
 }
 </style>
 

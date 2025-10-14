@@ -11,6 +11,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
+/**
+ * 📦 FUNCIÓN CENTRALIZADA PARA CALCULAR ESTADO DE STOCK
+ * Esta es la ÚNICA fuente de verdad para determinar el estado del stock
+ * Usa SOLO los valores de la base de datos sin fallbacks
+ * 
+ * @param array $producto - Array con stock_actual_producto y stock_minimo_producto
+ * @return string - 'Agotado', 'Stock bajo' o 'Normal'
+ */
+function calcularEstadoStock($producto) {
+    $stockActual = isset($producto['stock_actual_producto']) ? (int)$producto['stock_actual_producto'] : 0;
+    $stockMinimo = isset($producto['stock_minimo_producto']) ? (int)$producto['stock_minimo_producto'] : null;
+    
+    // Prioridad 1: Stock en 0 = Agotado
+    if ($stockActual == 0) {
+        return 'Agotado';
+    }
+    
+    // Prioridad 2: Stock <= stock_minimo (solo si stock_minimo existe y es > 0 en la BD)
+    if ($stockMinimo !== null && $stockMinimo > 0 && $stockActual <= $stockMinimo) {
+        return 'Stock bajo';
+    }
+    
+    // Prioridad 3: Stock normal (por encima del mínimo o sin mínimo definido)
+    return 'Normal';
+}
+
+/**
+ * 🏷️ GENERAR CÓDIGO AUTOMÁTICO TIPO SLUG
+ * Genera código en formato: CAM-NIKE-PAN (primeras 3 letras de producto-marca-categoría)
+ * 
+ * @param string $nombre - Nombre del producto
+ * @param string $marca - Nombre de la marca
+ * @param string $categoria - Nombre de la categoría
+ * @param PDO $conn - Conexión a la base de datos
+ * @return string - Código único generado
+ */
+function generarCodigoProducto($nombre, $marca, $categoria, $conn) {
+    // Función auxiliar para obtener 3 primeras letras
+    function getPrimeras3Letras($texto) {
+        // Remover caracteres especiales y espacios
+        $texto = preg_replace('/[^A-Za-z0-9\s]/', '', $texto);
+        $texto = trim($texto);
+        
+        // Si es vacío, usar XXX
+        if (empty($texto)) return 'XXX';
+        
+        // Obtener primera palabra
+        $palabras = explode(' ', $texto);
+        $palabra = $palabras[0];
+        
+        // Tomar primeras 3 letras (o menos si es más corta)
+        $letras = strtoupper(substr($palabra, 0, 3));
+        
+        // Rellenar con X si es menor a 3 caracteres
+        return str_pad($letras, 3, 'X', STR_PAD_RIGHT);
+    }
+    
+    // Generar partes del código
+    $parteNombre = getPrimeras3Letras($nombre);
+    $parteMarca = getPrimeras3Letras($marca ?: 'MARCA');
+    $parteCategoria = getPrimeras3Letras($categoria ?: 'CAT');
+    
+    // Código base
+    $codigoBase = $parteNombre . '-' . $parteMarca . '-' . $parteCategoria;
+    
+    // Verificar si existe en la BD
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM producto WHERE codigo = ?");
+    $stmt->execute([$codigoBase]);
+    $existe = $stmt->fetchColumn();
+    
+    // Si existe, agregar número incremental
+    if ($existe > 0) {
+        $contador = 1;
+        do {
+            $codigoConNumero = $codigoBase . '-' . str_pad($contador, 3, '0', STR_PAD_LEFT);
+            $stmt->execute([$codigoConNumero]);
+            $existe = $stmt->fetchColumn();
+            $contador++;
+        } while ($existe > 0 && $contador < 1000);
+        
+        return $codigoConNumero;
+    }
+    
+    return $codigoBase;
+}
+
 // Conexión directa a la base de datos
 try {
     $host = 'localhost';
@@ -34,6 +120,7 @@ try {
             getCategorias($conn);
             break;
         case 'get_brands':
+        case 'get_marcas': // Alias para compatibilidad
             getMarcas($conn);
             break;
         case 'get':
@@ -120,6 +207,13 @@ function listProductos($conn) {
     if (!empty($category)) {
         $where_conditions[] = "p.id_categoria = ?";
         $params[] = (int)$category;
+    }
+    
+    // Filtro por marca
+    $marca = $_GET['marca'] ?? '';
+    if (!empty($marca)) {
+        $where_conditions[] = "p.id_marca = ?";
+        $params[] = (int)$marca;
     }
     
     // Filtro por stock
@@ -212,17 +306,8 @@ function listProductos($conn) {
         $producto['estado_texto'] = $producto['estado'] === 'activo' ? 'Activo' : 'Inactivo';
         $producto['fecha_creacion_formato'] = date('d/m/Y', strtotime($producto['fecha_creacion_producto']));
         
-        // Determinar estado del stock usando stock_minimo_producto de la BD
-        $stock = (int)$producto['stock_actual_producto'];
-        $stockMinimo = (int)$producto['stock_minimo_producto']; // Tomar valor directo de BD
-        
-        if ($stock == 0) {
-            $producto['estado_stock'] = 'Agotado';
-        } elseif ($stock <= $stockMinimo) {
-            $producto['estado_stock'] = 'Stock bajo';
-        } else {
-            $producto['estado_stock'] = 'Normal';
-        }
+        // ✅ Usar función centralizada para calcular estado del stock
+        $producto['estado_stock'] = calcularEstadoStock($producto);
         
         // Formatear descuento si existe
         if ($producto['descuento_porcentaje_producto'] > 0) {
@@ -407,11 +492,14 @@ function createProducto($conn) {
         $marca_id = $_POST['id_marca'] ?? null; // ID de marca (puede ser NULL)
         $descripcion = $_POST['descripcion_producto'] ?? '';
         $stock = $_POST['stock_actual_producto'] ?? 0;
-        $stock_minimo = $_POST['stock_minimo_producto'] ?? null; // Sin valor por defecto - tomar de BD
-        $stock_maximo = $_POST['stock_maximo_producto'] ?? null; // Sin valor por defecto - tomar de BD
-        $codigo = $_POST['codigo'] ?? '';
+        // 🔒 STOCK MÍNIMO FIJO EN 20 - NO SE PUEDE MODIFICAR DESDE LA APLICACIÓN
+        $stock_minimo = 20; // Valor fijo, solo modificable desde phpMyAdmin
+        // 🔒 STOCK MÁXIMO FIJO EN 300 - NO SE PUEDE MODIFICAR DESDE LA APLICACIÓN
+        $stock_maximo = 300; // Valor fijo, solo modificable desde phpMyAdmin
         // Mapear precio_descuento_producto a descuento_porcentaje_producto
         $descuento_porcentaje = $_POST['precio_descuento_producto'] ?? 0;
+        // 🔥 LÓGICA AUTOMÁTICA: Si hay descuento, en_oferta_producto = 1, sino = 0
+        $en_oferta = ($descuento_porcentaje > 0) ? 1 : 0;
         // CORRECCIÓN: Obtener status_producto del POST (siempre será 1 para nuevos productos)
         $status_producto = isset($_POST['status_producto']) ? (int)$_POST['status_producto'] : 1;
         $estado = $_POST['estado'] ?? 'activo';
@@ -424,10 +512,31 @@ function createProducto($conn) {
             return;
         }
         
-        // Generar código si no se proporciona
-        if (empty($codigo)) {
-            $codigo = 'PROD-' . strtoupper(uniqid());
+        // 🏷️ GENERAR CÓDIGO AUTOMÁTICAMENTE (tipo slug)
+        // Obtener nombres de marca y categoría para generar el código
+        $nombreMarca = 'MARCA';
+        $nombreCategoria = 'CAT';
+        
+        if ($marca_id) {
+            $stmt = $conn->prepare("SELECT nombre_marca FROM marca WHERE id_marca = ?");
+            $stmt->execute([$marca_id]);
+            $marca = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($marca) {
+                $nombreMarca = $marca['nombre_marca'];
+            }
         }
+        
+        if ($categoria_id) {
+            $stmt = $conn->prepare("SELECT nombre_categoria FROM categoria WHERE id_categoria = ?");
+            $stmt->execute([$categoria_id]);
+            $categoria = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($categoria) {
+                $nombreCategoria = $categoria['nombre_categoria'];
+            }
+        }
+        
+        // Generar código automático: CAM-NIKE-PAN
+        $codigo = generarCodigoProducto($nombre, $nombreMarca, $nombreCategoria, $conn);
         
         // Manejar imagen - SOLO SE PROCESA EN SUBMIT
         // FORMATO ESTANDARIZADO:
@@ -448,8 +557,8 @@ function createProducto($conn) {
             INSERT INTO producto (
                 nombre_producto, codigo, descripcion_producto, precio_producto,
                 descuento_porcentaje_producto, stock_actual_producto, stock_minimo_producto, stock_maximo_producto,
-                id_categoria, id_marca, imagen_producto, url_imagen_producto, status_producto, estado, fecha_creacion_producto
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                id_categoria, id_marca, imagen_producto, url_imagen_producto, status_producto, estado, en_oferta_producto, fecha_creacion_producto
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
         ";
         
         $stmt = $conn->prepare($query);
@@ -463,13 +572,13 @@ function createProducto($conn) {
             (int)$stock,
             (int)$stock_minimo,
             (int)$stock_maximo,
-            (int)$stock, 
             (int)$categoria_id,
             $marca_id ? (int)$marca_id : null,
             $imagen_nombre,
             $url_imagen,
             $status_producto,
-            $estado
+            $estado,
+            $en_oferta
         ])) {
             $productId = $conn->lastInsertId();
             
@@ -534,10 +643,39 @@ function updateProducto($conn) {
         $marca_id = $_POST['id_marca'] ?? null; // ID de marca (puede ser NULL)
         $descripcion = $_POST['descripcion_producto'] ?? '';
         $stock = $_POST['stock_actual_producto'] ?? 0;
-        $stock_minimo = $_POST['stock_minimo_producto'] ?? null; // Sin valor por defecto - tomar de BD
-        $stock_maximo = $_POST['stock_maximo_producto'] ?? null; // Sin valor por defecto - tomar de BD
-        $codigo = $_POST['codigo'] ?? '';
+        // 🔒 STOCK MÍNIMO FIJO EN 20 - NO SE PUEDE MODIFICAR DESDE LA APLICACIÓN
+        $stock_minimo = 20; // Valor fijo, solo modificable desde phpMyAdmin
+        // 🔒 STOCK MÁXIMO FIJO EN 300 - NO SE PUEDE MODIFICAR DESDE LA APLICACIÓN
+        $stock_maximo = 300; // Valor fijo, solo modificable desde phpMyAdmin
         $descuento_porcentaje = $_POST['precio_descuento_producto'] ?? 0;
+        // 🔥 LÓGICA AUTOMÁTICA: Si hay descuento, en_oferta_producto = 1, sino = 0
+        $en_oferta = ($descuento_porcentaje > 0) ? 1 : 0;
+        
+        // 🏷️ REGENERAR CÓDIGO AUTOMÁTICAMENTE si cambia nombre, marca o categoría
+        // Obtener nombres de marca y categoría actuales
+        $nombreMarca = 'MARCA';
+        $nombreCategoria = 'CAT';
+        
+        if ($marca_id) {
+            $stmt = $conn->prepare("SELECT nombre_marca FROM marca WHERE id_marca = ?");
+            $stmt->execute([$marca_id]);
+            $marca = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($marca) {
+                $nombreMarca = $marca['nombre_marca'];
+            }
+        }
+        
+        if ($categoria_id) {
+            $stmt = $conn->prepare("SELECT nombre_categoria FROM categoria WHERE id_categoria = ?");
+            $stmt->execute([$categoria_id]);
+            $categoria = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($categoria) {
+                $nombreCategoria = $categoria['nombre_categoria'];
+            }
+        }
+        
+        // Regenerar código automático
+        $codigo = generarCodigoProducto($nombre, $nombreMarca, $nombreCategoria, $conn);
         
         // ⭐ VALIDAR CÓDIGO DUPLICADO
         if (!empty($codigo)) {
@@ -606,6 +744,7 @@ function updateProducto($conn) {
             url_imagen_producto = ?,
             status_producto = ?,
             estado = ?,
+            en_oferta_producto = ?,
             fecha_actualizacion_producto = NOW()
             WHERE id_producto = ?";
         
@@ -626,6 +765,7 @@ function updateProducto($conn) {
             $url_imagen,
             $status_producto,
             $estado,
+            $en_oferta,
             $id
         ])) {
             // Obtener el producto completo con todos los joins
@@ -756,6 +896,12 @@ function updateProductStock($conn) {
             $getStmt->execute([$id]);
             $fullProduct = $getStmt->fetch(PDO::FETCH_ASSOC);
             
+            // ✅ Usar función centralizada para calcular estado del stock
+            $fullProduct['estado_stock'] = calcularEstadoStock($fullProduct);
+            
+            // Formatear precio
+            $fullProduct['precio_formato'] = '$' . number_format($fullProduct['precio_producto'], 2);
+            
             echo json_encode([
                 'success' => true,
                 'message' => 'Stock actualizado',
@@ -805,6 +951,12 @@ function changeProductEstado($conn) {
             $getStmt = $conn->prepare($getQuery);
             $getStmt->execute([$id]);
             $fullProduct = $getStmt->fetch(PDO::FETCH_ASSOC);
+            
+            // ✅ Usar función centralizada para calcular estado del stock
+            $fullProduct['estado_stock'] = calcularEstadoStock($fullProduct);
+            
+            // Formatear precio
+            $fullProduct['precio_formato'] = '$' . number_format($fullProduct['precio_producto'], 2);
             
             echo json_encode([
                 'success' => true,

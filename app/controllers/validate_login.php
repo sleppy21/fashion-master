@@ -6,10 +6,11 @@
 
 session_start();
 require_once __DIR__ . '/../../config/conexion.php';
+require_once __DIR__ . '/../../config/path.php';
 
 // Verificar que sea POST
 if($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ../views/auth/login.php');
+    header('Location: ' . url('login.php'));
     exit;
 }
 
@@ -22,7 +23,7 @@ $remember = isset($_POST['remember']);
 if(empty($username) || empty($password)) {
     $_SESSION['login_error'] = 'Por favor complete todos los campos';
     $_SESSION['last_username'] = $username;
-    header('Location: ../views/auth/login.php');
+    header('Location: ' . url('login.php'));
     exit;
 }
 
@@ -34,7 +35,7 @@ try {
     if(empty($usuarios)) {
         $_SESSION['login_error'] = 'Usuario no encontrado o cuenta inactiva';
         $_SESSION['last_username'] = $username;
-        header('Location: ../views/auth/login.php');
+        header('Location: ' . url('login.php'));
         exit;
     }
     
@@ -55,7 +56,7 @@ try {
     if(!$password_valid) {
         $_SESSION['login_error'] = 'Contraseña incorrecta';
         $_SESSION['last_username'] = $username;
-        header('Location: ../views/auth/login.php');
+        header('Location: ' . url('login.php'));
         exit;
     }
     
@@ -63,7 +64,7 @@ try {
     if(!$usuario['verificado_usuario']) {
         $_SESSION['login_error'] = 'Tu cuenta no ha sido verificada. Revisa tu email.';
         $_SESSION['last_username'] = $username;
-        header('Location: ../views/auth/login.php');
+        header('Location: ' . url('login.php'));
         exit;
     }
     
@@ -103,23 +104,25 @@ try {
     // Redirigir según el rol
     switch($usuario['rol_usuario']) {
         case 'admin':
-            $redirect_url = '../../admin/dashboard.php';
-            // Si no existe admin, ir a index
-            if(!file_exists(__DIR__ . '/../../admin/dashboard.php')) {
-                $redirect_url = '../../index.php';
+            // Si hay un admin dashboard, ir ahí, sino a index
+            if(file_exists(__DIR__ . '/../../admin/dashboard.php')) {
+                $redirect_url = url('admin/dashboard.php');
+            } else {
+                $redirect_url = url('index.php');
             }
             break;
             
         case 'vendedor':
-            $redirect_url = '../../seller/dashboard.php';
-            // Si no existe seller, ir a index
-            if(!file_exists(__DIR__ . '/../../seller/dashboard.php')) {
-                $redirect_url = '../../index.php';
+            // Si hay un seller dashboard, ir ahí, sino a index
+            if(file_exists(__DIR__ . '/../../seller/dashboard.php')) {
+                $redirect_url = url('seller/dashboard.php');
+            } else {
+                $redirect_url = url('index.php');
             }
             break;
             
         default:
-            $redirect_url = '../../index.php';
+            $redirect_url = url('index.php');
     }
     
     // Verificar si hay URL de retorno
@@ -135,7 +138,7 @@ try {
     error_log("Error en login: " . $e->getMessage());
     $_SESSION['login_error'] = 'Error interno del servidor. Intente nuevamente.';
     $_SESSION['last_username'] = $username;
-    header('Location: ../views/auth/login.php');
+    header('Location: ' . url('login.php'));
     exit;
 }
 ?>

@@ -1,0 +1,52 @@
+/**
+ * BREADCRUMB MODERN - Estilos modernos del breadcrumb
+ */
+
+.breadcrumb-option {
+    padding: 20px 0;
+    background: #f8f9fa;
+}
+
+body.dark-mode .breadcrumb-option {
+    background: var(--dark-bg-secondary);
+}
+
+.breadcrumb__links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.breadcrumb__links a,
+.breadcrumb__links span {
+    font-size: 14px;
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb__links a:hover {
+    color: #667eea;
+}
+
+.breadcrumb__links a i {
+    margin-right: 5px;
+}
+
+.breadcrumb__links span {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+body.dark-mode .breadcrumb__links a {
+    color: #999;
+}
+
+body.dark-mode .breadcrumb__links a:hover {
+    color: #ff1744;
+}
+
+body.dark-mode .breadcrumb__links span {
+    color: var(--dark-text-primary);
+}

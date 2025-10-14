@@ -233,6 +233,6 @@ function e($string) {
     </script>
     
     <!-- Validación de Formularios -->
-    <script src="<?php echo url('public/assets/js/form-validation.js'); ?>"></script>
+    <script src="<?= asset('js/form-validation.js') ?>"></script>
 </body>
 </html>

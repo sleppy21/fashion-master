@@ -8,6 +8,16 @@
 
     // ===== AGREGAR AL CARRITO =====
     function initCartButtons() {
+        // DESHABILITADO - Ahora usa real-time-updates.js con toggle
+        console.log('cart-favorites-handler.js: Carrito manejado por real-time-updates.js (toggle)');
+        return;
+        
+        // No inicializar en product-details.php (tiene su propio handler)
+        if (window.location.pathname.includes('product-details.php')) {
+            console.log('cart-favorites-handler.js: Saltando inicialización en product-details.php');
+            return;
+        }
+        
         const cartButtons = document.querySelectorAll('.add-to-cart');
         
         cartButtons.forEach(button => {
@@ -42,8 +52,11 @@
         
         // Mostrar loading
         showNotification('Agregando al carrito...', 'info');
+        
+        // Obtener BASE_URL y limpiar barras duplicadas
+        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
 
-        fetch('app/actions/add_to_cart.php', {
+        fetch(baseUrl + '/app/actions/add_to_cart.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -69,10 +82,16 @@
     }
 
     function updateCartCount(count) {
-        const cartTip = document.querySelector('.header__right__widget a[href*="cart"] .tip');
-        if (cartTip) {
-            cartTip.textContent = count;
-            cartTip.style.display = count > 0 ? 'block' : 'none';
+        // Usar el sistema global si está disponible
+        if (typeof window.updateCartCount === 'function') {
+            window.updateCartCount(count);
+        } else {
+            // Fallback legacy
+            const cartTip = document.querySelector('.header__right__widget a[href*="cart"] .tip');
+            if (cartTip) {
+                cartTip.textContent = count;
+                cartTip.style.display = count > 0 ? 'block' : 'none';
+            }
         }
     }
 
@@ -88,6 +107,16 @@
 
     // ===== AGREGAR/QUITAR DE FAVORITOS =====
     function initFavoriteButtons() {
+        // DESHABILITADO - Ahora usa real-time-updates.js
+        console.log('cart-favorites-handler.js: Favoritos manejados por real-time-updates.js');
+        return;
+        
+        // No inicializar en product-details.php (tiene su propio handler)
+        if (window.location.pathname.includes('product-details.php')) {
+            console.log('cart-favorites-handler.js: Saltando inicialización de favoritos en product-details.php');
+            return;
+        }
+        
         const favoriteButtons = document.querySelectorAll('.add-to-favorites');
         
         favoriteButtons.forEach(button => {
@@ -102,7 +131,9 @@
     }
 
     function toggleFavorite(productId, button) {
-        fetch('app/actions/add_to_favorites.php', {
+        // Obtener BASE_URL y limpiar barras duplicadas
+        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
+        fetch(baseUrl + '/app/actions/add_to_favorites.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -121,12 +152,10 @@
                     icon.classList.remove('icon_heart_alt');
                     icon.classList.add('icon_heart');
                     button.classList.add('active');
-                    button.style.color = '#e74c3c';
                 } else {
                     icon.classList.remove('icon_heart');
                     icon.classList.add('icon_heart_alt');
                     button.classList.remove('active');
-                    button.style.color = '';
                 }
                 
                 // Animar icono
@@ -150,12 +179,19 @@
         if (!modalBody) return;
 
         // NO mostrar loading, solo actualizar silenciosamente
-        fetch('app/actions/get_favorites.php')
+        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
+        fetch(baseUrl + '/app/actions/get_favorites.php')
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     // Actualizar el HTML del modal
                     modalBody.innerHTML = data.html;
+                    
+                    // Actualizar el contador de productos en el header del modal
+                    const favCount = document.querySelector('.favorites-count');
+                    if (favCount) {
+                        favCount.textContent = data.count_text || (data.count + (data.count === 1 ? ' producto' : ' productos'));
+                    }
                     
                     // NO re-inicializar botones porque ya están usando delegación de eventos
                     console.log('✅ Favorites modal updated silently');
@@ -169,7 +205,13 @@
     }
 
     function updateFavoritesCount(count) {
-        // Actualizar badge del header - SOLO cambiar número sin animaciones
+        // Usar el sistema global si está disponible
+        if (typeof window.updateFavoritesCount === 'function') {
+            window.updateFavoritesCount(count);
+            return;
+        }
+        
+        // Fallback legacy
         const favLink = document.querySelector('.header__right__widget a[href*="favorites"], .header__right__widget #favorites-link');
         if (favLink) {
             let tip = favLink.querySelector('.tip');
@@ -189,10 +231,10 @@
             }
         }
         
-        // Actualizar contador en el modal - SOLO cambiar número
+        // Actualizar contador en el modal con formato correcto
         const favCount = document.querySelector('.favorites-count');
         if (favCount) {
-            favCount.textContent = count;
+            favCount.textContent = count + (count === 1 ? ' producto' : ' productos');
         }
     }
 
@@ -205,6 +247,17 @@
 
     // ===== MODAL DE FAVORITOS =====
     function initFavoritesModal() {
+        // Verificar si las funciones globales ya están definidas (desde header-section.php)
+        if (window.toggleFavoritesModal && typeof window.toggleFavoritesModal === 'function') {
+            console.log('✅ Favorites Modal ya manejado por header-section.php');
+            // Las funciones ya están manejadas por header-section.php
+            // NO agregar event listeners duplicados
+            return;
+        }
+        
+        console.warn('⚠️ header-section.php no cargado, usando funcionalidad limitada de favoritos');
+        
+        // CÓDIGO LEGACY (solo si header-section.php no está cargado)
         const favLink = document.getElementById('favorites-link');
         const favLinkMobile = document.getElementById('favorites-link-mobile');
         const modal = document.getElementById('favorites-modal');
@@ -327,7 +380,8 @@
     }
 
     function addToCartFromFavorites(productId, button) {
-        fetch('app/actions/add_to_cart.php', {
+        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
+        fetch(baseUrl + '/app/actions/add_to_cart.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -340,8 +394,13 @@
                 showNotification(data.message, 'success');
                 updateCartCount(data.cart_count);
                 
-                // Actualizar TODOS los botones de este producto en el modal
-                updateCartButtonState(productId, true);
+                // Actualizar modal de favoritos para reflejar el estado del carrito
+                reloadFavoritesModal();
+                
+                // Actualizar botón de carrito en la página si existe la función
+                if (typeof window.actualizarBotonCarritoPagina === 'function') {
+                    window.actualizarBotonCarritoPagina(productId, true);
+                }
             } else {
                 showNotification(data.message, 'error');
             }
@@ -353,7 +412,8 @@
     }
 
     function removeFromCart(productId, button) {
-        fetch('app/actions/remove_from_cart.php', {
+        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
+        fetch(baseUrl + '/app/actions/remove_from_cart.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -366,8 +426,13 @@
                 showNotification('Producto quitado del carrito', 'success');
                 updateCartCount(data.cart_count);
                 
-                // Actualizar TODOS los botones de este producto en el modal
-                updateCartButtonState(productId, false);
+                // Actualizar modal de favoritos para reflejar el estado del carrito
+                reloadFavoritesModal();
+                
+                // Actualizar botón de carrito en la página si existe la función
+                if (typeof window.actualizarBotonCarritoPagina === 'function') {
+                    window.actualizarBotonCarritoPagina(productId, false);
+                }
             } else {
                 showNotification(data.message || 'Error al quitar del carrito', 'error');
             }
@@ -409,7 +474,8 @@
     }
 
     function removeFavoriteFromModal(productId) {
-        fetch('app/actions/add_to_favorites.php', {
+        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
+        fetch(baseUrl + '/app/actions/add_to_favorites.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -425,7 +491,7 @@
                 // ACTUALIZAR MODAL EN TIEMPO REAL
                 reloadFavoritesModal();
                 
-                // Actualizar iconos en la página si existen
+                // Actualizar iconos en la página si existen (productos relacionados y página de detalles)
                 const pageButtons = document.querySelectorAll(`.add-to-favorites[data-id="${productId}"]`);
                 pageButtons.forEach(btn => {
                     const icon = btn.querySelector('span');
@@ -436,6 +502,11 @@
                         btn.style.color = '';
                     }
                 });
+                
+                // Actualizar icono de favoritos en product-details.php si existe la función
+                if (typeof window.actualizarIconosFavoritos === 'function') {
+                    window.actualizarIconosFavoritos(productId, false);
+                }
             } else {
                 showNotification(data.message, 'error');
             }
@@ -592,6 +663,10 @@
     let imageClickInitialized = false;
     
     function initProductImageClick() {
+        // DESHABILITADO - Interfiere con real-time-updates.js
+        console.log('✅ Product image click handler initialized');
+        return;
+        
         // Prevenir registros múltiples
         if (imageClickInitialized) {
             console.log('⚠️ Product image click already initialized');
@@ -688,5 +763,173 @@
         }
     `;
     document.head.appendChild(style);
+
+    // ===== FUNCIONES GLOBALES PARA ACTUALIZAR CONTADORES =====
+    
+    /**
+     * Actualizar contador del carrito en el header
+     * @param {number} count - Nuevo número de productos en el carrito
+     */
+    window.updateCartCount = function(count) {
+        console.log('🛒 Actualizando contador de carrito:', count);
+        
+        // Actualizar el badge/tip del carrito
+        const cartTips = document.querySelectorAll('.header__right__widget a[href*="cart"] .tip');
+        cartTips.forEach(tip => {
+            tip.textContent = count;
+            if (count > 0) {
+                tip.style.display = 'block';
+            } else {
+                tip.style.display = 'none';
+            }
+        });
+        
+        // Animar el icono del carrito
+        const cartIcons = document.querySelectorAll('.header__right__widget a[href*="cart"] span');
+        cartIcons.forEach(icon => {
+            icon.style.transition = 'transform 0.3s ease';
+            icon.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                icon.style.transform = 'scale(1)';
+            }, 300);
+        });
+    };
+    
+    /**
+     * Actualizar contador de favoritos en el header
+     * @param {number} count - Nuevo número de favoritos
+     */
+    window.updateFavoritesCount = function(count) {
+        console.log('❤️ Actualizando contador de favoritos:', count);
+        
+        // Actualizar el badge/tip de favoritos
+        const favTips = document.querySelectorAll('#favorites-link .tip, #favorites-link-mobile .tip');
+        favTips.forEach(tip => {
+            tip.textContent = count;
+            if (count > 0) {
+                tip.style.display = 'block';
+            } else {
+                tip.style.display = 'none';
+            }
+        });
+        
+        // Animar el icono de favoritos
+        const favIcons = document.querySelectorAll('#favorites-link .icon_heart_alt, #favorites-link-mobile .icon_heart_alt');
+        favIcons.forEach(icon => {
+            icon.style.transition = 'transform 0.3s ease';
+            icon.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                icon.style.transform = 'scale(1)';
+            }, 300);
+        });
+    };
+
+    /**
+     * Toggle favorito desde cualquier parte de la aplicación
+     * @param {number} productId - ID del producto
+     */
+    window.toggleFavorite = function(productId) {
+        console.log('❤️ Toggle favorito para producto:', productId);
+        
+        // Verificar si el usuario está logueado
+        const isLoggedIn = document.querySelector('#favorites-link') !== null;
+        if (!isLoggedIn) {
+            showNotification('Debes iniciar sesión para agregar favoritos', 'warning');
+            setTimeout(() => {
+                window.location.href = 'login.php';
+            }, 1500);
+            return;
+        }
+        
+        // Hacer petición AJAX
+        fetch('app/actions/add_to_favorites.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `product_id=${productId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Actualizar contador
+                if (typeof data.favorites_count !== 'undefined') {
+                    window.updateFavoritesCount(data.favorites_count);
+                }
+                
+                // Actualizar el botón visual
+                const buttons = document.querySelectorAll(`.add-to-favorites[data-id="${productId}"]`);
+                buttons.forEach(btn => {
+                    const icon = btn.querySelector('span');
+                    if (data.action === 'added') {
+                        btn.classList.add('active');
+                        if (icon) {
+                            icon.className = 'icon_heart'; // Corazón lleno
+                        }
+                    } else {
+                        btn.classList.remove('active');
+                        if (icon) {
+                            icon.className = 'icon_heart_alt'; // Corazón vacío
+                        }
+                    }
+                });
+                
+                // Mostrar notificación
+                const message = data.action === 'added' 
+                    ? 'Producto agregado a favoritos' 
+                    : 'Producto eliminado de favoritos';
+                showNotification(message, 'success');
+            } else {
+                showNotification(data.message || 'Error al actualizar favoritos', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error al actualizar favoritos', 'error');
+        });
+    };
+    
+    /**
+     * Agregar al carrito desde cualquier parte de la aplicación
+     * @param {number} productId - ID del producto
+     */
+    window.addToCart = function(productId) {
+        console.log('🛒 Agregando al carrito producto:', productId);
+        
+        fetch('app/actions/add_to_cart.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `product_id=${productId}&quantity=1`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Actualizar contador
+                if (typeof data.cart_count !== 'undefined') {
+                    window.updateCartCount(data.cart_count);
+                }
+                
+                showNotification('Producto agregado al carrito', 'success');
+            } else {
+                showNotification(data.message || 'Error al agregar al carrito', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error al agregar al carrito', 'error');
+        });
+    };
+
+    // Exportar funciones globalmente
+    window.showNotification = showNotification;
+    
+    console.log('✅ cart-favorites-handler.js cargado completamente');
+    console.log('✅ showNotification exportada globalmente');
+    console.log('✅ updateCartCount exportada globalmente');
+    console.log('✅ updateFavoritesCount exportada globalmente');
+    console.log('✅ toggleFavorite exportada globalmente');
+    console.log('✅ addToCart exportada globalmente');
 
 })();

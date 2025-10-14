@@ -4,21 +4,18 @@
      ============================================ -->
 
 <!-- Flatpickr (Date Picker moderno - CSS + JS) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<!-- Chart.js (Gráficos y estadísticas) -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- AOS (Animate On Scroll - CSS + JS) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
-<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 
 <!-- Font Awesome 6.4.0 (Iconos modernos) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- SweetAlert2 (Alertas modernas) -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Dark Mode Assets (CSS y JS para modo oscuro) -->
+<?php 
+if(file_exists(__DIR__ . '/dark-mode-assets.php')) {
+    include __DIR__ . '/dark-mode-assets.php';
+}
+?>
 
 <style>
 /* ============================================
@@ -147,72 +144,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
-// ============================================
-// CONFIGURACIÓN GLOBAL DE SWEETALERT2
-// ============================================
-if (typeof Swal !== 'undefined') {
-    // Toast personalizado para notificaciones
-    window.Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer);
-            toast.addEventListener('mouseleave', Swal.resumeTimer);
-        },
-        customClass: {
-            popup: 'colored-toast'
-        },
-        iconColor: 'white'
-    });
-    
-    // Configuración predeterminada para confirmaciones
-    window.ConfirmDialog = function(options) {
-        return Swal.fire({
-            title: options.title || '¿Estás seguro?',
-            text: options.text || 'Esta acción no se puede deshacer',
-            icon: options.icon || 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: options.confirmText || 'Sí, continuar',
-            cancelButtonText: options.cancelText || 'Cancelar',
-            reverseButtons: true,
-            customClass: {
-                confirmButton: 'btn btn-danger',
-                cancelButton: 'btn btn-secondary'
-            }
-        });
-    };
-    
-    console.log('🎨 SweetAlert2 configured successfully');
-}
-
-// ============================================
-// CONFIGURACIÓN DE FLATPICKR (DATE PICKER)
-// ============================================
-if (typeof flatpickr !== 'undefined') {
-    // Configuración en español
-    if (flatpickr.l10ns && flatpickr.l10ns.es) {
-        flatpickr.localize(flatpickr.l10ns.es);
-    }
-    
-    // Función helper para inicializar datepicker
-    window.initDatePicker = function(selector, options = {}) {
-        const defaultOptions = {
-            dateFormat: "Y-m-d",
-            altInput: true,
-            altFormat: "d/m/Y",
-            locale: "es",
-            ...options
-        };
-        
-        return flatpickr(selector, defaultOptions);
-    };
-    
-    console.log('📅 Flatpickr configured successfully');
-}
 </script>

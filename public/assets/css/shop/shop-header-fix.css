@@ -1,0 +1,772 @@
+/**
+ * SHOP HEADER FIX - Corrección de conflictos de header
+ * Este archivo debe cargarse AL FINAL para sobrescribir todos los conflictos
+ * @version 1.0
+ */
+
+/* ========================================
+   HEADER FIXED - SIEMPRE VISIBLE
+   ======================================== */
+body .header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 999999 !important;
+    background: #ffffff !important;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08) !important;
+    margin: 0 !important;
+    transition: all 0.3s ease;
+    overflow: visible !important;
+}
+
+/* Header container */
+body .header .container {
+    overflow: visible !important;
+}
+
+body .header .row {
+    overflow: visible !important;
+}
+
+/* Header scrolled */
+body .header.scrolled {
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Dark mode header */
+body.dark-mode .header {
+    background: #1a1a1a !important;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .header.scrolled {
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ========================================
+   COMPENSAR ESPACIO DEL HEADER FIXED
+   ======================================== */
+.breadcrumb-option {
+    margin-top: 60px !important;
+    padding-top: 0 !important;
+    padding-top: 40px !important;
+    padding-bottom: 10px !important; /* Default para la mayoría de páginas */
+}
+
+/* Breadcrumb específico para shop - más espacio */
+body[class*="shop"] .breadcrumb-option,
+.shop-page .breadcrumb-option {
+    padding-bottom: 30px !important;
+}
+
+/* Breadcrumb específico para checkout - menos espacio */
+body[class*="checkout"] .breadcrumb-option,
+.checkout-page .breadcrumb-option {
+    padding-bottom: 10px !important;
+}
+
+.shop-modern {
+    padding-top: 10px !important;
+    margin-top: 0 !important;
+}
+
+/* ========================================
+   HEADER RIGHT - FIX BOTONES Y BADGES
+   ======================================== */
+.header__right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 25px !important;
+    overflow: visible !important;
+    padding: 15px 0 12px !important;
+    position: relative !important;
+}
+
+.header__right__auth,
+.header__right__widget {
+    display: flex !important;
+    align-items: center !important;
+    overflow: visible !important;
+    position: relative !important;
+}
+
+.header__right__widget {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 25px !important;
+}
+
+.header__right__widget li {
+    position: relative !important;
+    overflow: visible !important;
+    list-style: none !important;
+    margin: 0 !important;
+}
+
+.header__right__auth a,
+.header__right__widget li a {
+    position: relative !important;
+    overflow: visible !important;
+    display: inline-block !important;
+    transition: all 0.3s ease !important;
+}
+
+/* ========================================
+   ANIMACIONES HOVER - MODO CLARO
+   ======================================== */
+
+/* Hover en botones de autenticación (Usuario) */
+.header__right__auth a {
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+}
+
+/* Quitar el ::after (separador "/") del botón de usuario */
+.header__right__auth a:after,
+#user-account-link:after {
+    display: none !important;
+    content: none !important;
+}
+
+/* Quitar el ::before (efecto de barrido izquierda a derecha) */
+#user-account-link::before,
+#user-account-link:hover::before {
+    display: none !important;
+    content: none !important;
+    transition: none !important;
+}
+
+.header__right__auth a:hover {
+    color: #111111 !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Hover en iconos de widgets (notificaciones, favoritos, carrito, modo oscuro) */
+.header__right__widget li a:hover,
+.header__right__widget li span:hover {
+    color: #111111 !important;
+    transform: scale(1.08) translateY(-2px) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.header__right__widget li a:hover i,
+.header__right__widget li span:hover i {
+    color: #111111 !important;
+}
+
+/* Animación suave para iconos */
+.header__right__widget li a i,
+.header__right__widget li span {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Badge animación al hacer hover en el padre */
+.header__right__auth a:hover .tip,
+.header__right__widget li a:hover .tip {
+    transform: scale(1.08) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Badges de notificación - ARREGLADOS */
+.header__right__auth a .tip,
+.header__right__widget li a .tip {
+    position: absolute !important;
+    right: -12px !important;
+    top: -11px !important;
+    height: 18px !important;
+    width: 18px !important;
+    background: #111111 !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    color: #ffffff !important;
+    line-height: 18px !important;
+    text-align: center !important;
+    border-radius: 50% !important;
+    z-index: 10 !important;
+    pointer-events: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Dark mode badges */
+body.dark-mode .header__right__auth a .tip,
+body.dark-mode .header__right__widget li a .tip {
+    background: #1a1a1a !important;
+    color: #ffffff !important;
+}
+
+/* ========================================
+   ANIMACIONES HOVER - MODO OSCURO
+   ======================================== */
+
+/* Hover en botones de autenticación en dark mode */
+body.dark-mode .header__right__auth a {
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+}
+
+body.dark-mode .header__right__auth a:hover {
+    color: #ff1744 !important;
+    background: rgba(220, 20, 60, 0.1) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Hover en iconos de widgets en dark mode */
+body.dark-mode .header__right__widget li a:hover,
+body.dark-mode .header__right__widget li span:hover {
+    color: #ff1744 !important;
+    transform: scale(1.08) translateY(-2px) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+body.dark-mode .header__right__widget li a:hover i,
+body.dark-mode .header__right__widget li span:hover i {
+    color: #ff1744 !important;
+}
+
+/* ========================================
+   ANIMACIÓN ESPECIAL - DARK MODE TOGGLE
+   ======================================== */
+
+/* Animación suave para el icono de modo oscuro */
+#dark-mode-toggle {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#dark-mode-toggle i {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Efecto hover en modo claro */
+#dark-mode-toggle:hover i {
+    transform: rotate(15deg) scale(1.08) !important;
+}
+
+/* Efecto hover en modo oscuro */
+body.dark-mode #dark-mode-toggle:hover i {
+    transform: rotate(-15deg) scale(1.08) !important;
+    filter: drop-shadow(0 0 8px rgba(255, 23, 68, 0.5)) !important;
+}
+
+/* Animación de pulso al cambiar */
+@keyframes darkModeToggle {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.2) rotate(90deg);
+    }
+    50% {
+        transform: scale(0.9) rotate(180deg);
+    }
+    75% {
+        transform: scale(1.1) rotate(270deg);
+    }
+}
+
+/* ========================================
+   KEYFRAMES PARA MODALES
+   ======================================== */
+@keyframes slideDownFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-15px) scale(0.98);
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideUpFadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.98);
+    }
+}
+
+/* ========================================
+   MODALES - POSICIONAMIENTO UNIFICADO
+   ======================================== */
+
+/* Todos los modales en la misma posición (derecha) */
+.user-modal-content,
+.notifications-modal-content,
+.favorites-modal-content {
+    top: 75px !important; /* Justo debajo del header */
+    right: 20px !important; /* Alineados a la derecha */
+    z-index: 100000 !important;
+}
+
+/* Z-index diferenciado para controlar cuál está encima */
+.user-modal-content {
+    z-index: 100002 !important;
+}
+
+.notifications-modal-content {
+    z-index: 100001 !important;
+}
+
+.favorites-modal-content {
+    z-index: 100000 !important;
+}
+
+/* IMPORTANTE: Permitir animaciones */
+.favorites-modal.modal-open .favorites-modal-content,
+.notifications-modal.modal-open .notifications-modal-content,
+.user-modal.modal-open .user-modal-content {
+    animation: slideDownFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+.favorites-modal.modal-closing .favorites-modal-content,
+.notifications-modal.modal-closing .notifications-modal-content,
+.user-modal.modal-closing .user-modal-content {
+    animation: slideUpFadeOut 0.25s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+}
+
+/* Asegurar que los contenidos de modales permitan animaciones */
+.favorites-modal-content,
+.notifications-modal-content,
+.user-modal-content {
+    transform-origin: top right !important; /* Origen desde arriba-derecha */
+    will-change: transform, opacity !important;
+}
+
+/* Flechas de los dropdowns - todas en la misma posición */
+.user-modal-content::before,
+.favorites-modal-content::before,
+.notifications-modal-content::before {
+    right: 35px !important; /* Todas apuntan al mismo lugar */
+    left: auto !important;
+    transform: none !important;
+}
+
+/* ========================================
+   RESPONSIVE - MODALES
+   ======================================== */
+@media (max-width: 991px) {
+    /* En tablet, los modales se apilan */
+    .user-modal-content {
+        top: 70px !important;
+        right: 15px !important;
+    }
+    
+    .notifications-modal-content {
+        top: 70px !important;
+        right: 15px !important;
+    }
+    
+    .favorites-modal-content {
+        top: 70px !important;
+        right: 15px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    /* En móvil, los modales ocupan casi todo el ancho */
+    .user-modal-content,
+    .notifications-modal-content,
+    .favorites-modal-content {
+        top: 65px !important;
+        right: 10px !important;
+        left: 10px !important;
+        width: auto !important;
+        max-width: calc(100vw - 20px) !important;
+    }
+}
+
+/* ========================================
+   SIDEBAR STICKY - SIEMPRE VISIBLE
+   ======================================== */
+/* MÁXIMA PRIORIDAD - Sobrescribir todos los demás estilos */
+body .shop-modern .modern-sidebar,
+.shop-modern .modern-sidebar.shop-sidebar,
+.shop-modern aside .modern-sidebar,
+body .shop-modern aside .modern-sidebar {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 85px !important; /* Altura del header (70px) + margen (15px) */
+    max-height: calc(100vh - 100px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    align-self: flex-start !important;
+    transform: none !important;
+    animation: none !important;
+    will-change: auto !important;
+    
+    /* Scrollbar personalizado */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(102, 126, 234, 0.3) transparent;
+}
+
+/* Sidebar header NO sticky - Solo scroll con el contenido */
+body .shop-modern .sidebar-header,
+.shop-modern .sidebar-header,
+body .modern-sidebar .sidebar-header {
+    position: relative !important;
+    top: auto !important;
+    z-index: 1 !important;
+    background: transparent !important;
+}
+
+/* Scrollbar webkit */
+body .shop-modern .modern-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+body .shop-modern .modern-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+body .shop-modern .modern-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.3);
+    border-radius: 10px;
+}
+
+body .shop-modern .modern-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.5);
+}
+
+/* Dark mode scrollbar */
+body.dark-mode .shop-modern .modern-sidebar {
+    scrollbar-color: rgba(255, 23, 68, 0.3) transparent;
+}
+
+body.dark-mode .shop-modern .modern-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 23, 68, 0.3);
+}
+
+body.dark-mode .shop-modern .modern-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 23, 68, 0.5);
+}
+
+/* Desactivar AOS en sidebar */
+body .shop-modern .modern-sidebar[data-aos],
+.shop-modern .modern-sidebar[data-aos].shop-sidebar {
+    transform: none !important;
+    transition-property: opacity !important;
+    opacity: 1 !important;
+}
+
+/* ========================================
+   MEJORAS RANGO DE PRECIO - DISEÑO MODERNO
+   ======================================== */
+.price-filter-modern {
+    padding: 20px 0;
+}
+
+.price-inputs {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.price-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    color: #2c3e50;
+    background: #f8f9fa;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.price-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+}
+
+.price-input::placeholder {
+    color: #adb5bd;
+    font-weight: 500;
+}
+
+.price-separator {
+    color: #667eea;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* Slider de precio mejorado */
+.price-slider {
+    margin: 15px 0 20px 0;
+    height: 6px !important;
+}
+
+/* Barra de fondo del slider */
+.noUi-target {
+    background: #e9ecef !important;
+    border: none !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1) !important;
+    border-radius: 10px !important;
+    height: 6px !important;
+}
+
+/* Barra de progreso (conexión) */
+.noUi-connect {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Handles del slider */
+.noUi-handle {
+    width: 20px !important;
+    height: 20px !important;
+    border: 3px solid #667eea !important;
+    background: white !important;
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4) !important;
+    cursor: grab !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 50% !important;
+    top: -7px !important;
+}
+
+.noUi-handle:before,
+.noUi-handle:after {
+    display: none !important;
+}
+
+.noUi-handle:hover {
+    transform: scale(1.2) !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6) !important;
+    border-width: 4px !important;
+}
+
+.noUi-handle:active {
+    cursor: grabbing !important;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.7) !important;
+    transform: scale(1.15) !important;
+}
+
+/* Tooltips del slider */
+.noUi-tooltip {
+    background: #667eea !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+}
+
+/* Dark mode price filter */
+body.dark-mode .price-input {
+    background: #2a2a2e;
+    border-color: #404040;
+    color: #e0e0e0;
+}
+
+body.dark-mode .price-input:focus {
+    border-color: #ff1744;
+    background: #35353a;
+    box-shadow: 0 0 0 4px rgba(255, 23, 68, 0.15);
+}
+
+body.dark-mode .price-input::placeholder {
+    color: #6c757d;
+}
+
+body.dark-mode .price-separator {
+    color: #ff1744;
+}
+
+body.dark-mode .noUi-target {
+    background: #35353a !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3) !important;
+}
+
+body.dark-mode .noUi-connect {
+    background: linear-gradient(135deg, #ff1744 0%, #d81b60 100%) !important;
+    box-shadow: 0 2px 8px rgba(255, 23, 68, 0.4) !important;
+}
+
+body.dark-mode .noUi-handle {
+    border-color: #ff1744 !important;
+    background: #2a2a2e !important;
+    box-shadow: 0 3px 10px rgba(255, 23, 68, 0.4) !important;
+}
+
+body.dark-mode .noUi-handle:hover {
+    box-shadow: 0 4px 15px rgba(255, 23, 68, 0.6) !important;
+}
+
+body.dark-mode .noUi-tooltip {
+    background: #ff1744 !important;
+}
+
+/* ========================================
+   ANIMACIONES DE BOTONES
+   ======================================== */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Efecto pulse en botones de carrito y favoritos */
+.add-to-cart.pulse,
+.add-to-favorites.pulse,
+.btn-favorite-cart.pulse,
+.btn-favorite-remove.pulse {
+    animation: pulse 0.3s ease !important;
+}
+
+/* Transición suave para los iconos */
+.add-to-cart span,
+.add-to-favorites span,
+.btn-favorite-cart i,
+.btn-favorite-remove i {
+    transition: all 0.2s ease;
+}
+
+/* ========================================
+   CONTENEDORES - PERMITIR STICKY
+   ======================================== */
+.shop-modern {
+    overflow: visible !important;
+}
+
+.shop-modern .container-fluid {
+    overflow: visible !important;
+}
+
+.shop-modern .row {
+    overflow: visible !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+
+.shop-modern aside {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 991px) {
+    .shop-modern .modern-sidebar {
+        position: relative !important;
+        top: auto !important;
+        max-height: none !important;
+    }
+    
+    .breadcrumb-option {
+        margin-top: 70px !important;
+        padding-bottom: 10px !important;
+    }
+    
+    .shop-modern {
+        padding-top: 0 !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .header {
+        padding: 10px 0 !important;
+    }
+    
+    .breadcrumb-option {
+        margin-top: 65px !important;
+        padding-bottom: 10px !important;
+    }
+    
+    .shop-modern {
+        padding-top: 0 !important;
+    }
+}
+
+/* ========================================
+   PRODUCTOS RELACIONADOS - PRODUCT DETAILS
+   ======================================== */
+.productos-grid-related.shop-modern {
+    margin-top: 30px;
+}
+
+.productos-grid-related.shop-modern .modern-product-card {
+    margin-bottom: 30px;
+}
+
+/* Forzar 3 columnas en desktop para productos relacionados */
+.productos-grid-related.shop-modern > div[class*="col-"] {
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+}
+
+@media (max-width: 991px) {
+    .productos-grid-related.shop-modern > div[class*="col-"] {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 575px) {
+    .productos-grid-related.shop-modern > div[class*="col-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* Título de productos relacionados */
+.related__title {
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.related__title h5 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+body.dark-mode .related__title {
+    border-bottom-color: var(--dark-border);
+}
+
+body.dark-mode .related__title h5 {
+    color: var(--dark-text-primary);
+}
+
+/* Asegurar que el contenedor principal tenga padding top */
+.product-details {
+    margin-top: 85px;
+}
+
+.breadcrumb-option {
+    margin-top: 70px;
+}

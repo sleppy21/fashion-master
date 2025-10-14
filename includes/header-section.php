@@ -1,193 +1,42 @@
 <!-- Header Section Begin -->
-<!-- VERSION 2.1 - <?php echo date('Y-m-d H:i:s'); ?> -->
-<style>
-    /* Estilos globales para dropdowns - aplican en todas las resoluciones */
-    .header__menu .dropdown {
-        display: block !important;
-        flex-direction: column !important;
-        background: #ffffff !important;
-        border-radius: 10px !important;
-        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12) !important;
-        padding: 15px 0 !important;
-        min-width: 200px !important;
-        border: 1px solid #e8e8e8 !important;
-        margin-top: 10px !important;
-    }
-    
-    .header__menu .dropdown li {
-        display: block !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    .header__menu .dropdown li a {
-        display: block !important;
-        width: 100% !important;
-        padding: 12px 25px !important;
-        font-size: 14px !important;
-        color: #444 !important;
-        transition: all 0.25s ease !important;
-        border-left: 3px solid transparent !important;
-        font-weight: 400 !important;
-        letter-spacing: 0.3px !important;
-    }
-    
-    .header__menu .dropdown li a:hover {
-        background: linear-gradient(90deg, #fff5f5 0%, #ffffff 100%) !important;
-        color: #ca1515 !important;
-        border-left-color: #ca1515 !important;
-        padding-left: 30px !important;
-        font-weight: 500 !important;
-    }
-    
-    .header__menu .dropdown li:first-child a {
-        border-top-left-radius: 8px !important;
-        border-top-right-radius: 8px !important;
-    }
-    
-    .header__menu .dropdown li:last-child a {
-        border-bottom-left-radius: 8px !important;
-        border-bottom-right-radius: 8px !important;
-    }
-    
-    /* Estilos de tips (notificaciones) - negro con blanco */
-    .tip {
-        background: #000000 !important;
-        color: #ffffff !important;
-        border: none !important;
-    }
+<!-- VERSION 3.0 - ESTÁNDAR UNIFICADO - <?php echo date('Y-m-d H:i:s'); ?> -->
 
-    /* Optimización del header en desktop */
-    @media (min-width: 992px) {
-        .header .container-fluid {
-            padding-left: 15px !important;
-            padding-right: 15px !important;
-        }
+<script>
+    // APLICAR DARK MODE INMEDIATAMENTE - ANTES DEL RENDER
+    // Esto previene el flash blanco al cargar la página
+    (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         
-        .header .row {
-            align-items: center !important;
-            margin: 0 !important;
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            document.documentElement.classList.add('dark-mode');
+            document.body.classList.add('dark-mode');
         }
-        
-        .header .col-lg-3:last-child {
-            flex: 0 0 auto !important;
-            max-width: none !important;
-            width: auto !important;
-        }
-        
-        .header__logo {
-            padding: 8px 0 !important;
-        }
-        
-        .header__logo img {
-            max-height: 40px !important;
-        }
-        
-        .header__menu {
-            padding: 8px 0 !important;
-        }
-        
-        .header__menu ul {
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-        }
-        
-        .header__menu ul > li {
-            margin-right: 25px !important;
-        }
-        
-        .header__menu ul > li > a {
-            font-size: 13px !important;
-            padding: 8px 0 !important;
-        }
-        
-        /* Optimizar la sección derecha del header */
-        .header__right {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: flex-end !important;
-            gap: 20px !important;
-            padding: 5px 20px 5px 0 !important;
-            flex-wrap: nowrap !important;
-            width: auto !important;
-            min-width: fit-content !important;
-        }
-        
-        .header__right__auth {
-            flex-shrink: 0 !important;
-            margin: 0 !important;
-            padding: 0 15px 0 0 !important;
-            border-right: 1px solid #e0e0e0 !important;
-            width: auto !important;
-            min-width: fit-content !important;
-        }
-        
-        .header__right__auth a {
-            font-size: 11px !important;
-            white-space: nowrap !important;
-            padding: 5px 10px !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 6px !important;
-            color: #333 !important;
-            width: auto !important;
-        }
-        
-        .header__right__auth a i {
-            font-size: 13px !important;
-            flex-shrink: 0 !important;
-        }
-        
-        .header__right__auth a span {
-            white-space: nowrap !important;
-            display: inline-block !important;
-            vertical-align: middle !important;
-            width: auto !important;
-            min-width: fit-content !important;
-        }
-        
-        .header__right__widget {
-            display: flex !important;
-            align-items: center !important;
-            gap: 15px !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            list-style: none !important;
-        }
-        
-        .header__right__widget li {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        
-        .header__right__widget li a,
-        .header__right__widget li span {
-            font-size: 16px !important;
-            padding: 5px 8px !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            position: relative !important;
-        }
-        
-        .header__right__widget .tip {
-            font-size: 9px !important;
-            width: 16px !important;
-            height: 16px !important;
-            line-height: 16px !important;
-            top: 2px !important;
-            right: 2px !important;
-            background: #000000 !important;
-            color: #ffffff !important;
-            border: none !important;
-        }
-        
-        .canvas__open {
-            display: none !important;
-        }
-    }
-</style>
+    })();
+</script>
+
+<!-- Header HTML Comienza -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+     <!-- Header global - COMPACTO v5.0 -->
+
+    <link rel="stylesheet" href="public/assets/css/style.css">
+    <link rel="stylesheet" href="public/assets/css/modals-animations.css">
+
+</head>
+<body>
+    
+</body>
+</html>
+ 
+
+
 <header class="header">
     <div class="container-fluid">
         <div class="row">
@@ -246,10 +95,25 @@
                     </div>
                     <ul class="header__right__widget">
                         <li><span class="icon_search search-switch"></span></li>
+                        <li>
+                            <a href="#" id="dark-mode-toggle" title="Cambiar tema">
+                                <i class="fa fa-moon"></i>
+                            </a>
+                        </li>
                         <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
+                        <li><a href="#" id="notifications-link" title="Notificaciones">
+                            <i class="fa fa-bell"></i>
+                            <?php if(isset($notifications_count) && $notifications_count > 0): ?>
+                            <div class="tip" id="notifications-count"><?php echo $notifications_count; ?></div>
+                            <?php else: ?>
+                            <div class="tip" id="notifications-count" style="display: none;">0</div>
+                            <?php endif; ?>
+                        </a></li>
                         <li><a href="#" id="favorites-link"><span class="icon_heart_alt"></span>
                             <?php if(isset($favorites_count) && $favorites_count > 0): ?>
-                            <div class="tip"><?php echo $favorites_count; ?></div>
+                            <div class="tip" id="favorites-count"><?php echo $favorites_count; ?></div>
+                            <?php else: ?>
+                            <div class="tip" id="favorites-count" style="display: none;">0</div>
                             <?php endif; ?>
                         </a></li>
                         <?php else: ?>
@@ -257,7 +121,9 @@
                         <?php endif; ?>
                         <li><a href="cart.php"><span class="icon_bag_alt"></span>
                             <?php if(isset($cart_count) && $cart_count > 0): ?>
-                            <div class="tip"><?php echo $cart_count; ?></div>
+                            <div class="tip" id="cart-count"><?php echo $cart_count; ?></div>
+                            <?php else: ?>
+                            <div class="tip" id="cart-count" style="display: none;">0</div>
                             <?php endif; ?>
                         </a></li>
                     </ul>
@@ -271,3 +137,443 @@
     </div>
 </header>
 <!-- Header Section End -->
+<script>
+/* Cleanup rápido: remover inline styles de color/background que rompen el dark mode en los modales */
+(function(){
+    'use strict';
+
+    function cleanFavoritesModalStyles(){
+        if(!document.body.classList.contains('dark-mode')) return;
+        const selectors = [
+            '#favorites-modal',
+            '.favorites-modal-content',
+            '.favorites-modal-header',
+            '.favorites-modal-body',
+            '.favorite-item',
+            '.favorite-product-name',
+            '.price-current',
+            '.price-old',
+            '.favorite-date',
+            '.btn-favorite-cart',
+            '.btn-favorite-remove',
+            '.stock-badge',
+            '.favorites-empty',
+            '.favorites-empty i',
+            '.favorites-empty p',
+            '.btn-shop-now',
+            // Modal de notificaciones
+            '#notifications-modal',
+            '.notifications-modal',
+            '.notifications-modal-content',
+            '.notifications-modal-header',
+            '.notifications-modal-body',
+            '.notifications-modal-close',
+            '.notification-item',
+            '.notification-icon',
+            '.notification-info',
+            '.notification-actions',
+            '.btn-notif-read',
+            '.btn-notif-delete',
+            '.notifications-loading',
+            '.notifications-count',
+            '.notifications-update',
+            // Modal de usuario
+            '#user-account-modal',
+            '.user-modal',
+            '.user-modal-overlay',
+            '.user-modal-content',
+            '.user-modal-close',
+            '.user-modal-header',
+            '.user-modal-body',
+            '.user-modal-footer',
+            '.user-avatar-circle',
+            '.avatar-initial',
+            '.avatar-status',
+            '.user-name',
+            '.user-role-badge',
+            '.stat-card',
+            '.stat-icon',
+            '.stat-number',
+            '.stat-label',
+            '.user-info-item',
+            '.info-icon',
+            '.info-label',
+            '.info-value',
+            '.btn-action',
+            '.btn-primary',
+            '.btn-admin',
+            '.btn-logout',
+            '.user-stats-grid',
+            '.user-info-list',
+            '.user-avatar-container',
+            '.stat-info',
+            '.info-content',
+            '.header-background'
+        ];
+
+        selectors.forEach(sel => {
+            document.querySelectorAll(sel).forEach(el => {
+                try {
+                    if(!el || !el.style) return;
+                    // Remover propiedades de color que puedan venir inline
+                    el.style.removeProperty('background');
+                    el.style.removeProperty('background-color');
+                    el.style.removeProperty('color');
+                    el.style.removeProperty('border-color');
+                    el.style.removeProperty('border');
+                } catch(e) {
+                    // segurizar
+                }
+            });
+        });
+    }
+
+    // Ejecutar al cargar (SIN DELAY)
+    document.addEventListener('DOMContentLoaded', function(){
+        cleanFavoritesModalStyles();
+    });
+
+    // EJECUTAR INMEDIATAMENTE cuando se abre el modal (SIN setTimeout)
+    document.addEventListener('click', function(e){
+        if(e.target.closest('#favorites-link') || e.target.closest('#favorites-link-mobile') || 
+           e.target.closest('#user-account-link') || e.target.closest('#notifications-link') || 
+           e.target.closest('#notifications-link-mobile')){
+            cleanFavoritesModalStyles();
+        }
+    });
+    
+    // Observar cambios dinámicos (SIN setTimeout)
+    (function initObserver(){
+        const attach = () => {
+            const favList = document.getElementById('favorites-list');
+            const notifList = document.getElementById('notifications-list');
+            
+            if(favList) {
+                const obs = new MutationObserver(function(){
+                    cleanFavoritesModalStyles();
+                });
+                obs.observe(favList, { childList: true, subtree: true });
+            }
+            
+            if(notifList) {
+                const obs = new MutationObserver(function(){
+                    cleanFavoritesModalStyles();
+                });
+                obs.observe(notifList, { childList: true, subtree: true });
+            }
+        };
+
+        attach();
+        const bodyObs = new MutationObserver(function(muts, obs){
+            attach();
+        });
+        bodyObs.observe(document.body, { childList: true, subtree: true });
+    })();
+
+    // Exponer función para debugging
+    window.cleanFavoritesModalStyles = cleanFavoritesModalStyles;
+})();
+
+// ====================================================================
+// FUNCIONES UNIFICADAS PARA ABRIR/CERRAR MODALES - CON ANIMACIONES
+// ====================================================================
+(function() {
+    'use strict';
+    
+    // ============================================
+    // FUNCIÓN PARA ABRIR MODAL - CON ANIMACIÓN SLIDE
+    // ============================================
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        
+        // NO ocultar el scrollbar - mantener scroll visible siempre
+        
+        // Remover clase de cierre si existe
+        modal.classList.remove('modal-closing');
+        
+        // Mostrar modal (display block pero aún invisible por CSS)
+        modal.style.display = 'block';
+        
+        // Forzar reflow para que la animación funcione
+        void modal.offsetWidth;
+        
+        // Agregar clase que activa la animación de entrada
+        modal.classList.add('modal-open');
+    }
+    
+    // ============================================
+    // FUNCIÓN PARA CERRAR MODAL - CON ANIMACIÓN SLIDE
+    // ============================================
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        
+        // Verificar si el modal existe y está abierto
+        if (!modal || !modal.classList.contains('modal-open')) {
+            return;
+        }
+        
+        // Agregar clase de cierre para animación de salida
+        modal.classList.add('modal-closing');
+        modal.classList.remove('modal-open');
+        
+        // Esperar a que termine la animación antes de ocultar
+        setTimeout(() => {
+            if (modal.classList.contains('modal-closing')) {
+                modal.style.display = 'none';
+                modal.classList.remove('modal-closing');
+            }
+        }, 250); // Duración de la animación de cierre
+    }
+    
+    // ============================================
+    // CERRAR TODOS LOS MODALES
+    // ============================================
+    function closeAllModalsInstant() {
+        ['favorites-modal', 'notifications-modal', 'user-account-modal'].forEach(id => {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('modal-open', 'modal-closing');
+            }
+        });
+    }
+    
+    // Cerrar todos los modales con animación
+    function closeAllModals() {
+        ['favorites-modal', 'notifications-modal', 'user-account-modal'].forEach(id => {
+            closeModal(id);
+        });
+    }
+    
+    // Función para cargar favoritos
+    function loadFavorites() {
+        console.log('📦 Cargando favoritos...');
+        // Los favoritos ya están cargados en el PHP del modal
+    }
+    
+    // FAVORITOS - ULTRA OPTIMIZADO
+    function toggleFavoritesModal() {
+        const modal = document.getElementById('favorites-modal');
+        if (!modal) return;
+        
+        const isVisible = modal.classList.contains('modal-open');
+        
+        if (isVisible) {
+            closeModal('favorites-modal');
+        } else {
+            // Cerrar otros modales usando closeModal para restaurar scroll correctamente
+            const notifModal = document.getElementById('notifications-modal');
+            const userModal = document.getElementById('user-account-modal');
+            
+            if (notifModal && notifModal.classList.contains('modal-open')) {
+                closeModal('notifications-modal');
+            }
+            if (userModal && userModal.classList.contains('modal-open')) {
+                closeModal('user-account-modal');
+            }
+            
+            // Abrir favoritos INSTANTÁNEAMENTE
+            openModal('favorites-modal');
+        }
+    }
+    
+    // NOTIFICACIONES - ULTRA OPTIMIZADO
+    function toggleNotificationsModal() {
+        const modal = document.getElementById('notifications-modal');
+        if (!modal) return;
+        
+        const isVisible = modal.classList.contains('modal-open');
+        
+        if (isVisible) {
+            closeModal('notifications-modal');
+        } else {
+            // Cerrar otros modales usando closeModal para restaurar scroll correctamente
+            const favModal = document.getElementById('favorites-modal');
+            const userModal = document.getElementById('user-account-modal');
+            
+            if (favModal && favModal.classList.contains('modal-open')) {
+                closeModal('favorites-modal');
+            }
+            if (userModal && userModal.classList.contains('modal-open')) {
+                closeModal('user-account-modal');
+            }
+            
+            // Abrir notificaciones INSTANTÁNEAMENTE
+            openModal('notifications-modal');
+        }
+    }
+    
+    // USUARIO - ULTRA OPTIMIZADO
+    function toggleUserModal() {
+        const modal = document.getElementById('user-account-modal');
+        if (!modal) {
+            console.error('❌ Modal de usuario no encontrado');
+            return;
+        }
+        
+        const isVisible = modal.classList.contains('modal-open');
+        
+        if (isVisible) {
+            closeModal('user-account-modal');
+        } else {
+            // Cerrar otros modales usando closeModal para restaurar scroll correctamente
+            const favModal = document.getElementById('favorites-modal');
+            const notifModal = document.getElementById('notifications-modal');
+            
+            if (favModal && favModal.classList.contains('modal-open')) {
+                closeModal('favorites-modal');
+            }
+            if (notifModal && notifModal.classList.contains('modal-open')) {
+                closeModal('notifications-modal');
+            }
+            
+            // Abrir usuario INSTANTÁNEAMENTE
+            openModal('user-account-modal');
+            console.log('✅ Modal de usuario abierto');
+        }
+    }
+    
+    // Inicializar modales
+    function initModals() {
+        // Verificar que los modales existan
+        const favModal = document.getElementById('favorites-modal');
+        const notifModal = document.getElementById('notifications-modal');
+        const userModal = document.getElementById('user-account-modal');
+        
+        if (!favModal || !notifModal || !userModal) {
+            setTimeout(initModals, 100);
+            return;
+        }
+        
+        // FAVORITOS
+        document.querySelectorAll('#favorites-link, #favorites-link-mobile').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleFavoritesModal();
+            });
+        });
+        
+        document.querySelectorAll('.favorites-modal-close').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeModal('favorites-modal');
+            });
+        });
+        
+        // NOTIFICACIONES
+        document.querySelectorAll('#notifications-link, #notifications-link-mobile').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleNotificationsModal();
+            });
+        });
+        
+        document.querySelectorAll('.notifications-modal-close').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeModal('notifications-modal');
+            });
+        });
+        
+        // USUARIO
+        document.querySelectorAll('#user-account-link, #user-account-link-mobile').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🖱️ Click en botón de usuario detectado');
+                toggleUserModal();
+            });
+        });
+        
+        document.querySelectorAll('.user-modal-close').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeModal('user-account-modal');
+            });
+        });
+        
+        // Cerrar al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            const modals = [
+                { id: 'favorites-modal', selector: '.favorites-modal-content', link: '#favorites-link' },
+                { id: 'notifications-modal', selector: '.notifications-modal-content', link: '#notifications-link' },
+                { id: 'user-account-modal', selector: '.user-modal-content', link: '#user-account-link' }
+            ];
+            
+            modals.forEach(({ id, selector, link }) => {
+                const modal = document.getElementById(id);
+                if (modal && modal.classList.contains('modal-open')) {
+                    const content = modal.querySelector(selector);
+                    const linkElement = document.querySelector(link);
+                    const linkMobile = document.querySelector(link + '-mobile');
+                    
+                    const isClickInside = content && content.contains(e.target);
+                    const isClickOnLink = (linkElement && linkElement.contains(e.target)) || 
+                                         (linkMobile && linkMobile.contains(e.target));
+                    
+                    if (!isClickInside && !isClickOnLink) {
+                        closeModal(id);
+                    }
+                }
+            });
+        });
+        
+        // Cerrar con tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAllModals();
+            }
+        });
+        
+        console.log('✅ Eventos configurados correctamente');
+    }
+    
+    // Inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initModals);
+    } else {
+        initModals();
+    }
+    
+    // Exponer funciones globalmente (SIN CALLBACKS - para evitar delays)
+    window.openFavoritesModal = () => openModal('favorites-modal');
+    window.closeFavoritesModal = () => closeModal('favorites-modal');
+    window.toggleFavoritesModal = toggleFavoritesModal;
+    window.openNotificationsModal = () => openModal('notifications-modal');
+    window.closeNotificationsModal = () => closeModal('notifications-modal');
+    window.toggleNotificationsModal = toggleNotificationsModal;
+    window.openUserModal = () => openModal('user-account-modal');
+    window.closeUserModal = () => closeModal('user-account-modal');
+    window.toggleUserModal = toggleUserModal;
+    window.closeAllModals = closeAllModals;
+    window.closeAllModalsInstant = closeAllModalsInstant;
+    
+    console.log('🌐 Funciones de modales expuestas globalmente');
+})();
+</script>
+
+<!-- ========================================
+     MODALES GLOBALES (disponibles en todas las páginas)
+     ======================================== -->
+<?php 
+// Incluir modales (cada uno tiene su propio condicional de usuario logueado)
+include __DIR__ . '/favorites-modal.php';
+include __DIR__ . '/notifications-modal.php';
+include __DIR__ . '/user-account-modal.php';
+
+// Script para actualización AJAX de contadores (solo si hay usuario)
+if(isset($usuario_logueado) && $usuario_logueado): 
+    // Asegurar que el BASE_URL use el mismo protocolo que la página actual
+    $secure_base_url = rtrim(BASE_URL, '/');
+    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+        $secure_base_url = str_replace('http://', 'https://', $secure_base_url);
+    }
+    echo '<script src="' . $secure_base_url . '/public/assets/js/ajax-counters.js?v=' . time() . '"></script>';
+endif;
+?>

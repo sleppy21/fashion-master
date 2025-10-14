@@ -4,7 +4,9 @@
  * Evita el refresh completo de la página
  */
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../../config/conexion.php';
 
 header('Content-Type: application/json');
@@ -113,95 +115,15 @@ try {
         }
     }
 
-    // Generar HTML de productos
-    ob_start();
-    
-    if (!empty($productos)):
-        foreach($productos as $producto):
-            $precio_original = $producto['precio_producto'];
-            $tiene_descuento = $producto['descuento_porcentaje_producto'] > 0;
-            $precio_final = $precio_original;
-            if($tiene_descuento) {
-                $precio_final = $precio_original - ($precio_original * $producto['descuento_porcentaje_producto'] / 100);
-            }
-            
-            $imagen_url = !empty($producto['url_imagen_producto']) ? $producto['url_imagen_producto'] : 'public/assets/img/default-product.jpg';
-            $sin_stock = $producto['stock_actual_producto'] <= 0;
-            $es_favorito = in_array($producto['id_producto'], $favoritos_ids);
-    ?>
-        <div class="grid-item col-lg-4 col-md-6 col-6">
-            <div class="product__item <?php echo $tiene_descuento ? 'sale' : ''; ?>">
-                <div class="product__item__pic set-bg product-image-clickable" 
-                     data-setbg="<?php echo htmlspecialchars($imagen_url); ?>"
-                     data-id="<?php echo $producto['id_producto']; ?>"
-                     data-product-url="product-details.php?id=<?php echo $producto['id_producto']; ?>"
-                     style="background-image: url('<?php echo htmlspecialchars($imagen_url); ?>'); background-size: cover; background-position: center; cursor: pointer;">
-                    <?php if($sin_stock): ?>
-                        <div class="label stockout">Sin stock</div>
-                    <?php elseif($tiene_descuento): ?>
-                        <div class="label sale">-<?php echo round($producto['descuento_porcentaje_producto']); ?>%</div>
-                    <?php endif; ?>
-                    <ul class="product__hover">
-                        <li><a href="product-details.php?id=<?php echo $producto['id_producto']; ?>" class="view-details-btn"><span class="icon_search"></span></a></li>
-                        <li>
-                            <a href="#" class="add-to-favorites <?php echo $es_favorito ? 'active' : ''; ?>" 
-                               data-id="<?php echo $producto['id_producto']; ?>">
-                               <span class="icon_heart<?php echo $es_favorito ? '' : '_alt'; ?>"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="add-to-cart" data-id="<?php echo $producto['id_producto']; ?>" 
-                               <?php echo $sin_stock ? 'style="opacity:0.5;" data-disabled="true"' : ''; ?>>
-                               <span class="icon_bag_alt"></span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="product__item__text">
-                    <h6><span style="cursor: pointer;" onclick="window.location.href='product-details.php?id=<?php echo $producto['id_producto']; ?>'">
-                        <?php echo htmlspecialchars($producto['nombre_producto']); ?>
-                    </span></h6>
-                    <div class="rating">
-                        <?php 
-                        $calificacion = round($producto['calificacion_promedio']);
-                        $total_resenas = $producto['total_resenas'];
-                        for($i = 1; $i <= 5; $i++): 
-                            if($i <= $calificacion): ?>
-                                <i class="fa fa-star"></i>
-                            <?php else: ?>
-                                <i class="fa fa-star-o"></i>
-                            <?php endif;
-                        endfor; ?>
-                        <?php if($total_resenas > 0): ?>
-                            <span style="font-size: 11px; color: #999; margin-left: 5px;">(<?php echo $total_resenas; ?>)</span>
-                        <?php endif; ?>
-                    </div>
-                    <div class="product__price">
-                        $<?php echo number_format($precio_final, 2); ?>
-                        <?php if($tiene_descuento): ?>
-                            <span>$<?php echo number_format($precio_original, 2); ?></span>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php
-        endforeach;
-    else:
-    ?>
-        <div class="col-12">
-            <div class="alert alert-info text-center">
-                <i class="fa fa-info-circle"></i> No se encontraron productos con los filtros seleccionados.
-            </div>
-        </div>
-    <?php
-    endif;
-    
-    $html = ob_get_clean();
+    // Agregar favorito flag a cada producto
+    foreach($productos as &$producto) {
+        $producto['es_favorito'] = in_array($producto['id_producto'], $favoritos_ids);
+    }
 
+    // Retornar JSON con productos
     echo json_encode([
         'success' => true,
-        'html' => $html,
+        'products' => $productos,
         'count' => count($productos)
     ]);
 
@@ -212,3 +134,5 @@ try {
         'message' => 'Error al filtrar productos: ' . $e->getMessage()
     ]);
 }
+
+exit; // Evitar que se ejecute el código HTML de abajo

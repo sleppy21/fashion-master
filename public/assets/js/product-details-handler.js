@@ -41,52 +41,16 @@ $(document).ready(function() {
     });
     
     // =================================================================
-    // SISTEMA DE NOTIFICACIONES (solo si no existe)
+    // SISTEMA DE NOTIFICACIONES - Usar toast moderno del cart-favorites-handler.js
     // =================================================================
     
+    // La función showNotification ya está definida en cart-favorites-handler.js
+    // No necesitamos redefinirla aquí, solo verificamos que exista
     if (typeof window.showNotification !== 'function') {
-        function showNotification(message, type) {
-            const colors = {
-                'success': '#2ecc71',
-                'error': '#e74c3c',
-                'warning': '#f39c12',
-                'info': '#3498db'
-            };
-            
-            const icons = {
-                'success': '✓',
-                'error': '✕',
-                'warning': '⚠',
-                'info': 'ℹ'
-            };
-            
-            const notification = $('<div></div>')
-                .css({
-                    'position': 'fixed',
-                    'top': '20px',
-                    'right': '20px',
-                    'background': colors[type] || colors.info,
-                    'color': 'white',
-                    'padding': '15px 25px 15px 20px',
-                    'border-radius': '50px',
-                    'box-shadow': '0 4px 15px rgba(0,0,0,0.3)',
-                    'z-index': '10000',
-                    'font-weight': '600',
-                    'display': 'flex',
-                    'align-items': 'center',
-                    'gap': '10px',
-                    'animation': 'slideInRight 0.3s ease'
-                })
-                .html('<span style="font-size: 20px;">' + icons[type] + '</span>' + message)
-                .appendTo('body');
-            
-            setTimeout(function() {
-                notification.fadeOut(300, function() {
-                    $(this).remove();
-                });
-            }, 3000);
-        }
-        
-        window.showNotification = showNotification;
+        // Fallback simple si cart-favorites-handler.js no está cargado
+        window.showNotification = function(message, type) {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            alert(message);
+        };
     }
 });

@@ -5,6 +5,14 @@
  * Compatible con XAMPP MySQL
  */
 
+// Definir BASE_URL si no está definido
+if (!defined('BASE_URL')) {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $path = '/fashion-master/';
+    define('BASE_URL', $protocol . '://' . $host . $path);
+}
+
 class Database {
     // Configuración de la base de datos
     private $host = 'localhost';

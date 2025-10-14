@@ -2,12 +2,67 @@
 /**
  * Configuración unificada del proyecto Fashion Store
  * Puerto único: 80 (Apache)
+ * AUTO-DETECCIÓN DE URL PARA CUALQUIER HOSTING
  */
 
-// URLs y configuración principal
-define('BASE_URL', 'http://localhost');
-define('PROJECT_PATH', '/fashion-master');
-define('FULL_BASE_URL', BASE_URL . PROJECT_PATH);
+// ===============================================
+// AUTO-DETECCIÓN DE BASE_URL (Compatible con localhost, ngrok, hosting)
+// ===============================================
+if (!defined('BASE_URL')) {
+    // Detectar protocolo (HTTP o HTTPS) - Mejorado para ngrok
+    $protocol = 'http'; // Default
+    
+    // Método 1: HTTPS directo
+    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+        $protocol = 'https';
+    }
+    
+    // Método 2: X-Forwarded-Proto (usado por proxies como ngrok)
+    if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+        $protocol = 'https';
+    }
+    
+    // Método 3: Detectar ngrok por el host
+    if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'ngrok') !== false) {
+        $protocol = 'https';
+    }
+    
+    // Método 4: Puerto 443
+    if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443') {
+        $protocol = 'https';
+    }
+    
+    // Detectar host
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    
+    // Detectar path automáticamente
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+    $scriptDir = dirname($scriptName);
+    
+    // Si estamos en la raíz, no agregar path
+    if ($scriptDir === '/' || $scriptDir === '\\') {
+        $path = '';
+    } else {
+        // Remover el nombre del archivo y obtener solo el directorio
+        $path = rtrim($scriptDir, '/\\');
+        
+        // Si el path contiene 'fashion-master', obtener solo hasta ese directorio
+        if (strpos($path, 'fashion-master') !== false) {
+            // Extraer solo hasta fashion-master (incluido)
+            $pathParts = explode('/', trim($path, '/'));
+            $index = array_search('fashion-master', $pathParts);
+            if ($index !== false) {
+                $pathParts = array_slice($pathParts, 0, $index + 1);
+                $path = '/' . implode('/', $pathParts);
+            }
+        }
+    }
+    
+    define('BASE_URL', $protocol . '://' . $host . $path);
+}
+
+// PROJECT_PATH ya no es necesario porque BASE_URL lo incluye
+define('FULL_BASE_URL', BASE_URL); // Mantener compatibilidad
 
 // API del Bot (puerto único 80)
 define('BOT_API_URL', FULL_BASE_URL . '/proyecto-bot-main/api/bot_api.php');

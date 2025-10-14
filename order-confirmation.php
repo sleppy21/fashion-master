@@ -73,12 +73,16 @@ try {
 // Obtener contadores para el header
 $cart_count = 0;
 $favorites_count = 0;
+$notifications_count = 0;
 try {
     $cart_resultado = executeQuery("SELECT COUNT(*) as total FROM carrito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
     $cart_count = $cart_resultado && !empty($cart_resultado) ? (int)$cart_resultado[0]['total'] : 0;
     
     $favorites = executeQuery("SELECT COUNT(*) as total FROM favorito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
     $favorites_count = $favorites && !empty($favorites) ? (int)$favorites[0]['total'] : 0;
+    
+    $notifications = executeQuery("SELECT COUNT(*) as total FROM notificacion WHERE id_usuario = ? AND leida_notificacion = 0 AND estado_notificacion = 'activo'", [$usuario_logueado['id_usuario']]);
+    $notifications_count = ($notifications && count($notifications) > 0) ? ($notifications[0]['total'] ?? 0) : 0;
 } catch(Exception $e) {
     error_log("Error al obtener contadores: " . $e->getMessage());
 }
@@ -592,6 +596,7 @@ $tipo_comprobante_texto = $tipos_comprobante[$pedido['tipo_comprobante_pedido']]
     <?php if($usuario_logueado): ?>
     <?php include 'includes/user-account-modal.php'; ?>
     <?php include 'includes/favorites-modal.php'; ?>
+    <?php include 'includes/notifications-modal.php'; ?>
     <?php endif; ?>
 
 </body>

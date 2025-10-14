@@ -103,9 +103,44 @@ class FashionStoreChatWidget {
         this.widget.innerHTML = `
             <button class="fs-chat-button" id="fsChatButton" aria-label="Abrir asistente virtual">
                 <div class="fs-chat-icon">
-                    <img src="public/assets/img/logomarca_32.png" alt="Logo Fashion Store" width="24" height="24">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
+                        <!-- Burbujas de chat modernas -->
+                        <g class="fs-chat-bubbles">
+                            <!-- Burbuja principal -->
+                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V6c0-1.1-.9-2-2-2z" 
+                                  fill="white" 
+                                  stroke="currentColor" 
+                                  stroke-width="1.5" 
+                                  stroke-linejoin="round"/>
+                            
+                            <!-- Puntos de escritura animados -->
+                            <circle cx="8" cy="12" r="1.5" fill="currentColor">
+                                <animate attributeName="opacity" values="0.3;1;0.3" dur="1.4s" repeatCount="indefinite" begin="0s"/>
+                            </circle>
+                            <circle cx="12" cy="12" r="1.5" fill="currentColor">
+                                <animate attributeName="opacity" values="0.3;1;0.3" dur="1.4s" repeatCount="indefinite" begin="0.2s"/>
+                            </circle>
+                            <circle cx="16" cy="12" r="1.5" fill="currentColor">
+                                <animate attributeName="opacity" values="0.3;1;0.3" dur="1.4s" repeatCount="indefinite" begin="0.4s"/>
+                            </circle>
+                        </g>
+                        
+                        <!-- Efecto de brillo sutil -->
+                        <path d="M6 8 Q8 6, 10 8" 
+                              stroke="white" 
+                              stroke-width="1.5" 
+                              stroke-linecap="round" 
+                              opacity="0.6"/>
+                        
+                        <!-- Onda de señal -->
+                        <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="0.5" fill="none" opacity="0">
+                            <animate attributeName="r" values="8;12;8" dur="2s" repeatCount="indefinite"/>
+                            <animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite"/>
+                        </circle>
+                    </svg>
                 </div>
                 <div class="fs-chat-text">¿Necesitas ayuda?</div>
+                <div class="fs-chat-pulse"></div>
             </button>
         `;
         
