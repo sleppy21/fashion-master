@@ -1,0 +1,11 @@
+Options +ExecCGI
+AddHandler application/x-httpd-php .php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+</IfModule>
+
+<Files "*.php">
+    Order allow,deny
+    Allow from all
+</Files>

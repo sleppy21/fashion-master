@@ -1,0 +1,1185 @@
+/**
+ * MODALS DARK MODE
+ * Adaptación completa de modales al modo oscuro
+ * - Modal de Favoritos
+ * - Modal de Cuenta de Usuario
+ */
+
+/* =================================================================
+   VARIABLES DE COLOR PARA MODALES
+   ================================================================= */
+:root {
+    --modal-dark-bg: #1e1e1e;
+    --modal-dark-content: #252525;
+    --modal-dark-card: #2a2a2a;
+    --modal-dark-hover: #333333;
+    --modal-dark-border: #404040;
+    --modal-dark-text: #e0e0e0;
+    --modal-dark-text-secondary: #b0b0b0;
+    --modal-dark-accent: #dc143c;
+    --modal-dark-accent-hover: #ff1744;
+    --modal-dark-shadow: rgba(0, 0, 0, 0.8);
+}
+
+/* =================================================================
+   MODAL DE FAVORITOS - ESTILOS BASE (MODO CLARO)
+   ================================================================= */
+
+/* Estilos por defecto para modo claro */
+.favorites-modal-content {
+    background: #ffffff !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15) !important;
+    border: 1px solid #e9ecef !important;
+}
+
+.favorites-modal-close {
+    background: rgba(0,0,0,0.05) !important;
+    color: #666 !important;
+}
+
+.favorites-modal-header {
+    background: #ffffff !important;
+    border-bottom-color: transparent !important;
+}
+
+.favorites-modal-header h3,
+.favorites-modal-header h3 i {
+    color: #2c3e50 !important;
+}
+
+.favorites-modal-header .favorites-count {
+    color: #7f8c8d !important;
+}
+
+.favorites-modal-header .favorites-update {
+    color: #95a5a6 !important;
+}
+
+.favorites-modal-body {
+    background: #f8f9fa !important;
+}
+
+.favorite-item {
+    background: white !important;
+    border-color: #e9ecef !important;
+}
+
+.favorite-image {
+    border-color: #e9ecef !important;
+}
+
+.favorite-product-name {
+    color: #2c3e50 !important;
+}
+
+.favorite-price .price-current {
+    color: #2c3e50 !important;
+}
+
+.favorite-price .price-old {
+    color: #999 !important;
+}
+
+.favorite-date {
+    color: #999 !important;
+}
+
+.stock-badge.out {
+    background: #dc3545 !important;
+    color: white !important;
+}
+
+.stock-badge.sale {
+    background: #28a745 !important;
+    color: white !important;
+}
+
+.btn-favorite-cart:not(.in-cart):not(:disabled) {
+    background: #2c3e50 !important;
+    color: white !important;
+}
+
+.btn-favorite-cart.in-cart {
+    background: #28a745 !important;
+    color: white !important;
+}
+
+.btn-favorite-cart:disabled {
+    background: #ccc !important;
+    color: white !important;
+}
+
+.btn-favorite-remove {
+    background: #fee !important;
+    color: #dc3545 !important;
+}
+
+.favorites-empty i {
+    color: #ddd !important;
+}
+
+.favorites-empty p {
+    color: #999 !important;
+}
+
+.btn-shop-now {
+    background: #2c3e50 !important;
+    color: white !important;
+}
+
+/* =================================================================
+   MODAL DE FAVORITOS - DARK MODE
+   ================================================================= */
+
+/* Contenedor principal del modal */
+body.dark-mode #favorites-modal {
+    background: transparent !important;
+}
+
+body.dark-mode .favorites-modal-content {
+    background: var(--modal-dark-bg) !important;
+    box-shadow: 0 20px 60px var(--modal-dark-shadow) !important;
+    border: 1px solid var(--modal-dark-border) !important;
+}
+
+/* Botón de cerrar */
+body.dark-mode .favorites-modal-close {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--modal-dark-text) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .favorites-modal-close:hover {
+    background: rgba(220, 20, 60, 0.2) !important;
+    color: var(--modal-dark-accent-hover) !important;
+    transform: rotate(90deg) !important;
+}
+
+/* Header del modal */
+body.dark-mode .favorites-modal-header,
+body.dark-mode .favorites-modal-header[style] {
+    background: var(--modal-dark-content) !important;
+    border-bottom: 2px solid var(--modal-dark-border) !important;
+}
+
+body.dark-mode .favorites-modal-header h3,
+body.dark-mode .favorites-modal-header h3[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .favorites-modal-header h3 i,
+body.dark-mode .favorites-modal-header h3 i[style] {
+    color: var(--modal-dark-accent) !important;
+}
+
+body.dark-mode .favorites-modal-header .favorites-count,
+body.dark-mode .favorites-modal-header .favorites-count[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+body.dark-mode .favorites-modal-header .favorites-update,
+body.dark-mode .favorites-modal-header .favorites-update[style] {
+    color: var(--modal-dark-text-secondary) !important;
+    opacity: 0.7 !important;
+}
+
+/* Body del modal */
+body.dark-mode .favorites-modal-body,
+body.dark-mode .favorites-modal-body[style] {
+    background: var(--modal-dark-bg) !important;
+}
+
+/* Items de favoritos */
+body.dark-mode .favorite-item,
+body.dark-mode .favorite-item[style] {
+    background: var(--modal-dark-card) !important;
+    border: 1px solid var(--modal-dark-border) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .favorite-item:hover {
+    background: var(--modal-dark-hover) !important;
+    border-color: var(--modal-dark-accent) !important;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.2) !important;
+    transform: translateX(3px) !important;
+}
+
+/* Imagen del producto */
+body.dark-mode .favorite-image {
+    border: 1px solid var(--modal-dark-border) !important;
+}
+
+/* Info del producto */
+body.dark-mode .favorite-info h6 span,
+body.dark-mode .favorite-info h6 span[style],
+body.dark-mode .favorite-product-name,
+body.dark-mode .favorite-product-name[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .favorite-info h6 span:hover,
+body.dark-mode .favorite-product-name:hover {
+    color: var(--modal-dark-accent-hover) !important;
+}
+
+body.dark-mode .favorite-price .price-current,
+body.dark-mode .favorite-price .price-current[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .favorite-price .price-old,
+body.dark-mode .favorite-price .price-old[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+body.dark-mode .favorite-date,
+body.dark-mode .favorite-date[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+/* Botones de acción */
+body.dark-mode .btn-favorite-cart,
+body.dark-mode .btn-favorite-cart[style] {
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .btn-favorite-cart:not(.in-cart):not(:disabled),
+body.dark-mode .btn-favorite-cart[style]:not(.in-cart):not(:disabled) {
+    background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%) !important;
+    border: 1px solid var(--modal-dark-border) !important;
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .btn-favorite-cart:not(.in-cart):not(:disabled):hover,
+body.dark-mode .btn-favorite-cart[style]:not(.in-cart):not(:disabled):hover {
+    background: linear-gradient(135deg, var(--modal-dark-accent) 0%, #b01030 100%) !important;
+    border-color: var(--modal-dark-accent) !important;
+    box-shadow: 0 0 15px rgba(220, 20, 60, 0.4) !important;
+}
+
+body.dark-mode .btn-favorite-cart.in-cart,
+body.dark-mode .btn-favorite-cart[style].in-cart {
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%) !important;
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.3) !important;
+    color: white !important;
+}
+
+body.dark-mode .btn-favorite-cart.in-cart:hover,
+body.dark-mode .btn-favorite-cart[style].in-cart:hover {
+    background: linear-gradient(135deg, #218838 0%, #1e7e34 100%) !important;
+}
+
+body.dark-mode .btn-favorite-cart:disabled,
+body.dark-mode .btn-favorite-cart[style]:disabled {
+    background: #3a3a3a !important;
+    opacity: 0.4 !important;
+    color: #666 !important;
+}
+
+body.dark-mode .btn-favorite-remove,
+body.dark-mode .btn-favorite-remove[style] {
+    background: rgba(220, 20, 60, 0.1) !important;
+    color: var(--modal-dark-accent) !important;
+    border: 1px solid rgba(220, 20, 60, 0.3) !important;
+}
+
+body.dark-mode .btn-favorite-remove:hover,
+body.dark-mode .btn-favorite-remove[style]:hover {
+    background: var(--modal-dark-accent) !important;
+    color: white !important;
+    border-color: var(--modal-dark-accent) !important;
+    box-shadow: 0 0 15px rgba(220, 20, 60, 0.4) !important;
+}
+
+/* Estado vacío */
+body.dark-mode .favorites-empty,
+body.dark-mode .favorites-empty[style] {
+    background: transparent !important;
+}
+
+body.dark-mode .favorites-empty i,
+body.dark-mode .favorites-empty i[style] {
+    color: var(--modal-dark-border) !important;
+}
+
+body.dark-mode .favorites-empty p,
+body.dark-mode .favorites-empty p[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+body.dark-mode .btn-shop-now,
+body.dark-mode .btn-shop-now[style] {
+    background: linear-gradient(135deg, var(--modal-dark-accent) 0%, #b01030 100%) !important;
+    color: white !important;
+    border: none !important;
+}
+
+body.dark-mode .btn-shop-now:hover,
+body.dark-mode .btn-shop-now[style]:hover {
+    background: linear-gradient(135deg, var(--modal-dark-accent-hover) 0%, var(--modal-dark-accent) 100%) !important;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Badges de stock */
+body.dark-mode .stock-badge.out,
+body.dark-mode .stock-badge.out[style] {
+    background: var(--modal-dark-accent) !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(220, 20, 60, 0.4) !important;
+}
+
+body.dark-mode .stock-badge.sale,
+body.dark-mode .stock-badge.sale[style] {
+    background: #28a745 !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.4) !important;
+}
+
+/* Scrollbar del modal de favoritos */
+body.dark-mode .favorites-modal-body::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+body.dark-mode .favorites-modal-body::-webkit-scrollbar-track {
+    background: var(--modal-dark-bg) !important;
+}
+
+body.dark-mode .favorites-modal-body::-webkit-scrollbar-thumb {
+    background: var(--modal-dark-accent) !important;
+    border-radius: 4px !important;
+}
+
+body.dark-mode .favorites-modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--modal-dark-accent-hover) !important;
+}
+
+/* =================================================================
+   MODAL DE CUENTA DE USUARIO - ESTILOS BASE (MODO CLARO)
+   ================================================================= */
+
+/* Estilos por defecto para modo claro */
+.user-modal-content {
+    background: #ffffff !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15) !important;
+    border: 1px solid #e9ecef !important;
+}
+
+.user-modal-close {
+    background: rgba(0,0,0,0.05) !important;
+    color: #666 !important;
+}
+
+.user-modal-header {
+    color: var(--modal-dark-text) !important;
+}
+
+.user-avatar {
+    background: white !important;
+    border-color: white !important;
+}
+
+.user-name {
+    color: white !important;
+}
+
+.user-email {
+    color: rgba(255,255,255,0.9) !important;
+}
+
+.user-stats {
+    background: white !important;
+    border-color: #e9ecef !important;
+}
+
+.stat-value {
+    color: #2c3e50 !important;
+}
+
+.stat-label {
+    color: #7f8c8d !important;
+}
+
+.stat-card {
+    background: white !important;
+    border-color: #e9ecef !important;
+}
+
+.stat-number {
+    color: #2c3e50 !important;
+}
+
+.user-modal-body {
+    background: #f8f9fa !important;
+}
+
+.user-info-item {
+    background: white !important;
+    border-color: #e9ecef !important;
+}
+
+.info-label {
+    color: #7f8c8d !important;
+}
+
+.info-value {
+    color: #2c3e50 !important;
+}
+
+.user-modal-footer {
+    background: white !important;
+    border-top-color: #e9ecef !important;
+}
+
+.btn-profile {
+    background: #667eea !important;
+    color: white !important;
+}
+
+.btn-logout {
+    background: #dc3545 !important;
+    color: white !important;
+}
+
+/* =================================================================
+   MODAL DE CUENTA DE USUARIO - DARK MODE
+   ================================================================= */
+
+/* Overlay */
+body.dark-mode .user-modal-overlay {
+    background-color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Contenedor del modal */
+body.dark-mode .user-modal-content,
+body.dark-mode .user-modal-content[style] {
+    background: var(--modal-dark-bg) !important;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Botón de cerrar */
+body.dark-mode .user-modal-close,
+body.dark-mode .user-modal-close[style] {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .user-modal-close:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+/* Header */
+body.dark-mode .user-modal-header,
+body.dark-mode .user-modal-header[style] {
+    background: var(--modal-dark-content) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-mode .user-modal-header h3,
+body.dark-mode .user-modal-header h3[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .user-modal-header p,
+body.dark-mode .user-modal-header p[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+/* Body del modal */
+body.dark-mode .user-modal-body,
+body.dark-mode .user-modal-body[style] {
+    background: var(--modal-dark-bg) !important;
+}
+
+/* Todos los divs con border genérico */
+body.dark-mode .user-modal-body > div > div[style*="border"],
+body.dark-mode .user-modal-body div[style*="border: 1px solid"] {
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: var(--modal-dark-card) !important;
+}
+
+body.dark-mode .user-modal-body > div > div[style*="border"]:hover,
+body.dark-mode .user-modal-body div[style*="border: 1px solid"]:hover {
+    border-color: rgba(102, 126, 234, 0.3) !important;
+    background: var(--modal-dark-hover) !important;
+}
+
+/* Iconos con background */
+body.dark-mode .user-modal-body div[style*="border-radius: 50%"][style*="background"] {
+    background: rgba(102, 126, 234, 0.15) !important;
+}
+
+body.dark-mode .user-modal-body div[style*="border-radius: 50%"] i {
+    color: #667eea !important;
+}
+
+/* Textos y números */
+body.dark-mode .user-modal-body div[style*="font-size: 20px"],
+body.dark-mode .user-modal-body div[style*="font-size: 18px"] {
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .user-modal-body div[style*="font-size: 13px"],
+body.dark-mode .user-modal-body div[style*="font-size: 11px"] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+/* Footer */
+body.dark-mode .user-modal-footer,
+body.dark-mode .user-modal-footer[style] {
+    background: var(--modal-dark-content) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Botón Admin */
+body.dark-mode .user-modal-footer a[href="admin.php"] {
+    background: #667eea !important;
+    color: white !important;
+}
+
+body.dark-mode .user-modal-footer a[href="admin.php"]:hover {
+    background: #5568d3 !important;
+}
+
+/* Botón Cerrar sesión */
+body.dark-mode .user-modal-footer a[href="logout.php"] {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--modal-dark-text) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-mode .user-modal-footer a[href="logout.php"]:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #fff !important;
+}
+
+body.dark-mode .user-modal-header .header-background,
+body.dark-mode .user-modal-header .header-background[style] {
+    background: linear-gradient(135deg, var(--modal-dark-accent) 0%, #b01030 50%, #1e1e1e 100%) !important;
+    opacity: 0.15 !important;
+}
+
+/* Avatar */
+body.dark-mode .user-avatar-circle,
+body.dark-mode .user-avatar-circle[style] {
+    background: linear-gradient(135deg, var(--modal-dark-accent) 0%, #b01030 100%) !important;
+    border: 3px solid var(--modal-dark-border) !important;
+    box-shadow: 0 0 20px rgba(220, 20, 60, 0.4) !important;
+}
+
+body.dark-mode .avatar-initial,
+body.dark-mode .avatar-initial[style] {
+    color: white !important;
+}
+
+body.dark-mode .avatar-status,
+body.dark-mode .avatar-status[style] {
+    background: #28a745 !important;
+    border: 3px solid var(--modal-dark-bg) !important;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.6) !important;
+}
+
+/* Nombre y rol */
+body.dark-mode .user-name,
+body.dark-mode .user-name[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .user-role-badge,
+body.dark-mode .user-role-badge[style] {
+    background: rgba(220, 20, 60, 0.15) !important;
+    color: var(--modal-dark-accent) !important;
+    border: 1px solid rgba(220, 20, 60, 0.3) !important;
+}
+
+body.dark-mode .user-role-badge i,
+body.dark-mode .user-role-badge i[style] {
+    color: var(--modal-dark-accent) !important;
+}
+
+body.dark-mode .user-role-badge span,
+body.dark-mode .user-role-badge span[style] {
+    color: var(--modal-dark-accent) !important;
+}
+
+/* Body del modal */
+body.dark-mode .user-modal-body,
+body.dark-mode .user-modal-body[style] {
+    background: var(--modal-dark-bg) !important;
+}
+
+/* Stats Cards */
+body.dark-mode .stat-card,
+body.dark-mode .stat-card[style] {
+    background: var(--modal-dark-card) !important;
+    border: 1px solid var(--modal-dark-border) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .stat-card:hover,
+body.dark-mode .stat-card[style]:hover {
+    background: var(--modal-dark-hover) !important;
+    border-color: var(--modal-dark-accent) !important;
+    box-shadow: 0 8px 20px rgba(220, 20, 60, 0.2) !important;
+    transform: translateY(-3px) !important;
+}
+
+body.dark-mode .stat-card.stat-cart .stat-icon,
+body.dark-mode .stat-card.stat-cart .stat-icon[style] {
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.2) 0%, rgba(176, 16, 48, 0.2) 100%) !important;
+    color: var(--modal-dark-accent) !important;
+}
+
+body.dark-mode .stat-card.stat-cart .stat-icon i,
+body.dark-mode .stat-card.stat-cart .stat-icon i[style] {
+    color: var(--modal-dark-accent) !important;
+}
+
+body.dark-mode .stat-card.stat-favorites .stat-icon,
+body.dark-mode .stat-card.stat-favorites .stat-icon[style] {
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.2) 0%, rgba(176, 16, 48, 0.2) 100%) !important;
+    color: var(--modal-dark-accent) !important;
+}
+
+body.dark-mode .stat-card.stat-favorites .stat-icon i,
+body.dark-mode .stat-card.stat-favorites .stat-icon i[style] {
+    color: var(--modal-dark-accent) !important;
+}
+
+body.dark-mode .stat-number,
+body.dark-mode .stat-number[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .stat-label,
+body.dark-mode .stat-label[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+/* Info Items */
+body.dark-mode .user-info-item,
+body.dark-mode .user-info-item[style] {
+    background: var(--modal-dark-card) !important;
+    border: 1px solid var(--modal-dark-border) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .user-info-item:hover,
+body.dark-mode .user-info-item[style]:hover {
+    background: var(--modal-dark-hover) !important;
+    border-color: var(--modal-dark-accent) !important;
+    transform: translateX(5px) !important;
+}
+
+body.dark-mode .info-icon,
+body.dark-mode .info-icon[style] {
+    background: rgba(220, 20, 60, 0.1) !important;
+    color: var(--modal-dark-accent) !important;
+}
+
+body.dark-mode .info-icon i,
+body.dark-mode .info-icon i[style] {
+    color: var(--modal-dark-accent) !important;
+}
+
+body.dark-mode .info-label,
+body.dark-mode .info-label[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+body.dark-mode .info-value,
+body.dark-mode .info-value[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .info-content,
+body.dark-mode .info-content[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+/* Footer con acciones */
+body.dark-mode .user-modal-footer,
+body.dark-mode .user-modal-footer[style] {
+    background: var(--modal-dark-content) !important;
+    border-top: 2px solid var(--modal-dark-border) !important;
+}
+
+body.dark-mode .btn-action,
+body.dark-mode .btn-action[style] {
+    background: var(--modal-dark-card) !important;
+    border: 1px solid var(--modal-dark-border) !important;
+    color: var(--modal-dark-text) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .btn-action:hover,
+body.dark-mode .btn-action[style]:hover {
+    background: var(--modal-dark-hover) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode .btn-action i,
+body.dark-mode .btn-action i[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+body.dark-mode .btn-action:hover i,
+body.dark-mode .btn-action[style]:hover i {
+    color: var(--modal-dark-accent-hover) !important;
+}
+
+body.dark-mode .btn-action span,
+body.dark-mode .btn-action span[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .btn-primary,
+body.dark-mode .btn-primary[style] {
+    background: linear-gradient(135deg, var(--modal-dark-accent) 0%, #b01030 100%) !important;
+    border-color: var(--modal-dark-accent) !important;
+    color: white !important;
+}
+
+body.dark-mode .btn-admin,
+body.dark-mode .btn-admin[style] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border-color: #667eea !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+}
+
+body.dark-mode .btn-admin:hover,
+body.dark-mode .btn-admin[style]:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5) !important;
+}
+
+body.dark-mode .btn-admin i,
+body.dark-mode .btn-admin[style] i {
+    color: white !important;
+}
+
+body.dark-mode .btn-admin span,
+body.dark-mode .btn-admin[style] span {
+    color: white !important;
+}
+
+body.dark-mode .btn-logout,
+body.dark-mode .btn-logout[style] {
+    background: rgba(220, 20, 60, 0.1) !important;
+    border: 1px solid rgba(220, 20, 60, 0.3) !important;
+    color: var(--modal-dark-accent) !important;
+}
+
+body.dark-mode .btn-logout:hover,
+body.dark-mode .btn-logout[style]:hover {
+    background: var(--modal-dark-accent) !important;
+    color: white !important;
+    border-color: var(--modal-dark-accent) !important;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4) !important;
+}
+
+body.dark-mode .btn-logout span,
+body.dark-mode .btn-logout[style] span {
+    color: inherit !important;
+}
+
+body.dark-mode .btn-logout i,
+body.dark-mode .btn-logout[style] i {
+    color: inherit !important;
+}
+
+body.dark-mode .btn-primary:hover {
+    background: linear-gradient(135deg, var(--modal-dark-accent-hover) 0%, var(--modal-dark-accent) 100%) !important;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4) !important;
+}
+
+body.dark-mode .btn-primary i {
+    color: white !important;
+}
+
+body.dark-mode .btn-primary span {
+    color: white !important;
+}
+
+body.dark-mode .btn-logout {
+    background: transparent !important;
+    border: 1px solid var(--modal-dark-border) !important;
+}
+
+body.dark-mode .btn-logout:hover {
+    background: rgba(220, 20, 60, 0.1) !important;
+    border-color: var(--modal-dark-accent) !important;
+    color: var(--modal-dark-accent) !important;
+}
+
+body.dark-mode .btn-logout:hover i {
+    color: var(--modal-dark-accent) !important;
+}
+
+/* Contenedores adicionales */
+body.dark-mode .user-stats-grid,
+body.dark-mode .user-stats-grid[style] {
+    background: transparent !important;
+}
+
+body.dark-mode .user-info-list,
+body.dark-mode .user-info-list[style] {
+    background: transparent !important;
+}
+
+body.dark-mode .user-avatar-container,
+body.dark-mode .user-avatar-container[style] {
+    background: transparent !important;
+}
+
+body.dark-mode .stat-info,
+body.dark-mode .stat-info[style] {
+    background: transparent !important;
+}
+
+/* Asegurar que todos los textos dentro de los elementos sean visibles */
+body.dark-mode .user-modal h3,
+body.dark-mode .user-modal h3[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .user-modal p,
+body.dark-mode .user-modal p[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+body.dark-mode .user-modal span:not(.tip),
+body.dark-mode .user-modal span[style]:not(.tip) {
+    color: inherit !important;
+}
+
+body.dark-mode .user-modal a,
+body.dark-mode .user-modal a[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+/* Scrollbar del modal de usuario */
+body.dark-mode .user-modal-body::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+body.dark-mode .user-modal-body::-webkit-scrollbar-track {
+    background: var(--modal-dark-bg) !important;
+}
+
+body.dark-mode .user-modal-body::-webkit-scrollbar-thumb {
+    background: var(--modal-dark-accent) !important;
+    border-radius: 4px !important;
+}
+
+body.dark-mode .user-modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--modal-dark-accent-hover) !important;
+}
+
+/* =================================================================
+   ANIMACIONES Y EFECTOS ESPECIALES
+   ================================================================= */
+
+/* ANIMACIONES ELIMINADAS PARA APERTURA INSTANTÁNEA (0ms) */
+/* @keyframes modalFadeIn y modalFadeOut eliminados */
+
+/* =================================================================
+   ANIMACIONES DE SLIDE CONTROLADAS DESDE header-section.php
+   ================================================================= */
+
+/* Efecto de brillo en hover */
+body.dark-mode .favorite-item:hover,
+body.dark-mode .notification-item:hover,
+body.dark-mode .stat-card:hover,
+body.dark-mode .user-info-item:hover {
+    box-shadow: 0 0 20px rgba(220, 20, 60, 0.2) !important;
+}
+
+/* Efecto de pulsación en botones */
+body.dark-mode .btn-favorite-cart:active,
+body.dark-mode .btn-favorite-remove:active,
+body.dark-mode .btn-notif-read:active,
+body.dark-mode .btn-notif-delete:active,
+body.dark-mode .btn-action:active {
+    transform: scale(0.95) !important;
+}
+
+/* =================================================================
+   RESPONSIVE - AJUSTES PARA MÓVIL
+   ================================================================= */
+@media (max-width: 768px) {
+    body.dark-mode .favorites-modal-content,
+    body.dark-mode .notifications-modal-content {
+        width: 95% !important;
+        max-width: 400px !important;
+        right: 2.5% !important;
+    }
+    
+    body.dark-mode .user-modal-content {
+        width: 95% !important;
+        max-width: 400px !important;
+    }
+}
+
+/* =================================================================
+   MODAL DE NOTIFICACIONES - ESTILOS BASE (MODO CLARO)
+   Position y display controlados desde header-section.php
+   ================================================================= */
+
+.notifications-modal-content {
+    position: fixed;
+    top: 60px;
+    right: 150px;
+    width: 380px;
+    height: 480px;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15) !important;
+    border: 1px solid #e9ecef !important;
+}
+
+.notifications-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.05) !important;
+    color: #666 !important;
+    transition: all 0.3s ease !important;
+}
+
+.notifications-modal-close:hover {
+    background: rgba(0,0,0,0.1) !important;
+    transform: rotate(90deg) !important;
+}
+
+.notifications-modal-header {
+    padding: 15px;
+    border-bottom: 2px solid #e9ecef;
+    flex-shrink: 0;
+    background: #ffffff !important;
+}
+
+.notifications-modal-header h3,
+.notifications-modal-header h3 i {
+    color: #2c3e50 !important;
+}
+
+.notifications-modal-header .notifications-count {
+    color: #7f8c8d !important;
+}
+
+.notifications-modal-header .notifications-update {
+    color: #95a5a6 !important;
+}
+
+.notifications-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 12px;
+    min-height: 0;
+    background: #f8f9fa !important;
+}
+
+.notification-item {
+    background: white !important;
+    border-color: #e9ecef !important;
+}
+
+.notification-info h6 {
+    color: #2c3e50 !important;
+}
+
+.notification-info p {
+    color: #666 !important;
+}
+
+.notification-info small {
+    color: #999 !important;
+}
+
+.btn-notif-read {
+    background: #e8f5e9 !important;
+    color: #28a745 !important;
+}
+
+.btn-notif-delete {
+    background: #fee !important;
+    color: #dc3545 !important;
+}
+
+/* =================================================================
+   MODAL DE NOTIFICACIONES - DARK MODE
+   ================================================================= */
+
+/* Contenedor principal del modal */
+body.dark-mode #notifications-modal {
+    background: transparent !important;
+}
+
+body.dark-mode .notifications-modal-content {
+    background: var(--modal-dark-bg) !important;
+    box-shadow: 0 20px 60px var(--modal-dark-shadow) !important;
+    border: 1px solid var(--modal-dark-border) !important;
+}
+
+/* Botón de cerrar */
+body.dark-mode .notifications-modal-close {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--modal-dark-text) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .notifications-modal-close:hover {
+    background: rgba(220, 20, 60, 0.2) !important;
+    color: var(--modal-dark-accent-hover) !important;
+    transform: rotate(90deg) !important;
+}
+
+/* Header del modal */
+body.dark-mode .notifications-modal-header,
+body.dark-mode .notifications-modal-header[style] {
+    background: var(--modal-dark-content) !important;
+    border-bottom: 2px solid var(--modal-dark-border) !important;
+}
+
+body.dark-mode .notifications-modal-header h3,
+body.dark-mode .notifications-modal-header h3[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .notifications-modal-header h3 i,
+body.dark-mode .notifications-modal-header h3 i[style] {
+    color: var(--modal-dark-accent) !important;
+}
+
+body.dark-mode .notifications-modal-header .notifications-count,
+body.dark-mode .notifications-modal-header .notifications-count[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+body.dark-mode .notifications-modal-header .notifications-update,
+body.dark-mode .notifications-modal-header .notifications-update[style] {
+    color: var(--modal-dark-text-secondary) !important;
+    opacity: 0.7 !important;
+}
+
+/* Body del modal */
+body.dark-mode .notifications-modal-body,
+body.dark-mode .notifications-modal-body[style] {
+    background: var(--modal-dark-bg) !important;
+}
+
+/* Items de notificaciones */
+body.dark-mode .notification-item,
+body.dark-mode .notification-item[style] {
+    background: var(--modal-dark-card) !important;
+    border: 1px solid var(--modal-dark-border) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .notification-item:hover {
+    background: var(--modal-dark-hover) !important;
+    border-color: var(--modal-dark-accent) !important;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.2) !important;
+    transform: translateX(3px) !important;
+}
+
+/* Info de la notificación */
+body.dark-mode .notification-info h6,
+body.dark-mode .notification-info h6[style] {
+    color: var(--modal-dark-text) !important;
+}
+
+body.dark-mode .notification-info p,
+body.dark-mode .notification-info p[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+body.dark-mode .notification-info small,
+body.dark-mode .notification-info small[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+/* Botones de acción */
+body.dark-mode .btn-notif-read,
+body.dark-mode .btn-notif-read[style] {
+    background: rgba(40, 167, 69, 0.1) !important;
+    color: #28a745 !important;
+    border: 1px solid rgba(40, 167, 69, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .btn-notif-read:hover,
+body.dark-mode .btn-notif-read[style]:hover {
+    background: #28a745 !important;
+    color: white !important;
+    border-color: #28a745 !important;
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.4) !important;
+}
+
+body.dark-mode .btn-notif-delete,
+body.dark-mode .btn-notif-delete[style] {
+    background: rgba(220, 20, 60, 0.1) !important;
+    color: var(--modal-dark-accent) !important;
+    border: 1px solid rgba(220, 20, 60, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .btn-notif-delete:hover,
+body.dark-mode .btn-notif-delete[style]:hover {
+    background: var(--modal-dark-accent) !important;
+    color: white !important;
+    border-color: var(--modal-dark-accent) !important;
+    box-shadow: 0 0 15px rgba(220, 20, 60, 0.4) !important;
+}
+
+/* Estado de carga */
+body.dark-mode .notifications-loading,
+body.dark-mode .notifications-loading[style] {
+    color: var(--modal-dark-text-secondary) !important;
+}
+
+body.dark-mode .notifications-loading i {
+    color: var(--modal-dark-accent) !important;
+}
+
+/* Scrollbar del modal de notificaciones */
+body.dark-mode .notifications-modal-body::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+body.dark-mode .notifications-modal-body::-webkit-scrollbar-track {
+    background: var(--modal-dark-bg) !important;
+}
+
+body.dark-mode .notifications-modal-body::-webkit-scrollbar-thumb {
+    background: var(--modal-dark-accent) !important;
+    border-radius: 4px !important;
+}
+
+body.dark-mode .notifications-modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--modal-dark-accent-hover) !important;
+}
+
+/* =================================================================
+   MODO CLARO - MANTENER ESTILOS ORIGINALES
+   ================================================================= */
+
+/* En modo claro, los estilos inline originales se mantienen activos */

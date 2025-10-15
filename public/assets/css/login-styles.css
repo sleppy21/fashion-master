@@ -1,0 +1,528 @@
+/* ========================================
+   LOGIN PAGE STYLES - FASHION STORE
+   Estilos específicos para la página de login
+   Mantiene consistencia con style.css principal
+   ======================================== */
+
+   /* Eliminar scroll completamente */
+html, body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+/* Configuración base del login */
+.login-section {
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(135deg, #f8f5f2 0%, #fdfcfb 100%);
+    padding: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    font-family: "Montserrat", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Asegurar que el container de Bootstrap no interfiera */
+.login-section .container {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-section .row {
+    width: 100%;
+    margin: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-section .col-lg-6,
+.login-section .col-md-8 {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* Botón de volver */
+.back-to-home {
+    position: fixed;
+    top: 25px;
+    left: 25px;
+    color: #2d2926;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.back-to-home:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    color: #8b5cf6;
+    text-decoration: none;
+}
+
+.back-to-home i {
+    margin-right: 8px;
+}
+
+/* Contenedor principal del formulario */
+.login-form {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px 35px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    max-width: 420px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 0 auto;
+    position: relative;
+    transform: translateY(0);
+}
+
+.login-form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* Título */
+.login-form h2 {
+    color: #2d2926;
+    font-size: 28px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: "Montserrat", sans-serif;
+    letter-spacing: -0.5px;
+}
+
+/* Logo */
+.login-form img {
+    max-height: 45px;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+/* Grupos de formulario */
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.form-group i {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8b5cf6;
+    font-size: 16px;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+/* Inputs */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 22px 20px 22px 30px;
+    border: 2px solid rgba(139, 92, 246, 0.1);
+    border-radius: 50px;
+    font-size: 14px;
+    color: #2d2926;
+    background: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    min-height: 56px;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
+    border-color: #8b5cf6;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 25px rgba(139, 92, 246, 0.2);
+    transform: translateY(-2px);
+}
+
+.form-group input[type="text"]:focus + i,
+.form-group input[type="email"]:focus + i,
+.form-group input[type="password"]:focus + i {
+    color: #7c3aed;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Placeholder styling */
+.form-group input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+/* Switch personalizado para recordar sesión */
+.form-group label {
+    display: flex;
+    align-items: center;
+    color: #4a4540;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 0;
+    position: relative;
+    width: 100%;
+}
+
+/* Ocultar checkbox original */
+.form-group input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* Switch container */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-right: 8px;
+    margin-left: 4px;
+}
+
+/* Switch slider */
+.switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+}
+
+.switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    transition: 0.4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Switch activado */
+input[type="checkbox"]:checked + .switch .slider {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+input[type="checkbox"]:checked + .switch .slider:before {
+    transform: translateX(26px);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+/* Efecto hover en el switch */
+.switch .slider:hover {
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+}
+
+/* Botón de login - siguiendo el estilo de .site-btn */
+.login-btn {
+    width: 100%;
+    font-size: 16px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    font-weight: 600;
+    border: none;
+    text-transform: uppercase;
+    border-radius: 50px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.25);
+    cursor: pointer;
+    font-family: "Montserrat", sans-serif;
+    letter-spacing: 0.5px;
+    margin-top: 15px;
+    position: relative;
+    overflow: hidden;
+    transform: translateY(-7px);
+}
+
+.login-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.login-btn:hover {
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.35);
+}
+
+.login-btn:hover::before {
+    left: 100%;
+}
+
+.login-btn:active {
+    transform: translateY(-1px);
+}
+
+.login-btn i {
+    margin-right: 8px;
+}
+
+/* Separador */
+.divider {
+    margin: 15px 0 12px 0;
+    text-align: center;
+    position: relative;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.2), transparent);
+}
+
+.divider span {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0 20px;
+    color: #4a4540;
+    font-size: 14px;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+}
+
+/* Enlaces adicionales */
+.login-options {
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.6;
+}
+
+.login-options a {
+    color: #8b5cf6;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 8px 0;
+}
+
+.login-options a:hover {
+    color: #7c3aed;
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+/* Alertas personalizadas */
+.alert {
+    border-radius: 12px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    padding: 12px 18px;
+    font-family: "Montserrat", sans-serif;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #dc2626;
+    border-left: 4px solid #ef4444;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    color: #16a34a;
+    border-left: 4px solid #22c55e;
+}
+
+/* Información de usuarios de prueba */
+.login-form div[style*="background: #f8f9fa"] {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+    border: 1px solid rgba(139, 92, 246, 0.1) !important;
+    border-radius: 15px !important;
+    padding: 15px !important;
+    font-size: 12px !important;
+    color: #475569 !important;
+    margin-top: 15px !important;
+    font-family: "Montserrat", sans-serif !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .login-section {
+        padding: 0;
+    }
+    
+    .login-section .container,
+    .login-section .row {
+        padding: 0;
+        margin: 0;
+    }
+    
+    .login-form {
+        width: 95%;
+        padding: 35px 25px;
+    }
+}
+    
+    .login-form {
+        padding: 40px 25px;
+        border-radius: 15px;
+    }
+    
+    .login-form h2 {
+        font-size: 28px;
+        margin-bottom: 30px;
+    }
+    
+    .back-to-home {
+        top: 20px;
+        left: 20px;
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="password"] {
+        padding: 20px 18px 20px 45px;
+        font-size: 16px; /* Evitar zoom en iOS */
+        min-height: 54px;
+    }
+    
+    .login-btn {
+        padding: 14px 25px;
+        font-size: 15px;
+    }
+
+
+@media (max-width: 480px) {
+    .login-form {
+        margin: 0;
+        padding: 25px 20px;
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .login-form h2 {
+        font-size: 22px;
+    }
+    
+    .back-to-home {
+        top: 15px;
+        left: 15px;
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+}
+
+/* Animación de entrada */
+.login-form {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estados de carga */
+.loading .login-btn {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.loading .login-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translateY(-50%);
+}
+
+@keyframes spin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Switch responsive para móviles */
+@media (max-width: 768px) {
+    .switch {
+        width: 45px;
+        height: 22px;
+    }
+    
+    .switch .slider:before {
+        height: 16px;
+        width: 16px;
+        left: 3px;
+        bottom: 3px;
+    }
+    
+    input[type="checkbox"]:checked + .switch .slider:before {
+        transform: translateX(23px);
+    }
+}

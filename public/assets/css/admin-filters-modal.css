@@ -1,0 +1,329 @@
+/**
+ * ESTILOS PARA MODAL DE FILTROS MÓVILES
+ * Modal que se abre desde la izquierda (como en shop.php)
+ * @version 1.0.0
+ */
+
+/* ===== MODAL DE FILTROS MÓVIL ===== */
+.filters-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(5px) !important;
+    z-index: 999999 !important;
+    display: none !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+.filters-modal.show {
+    display: flex !important;
+    opacity: 1 !important;
+}
+
+.filters-modal-content {
+    position: fixed !important;
+    left: -100% !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 85% !important;
+    max-width: 400px !important;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4) !important;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    overflow-y: auto !important;
+    z-index: 1000000 !important;
+}
+
+.filters-modal.show .filters-modal-content {
+    left: 0 !important;
+}
+
+.filters-modal-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 1.5rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    position: sticky !important;
+    top: 0 !important;
+    background: #1e293b !important;
+    z-index: 10 !important;
+}
+
+.filters-modal-title {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.filters-modal-close {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: none !important;
+    color: #ffffff !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+}
+
+.filters-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.filters-modal-close:active {
+    transform: scale(0.9) !important;
+}
+
+.filters-modal-body {
+    padding: 1.5rem !important;
+}
+
+.modal-search-container {
+    margin-bottom: 1.5rem !important;
+}
+
+.modal-search-input-group {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.modal-search-icon {
+    position: absolute !important;
+    left: 1rem !important;
+    color: #94a3b8 !important;
+    z-index: 1 !important;
+}
+
+.modal-search-input {
+    width: 100% !important;
+    padding: 0.75rem 2.5rem !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    color: #ffffff !important;
+    font-size: 0.875rem !important;
+}
+
+.modal-search-input::placeholder {
+    color: #64748b !important;
+}
+
+.modal-search-input:focus {
+    outline: none !important;
+    border-color: #3b82f6 !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.modal-search-clear {
+    position: absolute !important;
+    right: 0.75rem !important;
+    background: none !important;
+    border: none !important;
+    color: #94a3b8 !important;
+    cursor: pointer !important;
+    padding: 0.25rem !important;
+    font-size: 1rem !important;
+    transition: color 0.2s !important;
+}
+
+.modal-search-clear:hover {
+    color: #ffffff !important;
+}
+
+.modal-filters-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+}
+
+.modal-filter-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+}
+
+.modal-filter-label {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: #cbd5e1 !important;
+}
+
+.modal-filter-select {
+    padding: 0.75rem 1rem !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    font-size: 0.875rem !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+}
+
+.modal-filter-select option {
+    background: #1e293b !important;
+    color: #ffffff !important;
+}
+
+.modal-filter-select:focus {
+    outline: none !important;
+    border-color: #3b82f6 !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.modal-filter-actions {
+    margin-top: 2rem !important;
+    display: flex !important;
+    gap: 0.75rem !important;
+}
+
+.modal-filter-actions .btn-modern {
+    flex: 1 !important;
+    padding: 0.875rem !important;
+    font-weight: 600 !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    font-size: 0.875rem !important;
+}
+
+.modal-filter-actions .btn-outline {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+}
+
+.modal-filter-actions .btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.modal-filter-actions .btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+.modal-filter-actions .btn-primary:hover {
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+.modal-filter-actions .btn-primary:active {
+    transform: translateY(0) !important;
+}
+
+/* Botón flotante de filtros */
+.mobile-filter-btn {
+    position: fixed !important;
+    bottom: 80px !important;
+    right: 20px !important;
+    width: 56px !important;
+    height: 56px !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    color: #ffffff !important;
+    font-size: 1.25rem !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+    cursor: pointer !important;
+    z-index: 999998 !important;
+    transition: all 0.3s !important;
+    display: none !important;
+}
+
+.mobile-filter-btn:hover {
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5) !important;
+    transform: translateY(-2px) !important;
+}
+
+.mobile-filter-btn:active {
+    transform: scale(0.95) translateY(0) !important;
+}
+
+/* Mostrar solo en móvil */
+@media (max-width: 768px) {
+    .mobile-filter-btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+}
+
+/* Ocultar en desktop */
+@media (min-width: 769px) {
+    .mobile-filter-btn,
+    .filters-modal {
+        display: none !important;
+    }
+}
+
+/* Mensaje de "Sin resultados" mejorado */
+.no-products-message {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 4rem 2rem !important;
+    text-align: center !important;
+    min-height: 400px !important;
+}
+
+.no-products-message i {
+    font-size: 4rem !important;
+    color: #64748b !important;
+    margin-bottom: 1rem !important;
+}
+
+.no-products-message h3 {
+    color: #cbd5e1 !important;
+    margin-bottom: 0.5rem !important;
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+}
+
+.no-products-message p {
+    color: #94a3b8 !important;
+    font-size: 0.875rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.no-products-message button {
+    margin-top: 1rem !important;
+    padding: 0.75rem 1.5rem !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    font-weight: 600 !important;
+    transition: all 0.2s !important;
+}
+
+.no-products-message button:hover {
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+    transform: translateY(-1px) !important;
+}
+
+.no-products-message button i {
+    font-size: 1rem !important;
+    color: white !important;
+    margin: 0 !important;
+    margin-right: 0.5rem !important;
+}

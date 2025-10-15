@@ -1,0 +1,717 @@
+/**
+ * PRODUCT DETAILS - Estilos Personalizados
+ * Diseño minimalista en blanco y negro
+ */
+
+/* =================================================================
+   ANIMACIONES
+   ================================================================= */
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* =================================================================
+   TABS DE NAVEGACIÓN - Diseño minimalista con línea activa
+   ================================================================= */
+
+.product__details__tab .nav-tabs {
+    border-bottom: 1px solid #e1e1e1 !important;
+    margin-bottom: 30px;
+    display: flex;
+    gap: 5px;
+}
+
+.product__details__tab .nav-tabs .nav-link {
+    border: none !important;
+    background: transparent;
+    color: #666;
+    font-weight: 500;
+    padding: 15px 25px;
+    margin-right: 0;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.product__details__tab .nav-tabs .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #111111;
+    transition: width 0.3s ease;
+}
+
+.product__details__tab .nav-tabs .nav-link:hover {
+    color: #111111;
+}
+
+.product__details__tab .nav-tabs .nav-link.active,
+.product__details__tab .nav-tabs .nav-link.show {
+    color: #111111;
+    background: transparent;
+    font-weight: 600;
+}
+
+.product__details__tab .nav-tabs .nav-link.active::after,
+.product__details__tab .nav-tabs .nav-link.show::after {
+    width: 100%;
+}
+
+.product__details__tab .tab-content {
+    padding: 30px 0;
+    border: none !important;
+}
+
+.product__details__tab .tab-pane {
+    border: none !important;
+}
+
+.product__details__tab .tab-pane h6 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.product__details__tab .tab-pane p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #666;
+}
+
+.product__details__tab .tab-pane ul {
+    list-style: none;
+    padding: 0;
+}
+
+.product__details__tab .tab-pane ul li {
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 15px;
+    color: #666;
+}
+
+.product__details__tab .tab-pane ul li:last-child {
+    border-bottom: none;
+}
+
+.product__details__tab .tab-pane ul li strong {
+    color: #000;
+    font-weight: 600;
+    min-width: 150px;
+    display: inline-block;
+}
+
+/* =================================================================
+   OCULTAR FLECHAS DE INPUT NUMBER
+   ================================================================= */
+
+/* Chrome, Safari, Edge */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input[type="text"]:read-only {
+    cursor: default;
+}
+
+/* =================================================================
+   CONTROLES DE CANTIDAD - Solo estilos para botones +/-
+   ================================================================= */
+
+.qty-btn-detail {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: white;
+    color: #666;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.qty-btn-detail:hover {
+    background: #f5f5f5;
+    color: #ca1515;
+}
+
+.qty-btn-detail:active {
+    background: #e1e1e1;
+}
+
+/* =================================================================
+   BOTONES DE FAVORITOS - Efecto activo rojo
+   ================================================================= */
+
+.product__details__button ul li a.add-to-favorites.active span,
+.product__details__button ul li a.active span {
+    color: #ca1515;
+}
+
+.product__details__button ul li a.add-to-favorites.active,
+.product__details__button ul li a.active {
+    background: #ffe5e5;
+    border-color: #ca1515;
+}
+
+.product__details__button ul li a.add-to-favorites:hover,
+.product__details__button ul li a:hover {
+    background: #ca1515;
+    border-color: #ca1515;
+}
+
+.product__details__button ul li a.add-to-favorites:hover span,
+.product__details__button ul li a:hover span {
+    color: white;
+}
+
+/* =================================================================
+   RESPONSIVE
+   ================================================================= */
+
+@media (max-width: 768px) {
+    .quantity {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .product__details__button {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .add-to-cart-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .product__details__tab .nav-tabs .nav-link {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+}
+
+/* =================================================================
+   PRODUCTOS RELACIONADOS - Usar estilos de style.css
+   ================================================================= */
+
+.related__title h5 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 40px;
+    position: relative;
+    display: inline-block;
+}
+
+.related__title h5::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: #000;
+}
+
+/* Nota: Los estilos de .product__item están en style.css principal */
+
+/* =================================================================
+   RESEÑAS
+   ================================================================= */
+
+.review-item {
+    background: #f8f8f8;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.review-item:hover {
+    background: #f0f0f0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.review-item strong {
+    color: #000;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.review-item h6 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin: 10px 0;
+}
+
+.review-item p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.review-item hr {
+    display: none;
+}
+
+.btn-outline-dark {
+    border: 2px solid #000;
+    background: white;
+    color: #000;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-dark:hover {
+    background: #000;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+
+/* =================================================================
+   OCULTAR FLECHAS DE INPUT NUMBER
+   ================================================================= */
+
+/* Chrome, Safari, Edge */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* =================================================================
+   CONTROLES DE CANTIDAD MODERNOS
+   ================================================================= */
+
+.pro-qty-modern {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.qty-btn-modern {
+    position: relative;
+}
+
+.qty-btn-modern:active {
+    transform: scale(0.95);
+}
+
+#product-quantity {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+
+/* =================================================================
+   BOTÓN AGREGAR AL CARRITO
+   ================================================================= */
+
+.add-to-cart-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.add-to-cart-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+.add-to-cart-btn:hover::before {
+    left: 0;
+}
+
+.add-to-cart-btn:active {
+    transform: scale(0.98) !important;
+}
+
+/* =================================================================
+   BOTÓN DE FAVORITOS
+   ================================================================= */
+
+.add-to-favorites-btn {
+    position: relative;
+}
+
+.add-to-favorites-btn.active {
+    animation: pulse 0.3s ease;
+}
+
+.add-to-favorites-btn:active {
+    transform: scale(0.9) !important;
+}
+
+/* =================================================================
+   PRODUCTOS RELACIONADOS
+   ================================================================= */
+
+.related__title h5 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.related__title h5::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: #2c3e50 !important;
+    border-radius: 2px;
+}
+
+/* =================================================================
+   TABS DE INFORMACIÓN
+   ================================================================= */
+
+.nav-tabs .nav-link {
+    border: none;
+    color: #666;
+    font-weight: 600;
+    padding: 15px 25px;
+    transition: all 0.3s;
+}
+
+.nav-tabs .nav-link.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50px;
+}
+
+.nav-tabs .nav-link:hover:not(.active) {
+    color: #667eea;
+    background: #f8f9fa;
+    border-radius: 50px;
+}
+
+/* =================================================================
+   RESEÑAS
+   ================================================================= */
+
+.review-item {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 15px;
+    border-left: 4px solid #667eea;
+}
+
+.review-item:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transform: translateX(5px);
+    transition: all 0.3s;
+}
+
+/* =================================================================
+   SECCIÓN DE ACCIONES MEJORADA - DISEÑO MODERNO
+   ================================================================= */
+
+.product__details__action {
+    margin-top: 30px;
+    padding: 25px;
+}
+
+/* Selector de Cantidad Moderno */
+.quantity-selector-modern {
+    margin-bottom: 20px;
+}
+
+.quantity-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.quantity-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: fit-content;
+    background: white;
+    border-radius: 50px;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 10px;
+}
+
+.qty-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: #2d3748;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.qty-btn:hover {
+    background: #1a202c;
+    transform: scale(1.1);
+}
+
+.qty-btn:active {
+    transform: scale(0.95);
+}
+
+.qty-btn:disabled {
+    background: #cbd5e0;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.qty-input {
+    width: 80px;
+    height: 40px;
+    border: none;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+    background: transparent;
+    outline: none;
+    -moz-appearance: textfield;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.stock-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #718096;
+}
+
+.stock-info i {
+    font-size: 14px;
+}
+
+.stock-available {
+    color: #48bb78;
+    font-weight: 600;
+}
+
+.stock-out {
+    color: #f56565;
+    font-weight: 600;
+}
+
+/* Botones de Acción Modernos */
+.action-buttons-modern {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.btn-add-cart-modern {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 30px;
+    background: linear-gradient(135deg, #dc143c 0%, #b01030 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-add-cart-modern:hover {
+    background: linear-gradient(135deg, #b01030 0%, #8b0c24 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 20, 60, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-add-cart-modern:active {
+    transform: translateY(0);
+}
+
+.btn-add-cart-modern:disabled {
+    background: #cbd5e0;
+    color: #a0aec0;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-add-cart-modern i {
+    font-size: 18px;
+}
+
+.btn-favorite-modern {
+    width: 55px;
+    height: 55px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    color: #718096;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.btn-favorite-modern:hover {
+    border-color: #dc143c;
+    color: #dc143c;
+    background: #fff5f7;
+}
+
+.btn-favorite-modern.active {
+    background: #dc143c;
+    border-color: #dc143c;
+    color: white;
+}
+
+.btn-favorite-modern.active:hover {
+    background: #b01030;
+    border-color: #b01030;
+}
+
+/* Estilos para el botón "Ir al Carrito" (después de agregar) */
+.btn-add-cart-modern.go-to-cart {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%) !important;
+    border-color: #38a169 !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3) !important;
+}
+
+.btn-add-cart-modern.go-to-cart:hover {
+    background: linear-gradient(135deg, #38a169 0%, #2f855a 100%) !important;
+    border-color: #2f855a !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.4) !important;
+}
+
+.btn-add-cart-modern.go-to-cart:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(56, 161, 105, 0.3) !important;
+}
+
+/* =================================================================
+   RESPONSIVE
+   ================================================================= */
+
+@media (max-width: 768px) {
+    .pro-qty-modern {
+        width: 100% !important;
+        justify-content: center;
+    }
+    
+    .add-to-cart-btn {
+        width: 100% !important;
+        min-width: auto !important;
+    }
+    
+    .add-to-favorites-btn {
+        width: 45px !important;
+        height: 45px !important;
+    }
+    
+    .related__title h5 {
+        font-size: 20px;
+    }
+    
+    .product__details__action {
+        padding: 20px;
+    }
+    
+    .quantity-input-group {
+        margin: 0 auto 10px;
+    }
+    
+    .action-buttons-modern {
+        flex-direction: column;
+    }
+    
+    .btn-favorite-modern {
+        width: 100%;
+        height: 50px;
+        border-radius: 50px;
+    }
+    
+    .btn-add-cart-modern {
+        padding: 14px 24px;
+        font-size: 14px;
+    }
+}

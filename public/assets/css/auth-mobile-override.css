@@ -1,0 +1,87 @@
+/**
+ * AUTH MOBILE OVERRIDE - MÁXIMA PRIORIDAD
+ * Sobrescribe todos los estilos de checkboxes en móvil
+ */
+
+/* ========================================
+   CHECKBOXES PEQUEÑOS - MOBILE ONLY
+   ======================================== */
+
+@media only screen and (max-width: 767px) {
+    /* Selectores con máxima especificidad */
+    .login-form .checkbox-wrapper input[type="checkbox"],
+    .register-form .checkbox-wrapper input[type="checkbox"],
+    .checkbox-wrapper input[type="checkbox"]#remember,
+    .checkbox-wrapper input[type="checkbox"]#terms,
+    input[type="checkbox"]#remember,
+    input[type="checkbox"]#terms {
+        width: 16px !important;
+        height: 16px !important;
+        min-width: 16px !important;
+        min-height: 16px !important;
+        max-width: 16px !important;
+        max-height: 16px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-width: 1px !important;
+    }
+    
+    .login-form .checkbox-wrapper,
+    .register-form .checkbox-wrapper {
+        display: flex !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        padding: 0 !important;
+        margin: 8px 0 !important;
+    }
+    
+    .login-form .checkbox-wrapper label,
+    .register-form .checkbox-wrapper label {
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    /* Checkmark más pequeño */
+    .checkbox-wrapper input[type="checkbox"]:checked::after {
+        font-size: 11px !important;
+    }
+    
+    /* Remember/Forgot section */
+    .remember-forgot {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+}
+
+/* Touch devices - Sobrescribir touch targets */
+@media only screen and (hover: none) and (pointer: coarse) and (max-width: 767px) {
+    .checkbox-wrapper input[type="checkbox"],
+    input[type="checkbox"]#remember,
+    input[type="checkbox"]#terms {
+        width: 16px !important;
+        height: 16px !important;
+        min-width: 16px !important;
+        min-height: 16px !important;
+        max-width: 16px !important;
+        max-height: 16px !important;
+    }
+}
+
+/* Pantallas muy pequeñas */
+@media only screen and (max-width: 480px) {
+    .checkbox-wrapper input[type="checkbox"],
+    input[type="checkbox"]#remember,
+    input[type="checkbox"]#terms {
+        width: 14px !important;
+        height: 14px !important;
+        min-width: 14px !important;
+        min-height: 14px !important;
+    }
+    
+    .checkbox-wrapper label {
+        font-size: 11px !important;
+    }
+}

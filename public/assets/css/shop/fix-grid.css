@@ -1,0 +1,64 @@
+/**
+ * FIX TEMPORAL PARA GRID DE PRODUCTOS
+ * Asegurar que todos los productos sean visibles
+ */
+
+/* Asegurar que el área principal no tenga restricciones de altura */
+.shop-modern main,
+.shop-modern .col-lg-9,
+.shop-modern .col-md-8 {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+}
+
+/* Asegurar que el contenedor de productos no tenga restricciones */
+.products-grid-modern {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+}
+
+/* Asegurar que el row tampoco tenga restricciones */
+.products-grid-modern .row {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+}
+
+/* Asegurar que las columnas sean visibles */
+.products-grid-modern .row > [class*='col-'] {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+/* Asegurar que las tarjetas sean visibles */
+.product-card-modern {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+}
+
+/* Desactivar temporalmente AOS en productos para debug */
+.product-card-modern[data-aos] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+/* Z-index bajo para que dropdowns queden encima */
+.product-card-modern {
+    position: relative;
+}
+
+.product-card-modern:not(:hover) {
+    z-index: 1;
+}
+
+.product-card-modern:hover {
+    z-index: 2;
+}
