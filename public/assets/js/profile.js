@@ -258,17 +258,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     // CHANGE AVATAR
     // ============================================
-    const btnChangeAvatar = document.querySelector('.btn-change-avatar');
-    
-    if (btnChangeAvatar) {
-        btnChangeAvatar.addEventListener('click', function() {
-            Swal.fire({
-                icon: 'info',
-                title: 'Función en Desarrollo',
-                text: 'La función de cambiar avatar estará disponible próximamente',
-                confirmButtonColor: '#667eea'
-            });
-        });
-    }
+    // La funcionalidad de avatar está manejada por avatar-upload.js
     
 });

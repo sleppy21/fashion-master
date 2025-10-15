@@ -20,23 +20,13 @@ $(document).ready(function() {
         // Validar tipo de archivo
         const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
         if (!validTypes.includes(file.type)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Tipo de archivo no válido',
-                text: 'Por favor selecciona una imagen (JPG, PNG o GIF)',
-                confirmButtonText: 'Entendido'
-            });
+            showNotification('Por favor selecciona una imagen válida (JPG, PNG o GIF)', 'error');
             return;
         }
         
         // Validar tamaño (5MB máximo)
         if (file.size > 5 * 1024 * 1024) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Archivo muy grande',
-                text: 'La imagen debe pesar menos de 5MB',
-                confirmButtonText: 'Entendido'
-            });
+            showNotification('La imagen debe pesar menos de 5MB', 'error');
             return;
         }
         
@@ -159,26 +149,15 @@ function uploadCroppedImage() {
                 // Cerrar modal
                 closeCropModal();
                 
-                // Mostrar mensaje de éxito
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Avatar actualizado!',
-                    text: 'Tu foto de perfil ha sido actualizada correctamente',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
+                // Mostrar mensaje de éxito con toast
+                showNotification('Avatar actualizado correctamente', 'success');
             } else {
                 throw new Error(data.message || 'Error al subir la imagen');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al subir',
-                text: error.message || 'No se pudo actualizar el avatar. Por favor intenta de nuevo.',
-                confirmButtonText: 'Entendido'
-            });
+            showNotification(error.message || 'No se pudo actualizar el avatar', 'error');
         })
         .finally(() => {
             // Rehabilitar botón

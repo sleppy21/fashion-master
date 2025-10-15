@@ -102,7 +102,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #3498db;
+    background: #c9a67c !important;
     border: 3px solid white;
     color: white;
     font-size: 16px;
@@ -114,7 +114,7 @@
 }
 
 .btn-change-avatar:hover {
-    background: #2980b9;
+    background: #b8956b !important;
     transform: scale(1.1);
 }
 
@@ -349,7 +349,7 @@
 
 .btn-edit {
     padding: 8px 16px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #c9a67c !important;
     border: none;
     border-radius: 8px;
     color: white;
@@ -363,8 +363,9 @@
 }
 
 .btn-edit:hover {
+    background: #b8956b !important;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4);
 }
 
 /* Profile Form */
@@ -458,7 +459,7 @@
 .btn-save {
     flex: 1;
     padding: 12px 24px;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: #c9a67c !important;
     border: none;
     border-radius: 10px;
     color: white;
@@ -473,8 +474,9 @@
 }
 
 .btn-save:hover {
+    background: #b8956b !important;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4);
 }
 
 .btn-cancel {
@@ -594,7 +596,7 @@
 
 .btn-primary {
     padding: 12px 24px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #c9a67c !important;
     border: none;
     border-radius: 10px;
     color: white;
@@ -608,8 +610,9 @@
 }
 
 .btn-primary:hover {
+    background: #b8956b !important;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4);
 }
 
 /* Address Cards */
@@ -717,12 +720,12 @@
 }
 
 .btn-edit-address {
-    background: #e3f2fd;
-    color: #1976d2;
+    background: #f5efe7;
+    color: #c9a67c;
 }
 
 .btn-edit-address:hover {
-    background: #2196f3;
+    background: #c9a67c;
     color: white;
 }
 
@@ -929,6 +932,15 @@ body.dark-mode .profile-tabs {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
+body.dark-mode .btn-change-avatar {
+    background: #c9a67c !important;
+    border-color: #1e1e1e;
+}
+
+body.dark-mode .btn-change-avatar:hover {
+    background: #b8956b !important;
+}
+
 body.dark-mode .profile-name,
 body.dark-mode .card-header h4,
 body.dark-mode .stat-number,
@@ -1022,12 +1034,76 @@ body.dark-mode .tab-btn:hover {
 }
 
 body.dark-mode .tab-btn.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #c9a67c !important;
     color: white;
 }
 
 body.dark-mode .form-group label {
     color: #f0f0f0;
+}
+
+/* Estilos de tarjetas de dirección en modo oscuro */
+body.dark-mode .address-card {
+    background: #1e1e1e;
+    border-color: #333333;
+}
+
+body.dark-mode .address-card.default-address {
+    border-color: #c9a67c;
+    background: #2a2a2a;
+}
+
+body.dark-mode .address-card:hover {
+    border-color: #c9a67c;
+}
+
+body.dark-mode .address-header strong,
+body.dark-mode .address-body p {
+    color: #e5e7eb;
+}
+
+body.dark-mode .address-details .detail-item {
+    background: #2a2a2a;
+    color: #d4d4d4;
+    border: 1px solid #333;
+}
+
+body.dark-mode .address-date {
+    color: #9ca3af;
+}
+
+body.dark-mode .btn-action {
+    background: #2a2a2a;
+    color: #d4d4d4;
+}
+
+body.dark-mode .btn-action:hover {
+    background: #3a3a3a;
+}
+
+body.dark-mode .btn-set-default.active {
+    background: #c9a67c !important;
+    color: white;
+}
+
+body.dark-mode .btn-edit-address {
+    background: #2a2a2a;
+    color: #c9a67c;
+}
+
+body.dark-mode .btn-edit-address:hover {
+    background: #c9a67c;
+    color: white;
+}
+
+body.dark-mode .btn-delete-address {
+    background: #2a2a2a;
+    color: #ef4444;
+}
+
+body.dark-mode .btn-delete-address:hover {
+    background: #ef4444;
+    color: white;
 }
 
 /* Modal de Direcciones */
@@ -1038,7 +1114,7 @@ body.dark-mode .form-group label {
 }
 
 #addressModal .modal-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #c9a67c;
     color: white;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
@@ -1105,7 +1181,7 @@ body.dark-mode .form-group label {
 }
 
 #addressModal .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #c9a67c !important;
     border: none;
     border-radius: 8px;
     padding: 10px 20px;
@@ -1114,8 +1190,9 @@ body.dark-mode .form-group label {
 }
 
 #addressModal .btn-primary:hover {
+    background: #b8956b !important;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4);
 }
 
 /* Dark Mode para Modal */

@@ -179,7 +179,7 @@ try {
     <style>
         /* Hero Section Moderno */
         .hero-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #1a1a1a;
             padding: 100px 0;
             color: white;
             position: relative;
