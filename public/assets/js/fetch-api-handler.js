@@ -119,7 +119,14 @@ async function updateFavoritesCount() {
         if (data.success) {
             // Actualizar el contador de favoritos con formato correcto
             document.querySelectorAll('.favorites-count').forEach(el => {
-                el.textContent = data.count_text || (data.count + (data.count === 1 ? ' producto' : ' productos'));
+                const countNumber = el.querySelector('.fav-count-number');
+                const countText = data.count === 1 ? 'producto favorito' : 'productos favoritos';
+                
+                if (countNumber) {
+                    countNumber.textContent = data.count;
+                } else {
+                    el.innerHTML = `<span class="fav-count-number">${data.count}</span> ${countText}`;
+                }
             });
         }
     } catch (error) {

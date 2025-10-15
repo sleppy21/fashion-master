@@ -33,6 +33,13 @@
     pointer-events: auto;
 }
 
+/* También aplicar cuando el trigger está activo (nueva funcionalidad) */
+.modal-trigger-active ~ .favorites-modal,
+.modal-trigger-active ~ .notifications-modal,
+.modal-trigger-active ~ .user-modal {
+    pointer-events: auto;
+}
+
 /* Animación de entrada para el contenido del modal */
 .favorites-modal.modal-open .favorites-modal-content,
 .notifications-modal.modal-open .notifications-modal-content,
@@ -99,6 +106,13 @@
 .favorites-modal.modal-open::before,
 .notifications-modal.modal-open::before,
 .user-modal.modal-open::before {
+    opacity: 1;
+}
+
+/* También aplicar overlay cuando el trigger está activo */
+.modal-trigger-active ~ .favorites-modal::before,
+.modal-trigger-active ~ .notifications-modal::before,
+.modal-trigger-active ~ .user-modal::before {
     opacity: 1;
 }
 

@@ -324,16 +324,19 @@ $page_title = $producto['nombre_producto'];
                                     <?php if($producto['stock_actual_producto'] > 0): ?>
                                         <?php if($producto_en_carrito): ?>
                                             <!-- Producto ya en el carrito -->
-                                            <button class="btn-add-cart-modern go-to-cart" 
-                                                    data-id="<?php echo $producto['id_producto']; ?>">
+                                            <button class="btn-add-cart-modern add-to-cart in-cart" 
+                                                    data-id="<?php echo $producto['id_producto']; ?>"
+                                                    data-in-cart="true">
                                                 <i class="fa fa-shopping-cart"></i>
                                                 <span>Ir al Carrito</span>
                                             </button>
                                         <?php else: ?>
                                             <!-- Producto no está en el carrito -->
                                             <button class="btn-add-cart-modern add-to-cart" 
-                                                    data-id="<?php echo $producto['id_producto']; ?>">
+                                                    data-id="<?php echo $producto['id_producto']; ?>"
+                                                    data-in-cart="false">
                                                 <i class="fa fa-shopping-cart"></i>
+                                                <span>Agregar al Carrito</span>
                                             </button>
                                         <?php endif; ?>
                                     <?php else: ?>

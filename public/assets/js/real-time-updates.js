@@ -263,18 +263,17 @@ const RealTimeUpdates = (function() {
                 // Actualizar TODOS los botones de este producto en la página
                 updateFavoriteButtons(productId, false);
                 
-                // Actualizar contador
-                updateFavoritesCount();
-                
                 // Eliminar del modal después de la animación
                 setTimeout(() => {
                     if (listItem) {
                         listItem.remove();
                     }
                     
-                    // Verificar si quedan productos en favoritos
+                    // Contar items restantes DESPUÉS de eliminar del DOM
                     const remainingItems = document.querySelectorAll('.favorite-item');
-                    if (remainingItems.length === 0) {
+                    const remainingCount = remainingItems.length;
+                    
+                    if (remainingCount === 0) {
                         // Mostrar mensaje de vacío inmediatamente
                         const container = document.querySelector('#favorites-list'); // ID, no clase
                         if (container) {
@@ -288,12 +287,24 @@ const RealTimeUpdates = (function() {
                                 </div>
                             `;
                         }
+                    }
+                    
+                    // Actualizar contador del modal
+                    const countEl = document.querySelector('.favorites-count');
+                    if (countEl) {
+                        const countNumber = countEl.querySelector('.fav-count-number');
+                        const countText = remainingCount === 1 ? 'producto favorito' : 'productos favoritos';
                         
-                        // Actualizar contador del header
-                        const countEl = document.querySelector('.favorites-count');
-                        if (countEl) {
-                            countEl.textContent = '0 productos';
+                        if (countNumber) {
+                            countNumber.textContent = remainingCount;
+                        } else {
+                            countEl.innerHTML = `<span class="fav-count-number">${remainingCount}</span> ${countText}`;
                         }
+                    }
+                    
+                    // Actualizar contador del badge (CRÍTICO: usar remainingCount del DOM)
+                    if (typeof window.updateFavoritesCount === 'function') {
+                        window.updateFavoritesCount(remainingCount);
                     }
                 }, 300);
                 
@@ -327,15 +338,31 @@ const RealTimeUpdates = (function() {
         fetch(baseUrl + '/app/actions/get_favorites_count.php')
             .then(response => response.json())
             .then(data => {
+                const count = parseInt(data.count) || 0;
+                
+                // Actualizar badges del header
                 const countElements = document.querySelectorAll('#favorites-count');
                 countElements.forEach(el => {
-                    if (data.count > 0) {
-                        el.textContent = data.count;
+                    if (count > 0) {
+                        el.textContent = count;
                         el.style.display = 'flex';
                     } else {
                         el.style.display = 'none';
                     }
                 });
+                
+                // Actualizar contador del modal
+                const modalCount = document.querySelector('.favorites-count');
+                if (modalCount) {
+                    const countNumber = modalCount.querySelector('.fav-count-number');
+                    const countText = count === 1 ? 'producto favorito' : 'productos favoritos';
+                    
+                    if (countNumber) {
+                        countNumber.textContent = count;
+                    } else {
+                        modalCount.innerHTML = `<span class="fav-count-number">${count}</span> ${countText}`;
+                    }
+                }
             })
             .catch(error => console.error('Error:', error));
     }
@@ -353,7 +380,12 @@ const RealTimeUpdates = (function() {
                     // Actualizar contador del header
                     const countEl = document.querySelector('.favorites-count');
                     if (countEl) {
-                        countEl.textContent = '0 productos';
+                        const countNumber = countEl.querySelector('.fav-count-number');
+                        if (countNumber) {
+                            countNumber.textContent = '0';
+                        } else {
+                            countEl.innerHTML = '<span class="fav-count-number">0</span> productos favoritos';
+                        }
                     }
                 }
             })
@@ -381,7 +413,16 @@ const RealTimeUpdates = (function() {
                     // Actualizar contador en el header del modal
                     const countEl = document.querySelector('.favorites-count');
                     if (countEl) {
-                        countEl.textContent = data.count_text || (data.count + (data.count === 1 ? ' producto' : ' productos'));
+                        const countNumber = countEl.querySelector('.fav-count-number');
+                        const countText = data.count === 1 ? 'producto favorito' : 'productos favoritos';
+                        
+                        if (countNumber) {
+                            // Si existe el span del número, solo actualizar el número
+                            countNumber.textContent = data.count;
+                        } else {
+                            // Si no existe, actualizar todo el contenido
+                            countEl.innerHTML = `<span class="fav-count-number">${data.count}</span> ${countText}`;
+                        }
                     }
                     
                     console.log(`✅ Modal actualizado con ${data.count} productos`);
@@ -485,6 +526,7 @@ const RealTimeUpdates = (function() {
         // Actualizar TODOS los botones de carrito de este producto en la página
         const buttons = document.querySelectorAll(`
             .add-to-cart[data-id="${productId}"],
+            .btn-add-cart-modern[data-id="${productId}"],
             .btn-favorite-cart[data-id="${productId}"],
             .btn-cart[data-id="${productId}"]
         `);
@@ -492,29 +534,43 @@ const RealTimeUpdates = (function() {
         console.log(`🔄 Actualizando botones de carrito para producto ${productId}, inCart: ${inCart}, botones encontrados: ${buttons.length}`);
         
         buttons.forEach(btn => {
-            const icon = btn.querySelector('span') || btn.querySelector('i');
+            const icon = btn.querySelector('i');
+            const iconSpan = btn.querySelector('span.icon_bag_alt, span.icon_check');
+            const textSpan = btn.querySelector('span:not([class*="icon"])');
             
-            // Agregar efecto pulse
-            btn.style.animation = 'pulse 0.3s ease';
-            setTimeout(() => {
-                btn.style.animation = '';
-            }, 300);
+            // NO agregar animación pulse para botones de carrito
             
             if (inCart) {
                 // Marcar como en carrito
                 btn.classList.add('in-cart');
                 btn.setAttribute('data-in-cart', 'true');
                 btn.dataset.inCart = 'true';
-                btn.title = 'Quitar del carrito';
                 
-                if (icon) {
-                    // Cambiar icono según el tipo
-                    if (icon.classList.contains('icon_bag_alt')) {
-                        icon.className = 'icon_check';
-                    } else if (icon.classList.contains('fa-cart-plus')) {
-                        icon.className = 'fa fa-check-circle';
-                    } else if (icon.classList.contains('fa-shopping-cart')) {
-                        icon.className = 'fa fa-check-circle';
+                // Diferenciar comportamiento según el tipo de botón
+                if (btn.classList.contains('btn-add-cart-modern')) {
+                    // PRODUCT DETAILS: Mostrar "Ir al Carrito"
+                    btn.title = 'Ir al carrito';
+                    
+                    // Actualizar o crear texto
+                    if (textSpan) {
+                        textSpan.textContent = 'Ir al Carrito';
+                    } else {
+                        const newSpan = document.createElement('span');
+                        newSpan.textContent = 'Ir al Carrito';
+                        btn.appendChild(newSpan);
+                    }
+                    
+                    // Mantener ícono de carrito (fa)
+                    if (icon && icon.classList.contains('fa')) {
+                        icon.className = 'fa fa-shopping-cart';
+                    }
+                } else {
+                    // SHOP: Mostrar "Quitar del carrito"
+                    btn.title = 'Quitar del carrito';
+                    
+                    // Cambiar ícono de bolsa a check
+                    if (iconSpan && iconSpan.classList.contains('icon_bag_alt')) {
+                        iconSpan.className = 'icon_check';
                     }
                 }
             } else {
@@ -522,19 +578,39 @@ const RealTimeUpdates = (function() {
                 btn.classList.remove('in-cart');
                 btn.setAttribute('data-in-cart', 'false');
                 btn.dataset.inCart = 'false';
-                btn.title = 'Agregar al carrito';
                 
-                if (icon) {
-                    // Cambiar icono según el tipo
-                    if (icon.classList.contains('icon_check')) {
-                        icon.className = 'icon_bag_alt';
-                    } else if (icon.classList.contains('fa-check-circle')) {
-                        // Determinar si es del modal de favoritos o shop
-                        if (btn.classList.contains('btn-favorite-cart')) {
-                            icon.className = 'fa fa-cart-plus';
-                        } else {
-                            icon.className = 'icon_bag_alt';
-                        }
+                // Diferenciar comportamiento según el tipo de botón
+                if (btn.classList.contains('btn-add-cart-modern')) {
+                    // PRODUCT DETAILS: Mostrar "Agregar al Carrito"
+                    btn.title = 'Agregar al carrito';
+                    
+                    // Actualizar o crear texto
+                    if (textSpan) {
+                        textSpan.textContent = 'Agregar al Carrito';
+                    } else {
+                        const newSpan = document.createElement('span');
+                        newSpan.textContent = 'Agregar al Carrito';
+                        btn.appendChild(newSpan);
+                    }
+                    
+                    // Mantener ícono de carrito (fa)
+                    if (icon && icon.classList.contains('fa')) {
+                        icon.className = 'fa fa-shopping-cart';
+                    }
+                } else {
+                    // SHOP: Mostrar "Agregar al carrito"
+                    btn.title = 'Agregar al carrito';
+                    
+                    // Restaurar ícono de check a bolsa
+                    if (iconSpan && iconSpan.classList.contains('icon_check')) {
+                        iconSpan.className = 'icon_bag_alt';
+                    }
+                }
+                
+                // Para botones de favoritos
+                if (btn.classList.contains('btn-favorite-cart')) {
+                    if (icon && icon.classList.contains('fa-check-circle')) {
+                        icon.className = 'fa fa-cart-plus';
                     }
                 }
             }
@@ -543,7 +619,8 @@ const RealTimeUpdates = (function() {
                 element: btn.tagName,
                 class: btn.className,
                 dataInCart: btn.dataset.inCart,
-                icon: icon?.className
+                iconFA: icon?.className,
+                iconSpan: iconSpan?.className
             });
         });
     }
@@ -661,15 +738,51 @@ const RealTimeUpdates = (function() {
                 }
             }
 
-            // CARRITO - Agregar/Quitar desde SHOP (clase: add-to-cart) - TOGGLE
+            // CARRITO - Botón de PRODUCT DETAILS (clase: btn-add-cart-modern) - IR AL CARRITO
+            if (e.target.closest('.btn-add-cart-modern')) {
+                console.log('🎯 Click detectado en .btn-add-cart-modern (Product Details)');
+                e.preventDefault();
+                e.stopPropagation();
+                const btn = e.target.closest('.btn-add-cart-modern');
+                const productId = btn.dataset.id || btn.getAttribute('data-id');
+                
+                // No agregar si está deshabilitado
+                if (btn.disabled || btn.dataset.disabled === 'true') {
+                    showToast('Producto sin stock', 'warning');
+                    return;
+                }
+                
+                // Verificar si ya está en carrito
+                const inCart = btn.dataset.inCart === 'true' || btn.classList.contains('in-cart');
+                
+                console.log('🛒 Product Details - Estado Carrito:', {
+                    productId,
+                    inCart,
+                    dataInCart: btn.dataset.inCart,
+                    hasClass: btn.classList.contains('in-cart')
+                });
+                
+                if (inCart) {
+                    // Si ya está en carrito, ir a cart.php
+                    console.log('🛒 Producto ya en carrito - Redirigiendo a cart.php');
+                    window.location.href = baseUrl + '/cart.php';
+                } else {
+                    // Si no está en carrito, agregarlo
+                    const quantity = btn.dataset.quantity || 1;
+                    addToCart(productId, quantity, btn);
+                }
+                return; // Importante: salir para no ejecutar el siguiente handler
+            }
+
+            // CARRITO - Botón de SHOP (clase: add-to-cart en <a>) - TOGGLE Agregar/Quitar
             if (e.target.closest('.add-to-cart')) {
-                console.log('🎯 Click detectado en .add-to-cart');
+                console.log('🎯 Click detectado en .add-to-cart (Shop)');
                 e.preventDefault();
                 e.stopPropagation();
                 const btn = e.target.closest('.add-to-cart');
                 const productId = btn.dataset.id || btn.getAttribute('data-id');
                 
-                console.log('📦 Botón de carrito:', {
+                console.log('📦 Botón de carrito Shop:', {
                     btn,
                     productId,
                     classes: btn.className,
@@ -682,10 +795,10 @@ const RealTimeUpdates = (function() {
                     return;
                 }
                 
-                // Toggle: verificar si ya está en carrito
+                // TOGGLE: verificar si ya está en carrito
                 const inCart = btn.dataset.inCart === 'true' || btn.classList.contains('in-cart');
                 
-                console.log('🛒 Toggle Carrito:', {
+                console.log('🛒 Shop - Toggle Carrito:', {
                     productId,
                     inCart,
                     dataInCart: btn.dataset.inCart,
@@ -693,8 +806,10 @@ const RealTimeUpdates = (function() {
                 });
                 
                 if (inCart) {
+                    // Si está en carrito, QUITARLO
                     removeFromCart(productId, btn);
                 } else {
+                    // Si no está en carrito, AGREGARLO
                     const quantity = btn.dataset.quantity || 1;
                     addToCart(productId, quantity, btn);
                 }

@@ -18,7 +18,7 @@
     <!-- Usuario en móvil - Nuevo diseño desde 0 -->
     <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
     <div class="offcanvas__user-compact" id="offcanvas-user-profile">
-        <div class="user-compact-content">
+        <a href="profile.php" class="user-compact-content" style="text-decoration: none; color: inherit;">
             <div class="user-info-header">
                 <div class="user-avatar-circle">
                     <i class="fa fa-user"></i>
@@ -28,7 +28,7 @@
                     <span class="user-name"><?php echo htmlspecialchars($usuario_logueado['nombre_usuario']); ?></span>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
     <?php endif; ?>
     
@@ -71,6 +71,7 @@
             <li><a href="./contact.php"><i class="fa fa-envelope"></i> Contacto</a></li>
             
             <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
+            <li><a href="profile.php"><i class="fa fa-user-circle"></i> Mi Perfil</a></li>
             <li class="offcanvas-has-submenu">
                 <a href="cart.php">
                     <i class="fa fa-shopping-cart"></i> Carrito

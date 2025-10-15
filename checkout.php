@@ -1223,6 +1223,43 @@ try {
     </div>
     <!-- Footer Sticky Móvil End -->
 
+    <!-- Modal para Guardar Dirección -->
+    <div id="saveAddressModal" class="modal fade" tabindex="-1" role="dialog" style="z-index: 9999;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div class="modal-header" style="border-bottom: 1px solid #eee; padding: 20px 24px;">
+                    <h5 class="modal-title" style="font-weight: 700; color: #2c3e50; font-size: 18px;">
+                        <i class="fa fa-map-marker" style="color: #667eea; margin-right: 8px;"></i>
+                        Guardar Dirección
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 0.5;">
+                        <span aria-hidden="true" style="font-size: 28px;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding: 24px;">
+                    <p style="margin: 0 0 20px 0; color: #555; line-height: 1.6;">
+                        ¿Deseas guardar esta dirección para futuras compras? Esto te permitirá completar tus pedidos más rápidamente.
+                    </p>
+                    <div style="background: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                        <p style="margin: 0; font-size: 13px; color: #666; line-height: 1.5;">
+                            <i class="fa fa-info-circle" style="color: #667eea; margin-right: 6px;"></i>
+                            La dirección se guardará de forma segura y podrás editarla o eliminarla en cualquier momento desde tu perfil.
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #eee; padding: 16px 24px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" id="btnNoSaveAddress" style="padding: 10px 24px; border-radius: 8px; font-weight: 600; background: #6c757d; border: none;">
+                        <i class="fa fa-times"></i> No, gracias
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btnYesSaveAddress" style="padding: 10px 24px; border-radius: 8px; font-weight: 600; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                        <i class="fa fa-check"></i> Sí, guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal para Guardar Dirección End -->
+
     <!-- Footer -->
     <?php include 'includes/footer.php'; ?>
 
@@ -1388,6 +1425,10 @@ try {
         // ========================================
         // VALIDACIÓN DEL FORMULARIO
         // ========================================
+        // MANEJO DEL FORMULARIO DE CHECKOUT CON MODAL DE GUARDAR DIRECCIÓN
+        // ========================================
+        let checkoutFormData = null;
+        
         document.getElementById('checkoutForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -1442,13 +1483,110 @@ try {
                 return;
             }
             
-            // Deshabilitar botón y mostrar loading
+            // Guardar datos del formulario
+            checkoutFormData = new FormData(form);
+            
+            // Mostrar modal para preguntar si desea guardar la dirección
+            $('#saveAddressModal').modal('show');
+        });
+        
+        // Botón "Sí, guardar" - Procesar pedido Y guardar dirección
+        document.getElementById('btnYesSaveAddress').addEventListener('click', function() {
+            $('#saveAddressModal').modal('hide');
+            
+            // Agregar flag para guardar dirección
+            checkoutFormData.append('guardar_direccion', '1');
+            
+            procesarPedido(checkoutFormData);
+        });
+        
+        // Botón "No, gracias" - Solo procesar pedido
+        document.getElementById('btnNoSaveAddress').addEventListener('click', function() {
+            $('#saveAddressModal').modal('hide');
+            
+            // No agregar flag (o agregar como 0)
+            checkoutFormData.append('guardar_direccion', '0');
+            
+            procesarPedido(checkoutFormData);
+        });
+        
+        // Función para procesar el pedido
+        function procesarPedido(formData) {
+            const btnSubmit = document.getElementById('btnPlaceOrder');
+            const mobileBtnSubmit = document.getElementById('mobileBtnPlaceOrder');
+            
+            // Deshabilitar botones y mostrar loading
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Procesando pedido...';
             
-            // Enviar formulario
-            form.submit();
-        });
+            if(mobileBtnSubmit) {
+                mobileBtnSubmit.disabled = true;
+                mobileBtnSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Procesando...';
+            }
+            
+            // Enviar con AJAX
+            fetch('app/actions/process_checkout.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Respuesta del servidor:', data); // Debug
+                
+                if(data.success) {
+                    // Mostrar toast si se guardó la dirección
+                    if(data.direccion_guardada === true) {
+                        // Mostrar notificación de éxito
+                        if(typeof showToast === 'function') {
+                            showToast('✅ Pedido procesado y dirección guardada en tu perfil', 'success');
+                        } else {
+                            console.log('✅ Dirección guardada en tu perfil');
+                        }
+                        
+                        // Esperar 1.5 segundos para que se vea el toast antes de redirigir
+                        setTimeout(() => {
+                            window.location.href = 'order-confirmation.php?order=' + data.order_id;
+                        }, 1500);
+                    } else {
+                        // Redirigir inmediatamente si no se guardó dirección
+                        window.location.href = 'order-confirmation.php?order=' + data.order_id;
+                    }
+                    
+                } else {
+                    // Mostrar error más detallado
+                    console.error('Error del servidor:', data);
+                    
+                    let errorMsg = data.message || 'Error al procesar el pedido';
+                    if(data.error) {
+                        errorMsg += '\n\nDetalle técnico: ' + data.error;
+                    }
+                    
+                    alert(errorMsg);
+                    
+                    // Restaurar botones
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = '<i class="fa fa-lock"></i> Realizar Pedido';
+                    
+                    if(mobileBtnSubmit) {
+                        mobileBtnSubmit.disabled = false;
+                        mobileBtnSubmit.innerHTML = '<i class="fa fa-lock"></i> <span>Realizar Pedido</span>';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al procesar el pedido. Por favor intenta nuevamente.');
+                
+                // Restaurar botones
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<i class="fa fa-lock"></i> Realizar Pedido';
+                
+                if(mobileBtnSubmit) {
+                    mobileBtnSubmit.disabled = false;
+                    mobileBtnSubmit.innerHTML = '<i class="fa fa-lock"></i> <span>Realizar Pedido</span>';
+                }
+            });
+        }
         
         // Formatear teléfono (solo permitir números y +)
         document.getElementById('telefono').addEventListener('input', function(e) {

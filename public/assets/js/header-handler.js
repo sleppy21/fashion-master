@@ -51,8 +51,8 @@
                 if (data.success) {
                     const count = parseInt(data.count) || 0;
                     
-                    // Actualizar todos los badges de favoritos
-                    document.querySelectorAll('.favorites-count, #favorites-count').forEach(el => {
+                    // Actualizar badges del header (solo número)
+                    document.querySelectorAll('#favorites-count').forEach(el => {
                         el.textContent = count;
                         
                         // Mostrar/ocultar badge
@@ -62,6 +62,19 @@
                             el.style.display = 'none';
                         }
                     });
+                    
+                    // Actualizar contador del modal (con texto completo)
+                    const modalCount = document.querySelector('.favorites-count');
+                    if (modalCount) {
+                        const countNumber = modalCount.querySelector('.fav-count-number');
+                        const countText = count === 1 ? 'producto favorito' : 'productos favoritos';
+                        
+                        if (countNumber) {
+                            countNumber.textContent = count;
+                        } else {
+                            modalCount.innerHTML = `<span class="fav-count-number">${count}</span> ${countText}`;
+                        }
+                    }
                     
                     console.log('❤️ Favoritos actualizado:', count);
                 }

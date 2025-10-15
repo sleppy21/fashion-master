@@ -463,7 +463,8 @@ CREATE TABLE `pedido` (
   `nombre_cliente_pedido` varchar(100) NOT NULL,
   `email_cliente_pedido` varchar(100) NOT NULL,
   `telefono_cliente_pedido` varchar(20) NOT NULL,
-  `dni_ruc_pedido` varchar(20) NOT NULL,
+  `dni_pedido` varchar(20) DEFAULT NULL COMMENT 'DNI del cliente (8 dígitos)',
+  `ruc_pedido` varchar(11) DEFAULT NULL COMMENT 'RUC del cliente cuando el tipo de comprobante es factura (11 dígitos)',
   `direccion_envio_pedido` text NOT NULL,
   `departamento_pedido` varchar(100) NOT NULL,
   `provincia_pedido` varchar(100) NOT NULL,
@@ -549,7 +550,7 @@ CREATE TRIGGER `trigger_estado_pedido` AFTER UPDATE ON `pedido` FOR EACH ROW BEG
             mensaje_notificacion,
             tipo_notificacion,
             prioridad_notificacion,
-            url_destino
+            url_destino_notificacion
         ) VALUES (
             NEW.id_usuario,
             titulo_msg,
@@ -573,7 +574,7 @@ CREATE TRIGGER `trigger_pedido_confirmado` AFTER INSERT ON `pedido` FOR EACH ROW
         mensaje_notificacion,
         tipo_notificacion,
         prioridad_notificacion,
-        url_destino
+        url_destino_notificacion
     ) VALUES (
         NEW.id_usuario,
         CONCAT('??? Pedido #', NEW.id_pedido, ' confirmado'),
@@ -842,7 +843,7 @@ CREATE TABLE `usuario` (
   `telefono_usuario` varchar(20) DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
   `genero_usuario` enum('M','F','Otro') DEFAULT 'Otro',
-  `avatar_usuario` varchar(255) DEFAULT 'default-avatar.png',
+  `avatar_usuario` varchar(255) DEFAULT 'public/assets/img/profiles/default-avatar.png',
   `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
   `ultimo_acceso` timestamp NULL DEFAULT NULL,
   `status_usuario` tinyint(1) DEFAULT 1,
@@ -856,13 +857,13 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `username_usuario`, `password_usuario`, `email_usuario`, `nombre_usuario`, `apellido_usuario`, `telefono_usuario`, `fecha_nacimiento`, `genero_usuario`, `avatar_usuario`, `fecha_registro`, `ultimo_acceso`, `status_usuario`, `verificado_usuario`, `rol_usuario`, `estado_usuario`) VALUES
-(1, 'admin', 'admin123', 'admin@sleppystore.com', 'Administrador', 'Principal', '+51987654321', '1990-01-15', 'M', 'default-avatar.png', '2025-09-30 19:46:43', '2025-10-14 20:07:22', 1, 1, 'admin', 'activo'),
-(2, 'juan_perez', 'juan123', 'juan@email.com', 'Juan', 'Pérez', '+51912345678', '1992-03-20', 'M', 'default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
-(3, 'maria_garcia', 'maria123', 'maria@email.com', 'María', 'García', '+51923456789', '1988-07-10', 'F', 'default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
-(4, 'carlos_lopez', 'carlos123', 'carlos@email.com', 'Carlos', 'López', '+51934567890', '1995-11-25', 'M', 'default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 0, 'cliente', 'activo'),
-(5, 'ana_martinez', 'ana123', 'ana@email.com', 'Ana', 'Martínez', '+51945678901', '1993-05-08', 'F', 'default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'vendedor', 'activo'),
-(6, 'sofia_torres', 'sofia123', 'sofia@email.com', 'Sofía', 'Torres', '+51967890123', '1996-02-14', 'F', 'default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
-(7, 'julito', '123456', 'spiritboom672@gmail.com', 'Julito', 'sleppy21', '986079838', '2006-04-21', 'M', 'default-avatar.png', '2025-10-07 18:11:51', '2025-10-14 17:29:16', 1, 0, 'cliente', 'activo');
+(1, 'admin', 'admin123', 'admin@sleppystore.com', 'Administrador', 'Principal', '+51987654321', '1990-01-15', 'M', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', '2025-10-14 20:07:22', 1, 1, 'admin', 'activo'),
+(2, 'juan_perez', 'juan123', 'juan@email.com', 'Juan', 'Pérez', '+51912345678', '1992-03-20', 'M', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
+(3, 'maria_garcia', 'maria123', 'maria@email.com', 'María', 'García', '+51923456789', '1988-07-10', 'F', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
+(4, 'carlos_lopez', 'carlos123', 'carlos@email.com', 'Carlos', 'López', '+51934567890', '1995-11-25', 'M', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 0, 'cliente', 'activo'),
+(5, 'ana_martinez', 'ana123', 'ana@email.com', 'Ana', 'Martínez', '+51945678901', '1993-05-08', 'F', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'vendedor', 'activo'),
+(6, 'sofia_torres', 'sofia123', 'sofia@email.com', 'Sofía', 'Torres', '+51967890123', '1996-02-14', 'F', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
+(7, 'julito', '123456', 'spiritboom672@gmail.com', 'Julito', 'sleppy21', '986079838', '2006-04-21', 'M', 'public/assets/img/profiles/default-avatar.png', '2025-10-07 18:11:51', '2025-10-14 17:29:16', 1, 0, 'cliente', 'activo');
 
 --
 -- Disparadores `usuario`
@@ -1031,7 +1032,8 @@ ALTER TABLE `pedido`
   ADD KEY `idx_estado_pedido` (`estado_pedido`),
   ADD KEY `idx_fecha_pedido` (`fecha_pedido`),
   ADD KEY `idx_metodo_pago` (`metodo_pago_pedido`),
-  ADD KEY `idx_dni_ruc` (`dni_ruc_pedido`),
+  ADD KEY `idx_dni` (`dni_pedido`),
+  ADD KEY `idx_ruc` (`ruc_pedido`),
   ADD KEY `idx_tipo_comprobante` (`tipo_comprobante_pedido`);
 
 --

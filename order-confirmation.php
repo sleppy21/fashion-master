@@ -517,10 +517,18 @@ $tipo_comprobante_texto = $tipos_comprobante[$pedido['tipo_comprobante_pedido']]
                             <div class="info-label">Teléfono:</div>
                             <div class="info-value"><?php echo htmlspecialchars($pedido['telefono_cliente_pedido']); ?></div>
                         </div>
+                        <?php if (!empty($pedido['dni_pedido'])): ?>
                         <div class="info-row">
-                            <div class="info-label">DNI/RUC:</div>
-                            <div class="info-value"><?php echo htmlspecialchars($pedido['dni_ruc_pedido']); ?></div>
+                            <div class="info-label">DNI:</div>
+                            <div class="info-value"><?php echo htmlspecialchars($pedido['dni_pedido']); ?></div>
                         </div>
+                        <?php endif; ?>
+                        <?php if (!empty($pedido['ruc_pedido'])): ?>
+                        <div class="info-row">
+                            <div class="info-label">RUC:</div>
+                            <div class="info-value"><?php echo htmlspecialchars($pedido['ruc_pedido']); ?></div>
+                        </div>
+                        <?php endif; ?>
                     </div>
 
                     <!-- Dirección de Envío -->

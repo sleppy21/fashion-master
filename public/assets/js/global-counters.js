@@ -67,11 +67,10 @@
     function updateFavoritesCount(count) {
         count = parseInt(count) || 0;
         
-        // Actualizar TODOS los elementos de favoritos
+        // Actualizar solo los BADGES (números sin texto) - NO incluir .favorites-count del modal
         const selectors = [
             '.header__right__widget #favorites-link .tip',
-            '.favorites-count', // Selector genérico
-            '#favorites-count', // ID específico si existe
+            '#favorites-count', // ID específico del badge
             '.offcanvas__cart__links a:has(.icon_heart_alt) .tip' // Offcanvas menu
         ];
         
@@ -86,10 +85,17 @@
             });
         });
         
-        // Actualizar también el texto en modales si existe
+        // Actualizar el contador del modal CON TEXTO COMPLETO
         const modalCount = document.querySelector('.favorites-modal-header .favorites-count');
         if (modalCount) {
-            modalCount.textContent = count + (count === 1 ? ' producto' : ' productos');
+            const countNumber = modalCount.querySelector('.fav-count-number');
+            const countText = count === 1 ? 'producto favorito' : 'productos favoritos';
+            
+            if (countNumber) {
+                countNumber.textContent = count;
+            } else {
+                modalCount.innerHTML = `<span class="fav-count-number">${count}</span> ${countText}`;
+            }
         }
         
         // Emitir evento global

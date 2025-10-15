@@ -14,8 +14,25 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Aceptar tanto id_carrito como id_producto
+// Soportar tanto form-data (POST tradicional) como JSON puro (fetch POST con application/json)
 $id_carrito = isset($_POST['id_carrito']) ? (int)$_POST['id_carrito'] : 0;
 $id_producto = isset($_POST['id_producto']) ? (int)$_POST['id_producto'] : 0;
+
+// Si $_POST está vacío, intentar leer JSON desde el body (php://input)
+if ($id_carrito <= 0 && $id_producto <= 0) {
+    $raw = file_get_contents('php://input');
+    if ($raw) {
+        $json = json_decode($raw, true);
+        if (is_array($json)) {
+            if (isset($json['id_carrito'])) {
+                $id_carrito = (int)$json['id_carrito'];
+            }
+            if (isset($json['id_producto'])) {
+                $id_producto = (int)$json['id_producto'];
+            }
+        }
+    }
+}
 
 if($id_carrito <= 0 && $id_producto <= 0) {
     echo json_encode(['success' => false, 'message' => 'ID inválido']);

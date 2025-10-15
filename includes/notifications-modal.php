@@ -38,7 +38,7 @@ if($usuario_logueado):
             </h3>
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <p class="notifications-count" style="margin: 0; font-size: 12px; font-weight: 500;">
-                    <?php echo count($notificaciones_usuario); ?> <?php echo count($notificaciones_usuario) == 1 ? 'notificación' : 'notificaciones'; ?>
+                    <span class="notif-count-number"><?php echo count($notificaciones_usuario); ?></span> <?php echo count($notificaciones_usuario) == 1 ? 'notificación' : 'notificaciones'; ?>
                 </p>
                 <p class="notifications-update" style="margin: 0; font-size: 11px; opacity: 0.8;">
                     <i class="fa fa-clock-o" style="margin-right: 4px;"></i>Actualizado ahora
@@ -215,7 +215,9 @@ if($usuario_logueado):
                     
                     // Verificar si quedan notificaciones
                     const remainingItems = document.querySelectorAll('.notification-item');
-                    if (remainingItems.length === 0) {
+                    const remainingCount = remainingItems.length;
+                    
+                    if (remainingCount === 0) {
                         // Mostrar mensaje de vacío
                         const container = document.getElementById('notifications-list');
                         if (container) {
@@ -225,6 +227,19 @@ if($usuario_logueado):
                                     <p style="font-size: 16px; margin-bottom: 20px; color: #666;">No tienes notificaciones</p>
                                 </div>
                             `;
+                        }
+                    }
+                    
+                    // Actualizar contador en el header del modal
+                    const countEl = document.querySelector('.notifications-count');
+                    if (countEl) {
+                        const countNumber = countEl.querySelector('.notif-count-number');
+                        const countText = remainingCount === 1 ? 'notificación' : 'notificaciones';
+                        
+                        if (countNumber) {
+                            countNumber.textContent = remainingCount;
+                        } else {
+                            countEl.innerHTML = `<span class="notif-count-number">${remainingCount}</span> ${countText}`;
                         }
                     }
                     

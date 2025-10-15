@@ -370,6 +370,8 @@ body.dark-mode .favorites-modal-body::-webkit-scrollbar-thumb:hover {
     color: #666 !important;
 }
 
+/* Estos estilos fueron removidos porque afectaban el modo claro
+   Los estilos para dark mode están más abajo con el prefijo body.dark-mode
 .user-modal-header {
     color: var(--modal-dark-text) !important;
 }
@@ -408,6 +410,7 @@ body.dark-mode .favorites-modal-body::-webkit-scrollbar-thumb:hover {
 .stat-number {
     color: #2c3e50 !important;
 }
+*/
 
 .user-modal-body {
     background: #f8f9fa !important;
@@ -446,157 +449,223 @@ body.dark-mode .favorites-modal-body::-webkit-scrollbar-thumb:hover {
    ================================================================= */
 
 /* Overlay */
+/* =================================================================
+   MODAL DE USUARIO - MODO OSCURO
+   ================================================================= */
+
 body.dark-mode .user-modal-overlay {
     background-color: rgba(0, 0, 0, 0.85) !important;
 }
 
 /* Contenedor del modal */
-body.dark-mode .user-modal-content,
-body.dark-mode .user-modal-content[style] {
-    background: var(--modal-dark-bg) !important;
-    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+body.dark-mode .user-modal-content {
+    background: #1e1e1e !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 
+                0 0 0 1px rgba(201, 166, 124, 0.15) !important;
+    border: 1px solid rgba(201, 166, 124, 0.1) !important;
+}
+
+/* Flecha del dropdown */
+body.dark-mode .user-modal-content::before {
+    border-bottom-color: #1e1e1e !important;
+    filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.5)) !important;
 }
 
 /* Botón de cerrar */
-body.dark-mode .user-modal-close,
-body.dark-mode .user-modal-close[style] {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: var(--modal-dark-text) !important;
+body.dark-mode .user-modal-close {
+    background: rgba(201, 166, 124, 0.1) !important;
+    color: #c9a67c !important;
 }
 
 body.dark-mode .user-modal-close:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: #fff !important;
+    background: rgba(201, 166, 124, 0.2) !important;
+    color: #d4b896 !important;
 }
 
 /* Header */
-body.dark-mode .user-modal-header,
-body.dark-mode .user-modal-header[style] {
-    background: var(--modal-dark-content) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+body.dark-mode .user-modal-header {
+    background: linear-gradient(135deg, #252525 0%, #1e1e1e 100%) !important;
+    border-bottom: 1px solid rgba(201, 166, 124, 0.15) !important;
 }
 
-body.dark-mode .user-modal-header h3,
-body.dark-mode .user-modal-header h3[style] {
-    color: var(--modal-dark-text) !important;
+body.dark-mode .user-avatar-circle {
+    background: linear-gradient(135deg, #c9a67c 0%, #d4b896 100%) !important;
+    box-shadow: 0 4px 16px rgba(201, 166, 124, 0.5),
+                0 0 0 3px rgba(201, 166, 124, 0.1) !important;
 }
 
-body.dark-mode .user-modal-header p,
-body.dark-mode .user-modal-header p[style] {
-    color: var(--modal-dark-text-secondary) !important;
+body.dark-mode .avatar-initial {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Body del modal */
-body.dark-mode .user-modal-body,
-body.dark-mode .user-modal-body[style] {
-    background: var(--modal-dark-bg) !important;
+body.dark-mode .avatar-status {
+    background: #10b981 !important;
+    border-color: #1e1e1e !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3),
+                0 0 10px rgba(16, 185, 129, 0.5) !important;
 }
 
-/* Todos los divs con border genérico */
-body.dark-mode .user-modal-body > div > div[style*="border"],
-body.dark-mode .user-modal-body div[style*="border: 1px solid"] {
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    background: var(--modal-dark-card) !important;
+body.dark-mode .user-name {
+    color: #f0f0f0 !important;
 }
 
-body.dark-mode .user-modal-body > div > div[style*="border"]:hover,
-body.dark-mode .user-modal-body div[style*="border: 1px solid"]:hover {
-    border-color: rgba(102, 126, 234, 0.3) !important;
-    background: var(--modal-dark-hover) !important;
+body.dark-mode .user-role-badge {
+    background: linear-gradient(135deg, #c9a67c 0%, #d4b896 100%) !important;
+    color: #1e1e1e !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 8px rgba(201, 166, 124, 0.5) !important;
 }
 
-/* Iconos con background */
-body.dark-mode .user-modal-body div[style*="border-radius: 50%"][style*="background"] {
-    background: rgba(102, 126, 234, 0.15) !important;
+body.dark-mode .user-role-badge i {
+    color: #1e1e1e !important;
 }
 
-body.dark-mode .user-modal-body div[style*="border-radius: 50%"] i {
-    color: #667eea !important;
+/* Stats Grid */
+body.dark-mode .user-stats-grid {
+    background: #1e1e1e !important;
 }
 
-/* Textos y números */
-body.dark-mode .user-modal-body div[style*="font-size: 20px"],
-body.dark-mode .user-modal-body div[style*="font-size: 18px"] {
-    color: var(--modal-dark-text) !important;
+body.dark-mode .stat-card {
+    background: #2a2a2a !important;
+    border: 1px solid rgba(201, 166, 124, 0.1) !important;
 }
 
-body.dark-mode .user-modal-body div[style*="font-size: 13px"],
-body.dark-mode .user-modal-body div[style*="font-size: 11px"] {
-    color: var(--modal-dark-text-secondary) !important;
+body.dark-mode .stat-card::before {
+    background: linear-gradient(180deg, #c9a67c 0%, #d4b896 100%) !important;
+}
+
+body.dark-mode .stat-card:hover {
+    background: #333333 !important;
+    border-color: rgba(201, 166, 124, 0.3) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(201, 166, 124, 0.2) !important;
+}
+
+body.dark-mode .stat-icon {
+    background: linear-gradient(135deg, #c9a67c 0%, #d4b896 100%) !important;
+    color: #1e1e1e !important;
+    box-shadow: 0 4px 12px rgba(201, 166, 124, 0.4),
+                0 0 0 2px rgba(201, 166, 124, 0.2) !important;
+}
+
+body.dark-mode .stat-card:hover .stat-icon {
+    box-shadow: 0 6px 16px rgba(201, 166, 124, 0.5),
+                0 0 0 2px rgba(201, 166, 124, 0.3),
+                0 0 20px rgba(201, 166, 124, 0.3) !important;
+}
+
+body.dark-mode .stat-number {
+    color: #f0f0f0 !important;
+}
+
+body.dark-mode .stat-label {
+    color: #c9a67c !important;
+}
+
+/* User Info List */
+body.dark-mode .user-info-list {
+    background: #1e1e1e !important;
+}
+
+body.dark-mode .user-info-item {
+    background: #2a2a2a !important;
+    border: 1px solid rgba(201, 166, 124, 0.08) !important;
+}
+
+body.dark-mode .user-info-item:hover {
+    background: #333333 !important;
+    border-color: rgba(201, 166, 124, 0.2) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .info-icon {
+    background: linear-gradient(135deg, #333333 0%, #2a2a2a 100%) !important;
+    color: #c9a67c !important;
+    border: 1px solid rgba(201, 166, 124, 0.15) !important;
+}
+
+body.dark-mode .user-info-item:hover .info-icon {
+    background: linear-gradient(135deg, #c9a67c 0%, #d4b896 100%) !important;
+    color: #1e1e1e !important;
+    border-color: transparent !important;
+    box-shadow: 0 0 15px rgba(201, 166, 124, 0.4) !important;
+}
+
+body.dark-mode .info-label {
+    color: #95a5a6 !important;
+}
+
+body.dark-mode .info-value {
+    color: #e0e0e0 !important;
 }
 
 /* Footer */
-body.dark-mode .user-modal-footer,
-body.dark-mode .user-modal-footer[style] {
-    background: var(--modal-dark-content) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+body.dark-mode .user-modal-footer {
+    background: #252525 !important;
+    border-top: 1px solid rgba(201, 166, 124, 0.15) !important;
 }
 
-/* Botón Admin */
-body.dark-mode .user-modal-footer a[href="admin.php"] {
-    background: #667eea !important;
-    color: white !important;
+body.dark-mode .btn-admin {
+    background: linear-gradient(135deg, #c9a67c 0%, #d4b896 100%) !important;
+    color: #1e1e1e !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 16px rgba(201, 166, 124, 0.5),
+                0 2px 8px rgba(201, 166, 124, 0.3) !important;
 }
 
-body.dark-mode .user-modal-footer a[href="admin.php"]:hover {
-    background: #5568d3 !important;
+body.dark-mode .btn-admin:hover {
+    box-shadow: 0 6px 24px rgba(201, 166, 124, 0.6),
+                0 0 0 2px rgba(201, 166, 124, 0.3),
+                0 0 30px rgba(201, 166, 124, 0.4) !important;
+    transform: translateY(-2px) !important;
 }
 
-/* Botón Cerrar sesión */
-body.dark-mode .user-modal-footer a[href="logout.php"] {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: var(--modal-dark-text) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+body.dark-mode .btn-admin i {
+    color: #1e1e1e !important;
 }
 
-body.dark-mode .user-modal-footer a[href="logout.php"]:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: #fff !important;
+body.dark-mode .btn-logout {
+    background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%) !important;
+    color: #e0e0e0 !important;
+    border: 1px solid rgba(201, 166, 124, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
-body.dark-mode .user-modal-header .header-background,
-body.dark-mode .user-modal-header .header-background[style] {
-    background: linear-gradient(135deg, var(--modal-dark-accent) 0%, #b01030 50%, #1e1e1e 100%) !important;
-    opacity: 0.15 !important;
+body.dark-mode .btn-logout:hover {
+    background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%) !important;
+    border-color: rgba(201, 166, 124, 0.4) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(201, 166, 124, 0.3) !important;
+    color: #ffffff !important;
 }
 
-/* Avatar */
-body.dark-mode .user-avatar-circle,
-body.dark-mode .user-avatar-circle[style] {
-    background: linear-gradient(135deg, var(--modal-dark-accent) 0%, #b01030 100%) !important;
-    border: 3px solid var(--modal-dark-border) !important;
-    box-shadow: 0 0 20px rgba(220, 20, 60, 0.4) !important;
+/* User Account Link */
+body.dark-mode #user-account-link {
+    background: linear-gradient(135deg, #2a2a2a 0%, #252525 100%) !important;
+    color: #e0e0e0 !important;
+    border: 1px solid rgba(201, 166, 124, 0.15) !important;
 }
 
-body.dark-mode .avatar-initial,
-body.dark-mode .avatar-initial[style] {
-    color: white !important;
+body.dark-mode #user-account-link::before {
+    background: linear-gradient(90deg, transparent, rgba(201, 166, 124, 0.2), transparent) !important;
 }
 
-body.dark-mode .avatar-status,
-body.dark-mode .avatar-status[style] {
-    background: #28a745 !important;
-    border: 3px solid var(--modal-dark-bg) !important;
-    box-shadow: 0 0 10px rgba(40, 167, 69, 0.6) !important;
+body.dark-mode #user-account-link i {
+    color: #c9a67c !important;
 }
 
-/* Nombre y rol */
-body.dark-mode .user-name,
-body.dark-mode .user-name[style] {
-    color: var(--modal-dark-text) !important;
+body.dark-mode #user-account-link:hover {
+    background: linear-gradient(135deg, #c9a67c 0%, #d4b896 100%) !important;
+    color: #1e1e1e !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 16px rgba(201, 166, 124, 0.5),
+                0 0 0 2px rgba(201, 166, 124, 0.3) !important;
+    border-color: transparent !important;
 }
 
-body.dark-mode .user-role-badge,
-body.dark-mode .user-role-badge[style] {
-    background: rgba(220, 20, 60, 0.15) !important;
-    color: var(--modal-dark-accent) !important;
-    border: 1px solid rgba(220, 20, 60, 0.3) !important;
-}
-
-body.dark-mode .user-role-badge i,
-body.dark-mode .user-role-badge i[style] {
-    color: var(--modal-dark-accent) !important;
+body.dark-mode #user-account-link:hover i {
+    color: #1e1e1e !important;
 }
 
 body.dark-mode .user-role-badge span,
@@ -802,6 +871,22 @@ body.dark-mode .btn-primary i {
 }
 
 body.dark-mode .btn-primary span {
+    color: white !important;
+}
+
+body.dark-mode .btn-profile {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
+    border: 1px solid rgba(52, 152, 219, 0.3) !important;
+    color: white !important;
+}
+
+body.dark-mode .btn-profile:hover {
+    background: linear-gradient(135deg, #5dade2 0%, #3498db 100%) !important;
+    border-color: #3498db !important;
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.5) !important;
+}
+
+body.dark-mode .btn-profile:hover i {
     color: white !important;
 }
 

@@ -286,11 +286,11 @@ body.dark-mode .product__details__tab .nav-tabs .nav-link:hover {
 }
 
 body.dark-mode .product__details__tab .nav-tabs .nav-link.active {
-    color: var(--dark-accent) !important;
-    background: rgba(220, 20, 60, 0.05) !important;
+    color: #c9a67c !important;
+    background: rgba(201, 166, 124, 0.05) !important;
     border-bottom: none !important;
     border-radius: 10px 10px 0 0 !important;
-    box-shadow: 0 -2px 10px rgba(220, 20, 60, 0.2) !important;
+    box-shadow: 0 -2px 10px rgba(201, 166, 124, 0.2) !important;
 }
 
 /* Tab content */
@@ -335,7 +335,7 @@ body.dark-mode .product__details__tab h6:after {
     left: 0;
     width: 60px;
     height: 3px;
-    background: linear-gradient(90deg, var(--dark-accent), transparent);
+    background: linear-gradient(90deg, #c9a67c, transparent);
     border-radius: 2px;
 }
 
@@ -413,8 +413,8 @@ body.dark-mode .product__details__tab .row .col-md-4 > div:before {
 
 html body.dark-mode .product__details__tab .row .col-md-4 > div:hover,
 body.dark-mode .product__details__tab .row .col-md-4 > div:hover {
-    border-color: var(--dark-accent) !important;
-    box-shadow: 0 12px 35px rgba(220, 20, 60, 0.3), 0 0 20px rgba(220, 20, 60, 0.1) !important;
+    border-color: #c9a67c !important;
+    box-shadow: 0 12px 35px rgba(201, 166, 124, 0.3), 0 0 20px rgba(201, 166, 124, 0.1) !important;
     transform: translateY(-8px) scale(1.02);
 }
 
@@ -484,16 +484,16 @@ body.dark-mode .product__details__tab .tab-pane ul li:before {
     top: 0;
     bottom: 0;
     width: 3px;
-    background: linear-gradient(180deg, var(--dark-accent), transparent);
+    background: linear-gradient(180deg, #c9a67c, transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 html body.dark-mode .product__details__tab .tab-pane ul li:hover,
 body.dark-mode .product__details__tab .tab-pane ul li:hover {
-    background: linear-gradient(90deg, rgba(220, 20, 60, 0.05), transparent) !important;
+    background: linear-gradient(90deg, rgba(201, 166, 124, 0.05), transparent) !important;
     padding-left: 20px !important;
-    border-color: rgba(220, 20, 60, 0.2) !important;
+    border-color: rgba(201, 166, 124, 0.2) !important;
 }
 
 html body.dark-mode .product__details__tab .tab-pane ul li:hover:before,
@@ -544,9 +544,11 @@ body.dark-mode .product__details__price {
 /* Botones y acciones: adaptar colores */
 html body.dark-mode .product__details__action .btn-add-cart-modern,
 body.dark-mode .product__details__action .btn-add-cart-modern {
-    background: linear-gradient(135deg, var(--dark-accent) 0%, #a01010 100%) !important;
-    color: white !important;
-    border-color: var(--dark-accent) !important;
+    background: linear-gradient(135deg, #c9a67c 0%, #d4b896 100%) !important;
+    color: #1e1e1e !important;
+    font-weight: 700 !important;
+    border-color: #c9a67c !important;
+    box-shadow: 0 4px 15px rgba(201, 166, 124, 0.4) !important;
 }
 
 /* Botón "Ir al Carrito" - VERDE */
@@ -562,7 +564,6 @@ html body.dark-mode .product__details__action .btn-add-cart-modern.go-to-cart:ho
 body.dark-mode .product__details__action .btn-add-cart-modern.go-to-cart:hover {
     background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
     box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4) !important;
-    transform: translateY(-2px);
 }
 
 /* Botón de Favoritos - MEJORADO */
@@ -576,26 +577,27 @@ body.dark-mode .product__details__action .btn-favorite-modern {
 
 html body.dark-mode .product__details__action .btn-favorite-modern:hover,
 body.dark-mode .product__details__action .btn-favorite-modern:hover {
-    background: rgba(220, 20, 60, 0.1) !important;
-    border-color: var(--dark-accent) !important;
-    color: var(--dark-accent) !important;
-    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.2) !important;
+    background: rgba(201, 166, 124, 0.1) !important;
+    border-color: #c9a67c !important;
+    color: #c9a67c !important;
+    box-shadow: 0 4px 15px rgba(201, 166, 124, 0.2) !important;
     transform: scale(1.05);
 }
 
 /* Botón de Favoritos ACTIVO */
 html body.dark-mode .product__details__action .btn-favorite-modern.active,
 body.dark-mode .product__details__action .btn-favorite-modern.active {
-    background: linear-gradient(135deg, var(--dark-accent) 0%, #a01010 100%) !important;
-    border-color: var(--dark-accent) !important;
-    color: white !important;
-    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4) !important;
+    background: linear-gradient(135deg, #c9a67c 0%, #d4b896 100%) !important;
+    border-color: #c9a67c !important;
+    color: #1e1e1e !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 15px rgba(201, 166, 124, 0.4) !important;
 }
 
 html body.dark-mode .product__details__action .btn-favorite-modern.active:hover,
 body.dark-mode .product__details__action .btn-favorite-modern.active:hover {
-    background: linear-gradient(135deg, #a01010 0%, #800c0c 100%) !important;
-    box-shadow: 0 6px 20px rgba(220, 20, 60, 0.5) !important;
+    background: linear-gradient(135deg, #d4b896 0%, #c9a67c 100%) !important;
+    box-shadow: 0 6px 20px rgba(201, 166, 124, 0.5) !important;
 }
 
 /* Inputs / cantidad */
@@ -634,8 +636,8 @@ body.dark-mode .review-item:before {
 
 html body.dark-mode .review-item:hover,
 body.dark-mode .review-item:hover {
-    border-color: var(--dark-accent) !important;
-    box-shadow: 0 12px 35px rgba(220, 20, 60, 0.3), 0 0 20px rgba(220, 20, 60, 0.1) !important;
+    border-color: #c9a67c !important;
+    box-shadow: 0 12px 35px rgba(201, 166, 124, 0.3), 0 0 20px rgba(201, 166, 124, 0.1) !important;
     transform: translateX(8px) scale(1.01);
 }
 

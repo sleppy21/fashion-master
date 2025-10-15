@@ -52,7 +52,7 @@ if($usuario_logueado):
             <h3 style="margin: 0 0 5px 0; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;"><i class="fa fa-heart"></i> Mis Favoritos</h3>
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <p class="favorites-count" style="margin: 0; font-size: 12px; font-weight: 500;">
-                    <?php echo count($favoritos_usuario); ?> <?php echo count($favoritos_usuario) == 1 ? 'producto' : 'productos'; ?>
+                    <span class="fav-count-number"><?php echo count($favoritos_usuario); ?></span> <?php echo count($favoritos_usuario) == 1 ? 'producto favorito' : 'productos favoritos'; ?>
                 </p>
                 <p class="favorites-update" style="margin: 0; font-size: 11px; opacity: 0.8;">
                     <i class="fa fa-clock-o" style="margin-right: 4px;"></i>Actualizado hoy

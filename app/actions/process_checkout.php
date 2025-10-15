@@ -59,52 +59,84 @@ try {
     // 2. VALIDACIONES BÁSICAS
     // ==========================
     if (empty($nombre) || empty($email) || empty($telefono) || empty($dni)) {
-        $_SESSION['checkout_error'] = 'Por favor completa todos los campos obligatorios de información del cliente.';
-        header('Location: ../../checkout.php');
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Por favor completa todos los campos obligatorios de información del cliente.',
+            'error' => 'Campos vacíos: nombre, email, telefono o dni'
+        ]);
         exit;
     }
     
     if (empty($direccion) || empty($departamento) || empty($provincia) || empty($distrito)) {
-        $_SESSION['checkout_error'] = 'Por favor completa todos los campos obligatorios de dirección de envío.';
-        header('Location: ../../checkout.php');
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Por favor completa todos los campos obligatorios de dirección de envío.',
+            'error' => 'Campos vacíos en dirección'
+        ]);
         exit;
     }
     
     if (!in_array($tipo_comprobante, ['boleta', 'factura'])) {
-        $_SESSION['checkout_error'] = 'Tipo de comprobante inválido. Solo se permite Boleta o Factura.';
-        header('Location: ../../checkout.php');
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Tipo de comprobante inválido. Solo se permite Boleta o Factura.',
+            'error' => 'Tipo comprobante: ' . $tipo_comprobante
+        ]);
         exit;
     }
     
     if (!in_array($metodo_pago, ['tarjeta', 'transferencia', 'yape', 'efectivo'])) {
-        $_SESSION['checkout_error'] = 'Por favor selecciona un método de pago válido.';
-        header('Location: ../../checkout.php');
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Por favor selecciona un método de pago válido.',
+            'error' => 'Método pago: ' . $metodo_pago
+        ]);
         exit;
     }
     
     // Validar email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $_SESSION['checkout_error'] = 'El email ingresado no es válido.';
-        header('Location: ../../checkout.php');
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'El email ingresado no es válido.',
+            'error' => 'Email inválido: ' . $email
+        ]);
         exit;
     }
     
     // Validar DNI (8 dígitos) para boleta o RUC (11 dígitos) para factura
     if ($tipo_comprobante === 'boleta') {
         if (strlen($dni) !== 8 || !ctype_digit($dni)) {
-            $_SESSION['checkout_error'] = 'Para Boleta, el DNI debe tener exactamente 8 dígitos numéricos.';
-            header('Location: ../../checkout.php');
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Para Boleta, el DNI debe tener exactamente 8 dígitos numéricos.',
+                'error' => 'DNI inválido: ' . $dni
+            ]);
             exit;
         }
     } elseif ($tipo_comprobante === 'factura') {
         if (strlen($dni) !== 11 || !ctype_digit($dni)) {
-            $_SESSION['checkout_error'] = 'Para Factura, el RUC debe tener exactamente 11 dígitos numéricos.';
-            header('Location: ../../checkout.php');
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Para Factura, el RUC debe tener exactamente 11 dígitos numéricos.',
+                'error' => 'RUC inválido: ' . $dni
+            ]);
             exit;
         }
         if (empty($razon_social)) {
-            $_SESSION['checkout_error'] = 'Por favor completa la Razón Social para emitir factura.';
-            header('Location: ../../checkout.php');
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Por favor completa la Razón Social para emitir factura.',
+                'error' => 'Razón social vacía'
+            ]);
             exit;
         }
     }
@@ -122,8 +154,12 @@ try {
     ", [$id_usuario]);
     
     if (!$cart_items || empty($cart_items)) {
-        $_SESSION['checkout_error'] = 'Tu carrito está vacío.';
-        header('Location: ../../cart.php');
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Tu carrito está vacío.',
+            'error' => 'Carrito vacío'
+        ]);
         exit;
     }
     
@@ -140,8 +176,13 @@ try {
     }
     
     if (!empty($productos_sin_stock)) {
-        $_SESSION['checkout_error'] = 'Los siguientes productos no tienen stock suficiente: ' . implode(', ', $productos_sin_stock);
-        header('Location: ../../cart.php');
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Los siguientes productos no tienen stock suficiente: ' . implode(', ', $productos_sin_stock),
+            'error' => 'Stock insuficiente',
+            'productos_sin_stock' => $productos_sin_stock
+        ]);
         exit;
     }
     
@@ -174,19 +215,31 @@ try {
                             ($referencia ? ' (Ref: ' . $referencia . ')' : '') . 
                             ', ' . $distrito . ', ' . $provincia . ', ' . $departamento;
         
+        // Lógica inteligente: detectar si es DNI (8 dígitos) o RUC (11 dígitos)
+        $dni_value = null;
+        $ruc_value = null;
+        
+        if (strlen($dni) == 8) {
+            // Es un DNI
+            $dni_value = $dni;
+        } elseif (strlen($dni) == 11) {
+            // Es un RUC
+            $ruc_value = $dni;
+        }
+        
         $sql_pedido = "INSERT INTO pedido (
             id_usuario,
             nombre_cliente_pedido,
             email_cliente_pedido,
             telefono_cliente_pedido,
-            dni_ruc_pedido,
+            dni_pedido,
+            ruc_pedido,
             direccion_envio_pedido,
             departamento_pedido,
             provincia_pedido,
             distrito_pedido,
             tipo_comprobante_pedido,
             razon_social_pedido,
-            ruc_pedido,
             metodo_pago_pedido,
             subtotal_pedido,
             costo_envio_pedido,
@@ -202,14 +255,14 @@ try {
             $nombre,
             $email,
             $telefono,
-            $dni, // DNI o RUC según el caso
+            $dni_value, // DNI si tiene 8 dígitos, NULL si no
+            $ruc_value, // RUC si tiene 11 dígitos, NULL si no
             $direccion_completa,
             $departamento,
             $provincia,
             $distrito,
             $tipo_comprobante,
             $razon_social ?: null,
-            $tipo_comprobante === 'factura' ? $dni : null, // RUC solo si es factura
             $metodo_pago,
             $subtotal,
             $costo_envio,
@@ -284,33 +337,98 @@ try {
         $stmt_clear_cart->execute([$id_usuario]);
         
         // ==========================
-        // 10. CONFIRMAR TRANSACCIÓN
+        // 10. GUARDAR DIRECCIÓN (SI SE SOLICITÓ)
+        // ==========================
+        $direccion_guardada = false;
+        if (isset($_POST['guardar_direccion']) && $_POST['guardar_direccion'] === '1') {
+            try {
+                // Construir dirección completa
+                $direccion_completa = $direccion . ', ' . $distrito . ', ' . $provincia . ', ' . $departamento;
+                
+                // Verificar si ya existe una dirección exactamente igual para evitar duplicados
+                $sql_check = "SELECT id_direccion FROM direccion 
+                             WHERE id_usuario = ? 
+                             AND direccion_completa_direccion = ?
+                             AND status_direccion = 1";
+                $stmt_check = $conexion->prepare($sql_check);
+                $stmt_check->execute([$id_usuario, $direccion_completa]);
+                
+                // Solo insertar si no existe
+                if ($stmt_check->rowCount() === 0) {
+                    $sql_save_address = "INSERT INTO direccion 
+                                        (id_usuario, nombre_direccion, telefono_direccion, 
+                                         direccion_completa_direccion, departamento_direccion, 
+                                         provincia_direccion, distrito_direccion, 
+                                         referencia_direccion, es_principal, status_direccion, 
+                                         fecha_creacion_direccion) 
+                                        VALUES (?, ?, ?, ?, ?, ?, ?, NULL, 0, 1, NOW())";
+                    $stmt_save_address = $conexion->prepare($sql_save_address);
+                    $stmt_save_address->execute([
+                        $id_usuario, 
+                        $nombre, 
+                        $telefono, 
+                        $direccion_completa, 
+                        $departamento, 
+                        $provincia, 
+                        $distrito
+                    ]);
+                    $direccion_guardada = true;
+                } else {
+                    // Ya existe, consideramos que está "guardada"
+                    $direccion_guardada = true;
+                }
+            } catch (Exception $e) {
+                // Log el error pero no fallar el pedido por esto
+                error_log("Error al guardar dirección: " . $e->getMessage());
+                $direccion_guardada = false;
+            }
+        }
+        
+        // ==========================
+        // 11. CONFIRMAR TRANSACCIÓN
         // ==========================
         $conexion->commit();
         
         // ==========================
-        // 11. REDIRIGIR A PÁGINA DE CONFIRMACIÓN
+        // 12. PREPARAR SESIÓN Y RESPUESTA JSON
         // ==========================
         $_SESSION['checkout_success'] = true;
         $_SESSION['pedido_id'] = $id_pedido;
         $_SESSION['pedido_total'] = $total;
         $_SESSION['metodo_pago'] = $metodo_pago;
         
-        header('Location: ../../order-confirmation.php?pedido=' . $id_pedido);
+        // Retornar respuesta JSON
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'order_id' => $id_pedido,
+            'message' => 'Pedido procesado exitosamente',
+            'direccion_guardada' => $direccion_guardada
+        ]);
         exit;
         
     } catch (Exception $e) {
         // Rollback en caso de error
         $conexion->rollBack();
         error_log("Error en transacción de checkout: " . $e->getMessage());
-        $_SESSION['checkout_error'] = 'Ocurrió un error al procesar tu pedido. Por favor intenta nuevamente.';
-        header('Location: ../../checkout.php');
+        
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Ocurrió un error al procesar tu pedido. Por favor intenta nuevamente.',
+            'error' => $e->getMessage()
+        ]);
         exit;
     }
     
 } catch (Exception $e) {
     error_log("Error general en checkout: " . $e->getMessage());
-    $_SESSION['checkout_error'] = 'Ocurrió un error inesperado. Por favor intenta nuevamente.';
-    header('Location: ../../checkout.php');
+    
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => false,
+        'message' => 'Ocurrió un error inesperado. Por favor intenta nuevamente.',
+        'error' => $e->getMessage()
+    ]);
     exit;
 }

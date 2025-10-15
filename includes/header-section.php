@@ -5,7 +5,22 @@
     // APLICAR DARK MODE INMEDIATAMENTE - ANTES DEL RENDER
     // Esto previene el flash blanco al cargar la página
     (function() {
-        const savedTheme = localStorage.getItem('theme');
+        const savedTheme = loc        // If a trigger element is provided, mark it as active so CSS can use it as parent
+        if (triggerElement && triggerElement.classList) {
+            try {
+                triggerElement.classList.add('modal-trigger-active');
+                lastModalTrigger = triggerElement;
+                console.log('✅ Modal trigger activado:', modalId, triggerElement.id || triggerElement.className);
+                // Notify other modules that a modal trigger changed
+                try { 
+                    document.dispatchEvent(new CustomEvent('modalTriggerChanged', { 
+                        detail: { action: 'opened', modalId: modalId, trigger: triggerElement } 
+                    })); 
+                } catch(e) {}
+            } catch (e) {
+                console.error('❌ Error al activar trigger:', e);
+            }
+        }etItem('theme');
         const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         
         if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
@@ -69,7 +84,7 @@
                 <div class="header__right">
                     <div class="header__right__auth">
                         <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
-                            <a href="#" id="user-account-link">
+                            <a href="profile.php" id="user-account-link">
                                 <i class="fa fa-user-circle"></i>
                                 <span>Hola, <?php echo htmlspecialchars($usuario_logueado['nombre_usuario']); ?></span>
                             </a>
@@ -269,23 +284,36 @@
     // ============================================
     // FUNCIÓN PARA ABRIR MODAL - CON ANIMACIÓN SLIDE
     // ============================================
-    function openModal(modalId) {
+    // Track the last trigger element that opened a modal so we can toggle a class on it
+    let lastModalTrigger = null;
+
+    function openModal(modalId, triggerElement) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
-        
-        // NO ocultar el scrollbar - mantener scroll visible siempre
-        
-        // Remover clase de cierre si existe
+
+        // Remove closing class if present
         modal.classList.remove('modal-closing');
-        
-        // Mostrar modal (display block pero aún invisible por CSS)
+
+        // Show modal
         modal.style.display = 'block';
-        
-        // Forzar reflow para que la animación funcione
+
+        // Force reflow for animation
         void modal.offsetWidth;
-        
-        // Agregar clase que activa la animación de entrada
+
+        // Add open class
         modal.classList.add('modal-open');
+
+        // If a trigger element is provided, mark it as active so CSS can use it as parent
+            if (triggerElement && triggerElement.classList) {
+            try {
+                triggerElement.classList.add('modal-trigger-active');
+                lastModalTrigger = triggerElement;
+                // Notify other modules that a modal trigger changed
+                try { document.dispatchEvent(new CustomEvent('modalTriggerChanged')); } catch(e) {}
+            } catch (e) {
+                // ignore
+            }
+        }
     }
     
     // ============================================
@@ -293,23 +321,36 @@
     // ============================================
     function closeModal(modalId) {
         const modal = document.getElementById(modalId);
-        
-        // Verificar si el modal existe y está abierto
+
         if (!modal || !modal.classList.contains('modal-open')) {
             return;
         }
-        
-        // Agregar clase de cierre para animación de salida
+
         modal.classList.add('modal-closing');
         modal.classList.remove('modal-open');
-        
-        // Esperar a que termine la animación antes de ocultar
+
+        // Remove active class from last trigger if present
+        if (lastModalTrigger && lastModalTrigger.classList) {
+            try {
+                lastModalTrigger.classList.remove('modal-trigger-active');
+                console.log('✅ Modal trigger desactivado:', modalId);
+                try { 
+                    document.dispatchEvent(new CustomEvent('modalTriggerChanged', { 
+                        detail: { action: 'closed', modalId: modalId } 
+                    })); 
+                } catch(e) {}
+            } catch (e) {
+                console.error('❌ Error al desactivar trigger:', e);
+            }
+            lastModalTrigger = null;
+        }
+
         setTimeout(() => {
             if (modal.classList.contains('modal-closing')) {
                 modal.style.display = 'none';
                 modal.classList.remove('modal-closing');
             }
-        }, 250); // Duración de la animación de cierre
+        }, 250);
     }
     
     // ============================================
@@ -437,7 +478,24 @@
             link.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                toggleFavoritesModal();
+                // Pass the trigger element so we can mark it active
+                const trigger = e.currentTarget || this;
+                const modal = document.getElementById('favorites-modal');
+                const isVisible = modal && modal.classList.contains('modal-open');
+                if (isVisible) {
+                    closeModal('favorites-modal');
+                } else {
+                    // Close others and open with trigger
+                    const notifModal = document.getElementById('notifications-modal');
+                    const userModal = document.getElementById('user-account-modal');
+                    if (notifModal && notifModal.classList.contains('modal-open')) {
+                        closeModal('notifications-modal');
+                    }
+                    if (userModal && userModal.classList.contains('modal-open')) {
+                        closeModal('user-account-modal');
+                    }
+                    openModal('favorites-modal', trigger);
+                }
             });
         });
         
@@ -454,7 +512,22 @@
             link.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                toggleNotificationsModal();
+                const trigger = e.currentTarget || this;
+                const modal = document.getElementById('notifications-modal');
+                const isVisible = modal && modal.classList.contains('modal-open');
+                if (isVisible) {
+                    closeModal('notifications-modal');
+                } else {
+                    const favModal = document.getElementById('favorites-modal');
+                    const userModal = document.getElementById('user-account-modal');
+                    if (favModal && favModal.classList.contains('modal-open')) {
+                        closeModal('favorites-modal');
+                    }
+                    if (userModal && userModal.classList.contains('modal-open')) {
+                        closeModal('user-account-modal');
+                    }
+                    openModal('notifications-modal', trigger);
+                }
             });
         });
         
@@ -471,8 +544,23 @@
             link.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('🖱️ Click en botón de usuario detectado');
-                toggleUserModal();
+                const trigger = e.currentTarget || this;
+                const modal = document.getElementById('user-account-modal');
+                const isVisible = modal && modal.classList.contains('modal-open');
+                if (isVisible) {
+                    closeModal('user-account-modal');
+                } else {
+                    const favModal = document.getElementById('favorites-modal');
+                    const notifModal = document.getElementById('notifications-modal');
+                    if (favModal && favModal.classList.contains('modal-open')) {
+                        closeModal('favorites-modal');
+                    }
+                    if (notifModal && notifModal.classList.contains('modal-open')) {
+                        closeModal('notifications-modal');
+                    }
+                    openModal('user-account-modal', trigger);
+                    console.log('✅ Modal de usuario abierto');
+                }
             });
         });
         

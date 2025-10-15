@@ -162,7 +162,7 @@ input[type="text"]:read-only {
 
 .qty-btn-detail:hover {
     background: #f5f5f5;
-    color: #ca1515;
+    color: #667eea;
 }
 
 .qty-btn-detail:active {
@@ -175,19 +175,19 @@ input[type="text"]:read-only {
 
 .product__details__button ul li a.add-to-favorites.active span,
 .product__details__button ul li a.active span {
-    color: #ca1515;
+    color: #667eea;
 }
 
 .product__details__button ul li a.add-to-favorites.active,
 .product__details__button ul li a.active {
-    background: #ffe5e5;
-    border-color: #ca1515;
+    background: #f0f4ff;
+    border-color: #667eea;
 }
 
 .product__details__button ul li a.add-to-favorites:hover,
 .product__details__button ul li a:hover {
-    background: #ca1515;
-    border-color: #ca1515;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
 }
 
 .product__details__button ul li a.add-to-favorites:hover span,
@@ -577,7 +577,7 @@ input[type="number"] {
     justify-content: center;
     gap: 10px;
     padding: 16px 30px;
-    background: linear-gradient(135deg, #dc143c 0%, #b01030 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
     border-radius: 50px;
@@ -586,21 +586,20 @@ input[type="number"] {
     text-decoration: none;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .btn-add-cart-modern:hover {
-    background: linear-gradient(135deg, #b01030 0%, #8b0c24 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(220, 20, 60, 0.4);
+    background: linear-gradient(135deg, #764ba2 0%, #5a3a7a 100%);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     color: white;
     text-decoration: none;
 }
 
 .btn-add-cart-modern:active {
-    transform: translateY(0);
+    transform: none;
 }
 
 .btn-add-cart-modern:disabled {
@@ -632,20 +631,20 @@ input[type="number"] {
 }
 
 .btn-favorite-modern:hover {
-    border-color: #dc143c;
-    color: #dc143c;
-    background: #fff5f7;
+    border-color: #667eea;
+    color: #667eea;
+    background: #f0f4ff;
 }
 
 .btn-favorite-modern.active {
-    background: #dc143c;
-    border-color: #dc143c;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
     color: white;
 }
 
 .btn-favorite-modern.active:hover {
-    background: #b01030;
-    border-color: #b01030;
+    background: linear-gradient(135deg, #764ba2 0%, #5a3a7a 100%);
+    border-color: #764ba2;
 }
 
 /* Estilos para el botón "Ir al Carrito" (después de agregar) */

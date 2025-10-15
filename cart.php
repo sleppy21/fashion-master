@@ -2312,47 +2312,83 @@ try {
         });
     }
     
-    // Eliminar item del carrito
+    // Eliminar item del carrito (usando Fetch API handler moderno)
     $(document).on('click', '.remove-cart-item', function() {
         const cartId = $(this).data('id');
-        removeCartItem(cartId);
-    });
-    
-    function removeCartItem(cartId) {
-        $.post('app/actions/remove_from_cart.php', {
-            id_carrito: cartId
-        }, function(response) {
-            if(response.success) {
-                // Eliminar fila de la tabla desktop con animación
-                $('tr[data-cart-id="' + cartId + '"]').fadeOut(400, function() {
-                    $(this).remove();
-                    checkCartEmpty();
-                });
-                
-                // Eliminar item de la vista móvil con animación
-                $('.cart-mobile-item[data-cart-id="' + cartId + '"]').fadeOut(400, function() {
-                    $(this).remove();
-                    checkCartEmpty();
-                });
-                
-            } else {
-                alert(response.message);
-            }
-        }, 'json').fail(function() {
-            alert('Error al eliminar el producto');
-        });
-    }
 
-    // Función para verificar si el carrito está vacío
-    function checkCartEmpty() {
-        // Si no quedan items en ninguna vista, recargar para mostrar carrito vacío
-        if($('tr[data-cart-id]').length === 0 && $('.cart-mobile-item[data-cart-id]').length === 0) {
-            location.reload();
+        // Preferir la función global removeFromCart si está disponible
+        if (typeof window.removeFromCart === 'function') {
+            window.removeFromCart(cartId).then(success => {
+                if (!success) {
+                    // Si la eliminación falló, puedes mostrar un mensaje o fallback
+                    // Aquí dejamos que removeFromCart muestre notificación cuando falle
+                }
+            }).catch(err => {
+                console.error('Error calling removeFromCart:', err);
+            });
         } else {
-            // Actualizar totales
-            updateCartTotals();
+            // Fallback al método antiguo por compatibilidad
+            $.post('app/actions/remove_from_cart.php', {
+                id_carrito: cartId
+            }, function(response) {
+                if(response.success) {
+                    // Eliminar fila de la tabla desktop con animación
+                    $('tr[data-cart-id="' + cartId + '"]').fadeOut(400, function() {
+                        $(this).remove();
+                        // Actualizar totales
+                        updateCartTotals();
+                        // Verificar si quedó vacío
+                        if($('tr[data-cart-id]').length === 0 && $('.cart-mobile-item[data-cart-id]').length === 0) {
+                            location.reload();
+                        }
+                    });
+
+                    // Eliminar item de la vista móvil con animación
+                    $('.cart-mobile-item[data-cart-id="' + cartId + '"]').fadeOut(400, function() {
+                        $(this).remove();
+                        updateCartTotals();
+                        if($('tr[data-cart-id]').length === 0 && $('.cart-mobile-item[data-cart-id]').length === 0) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    alert(response.message);
+                }
+            }, 'json').fail(function() {
+                alert('Error al eliminar el producto');
+            });
         }
-    }
+    });
+
+    // Escuchar evento personalizado disparado por fetch-api-handler.js cuando se elimina un item
+    document.addEventListener('cartItemRemoved', function(e) {
+        const cartId = e && e.detail && e.detail.cartId;
+        if (!cartId) return;
+
+        // Animación: si la fila aún existe, hacer fadeOut antes de removerla
+        const $row = $('tr[data-cart-id="' + cartId + '"]');
+        if ($row.length) {
+            $row.fadeOut(300, function() {
+                $(this).remove();
+                updateCartTotals();
+                // Si quedó vacío, recargar para mostrar la vista vacía
+                if($('tr[data-cart-id]').length === 0 && $('.cart-mobile-item[data-cart-id]').length === 0) {
+                    location.reload();
+                }
+            });
+        }
+
+        const $mobile = $('.cart-mobile-item[data-cart-id="' + cartId + '"]');
+        if ($mobile.length) {
+            $mobile.fadeOut(300, function() {
+                $(this).remove();
+                updateCartTotals();
+                if($('tr[data-cart-id]').length === 0 && $('.cart-mobile-item[data-cart-id]').length === 0) {
+                    location.reload();
+                }
+            });
+        }
+    });
 
     // Formulario de código de descuento
     $('#coupon-form').on('submit', function(e) {

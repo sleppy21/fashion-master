@@ -197,7 +197,14 @@
                     // Actualizar el contador de productos en el header del modal
                     const favCount = document.querySelector('.favorites-count');
                     if (favCount) {
-                        favCount.textContent = data.count_text || (data.count + (data.count === 1 ? ' producto' : ' productos'));
+                        const countNumber = favCount.querySelector('.fav-count-number');
+                        const countText = data.count === 1 ? 'producto favorito' : 'productos favoritos';
+                        
+                        if (countNumber) {
+                            countNumber.textContent = data.count;
+                        } else {
+                            favCount.innerHTML = `<span class="fav-count-number">${data.count}</span> ${countText}`;
+                        }
                     }
                     
                     console.log(`✅ Modal actualizado con ${data.count} productos`);
@@ -240,7 +247,14 @@
         // Actualizar contador en el modal con formato correcto
         const favCount = document.querySelector('.favorites-count');
         if (favCount) {
-            favCount.textContent = count + (count === 1 ? ' producto' : ' productos');
+            const countNumber = favCount.querySelector('.fav-count-number');
+            const countText = count === 1 ? 'producto favorito' : 'productos favoritos';
+            
+            if (countNumber) {
+                countNumber.textContent = count;
+            } else {
+                favCount.innerHTML = `<span class="fav-count-number">${count}</span> ${countText}`;
+            }
         }
     }
 
@@ -868,26 +882,57 @@
     window.updateFavoritesCount = function(count) {
         console.log('❤️ Actualizando contador de favoritos:', count);
         
-        // Actualizar el badge/tip de favoritos
-        const favTips = document.querySelectorAll('#favorites-link .tip, #favorites-link-mobile .tip');
+        // Si no se proporciona count, hacer fetch al servidor
+        if (count === undefined || count === null) {
+            const baseUrl = window.BASE_URL || '';
+            fetch(baseUrl + '/app/actions/get_favorites_count.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.updateFavoritesCount(parseInt(data.count) || 0);
+                    }
+                })
+                .catch(error => console.error('Error al obtener contador de favoritos:', error));
+            return;
+        }
+        
+        count = parseInt(count) || 0;
+        
+        // Actualizar el badge/tip de favoritos (solo números)
+        const favTips = document.querySelectorAll('#favorites-link .tip, #favorites-link-mobile .tip, #favorites-count');
         favTips.forEach(tip => {
             tip.textContent = count;
             if (count > 0) {
-                tip.style.display = 'block';
+                tip.style.display = 'flex';
             } else {
                 tip.style.display = 'none';
             }
         });
         
-        // Animar el icono de favoritos
-        const favIcons = document.querySelectorAll('#favorites-link .icon_heart_alt, #favorites-link-mobile .icon_heart_alt');
-        favIcons.forEach(icon => {
-            icon.style.transition = 'transform 0.3s ease';
-            icon.style.transform = 'scale(1.3)';
-            setTimeout(() => {
-                icon.style.transform = 'scale(1)';
-            }, 300);
-        });
+        // Actualizar contador del modal (con texto completo)
+        const modalCount = document.querySelector('.favorites-count');
+        if (modalCount) {
+            const countNumber = modalCount.querySelector('.fav-count-number');
+            const countText = count === 1 ? 'producto favorito' : 'productos favoritos';
+            
+            if (countNumber) {
+                countNumber.textContent = count;
+            } else {
+                modalCount.innerHTML = `<span class="fav-count-number">${count}</span> ${countText}`;
+            }
+        }
+        
+        // Animar el icono de favoritos solo si count > 0
+        if (count > 0) {
+            const favIcons = document.querySelectorAll('#favorites-link .icon_heart_alt, #favorites-link-mobile .icon_heart_alt');
+            favIcons.forEach(icon => {
+                icon.style.transition = 'transform 0.3s ease';
+                icon.style.transform = 'scale(1.3)';
+                setTimeout(() => {
+                    icon.style.transform = 'scale(1)';
+                }, 300);
+            });
+        }
     };
 
     /**

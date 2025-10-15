@@ -330,7 +330,11 @@ body.dark-mode #dark-mode-toggle:hover i {
 /* IMPORTANTE: Permitir animaciones */
 .favorites-modal.modal-open .favorites-modal-content,
 .notifications-modal.modal-open .notifications-modal-content,
-.user-modal.modal-open .user-modal-content {
+.user-modal.modal-open .user-modal-content,
+/* Also allow trigger buttons to act as parent for selectors (modal-trigger-active) */
+.modal-trigger-active + .favorites-modal-content,
+.modal-trigger-active + .notifications-modal-content,
+.modal-trigger-active + .user-modal-content {
     animation: slideDownFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 
@@ -392,23 +396,44 @@ body.dark-mode #dark-mode-toggle:hover i {
 }
 
 /* ========================================
-   SIDEBAR STICKY - SIEMPRE VISIBLE
+   SIDEBAR STICKY - SIEMPRE VISIBLE (COMO EN CHECKOUT)
    ======================================== */
-/* MÁXIMA PRIORIDAD - Sobrescribir todos los demás estilos */
+/* 
+ * MÁXIMA PRIORIDAD - Sobrescribir TODOS los demás estilos
+ * Aplicar múltiples selectores con !important para forzar sticky
+ */
+
+/* Desactivar AOS completamente en sidebar - PRIMERO */
+body .shop-modern .modern-sidebar[data-aos],
+.shop-modern .modern-sidebar[data-aos].shop-sidebar,
+.modern-sidebar[data-aos] {
+    transform: none !important;
+    transition-property: opacity !important;
+    opacity: 1 !important;
+    animation: none !important;
+    will-change: auto !important;
+}
+
+/* Aplicar sticky con MÁXIMA especificidad */
+html body .shop-modern aside .modern-sidebar,
+html body .shop-modern .modern-sidebar.shop-sidebar,
 body .shop-modern .modern-sidebar,
 .shop-modern .modern-sidebar.shop-sidebar,
 .shop-modern aside .modern-sidebar,
-body .shop-modern aside .modern-sidebar {
+body .shop-modern aside .modern-sidebar,
+.modern-sidebar.shop-sidebar,
+.modern-sidebar {
     position: -webkit-sticky !important;
     position: sticky !important;
-    top: 85px !important; /* Altura del header (70px) + margen (15px) */
-    max-height: calc(100vh - 100px) !important;
+    top: 100px !important; /* Altura del header (85px) + margen (15px) */
+    max-height: calc(100vh - 120px) !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     align-self: flex-start !important;
     transform: none !important;
     animation: none !important;
     will-change: auto !important;
+    z-index: 10 !important;
     
     /* Scrollbar personalizado */
     scrollbar-width: thin;
@@ -426,33 +451,44 @@ body .modern-sidebar .sidebar-header {
 }
 
 /* Scrollbar webkit */
-body .shop-modern .modern-sidebar::-webkit-scrollbar {
+body .shop-modern .modern-sidebar::-webkit-scrollbar,
+.shop-modern .modern-sidebar::-webkit-scrollbar,
+.modern-sidebar::-webkit-scrollbar {
     width: 6px;
 }
 
-body .shop-modern .modern-sidebar::-webkit-scrollbar-track {
+body .shop-modern .modern-sidebar::-webkit-scrollbar-track,
+.shop-modern .modern-sidebar::-webkit-scrollbar-track,
+.modern-sidebar::-webkit-scrollbar-track {
     background: transparent;
 }
 
-body .shop-modern .modern-sidebar::-webkit-scrollbar-thumb {
+body .shop-modern .modern-sidebar::-webkit-scrollbar-thumb,
+.shop-modern .modern-sidebar::-webkit-scrollbar-thumb,
+.modern-sidebar::-webkit-scrollbar-thumb {
     background: rgba(102, 126, 234, 0.3);
     border-radius: 10px;
 }
 
-body .shop-modern .modern-sidebar::-webkit-scrollbar-thumb:hover {
+body .shop-modern .modern-sidebar::-webkit-scrollbar-thumb:hover,
+.shop-modern .modern-sidebar::-webkit-scrollbar-thumb:hover,
+.modern-sidebar::-webkit-scrollbar-thumb:hover {
     background: rgba(102, 126, 234, 0.5);
 }
 
 /* Dark mode scrollbar */
-body.dark-mode .shop-modern .modern-sidebar {
+body.dark-mode .shop-modern .modern-sidebar,
+body.dark-mode .modern-sidebar {
     scrollbar-color: rgba(255, 23, 68, 0.3) transparent;
 }
 
-body.dark-mode .shop-modern .modern-sidebar::-webkit-scrollbar-thumb {
+body.dark-mode .shop-modern .modern-sidebar::-webkit-scrollbar-thumb,
+body.dark-mode .modern-sidebar::-webkit-scrollbar-thumb {
     background: rgba(255, 23, 68, 0.3);
 }
 
-body.dark-mode .shop-modern .modern-sidebar::-webkit-scrollbar-thumb:hover {
+body.dark-mode .shop-modern .modern-sidebar::-webkit-scrollbar-thumb:hover,
+body.dark-mode .modern-sidebar::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 23, 68, 0.5);
 }
 
@@ -653,21 +689,34 @@ body.dark-mode .noUi-tooltip {
 /* ========================================
    CONTENEDORES - PERMITIR STICKY
    ======================================== */
+/* CRÍTICO: Los contenedores padres deben permitir sticky */
+html,
+body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+}
+
 .shop-modern {
     overflow: visible !important;
+    height: auto !important;
 }
 
 .shop-modern .container-fluid {
     overflow: visible !important;
+    height: auto !important;
 }
 
 .shop-modern .row {
     overflow: visible !important;
+    height: auto !important;
     display: flex !important;
     flex-wrap: wrap !important;
 }
 
-.shop-modern aside {
+.shop-modern aside,
+.shop-modern aside.col-lg-3,
+.shop-modern aside.col-md-4 {
     position: relative !important;
     height: auto !important;
     overflow: visible !important;
