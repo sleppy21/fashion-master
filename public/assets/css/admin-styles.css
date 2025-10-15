@@ -181,6 +181,8 @@ body::-webkit-scrollbar {
     flex-direction: column;
     background: var(--background-secondary);
     margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto; /* Permitir scroll vertical */
 }
 
 /* Back button */
@@ -798,13 +800,18 @@ body::-webkit-scrollbar {
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-md);
     border: 1px solid var(--border-color);
-    overflow: hidden;
+    overflow: visible; /* Cambiado de hidden a visible */
+    width: 100%; /* Asegurar que ocupe todo el ancho */
+    box-sizing: border-box; /* Incluir padding en el ancho */
 }
 
 .tab-pane {
     display: none;
     padding: var(--spacing-2xl);
-    min-height: 600px;
+    min-height: auto; /* Cambiado de 600px a auto */
+    overflow: visible; /* Asegurar que el contenido no se corte */
+    width: 100%; /* Asegurar que ocupe todo el ancho */
+    box-sizing: border-box; /* Incluir padding en el ancho */
 }
 
 .tab-pane.active {
@@ -2852,6 +2859,18 @@ textarea.form-control {
     /* Main content móvil */
     .admin-main {
         padding: var(--spacing-md);
+        overflow: visible; /* Asegurar que el contenido no se corte */
+    }
+    
+    /* Tab content sin restricciones de altura */
+    .tab-content {
+        overflow: visible;
+    }
+    
+    .tab-pane {
+        padding: var(--spacing-md);
+        min-height: auto;
+        overflow: visible;
     }
     
     /* Dashboard header móvil */
@@ -3029,6 +3048,18 @@ textarea.form-control {
     /* Main content móvil pequeño */
     .admin-main {
         padding: var(--spacing-sm);
+        overflow: visible; /* Asegurar visibilidad completa */
+    }
+    
+    /* Tab content sin restricciones */
+    .tab-content {
+        overflow: visible;
+    }
+    
+    .tab-pane {
+        padding: var(--spacing-sm);
+        min-height: auto;
+        overflow: visible;
     }
     
     .dashboard-header {
@@ -9137,5 +9168,79 @@ code::-webkit-scrollbar-thumb:hover {
     .flatpickr-calendar.arrowTop::after {
         left: 50% !important;
         transform: translateX(-50%);
+    }
+}
+
+/* ============================================
+   FIX PARA CONTENIDO CORTADO EN MÓVIL
+   ============================================ */
+
+/* Asegurar que TODO el contenido sea visible sin restricciones de altura */
+@media (max-width: 768px) {
+    /* Contenedor principal sin restricciones */
+    .admin-container {
+        min-height: auto;
+        height: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    
+    /* Main content sin límites */
+    .admin-main {
+        min-height: auto;
+        height: auto;
+        overflow: visible;
+    }
+    
+    /* Tab content completamente visible */
+    .tab-content {
+        overflow: visible;
+        height: auto;
+    }
+    
+    .tab-pane {
+        min-height: auto;
+        height: auto;
+        overflow: visible;
+    }
+    
+    /* Dashboard sin restricciones */
+    .dashboard-modern-wrapper {
+        overflow: visible;
+        height: auto;
+        min-height: auto;
+    }
+    
+    /* Tarjetas de info con scroll interno controlado */
+    .info-card-modern {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
+    /* Asegurar que las secciones se expandan completamente */
+    .stats-grid-modern,
+    .charts-grid-modern,
+    .info-grid-modern,
+    .quick-actions-grid {
+        overflow: visible;
+        height: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Para pantallas muy pequeñas, mismo comportamiento */
+    .admin-container,
+    .admin-main,
+    .tab-content,
+    .tab-pane,
+    .dashboard-modern-wrapper {
+        overflow: visible;
+        height: auto;
+        min-height: auto;
+    }
+    
+    /* Tarjetas más compactas pero visibles */
+    .info-card-modern {
+        max-height: 250px;
     }
 }

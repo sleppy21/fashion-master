@@ -735,10 +735,7 @@ try {
     <script src="public/assets/js/user-account-modal.js"></script>
     <script src="public/assets/js/cart-favorites-handler.js"></script>
     
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <!-- Profile Script -->
+    <!-- Profile Script (Ya no necesita SweetAlert2 - usa toast nativo) -->
     <script src="public/assets/js/profile.js"></script>
     
     <!-- Croppie JS for Avatar Upload -->
@@ -746,6 +743,9 @@ try {
     
     <!-- Avatar Upload Script -->
     <script src="public/assets/js/avatar-upload.js"></script>
+    
+    <!-- Avatar Color Extractor - Shadow dinámico basado en la imagen -->
+    <script src="public/assets/js/avatar-color-extractor.js"></script>
     
     <!-- Address Manager Script -->
     <script src="public/assets/js/address-manager.js"></script>

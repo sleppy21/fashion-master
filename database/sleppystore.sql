@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-10-2025 a las 23:30:38
+-- Tiempo de generación: 15-10-2025 a las 07:05:42
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -41,11 +41,7 @@ CREATE TABLE `carrito` (
 
 INSERT INTO `carrito` (`id_carrito`, `id_usuario`, `id_producto`, `cantidad_carrito`, `fecha_agregado_carrito`) VALUES
 (39, 7, 9, 1, '2025-10-14 15:46:23'),
-(40, 7, 8, 3, '2025-10-14 15:53:39'),
-(97, 1, 9, 1, '2025-10-14 20:30:15'),
-(98, 1, 8, 1, '2025-10-14 20:30:16'),
-(99, 1, 11, 1, '2025-10-14 20:30:17'),
-(100, 1, 6, 4, '2025-10-14 20:30:18');
+(40, 7, 8, 3, '2025-10-14 15:53:39');
 
 -- --------------------------------------------------------
 
@@ -176,6 +172,17 @@ CREATE TABLE `detalle_pedido` (
   `fecha_creacion_detalle` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Detalle de productos en cada pedido';
 
+--
+-- Volcado de datos para la tabla `detalle_pedido`
+--
+
+INSERT INTO `detalle_pedido` (`id_detalle_pedido`, `id_pedido`, `id_producto`, `nombre_producto_detalle`, `cantidad_detalle`, `precio_unitario_detalle`, `descuento_porcentaje_detalle`, `subtotal_detalle`, `fecha_creacion_detalle`) VALUES
+(1, 1, 9, 'prenda ejemplo', 1, 1.00, 1.00, 0.99, '2025-10-15 04:29:46'),
+(2, 1, 8, 'producto 1', 1, 2.00, 100.00, 0.00, '2025-10-15 04:29:46'),
+(3, 1, 11, 'producto de prueba', 1, 34.43, 16.00, 28.92, '2025-10-15 04:29:46'),
+(4, 1, 6, 'Zapatillas Adidas Stan Smith', 4, 199.90, 5.00, 759.62, '2025-10-15 04:29:46'),
+(5, 2, 9, 'prenda ejemplo', 1, 1.00, 1.00, 0.99, '2025-10-15 04:36:13');
+
 -- --------------------------------------------------------
 
 --
@@ -186,6 +193,8 @@ CREATE TABLE `direccion` (
   `id_direccion` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
   `nombre_direccion` varchar(100) NOT NULL,
+  `telefono_direccion` varchar(20) DEFAULT NULL,
+  `direccion_completa_direccion` text NOT NULL,
   `departamento_direccion` varchar(100) NOT NULL,
   `provincia_direccion` varchar(100) NOT NULL,
   `distrito_direccion` varchar(100) NOT NULL,
@@ -194,6 +203,13 @@ CREATE TABLE `direccion` (
   `status_direccion` tinyint(1) DEFAULT 1,
   `fecha_creacion_direccion` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `direccion`
+--
+
+INSERT INTO `direccion` (`id_direccion`, `id_usuario`, `nombre_direccion`, `telefono_direccion`, `direccion_completa_direccion`, `departamento_direccion`, `provincia_direccion`, `distrito_direccion`, `referencia_direccion`, `es_principal`, `status_direccion`, `fecha_creacion_direccion`) VALUES
+(1, 1, 'Administrador Principal', '+51987654321', '6666666, Olleros, Chachapoyas, Amazonas', 'Amazonas', 'Chachapoyas', 'Olleros', NULL, 1, 1, '2025-10-15 04:36:13');
 
 -- --------------------------------------------------------
 
@@ -215,8 +231,7 @@ CREATE TABLE `favorito` (
 INSERT INTO `favorito` (`id_favorito`, `id_usuario`, `id_producto`, `fecha_agregado_favorito`) VALUES
 (632, 7, 2, '2025-10-10 21:44:01'),
 (653, 7, 6, '2025-10-13 03:29:39'),
-(721, 7, 8, '2025-10-14 17:40:13'),
-(822, 1, 9, '2025-10-14 19:51:16');
+(721, 7, 8, '2025-10-14 17:40:13');
 
 -- --------------------------------------------------------
 
@@ -342,7 +357,12 @@ INSERT INTO `movimiento_stock` (`id_movimiento`, `id_producto`, `id_usuario`, `t
 (64, 3, NULL, 'entrada', 1, 12, 13, 'Actualización automática de stock', NULL, '2025-10-14 01:18:30', NULL),
 (67, 1, NULL, 'entrada', 1, 0, 1, 'Actualización automática de stock', NULL, '2025-10-14 20:07:28', NULL),
 (68, 1, NULL, 'entrada', 1, 1, 2, 'Actualización automática de stock', NULL, '2025-10-14 20:07:50', NULL),
-(69, 1, NULL, 'entrada', 1, 2, 3, 'Actualización automática de stock', NULL, '2025-10-14 20:11:12', NULL);
+(69, 1, NULL, 'entrada', 1, 2, 3, 'Actualización automática de stock', NULL, '2025-10-14 20:11:12', NULL),
+(70, 9, NULL, 'salida', -1, 67, 66, 'Actualización automática de stock', NULL, '2025-10-15 04:29:46', NULL),
+(71, 8, NULL, 'salida', -1, 6, 5, 'Actualización automática de stock', NULL, '2025-10-15 04:29:46', NULL),
+(72, 11, NULL, 'salida', -1, 110, 109, 'Actualización automática de stock', NULL, '2025-10-15 04:29:46', NULL),
+(73, 6, NULL, 'salida', -4, 4, 0, 'Actualización automática de stock', NULL, '2025-10-15 04:29:46', NULL),
+(74, 9, NULL, 'salida', -1, 66, 65, 'Actualización automática de stock', NULL, '2025-10-15 04:36:13', NULL);
 
 -- --------------------------------------------------------
 
@@ -401,7 +421,13 @@ INSERT INTO `notificacion` (`id_notificacion`, `id_usuario`, `titulo_notificacio
 (31, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 1, '2025-10-14 17:22:54', '2025-10-14 18:31:08', 'baja', 'eliminado'),
 (32, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-14 17:29:16', NULL, 'baja', 'activo'),
 (33, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 1, '2025-10-14 17:46:13', '2025-10-14 18:30:23', 'baja', 'eliminado'),
-(34, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-14 20:07:22', NULL, 'baja', 'activo');
+(34, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-14 20:07:22', NULL, 'baja', 'activo'),
+(35, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 04:26:59', NULL, 'baja', 'activo'),
+(36, 1, '??? Pedido #1 confirmado', '??Gracias por tu compra, Administrador! Tu pedido por $789.53 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=1', 0, '2025-10-15 04:29:46', NULL, 'alta', 'activo'),
+(37, 7, '?????? ????ltimas unidades! - producto 1', 'El producto \"producto 1\" que tienes en favoritos solo tiene 5 unidades disponibles. ??Aprovecha antes de que se agote!', 'advertencia', 'product-details.php?id=8', 0, '2025-10-15 04:29:46', NULL, 'alta', 'activo'),
+(38, 1, '??? Pedido #2 confirmado', '??Gracias por tu compra, Administrador! Tu pedido por $15.99 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=2', 0, '2025-10-15 04:36:13', NULL, 'alta', 'activo'),
+(39, 7, '👋 Buenos días, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 04:51:05', NULL, 'baja', 'activo'),
+(40, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 04:51:18', NULL, 'baja', 'activo');
 
 -- --------------------------------------------------------
 
@@ -484,6 +510,14 @@ CREATE TABLE `pedido` (
   `fecha_entrega` timestamp NULL DEFAULT NULL,
   `fecha_actualizacion` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Almacena informaci??n principal de los pedidos realizados';
+
+--
+-- Volcado de datos para la tabla `pedido`
+--
+
+INSERT INTO `pedido` (`id_pedido`, `id_usuario`, `nombre_cliente_pedido`, `email_cliente_pedido`, `telefono_cliente_pedido`, `dni_pedido`, `ruc_pedido`, `direccion_envio_pedido`, `departamento_pedido`, `provincia_pedido`, `distrito_pedido`, `tipo_comprobante_pedido`, `razon_social_pedido`, `metodo_pago_pedido`, `subtotal_pedido`, `costo_envio_pedido`, `total_pedido`, `notas_pedido`, `estado_pedido`, `numero_tracking`, `fecha_pedido`, `fecha_pago`, `fecha_envio`, `fecha_entrega`, `fecha_actualizacion`) VALUES
+(1, 1, 'Administrador Principal', 'admin@sleppystore.com', '+519876543216', '66666666', NULL, '5676575576, Balsas, Chachapoyas, Amazonas', 'Amazonas', 'Chachapoyas', 'Balsas', 'boleta', NULL, 'yape', 789.53, 0.00, 789.53, NULL, 'pendiente', NULL, '2025-10-15 04:29:46', NULL, NULL, NULL, NULL),
+(2, 1, 'Administrador Principal', 'admin@sleppystore.com', '+51987654321', '66666666', NULL, '6666666, Olleros, Chachapoyas, Amazonas', 'Amazonas', 'Chachapoyas', 'Olleros', 'boleta', NULL, 'tarjeta', 0.99, 15.00, 15.99, NULL, 'pendiente', NULL, '2025-10-15 04:36:13', NULL, NULL, NULL, NULL);
 
 --
 -- Disparadores `pedido`
@@ -625,11 +659,11 @@ INSERT INTO `producto` (`id_producto`, `nombre_producto`, `codigo`, `descripcion
 (3, 'dos amigues :\'D', 'DOS-HMX-FFF', 'Zapatillas deportivas con cámara de aire', 17, 4, 299.90, 15.00, 'Unisex', 1, 13, 20, 300, 'product_68e9a4892f2a9.jpg', '/fashion-master/public/assets/img/products/product_68e9a4892f2a9.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-14 01:18:30'),
 (4, 'Vestido Casual Zara', 'VES-ZARA-001', 'Vestido elegante para ocasiones especiales', 4, 3, 159.90, 20.00, 'F', 1, 8, 20, 300, 'product_68ed1f1e21a90.jpg', '/fashion-master/public/assets/img/products/product_68ed1f1e21a90.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-13 21:54:14'),
 (5, 'Camisa Formal H&M', 'CAM-HMX-ACC', 'Camisa de vestir para oficina', 4, 4, 69.90, 50.00, 'M', 1, 57, 20, 300, 'product_68ee96914e8d1.jpg', '/fashion-master/public/assets/img/products/product_68ee96914e8d1.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-14 18:29:37'),
-(6, 'Zapatillas Adidas Stan Smith', 'ZAP-ADI-ZAP', 'Zapatillas clásicas de tenis', 3, 2, 199.90, 5.00, 'Unisex', 1, 4, 20, 300, 'product_68ee969cc8117.jpg', '/fashion-master/public/assets/img/products/product_68ee969cc8117.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-14 18:29:48'),
-(8, 'producto 1', 'sdadadsa', 'nada', 4, 4, 2.00, 100.00, 'Unisex', 0, 6, 20, 300, 'product_68e8578c49ec2.jpg', '/fashion-master/public/assets/img/products/product_68e8578c49ec2.jpg', 1, 'activo', '2025-10-03 04:46:28', '2025-10-13 17:35:39'),
-(9, 'prenda ejemplo', '2323', 'prenda comun', 1, 4, 1.00, 1.00, 'Unisex', 0, 67, 20, 300, 'product_68e95d0cf1494.jpg', '/fashion-master/public/assets/img/products/product_68e95d0cf1494.jpg', 1, 'activo', '2025-10-05 21:25:31', '2025-10-13 17:35:39'),
+(6, 'Zapatillas Adidas Stan Smith', 'ZAP-ADI-ZAP', 'Zapatillas clásicas de tenis', 3, 2, 199.90, 5.00, 'Unisex', 1, 0, 20, 300, 'product_68ee969cc8117.jpg', '/fashion-master/public/assets/img/products/product_68ee969cc8117.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-15 04:29:46'),
+(8, 'producto 1', 'sdadadsa', 'nada', 4, 4, 2.00, 100.00, 'Unisex', 0, 5, 20, 300, 'product_68e8578c49ec2.jpg', '/fashion-master/public/assets/img/products/product_68e8578c49ec2.jpg', 1, 'activo', '2025-10-03 04:46:28', '2025-10-15 04:29:46'),
+(9, 'prenda ejemplo', '2323', 'prenda comun', 1, 4, 1.00, 1.00, 'Unisex', 0, 65, 20, 300, 'product_68e95d0cf1494.jpg', '/fashion-master/public/assets/img/products/product_68e95d0cf1494.jpg', 1, 'activo', '2025-10-05 21:25:31', '2025-10-15 04:36:13'),
 (10, 'carrito a control remoto :c', 'CAR-ADI-HOL', 'un carrito bonito\r\n-pq si\r\n-me gusta\r\n-no es de geys\r\n-a fucking control remoto :0', 16, 2, 800.00, 15.00, 'Unisex', 0, 7, 20, 300, 'product_68ed2ee63865f.jpg', '/fashion-master/public/assets/img/products/product_68ed2ee63865f.jpg', 1, 'inactivo', '2025-10-13 16:55:02', '2025-10-13 22:07:35'),
-(11, 'producto de prueba', 'PRO-LEV-HOL', 'un productiño de pruebiña', 16, 5, 34.43, 16.00, 'Unisex', 0, 110, 20, 300, 'product_68ed35cfee743.jpg', '/fashion-master/public/assets/img/products/product_68ed35cfee743.jpg', 1, 'activo', '2025-10-13 17:24:31', '2025-10-13 17:35:39');
+(11, 'producto de prueba', 'PRO-LEV-HOL', 'un productiño de pruebiña', 16, 5, 34.43, 16.00, 'Unisex', 0, 109, 20, 300, 'product_68ed35cfee743.jpg', '/fashion-master/public/assets/img/products/product_68ed35cfee743.jpg', 1, 'activo', '2025-10-13 17:24:31', '2025-10-15 04:29:46');
 
 --
 -- Disparadores `producto`
@@ -857,13 +891,13 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `username_usuario`, `password_usuario`, `email_usuario`, `nombre_usuario`, `apellido_usuario`, `telefono_usuario`, `fecha_nacimiento`, `genero_usuario`, `avatar_usuario`, `fecha_registro`, `ultimo_acceso`, `status_usuario`, `verificado_usuario`, `rol_usuario`, `estado_usuario`) VALUES
-(1, 'admin', 'admin123', 'admin@sleppystore.com', 'Administrador', 'Principal', '+51987654321', '1990-01-15', 'M', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', '2025-10-14 20:07:22', 1, 1, 'admin', 'activo'),
+(1, 'admin', 'admin123', 'admin@sleppystore.com', 'Administrador', 'Principal', '+5198765432122', '1990-01-15', 'M', 'avatar_1_1760503501.jpg', '2025-09-30 19:46:43', '2025-10-15 04:51:18', 1, 1, 'admin', 'activo'),
 (2, 'juan_perez', 'juan123', 'juan@email.com', 'Juan', 'Pérez', '+51912345678', '1992-03-20', 'M', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
 (3, 'maria_garcia', 'maria123', 'maria@email.com', 'María', 'García', '+51923456789', '1988-07-10', 'F', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
 (4, 'carlos_lopez', 'carlos123', 'carlos@email.com', 'Carlos', 'López', '+51934567890', '1995-11-25', 'M', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 0, 'cliente', 'activo'),
 (5, 'ana_martinez', 'ana123', 'ana@email.com', 'Ana', 'Martínez', '+51945678901', '1993-05-08', 'F', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'vendedor', 'activo'),
 (6, 'sofia_torres', 'sofia123', 'sofia@email.com', 'Sofía', 'Torres', '+51967890123', '1996-02-14', 'F', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
-(7, 'julito', '123456', 'spiritboom672@gmail.com', 'Julito', 'sleppy21', '986079838', '2006-04-21', 'M', 'public/assets/img/profiles/default-avatar.png', '2025-10-07 18:11:51', '2025-10-14 17:29:16', 1, 0, 'cliente', 'activo');
+(7, 'julito', '123456', 'spiritboom672@gmail.com', 'Julito', 'sleppy21', '986079838', '2006-04-21', 'M', 'public/assets/img/profiles/default-avatar.png', '2025-10-07 18:11:51', '2025-10-15 04:51:05', 1, 0, 'cliente', 'activo');
 
 --
 -- Disparadores `usuario`
@@ -1087,7 +1121,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `carrito`
 --
 ALTER TABLE `carrito`
-  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria`
@@ -1117,19 +1151,19 @@ ALTER TABLE `chatbot_mensaje`
 -- AUTO_INCREMENT de la tabla `detalle_pedido`
 --
 ALTER TABLE `detalle_pedido`
-  MODIFY `id_detalle_pedido` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detalle_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `direccion`
 --
 ALTER TABLE `direccion`
-  MODIFY `id_direccion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_direccion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `favorito`
 --
 ALTER TABLE `favorito`
-  MODIFY `id_favorito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=847;
+  MODIFY `id_favorito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=849;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_pedido`
@@ -1147,13 +1181,13 @@ ALTER TABLE `marca`
 -- AUTO_INCREMENT de la tabla `movimiento_stock`
 --
 ALTER TABLE `movimiento_stock`
-  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT de la tabla `notificacion`
 --
 ALTER TABLE `notificacion`
-  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT de la tabla `orden`
@@ -1171,7 +1205,7 @@ ALTER TABLE `password_reset_tokens`
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`

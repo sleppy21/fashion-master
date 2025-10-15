@@ -248,7 +248,8 @@
                         <img src="${imagenUrl}" 
                              alt="${product.nombre_producto}"
                              loading="lazy"
-                             class="product-image">
+                             class="product-image"
+                             crossorigin="anonymous">
                     </a>
                     
                     <!-- Badges superiores -->

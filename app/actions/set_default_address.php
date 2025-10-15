@@ -40,12 +40,16 @@ try {
     }
 
     // Quitar la marca de predeterminada de todas las direcciones del usuario
-    $stmt1 = $conexion->prepare("UPDATE direccion SET es_principal = 0 WHERE id_usuario = ?");
-    $stmt1->execute([$id_usuario]);
+    executeQuery(
+        "UPDATE direccion SET es_principal = 0 WHERE id_usuario = ?",
+        [$id_usuario]
+    );
 
     // Establecer la nueva dirección como predeterminada
-    $stmt2 = $conexion->prepare("UPDATE direccion SET es_principal = 1 WHERE id_direccion = ? AND id_usuario = ?");
-    $stmt2->execute([$id_direccion, $id_usuario]);
+    executeQuery(
+        "UPDATE direccion SET es_principal = 1 WHERE id_direccion = ? AND id_usuario = ?",
+        [$id_direccion, $id_usuario]
+    );
 
     echo json_encode([
         'success' => true,
@@ -53,12 +57,9 @@ try {
     ]);
 
 } catch (Exception $e) {
-    if ($conexion->inTransaction()) {
-        $conexion->rollBack();
-    }
     error_log("Error al establecer dirección predeterminada: " . $e->getMessage());
     echo json_encode([
         'success' => false,
-        'error' => 'Error al establecer dirección predeterminada'
+        'error' => 'Error al establecer dirección predeterminada: ' . $e->getMessage()
     ]);
 }

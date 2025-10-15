@@ -43,7 +43,8 @@ function renderProductCard($product, $is_favorite = false, $user_logged = false,
                     <img src="<?= htmlspecialchars($image_url) ?>" 
                          alt="<?= htmlspecialchars($product['nombre_producto']) ?>"
                          loading="lazy"
-                         class="product-image">
+                         class="product-image"
+                         crossorigin="anonymous">
                 </a>
                 
                 <!-- Badges superiores -->

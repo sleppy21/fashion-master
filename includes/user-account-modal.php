@@ -28,10 +28,40 @@ if($usuario_logueado):
         <!-- Header con Avatar -->
         <div class="user-modal-header">
             <div class="user-avatar-container">
-                <div class="user-avatar-circle">
-                    <div class="avatar-initial">
-                        <?php echo strtoupper(substr($usuario_logueado['nombre_usuario'], 0, 1)); ?>
-                    </div>
+                <div class="user-avatar-circle" id="modal-user-avatar">
+                    <?php 
+                    // Construir ruta del avatar igual que en profile.php
+                    $modal_avatar_path = 'public/assets/img/profiles/default-avatar.png';
+                    if (!empty($usuario_logueado['avatar_usuario'])) {
+                        // Si la ruta ya incluye el directorio completo
+                        if (strpos($usuario_logueado['avatar_usuario'], 'public/assets/img/profiles/') !== false) {
+                            $modal_avatar_path = $usuario_logueado['avatar_usuario'];
+                        }
+                        // Si solo es el nombre del archivo
+                        elseif ($usuario_logueado['avatar_usuario'] !== 'default-avatar.png') {
+                            $modal_avatar_path = 'public/assets/img/profiles/' . $usuario_logueado['avatar_usuario'];
+                        }
+                    }
+                    
+                    // Verificar si existe una imagen personalizada
+                    $tiene_avatar_custom = !empty($usuario_logueado['avatar_usuario']) && 
+                                          $usuario_logueado['avatar_usuario'] !== 'default-avatar.png' &&
+                                          file_exists($modal_avatar_path);
+                    ?>
+                    
+                    <?php if($tiene_avatar_custom): ?>
+                        <!-- Mostrar imagen del avatar -->
+                        <img src="<?php echo $modal_avatar_path; ?>" 
+                             alt="Avatar" 
+                             class="modal-avatar-img" 
+                             crossorigin="anonymous">
+                    <?php else: ?>
+                        <!-- Mostrar inicial si no tiene avatar -->
+                        <div class="avatar-initial">
+                            <?php echo strtoupper(substr($usuario_logueado['nombre_usuario'], 0, 1)); ?>
+                        </div>
+                    <?php endif; ?>
+                    
                     <div class="avatar-status"></div>
                 </div>
             </div>

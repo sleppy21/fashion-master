@@ -232,7 +232,10 @@ $page_title = $producto['nombre_producto'];
                     <div class="product__details__pic">
                         <div class="product__details__slider__content">
                             <div class="product__details__pic__slider owl-carousel">
-                                <img class="product__big__img" src="<?php echo htmlspecialchars($producto['url_imagen_producto']); ?>" alt="<?php echo htmlspecialchars($producto['nombre_producto']); ?>">
+                                <img class="product__big__img" 
+                                     src="<?php echo htmlspecialchars($producto['url_imagen_producto']); ?>" 
+                                     alt="<?php echo htmlspecialchars($producto['nombre_producto']); ?>"
+                                     crossorigin="anonymous">
                             </div>
                         </div>
                     </div>
@@ -638,6 +641,9 @@ $page_title = $producto['nombre_producto'];
     <!-- Cart & Favorites Handler -->
     <script src="public/assets/js/cart-favorites-handler.js"></script>
     
+    <!-- Image Color Extractor -->
+    <script src="public/assets/js/image-color-extractor.js"></script>
+    
     <!-- User Account Modal -->
     <script src="public/assets/js/user-account-modal.js"></script>
     
@@ -706,6 +712,16 @@ $page_title = $producto['nombre_producto'];
             max-width: 100%;
             height: auto;
             border-radius: 12px;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        /* Estilos para imagen principal con shadow dinámico */
+        .product__big__img {
+            border-radius: 12px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
         }
 
         /* Dar más espacio al texto del producto */

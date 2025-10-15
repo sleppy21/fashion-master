@@ -351,6 +351,7 @@ $page_title = "Tienda";
     <script src="public/assets/js/cart-favorites-handler.js"></script>
     <script src="public/assets/js/dark-mode.js"></script>
     <script src="public/assets/js/scroll-position-memory.js"></script>
+    <script src="public/assets/js/image-color-extractor.js"></script>
     
     <!-- AOS Animations -->
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>

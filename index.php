@@ -482,7 +482,10 @@ try {
                             <div class="product-badge">-<?php echo round($producto['descuento_porcentaje_producto']); ?>%</div>
                             <?php endif; ?>
                             
-                            <img src="<?php echo htmlspecialchars($producto['url_imagen_producto']); ?>" alt="<?php echo htmlspecialchars($producto['nombre_producto']); ?>" class="product-image">
+                            <img src="<?php echo htmlspecialchars($producto['url_imagen_producto']); ?>" 
+                                 alt="<?php echo htmlspecialchars($producto['nombre_producto']); ?>" 
+                                 class="product-image"
+                                 crossorigin="anonymous">
                             
                             <div class="product-info">
                                 <?php if($producto['total_resenas'] > 0): ?>
@@ -541,7 +544,10 @@ try {
                         <div class="product-card" style="position: relative;">
                             <div class="product-badge">-<?php echo round($producto['descuento_porcentaje_producto']); ?>%</div>
                             
-                            <img src="<?php echo htmlspecialchars($producto['url_imagen_producto']); ?>" alt="<?php echo htmlspecialchars($producto['nombre_producto']); ?>" class="product-image">
+                            <img src="<?php echo htmlspecialchars($producto['url_imagen_producto']); ?>" 
+                                 alt="<?php echo htmlspecialchars($producto['nombre_producto']); ?>" 
+                                 class="product-image"
+                                 crossorigin="anonymous">
                             
                             <div class="product-info">
                                 <h3 class="product-name"><?php echo htmlspecialchars($producto['nombre_producto']); ?></h3>
@@ -672,6 +678,7 @@ try {
         <!-- Scripts para modales -->
         <script src="public/assets/js/cart-favorites-handler.js"></script>
         <script src="public/assets/js/user-account-modal.js"></script>
+        <script src="public/assets/js/image-color-extractor.js"></script>
     <?php endif; ?>
     
     <?php include 'includes/dark-mode-assets.php'; ?>
