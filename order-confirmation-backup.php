@@ -32,8 +32,8 @@ if (isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Obtener ID del pedido desde el parámetro 'order'
-$id_pedido = isset($_GET['order']) ? (int)$_GET['order'] : 0;
+// Obtener ID del pedido
+$id_pedido = isset($_GET['pedido']) ? (int)$_GET['pedido'] : 0;
 
 if ($id_pedido <= 0) {
     header('Location: index.php');
@@ -379,75 +379,6 @@ $tipo_comprobante_texto = $tipos_comprobante[$pedido['tipo_comprobante_pedido']]
             color: #856404;
             margin-bottom: 8px;
         }
-        
-        /* Indicadores de Paso del Checkout */
-        .checkout-progress {
-            background: white;
-            padding: 30px 0;
-            margin-bottom: 40px;
-        }
-        .progress-steps {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .progress-step {
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-        .step-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #2ecc71;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 20px;
-            z-index: 2;
-            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
-        }
-        .step-label {
-            position: absolute;
-            top: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            font-weight: 600;
-            color: #2ecc71;
-            font-size: 14px;
-        }
-        .step-connector {
-            width: 120px;
-            height: 3px;
-            background: #2ecc71;
-            margin: 0 -5px;
-            z-index: 1;
-        }
-        
-        @media (max-width: 768px) {
-            .progress-steps {
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                padding: 10px 0;
-            }
-            .step-circle {
-                width: 40px;
-                height: 40px;
-                font-size: 16px;
-            }
-            .step-connector {
-                width: 60px;
-            }
-            .step-label {
-                font-size: 11px;
-            }
-        }
     </style>
 </head>
 
@@ -462,33 +393,6 @@ $tipo_comprobante_texto = $tipos_comprobante[$pedido['tipo_comprobante_pedido']]
             <p>Gracias por tu compra. Hemos recibido tu pedido correctamente.</p>
             <div class="order-number">
                 Pedido #<?php echo str_pad($pedido['id_pedido'], 6, '0', STR_PAD_LEFT); ?>
-            </div>
-        </div>
-    </div>
-
-    <!-- Indicadores de Progreso del Checkout -->
-    <div class="checkout-progress">
-        <div class="container">
-            <div class="progress-steps">
-                <div class="progress-step">
-                    <div class="step-circle"><i class="fa fa-check"></i></div>
-                    <div class="step-label">1. Carrito</div>
-                </div>
-                <div class="step-connector"></div>
-                <div class="progress-step">
-                    <div class="step-circle"><i class="fa fa-check"></i></div>
-                    <div class="step-label">2. Información</div>
-                </div>
-                <div class="step-connector"></div>
-                <div class="progress-step">
-                    <div class="step-circle"><i class="fa fa-check"></i></div>
-                    <div class="step-label">3. Pago</div>
-                </div>
-                <div class="step-connector"></div>
-                <div class="progress-step">
-                    <div class="step-circle"><i class="fa fa-check"></i></div>
-                    <div class="step-label">4. Confirmación</div>
-                </div>
             </div>
         </div>
     </div>

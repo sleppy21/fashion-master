@@ -71,22 +71,65 @@ body.dark-mode .header__right {
     background: transparent !important;
 }
 
-body.dark-mode .header__right__auth {
-    border-right-color: var(--dark-header-border) !important;
+/* Avatar del usuario en el header */
+body.dark-mode .header-user-avatar {
+    background: none !important;
+    border: none !important;
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
-body.dark-mode .header__right__auth a {
+body.dark-mode .header-user-avatar:hover {
+    box-shadow: 0 4px 16px rgba(201, 166, 124, 0.4) !important;
+}
+
+body.dark-mode .header-user-avatar .avatar-initial {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    font-size: 16px !important;
+    border-radius: 50%;
+}
+
+body.dark-mode .header-user-avatar .avatar-image {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body.dark-mode .avatar-status-dot {
+    background: #00ff88 !important;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.7) !important;
+    width: 11px;
+    height: 11px;
+    border: 2.5px solid white;
+}
+
+body.dark-mode .btn-login-header {
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.3), rgba(139, 0, 139, 0.3)) !important;
     color: var(--dark-text-primary) !important;
-    transition: all 0.3s ease !important;
+    border: 1px solid var(--dark-header-border) !important;
 }
 
-body.dark-mode .header__right__auth a:hover {
-    color: var(--dark-accent-hover) !important;
-    background: rgba(220, 20, 60, 0.1) !important;
-}
-
-body.dark-mode .header__right__auth a i {
-    color: var(--dark-text-secondary) !important;
+body.dark-mode .btn-login-header:hover {
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.5), rgba(139, 0, 139, 0.5)) !important;
+    border-color: var(--dark-accent-hover) !important;
+    box-shadow: 0 4px 12px rgba(220, 20, 60, 0.4) !important;
 }
 
 /* Iconos del header */
@@ -109,10 +152,10 @@ body.dark-mode .header__right__widget span {
 
 /* Tips (badges de notificación) - mantener negro con blanco */
 body.dark-mode .header__right__widget .tip {
-    background: #000000 !important;
+    background: #ca1515 !important;
     color: #ffffff !important;
-    border: 1px solid var(--dark-accent) !important;
-    box-shadow: 0 0 8px rgba(220, 20, 60, 0.4) !important;
+    border: none !important;
+    box-shadow: 0 3px 6px rgba(202, 21, 21, 0.5) !important;
 }
 
 /* Botón de hamburguesa */
@@ -314,10 +357,10 @@ body.dark-mode .offcanvas__widget li span:hover {
 }
 
 body.dark-mode .offcanvas__widget .tip {
-    background: #000000 !important;
+    background: #ca1515 !important;
     color: #ffffff !important;
-    border: 1px solid var(--dark-accent) !important;
-    box-shadow: 0 0 8px rgba(220, 20, 60, 0.4) !important;
+    border: none !important;
+    box-shadow: 0 3px 6px rgba(202, 21, 21, 0.5) !important;
 }
 
 /* Botones de autenticación en offcanvas */

@@ -50,6 +50,7 @@ $page_title = "Tienda";
     <link rel="stylesheet" href="public/assets/css/shop/shop-filters-modern.css?v=2.0">
     <link rel="stylesheet" href="public/assets/css/shop/shop-sticky-header.css?v=<?= time() ?>">
     <link rel="stylesheet" href="public/assets/css/shop/fix-grid.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="public/assets/css/shop/empty-state.css?v=<?= time() ?>">
     
     <!-- noUiSlider CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
@@ -122,18 +123,21 @@ $page_title = "Tienda";
                         <div class="filter-section">
                             <h3 class="filter-title">
                                 <i class="fa fa-th-large"></i> Categorías
+                                <small style="font-size: 11px; opacity: 0.7;">(Múltiple)</small>
                             </h3>
                             <div class="filter-buttons">
-                                <button class="filter-chip <?= !$filters['categoria'] ? 'active' : '' ?>" 
-                                        data-filter-type="categoria" 
-                                        data-filter-value="null">
-                                    <i class="fa fa-th"></i>
-                                    <span>Todas</span>
-                                </button>
-                                <?php foreach($categorias as $cat): ?>
-                                    <button class="filter-chip <?= $filters['categoria'] == $cat['id_categoria'] ? 'active' : '' ?>" 
+                                <?php foreach($categorias as $cat): 
+                                    $is_active = (is_array($filters['categoria']) && in_array($cat['id_categoria'], $filters['categoria']));
+                                ?>
+                                    <button class="filter-chip <?= $is_active ? 'active' : '' ?>" 
                                             data-filter-type="categoria" 
-                                            data-filter-value="<?= $cat['id_categoria'] ?>">
+                                            data-filter-value="<?= $cat['id_categoria'] ?>"
+                                            data-multi-select="true">
+                                        <?php if (!empty($cat['url_imagen_categoria'])): ?>
+                                            <img src="<?= $cat['url_imagen_categoria'] ?>" 
+                                                 alt="<?= htmlspecialchars($cat['nombre_categoria']) ?>"
+                                                 class="brand-logo">
+                                        <?php endif; ?>
                                         <span><?= htmlspecialchars($cat['nombre_categoria']) ?></span>
                                     </button>
                                 <?php endforeach; ?>
@@ -148,14 +152,13 @@ $page_title = "Tienda";
                             <div class="filter-buttons">
                                 <?php 
                                 $generos = [
-                                    'all' => ['icon' => 'users', 'label' => 'Todos'],
                                     'hombre' => ['icon' => 'mars', 'label' => 'Hombre'],
                                     'mujer' => ['icon' => 'venus', 'label' => 'Mujer'],
                                     'unisex' => ['icon' => 'genderless', 'label' => 'Unisex']
                                 ];
                                 
                                 foreach($generos as $value => $genero): 
-                                    $is_active = ($filters['genero'] == $value) || (!$filters['genero'] && $value == 'all');
+                                    $is_active = ($filters['genero'] == $value);
                                 ?>
                                     <button class="filter-chip <?= $is_active ? 'active' : '' ?>" 
                                             data-filter-type="genero" 
@@ -313,13 +316,34 @@ $page_title = "Tienda";
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <div class="col-12">
-                                    <div class="no-products-message" data-aos="fade-up">
-                                        <i class="fa fa-search"></i>
-                                        <h3>No se encontraron productos</h3>
-                                        <p>Intenta ajustar los filtros o buscar algo diferente</p>
-                                        <button class="btn-primary" onclick="limpiarFiltros()">
-                                            <i class="fa fa-redo"></i> Limpiar filtros
-                                        </button>
+                                    <div class="no-products-found" data-aos="fade-up">
+                                        <div class="empty-state-icon">
+                                            <i class="fa fa-shopping-bag"></i>
+                                            <div class="icon-circle"></div>
+                                        </div>
+                                        <h2 class="empty-state-title">No se encontraron productos</h2>
+                                        <p class="empty-state-description">
+                                            Intenta ajustar los filtros o buscar algo diferente.<br>
+                                            Explora nuestro catálogo completo para descubrir productos increíbles.
+                                        </p>
+                                        <div class="empty-state-actions">
+                                            <button class="btn-clear-filters" onclick="limpiarFiltros()">
+                                                <i class="fa fa-redo"></i>
+                                                <span>Limpiar filtros</span>
+                                            </button>
+                                            <a href="shop.php" class="btn-view-all">
+                                                <i class="fa fa-th"></i>
+                                                <span>Ver todos los productos</span>
+                                            </a>
+                                        </div>
+                                        <div class="empty-state-suggestions">
+                                            <p class="suggestions-title">Sugerencias:</p>
+                                            <ul class="suggestions-list">
+                                                <li><i class="fa fa-check-circle"></i> Verifica la ortografía de tu búsqueda</li>
+                                                <li><i class="fa fa-check-circle"></i> Usa términos más generales</li>
+                                                <li><i class="fa fa-check-circle"></i> Prueba con menos filtros activos</li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             <?php endif; ?>

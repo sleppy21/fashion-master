@@ -583,14 +583,12 @@ body.dark-mode .sidebar-header .btn-clear:hover {
    ESTADOS DE CARGA Y VACÍO
    ======================================== */
 .loading-products,
-.no-products-message,
 .error-message {
     text-align: center;
     padding: 80px 20px;
 }
 
 .loading-products i,
-.no-products-message i,
 .error-message i {
     font-size: 64px;
     color: var(--shop-primary);
@@ -598,7 +596,6 @@ body.dark-mode .sidebar-header .btn-clear:hover {
 }
 
 .loading-products h3,
-.no-products-message h3,
 .error-message h3 {
     font-size: 24px;
     font-weight: 700;
@@ -607,12 +604,13 @@ body.dark-mode .sidebar-header .btn-clear:hover {
 }
 
 .loading-products p,
-.no-products-message p,
 .error-message p {
     color: #6c757d;
     font-size: 16px;
     margin-bottom: 24px;
 }
+
+/* Estilos para empty state movidos a empty-state.css */
 
 .spinner-modern {
     width: 50px;

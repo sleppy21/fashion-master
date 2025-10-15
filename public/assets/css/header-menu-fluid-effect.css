@@ -1,0 +1,252 @@
+/* ============================================
+   EFECTO FLUIDO SIMPLE PARA MENÚ DEL HEADER
+   ============================================ */
+
+.header__menu {
+    position: relative;
+}
+
+.header__menu ul {
+    position: relative;
+    z-index: 10;
+}
+
+.header__menu li {
+    position: relative;
+}
+
+.header__menu li a {
+    position: relative;
+    display: inline-block;
+    padding: 10px 16px;
+    transition: color 0.3s ease;
+    z-index: 15;
+}
+
+/* Indicador fluido */
+.menu-indicator {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, transparent, #ca8a04, transparent) !important;
+    border-radius: 3px !important;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    box-shadow: 0 0 10px rgba(202, 138, 4, 0.6) !important;
+    z-index: 5 !important;
+}
+
+/* OVERRIDE - Eliminar efectos antiguos */
+.header__menu ul li a::after,
+.header__menu ul li a::before,
+.header__menu ul li a:after,
+.header__menu ul li a:before,
+.header__menu ul li.active a::after,
+.header__menu ul li.active a:after,
+.header__menu ul li:hover a::after,
+.header__menu ul li:hover a:after {
+    display: none !important;
+    content: none !important;
+}
+
+/* Sin cambio de color en hover */
+.header__menu ul li a:hover,
+.header__menu ul li a:focus {
+    color: inherit !important;
+}
+
+body.dark-mode .header__menu ul li a:hover,
+body.dark-mode .header__menu ul li a:focus {
+    color: inherit !important;
+}
+
+/* Dark mode - indicador dorado/bronce */
+body.dark-mode .menu-indicator {
+    background: linear-gradient(90deg, transparent, #c9a67c, transparent) !important;
+    box-shadow: 0 0 10px rgba(201, 166, 124, 0.6) !important;
+}
+
+
+.menu-fluid-blob {
+    position: absolute !important;
+    top: 50% !important;
+    left: 0 !important;
+    transform: translateY(-50%) !important;
+    width: 100px !important;
+    height: 45px !important;
+    background: linear-gradient(135deg, 
+        rgba(202, 138, 4, 0.18) 0%, 
+        rgba(202, 138, 4, 0.32) 50%,
+        rgba(202, 138, 4, 0.18) 100%) !important;
+    border-radius: 50px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    z-index: 99999 !important; /* very high to ensure visibility */
+    
+    /* Transición fluida compleja con múltiples propiedades */
+    transition: 
+        left 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+        width 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+        opacity 0.3s ease-out,
+        transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+    
+    /* Efecto de ondulación */
+    box-shadow: 
+        0 0 20px rgba(202, 138, 4, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.1) !important;
+    
+    /* Filtro blur para efecto líquido */
+    filter: blur(2px) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+/* Animación de entrada del blob */
+.menu-fluid-blob.active {
+    opacity: 1 !important;
+}
+
+/* Capa de ondas secundaria */
+.menu-fluid-wave {
+    position: absolute !important;
+    top: 50% !important;
+    left: 0 !important;
+    transform: translateY(-50%) scale(0.95) !important;
+    width: 100px !important;
+    height: 45px !important;
+    background: radial-gradient(ellipse at center, 
+        rgba(202, 138, 4, 0.1) 0%, 
+        transparent 70%) !important;
+    border-radius: 50px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    z-index: 4 !important;
+    
+    transition: 
+        left 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+        width 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+        opacity 0.4s ease-out,
+        transform 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+    
+    filter: blur(8px) !important;
+}
+
+.menu-fluid-wave.active {
+    opacity: 1 !important;
+    transform: translateY(-50%) scale(1.1) !important;
+}
+
+/* Efecto hover en los links - MEJORADO para no entrar en conflicto */
+.header__menu li:hover > a {
+    color: #ca8a04 !important;
+    transform: scale(1.05) !important;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* DARK MODE - Ajustes de color */
+.dark-mode .menu-fluid-blob,
+body.dark-mode .menu-fluid-blob {
+    background: linear-gradient(135deg, 
+        rgba(202, 138, 4, 0.2) 0%, 
+        rgba(202, 138, 4, 0.35) 50%,
+        rgba(202, 138, 4, 0.2) 100%) !important;
+    box-shadow: 
+        0 0 25px rgba(202, 138, 4, 0.4),
+        inset 0 0 20px rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark-mode .menu-fluid-wave,
+body.dark-mode .menu-fluid-wave {
+    background: radial-gradient(ellipse at center, 
+        rgba(202, 138, 4, 0.15) 0%, 
+        transparent 70%) !important;
+}
+
+/* Animación de pulso sutil en hover */
+@keyframes fluid-pulse {
+    0%, 100% {
+        transform: translateY(-50%) scale(1);
+    }
+    50% {
+        transform: translateY(-50%) scale(1.02);
+    }
+}
+
+.menu-fluid-blob.active {
+    animation: fluid-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+}
+
+/* Efecto de estela líquida - PARTÍCULAS */
+.menu-fluid-particle {
+    position: absolute !important;
+    width: 8px !important;
+    height: 8px !important;
+    background: rgba(202, 138, 4, 0.4) !important;
+    border-radius: 50% !important;
+    pointer-events: none !important;
+    z-index: 3 !important;
+    opacity: 0 !important;
+    filter: blur(2px) !important;
+    animation: particle-float 1s ease-out forwards !important;
+}
+
+@keyframes particle-float {
+    0% {
+        opacity: 0.8;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(0);
+    }
+}
+
+/* ============================================
+   OVERRIDE NUCLEAR - ELIMINAR TODOS LOS ::after QUE BLOQUEAN EL BLOB
+   ============================================ */
+.header__menu ul li a::after,
+.header__menu ul li a::before,
+.header__menu ul li a:after,
+.header__menu ul li a:before,
+.header__menu ul li.active a::after,
+.header__menu ul li.active a:after,
+.header__menu ul li:hover a::after,
+.header__menu ul li:hover a:after {
+    display: none !important;
+    content: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* OVERRIDE - Eliminar cambio de color en hover */
+.header__menu ul li a:hover,
+.header__menu ul li a:focus,
+.header__menu ul li.active a {
+    color: inherit !important;
+    /* El color no cambia, solo el blob de fondo */
+}
+
+body.dark-mode .header__menu ul li a:hover,
+body.dark-mode .header__menu ul li a:focus {
+    color: inherit !important;
+}
+
+/* Responsive - Ajustes para móvil */
+@media (max-width: 991px) {
+    .menu-fluid-blob,
+    .menu-fluid-wave {
+        display: none !important; /* Desactivar en móvil para mejor performance */
+    }
+    
+    .header__menu li a {
+        padding: 8px 12px !important;
+    }
+}
+
+/* Mejora de performance */
+.menu-fluid-blob,
+.menu-fluid-wave {
+    will-change: transform, left, width, opacity !important;
+    backface-visibility: hidden !important;
+}

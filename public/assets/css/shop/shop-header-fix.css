@@ -175,30 +175,32 @@ body[class*="checkout"] .breadcrumb-option,
 .header__right__auth a .tip,
 .header__right__widget li a .tip {
     position: absolute !important;
-    right: -12px !important;
-    top: -11px !important;
-    height: 18px !important;
-    width: 18px !important;
-    background: #111111 !important;
-    font-size: 10px !important;
-    font-weight: 500 !important;
+    right: -6px !important;
+    top: -4px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    background: #ca1515 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
     color: #ffffff !important;
-    line-height: 18px !important;
+    line-height: 1 !important;
     text-align: center !important;
-    border-radius: 50% !important;
+    border-radius: 12px !important;
     z-index: 10 !important;
     pointer-events: none !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding: 0 6px !important;
+    box-shadow: 0 3px 6px rgba(202, 21, 21, 0.4) !important;
 }
 
 /* Dark mode badges */
 body.dark-mode .header__right__auth a .tip,
 body.dark-mode .header__right__widget li a .tip {
-    background: #1a1a1a !important;
+    background: #ca1515 !important;
     color: #ffffff !important;
+    box-shadow: 0 3px 6px rgba(202, 21, 21, 0.5) !important;
 }
 
 /* ========================================
@@ -231,46 +233,15 @@ body.dark-mode .header__right__widget li span:hover i {
 }
 
 /* ========================================
-   ANIMACIÓN ESPECIAL - DARK MODE TOGGLE
+   DARK MODE TOGGLE - SIN ANIMACIONES
    ======================================== */
 
-/* Animación suave para el icono de modo oscuro */
+/* Header estático - sin efectos en el botón de modo oscuro */
 #dark-mode-toggle {
     position: relative !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-}
-
-#dark-mode-toggle i {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-/* Efecto hover en modo claro */
-#dark-mode-toggle:hover i {
-    transform: rotate(15deg) scale(1.08) !important;
-}
-
-/* Efecto hover en modo oscuro */
-body.dark-mode #dark-mode-toggle:hover i {
-    transform: rotate(-15deg) scale(1.08) !important;
-    filter: drop-shadow(0 0 8px rgba(255, 23, 68, 0.5)) !important;
-}
-
-/* Animación de pulso al cambiar */
-@keyframes darkModeToggle {
-    0%, 100% {
-        transform: scale(1) rotate(0deg);
-    }
-    25% {
-        transform: scale(1.2) rotate(90deg);
-    }
-    50% {
-        transform: scale(0.9) rotate(180deg);
-    }
-    75% {
-        transform: scale(1.1) rotate(270deg);
-    }
 }
 
 /* ========================================

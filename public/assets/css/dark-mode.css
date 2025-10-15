@@ -101,9 +101,10 @@ body.dark-mode .header p {
 }
 
 body.dark-mode .header .tip {
-    background: #000000 !important;
+    background: #ca1515 !important;
     color: #ffffff !important;
-    border: 1px solid #dc143c !important;
+    border: none !important;
+    box-shadow: 0 3px 6px rgba(202, 21, 21, 0.5) !important;
 }
 
 body.dark-mode .canvas__open i {
@@ -1537,9 +1538,10 @@ body.dark-mode .offcanvas__widget li span:hover {
 }
 
 body.dark-mode .offcanvas__widget .tip {
-    background: #000000 !important;
+    background: #ca1515 !important;
     color: #ffffff !important;
-    border: 1px solid #dc143c !important;
+    border: none !important;
+    box-shadow: 0 3px 6px rgba(202, 21, 21, 0.5) !important;
 }
 
 body.dark-mode .offcanvas__auth {

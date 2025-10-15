@@ -81,17 +81,18 @@ body {
     position: absolute !important;
     right: -12px !important;
     top: -11px !important;
-    height: 18px !important;
-    width: 18px !important;
-    background: #000000 !important;
-    font-size: 10px !important;
-    font-weight: 500 !important;
+    height: 22px !important;
+    width: 22px !important;
+    background: #ca1515 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
     color: #ffffff !important;
-    line-height: 18px !important;
+    line-height: 22px !important;
     text-align: center !important;
     border-radius: 50% !important;
     z-index: 10 !important;
     pointer-events: none !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Mejorar shadow cuando se hace scroll */

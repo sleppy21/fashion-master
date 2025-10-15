@@ -1,0 +1,62 @@
+/* ============================================
+   BADGES OVERRIDE - MÁXIMA PRIORIDAD
+   Fondo rojo con sombra sutil en ambos modos
+   ============================================ */
+
+/* Forzar estilo de badges en TODOS los contextos - MODO CLARO */
+.header__right__widget li a .tip,
+.header__right__auth a .tip,
+.offcanvas__widget li a .tip,
+.header .tip,
+#cart-count,
+#favorites-count,
+#notifications-count {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f) !important;
+    color: #ffffff !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    border-radius: 9px !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(238, 90, 111, 0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 4px !important;
+    line-height: 1 !important;
+    position: absolute !important;
+    top: -6px !important;
+    right: -6px !important;
+    z-index: 10 !important;
+}
+
+/* Dark mode - mismo estilo con sombra más visible */
+body.dark-mode .header__right__widget li a .tip,
+body.dark-mode .header__right__auth a .tip,
+body.dark-mode .offcanvas__widget li a .tip,
+body.dark-mode .header .tip,
+body.dark-mode #cart-count,
+body.dark-mode #favorites-count,
+body.dark-mode #notifications-count {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 3px 8px rgba(255, 107, 107, 0.4) !important;
+}
+
+/* Responsive - móviles */
+@media (max-width: 575px) {
+    .header__right__widget li a .tip,
+    .header__right__auth a .tip,
+    #cart-count,
+    #favorites-count,
+    #notifications-count {
+        min-width: 16px !important;
+        height: 16px !important;
+        font-size: 10px !important;
+        border-radius: 8px !important;
+        top: -4px !important;
+        right: -4px !important;
+    }
+}

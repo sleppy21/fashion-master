@@ -856,6 +856,20 @@
     color: #ffc107;
 }
 
+.address-payment {
+    background: #e8f5e9;
+    border-left: 3px solid #4caf50;
+    padding: 8px 12px;
+    margin: 12px 0;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #2e7d32;
+}
+
+.address-payment i {
+    color: #4caf50;
+}
+
 .address-date {
     font-size: 12px;
     color: #6c757d;
@@ -1225,3 +1239,325 @@ body.dark-mode #addressModal .modal-footer {
     border-top-color: #333333;
 }
 
+/* ============================================
+   SETTINGS TAB STYLES
+   ============================================ */
+
+.settings-section {
+    margin-bottom: 35px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.settings-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.settings-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.settings-title i {
+    color: #c9a67c;
+    font-size: 20px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-label {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.setting-label strong {
+    display: block;
+    font-size: 15px;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.setting-label p {
+    font-size: 13px;
+    color: #7f8c8d;
+    margin: 0;
+}
+
+.setting-control {
+    flex-shrink: 0;
+}
+
+/* Theme Selector */
+.theme-selector {
+    display: flex;
+    gap: 12px;
+}
+
+.theme-option {
+    cursor: pointer;
+    margin: 0;
+}
+
+.theme-option input[type="radio"] {
+    display: none;
+}
+
+.theme-card {
+    padding: 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: white;
+    min-width: 90px;
+}
+
+.theme-card i {
+    font-size: 24px;
+    color: #7f8c8d;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.theme-card span {
+    display: block;
+    font-size: 13px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.theme-option input[type="radio"]:checked + .theme-card {
+    border-color: #c9a67c;
+    background: linear-gradient(135deg, #c9a67c15 0%, #b8956b15 100%);
+}
+
+.theme-option input[type="radio"]:checked + .theme-card i {
+    color: #c9a67c;
+}
+
+.theme-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Color Picker Grid */
+.color-picker-grid {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.color-option {
+    cursor: pointer;
+    margin: 0;
+    text-align: center;
+}
+
+.color-option input[type="radio"] {
+    display: none;
+}
+
+.color-circle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.color-option input[type="radio"]:checked + .color-circle {
+    border-color: #2c3e50;
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.color-option span {
+    display: block;
+    font-size: 11px;
+    color: #7f8c8d;
+    font-weight: 600;
+}
+
+.color-option:hover .color-circle {
+    transform: scale(1.05);
+}
+
+/* Toggle Switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 56px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 28px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #c9a67c;
+}
+
+input:checked + .slider:before {
+    transform: translateX(28px);
+}
+
+.slider:hover {
+    box-shadow: 0 0 8px rgba(201, 166, 124, 0.5);
+}
+
+/* Settings Actions */
+.settings-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-start;
+}
+
+.btn-save-settings {
+    background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-save-settings:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4);
+}
+
+.btn-reset-settings {
+    background: #95a5a6;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-reset-settings:hover {
+    background: #7f8c8d;
+    transform: translateY(-2px);
+}
+
+/* Dark Mode para Settings */
+body.dark-mode .settings-section {
+    border-bottom-color: #333;
+}
+
+body.dark-mode .settings-title {
+    color: #f0f0f0;
+}
+
+body.dark-mode .setting-item {
+    border-bottom-color: #2a2a2a;
+}
+
+body.dark-mode .setting-label strong {
+    color: #f0f0f0;
+}
+
+body.dark-mode .setting-label p {
+    color: #9ca3af;
+}
+
+body.dark-mode .theme-card {
+    background: #2a2a2a;
+    border-color: #3a3a3a;
+}
+
+body.dark-mode .theme-card span {
+    color: #f0f0f0;
+}
+
+body.dark-mode .theme-option input[type="radio"]:checked + .theme-card {
+    border-color: #c9a67c;
+    background: linear-gradient(135deg, #c9a67c25 0%, #b8956b25 100%);
+}
+
+body.dark-mode .color-option span {
+    color: #9ca3af;
+}
+
+body.dark-mode .form-control {
+    background: #2a2a2a;
+    border-color: #3a3a3a;
+    color: #f0f0f0;
+}
+
+/* Responsive Settings */
+@media (max-width: 768px) {
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .setting-label {
+        padding-right: 0;
+    }
+    
+    .theme-selector {
+        width: 100%;
+    }
+    
+    .color-picker-grid {
+        width: 100%;
+    }
+    
+    .settings-actions {
+        flex-direction: column;
+    }
+    
+    .btn-save-settings,
+    .btn-reset-settings {
+        width: 100%;
+    }
+}

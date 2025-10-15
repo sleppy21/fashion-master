@@ -61,8 +61,6 @@ if($usuario_logueado):
                             <?php echo strtoupper(substr($usuario_logueado['nombre_usuario'], 0, 1)); ?>
                         </div>
                     <?php endif; ?>
-                    
-                    <div class="avatar-status"></div>
                 </div>
             </div>
             <div class="user-info-header">
@@ -167,8 +165,8 @@ if($usuario_logueado):
 
         <!-- Footer -->
         <div class="user-modal-footer">
-            <a href="profile.php" class="btn-action btn-profile">
-                <i class="fa fa-user-circle"></i> Ver Perfil
+            <a href="profile.php" class="btn-action btn-settings">
+                <i class="fa fa-cog"></i> Configuración
             </a>
             <?php if($usuario_logueado['rol_usuario'] === 'admin'): ?>
                 <a href="admin.php" class="btn-action btn-admin">

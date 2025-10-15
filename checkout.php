@@ -119,6 +119,37 @@ try {
 } catch(Exception $e) {
     error_log("Error al obtener favoritos: " . $e->getMessage());
 }
+
+// Obtener dirección predeterminada del usuario
+$direccion_predeterminada = null;
+$tiene_direccion_predeterminada = false;
+try {
+    $direccion_resultado = executeQuery("
+        SELECT * FROM direccion 
+        WHERE id_usuario = ? AND es_principal = 1 AND status_direccion = 1
+        LIMIT 1
+    ", [$usuario_logueado['id_usuario']]);
+    
+    if($direccion_resultado && !empty($direccion_resultado)) {
+        $direccion_predeterminada = $direccion_resultado[0];
+        $tiene_direccion_predeterminada = true;
+    }
+} catch(Exception $e) {
+    error_log("Error al obtener dirección predeterminada: " . $e->getMessage());
+}
+
+// Verificar si usuario tiene alguna dirección guardada
+$tiene_direcciones = false;
+try {
+    $direcciones_count = executeQuery("
+        SELECT COUNT(*) as total FROM direccion 
+        WHERE id_usuario = ? AND status_direccion = 1
+    ", [$usuario_logueado['id_usuario']]);
+    
+    $tiene_direcciones = ($direcciones_count && $direcciones_count[0]['total'] > 0);
+} catch(Exception $e) {
+    error_log("Error al verificar direcciones: " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -923,7 +954,7 @@ try {
                     <div class="step-number">1</div>
                     <div class="step-title">Carrito</div>
                 </div>
-                <div class="checkout-step active">
+                <div class="checkout-step completed">
                     <div class="step-number">2</div>
                     <div class="step-title">Información</div>
                 </div>
@@ -1070,47 +1101,6 @@ try {
                             </div>
                         </div>
 
-                        <!-- Método de Pago -->
-                        <div class="form-section">
-                            <h5><i class="fa fa-credit-card"></i> Método de Pago</h5>
-                            
-                            <div class="payment-method" onclick="selectPayment('tarjeta')">
-                                <input type="radio" name="metodo_pago" value="tarjeta" id="pago_tarjeta" required>
-                                <label for="pago_tarjeta" style="cursor: pointer; margin: 0;">
-                                    <i class="fa fa-credit-card"></i>
-                                    <strong>Tarjeta de Crédito/Débito</strong>
-                                    <p style="margin: 5px 0 0; color: #666; font-size: 13px;">Pago seguro con Visa, Mastercard, American Express</p>
-                                </label>
-                            </div>
-
-                            <div class="payment-method" onclick="selectPayment('transferencia')">
-                                <input type="radio" name="metodo_pago" value="transferencia" id="pago_transferencia" required>
-                                <label for="pago_transferencia" style="cursor: pointer; margin: 0;">
-                                    <i class="fa fa-bank"></i>
-                                    <strong>Transferencia Bancaria</strong>
-                                    <p style="margin: 5px 0 0; color: #666; font-size: 13px;">Realizarás el pago mediante transferencia</p>
-                                </label>
-                            </div>
-
-                            <div class="payment-method" onclick="selectPayment('yape')">
-                                <input type="radio" name="metodo_pago" value="yape" id="pago_yape" required>
-                                <label for="pago_yape" style="cursor: pointer; margin: 0;">
-                                    <i class="fa fa-mobile" style="font-size: 20px;"></i>
-                                    <strong>Yape / Plin</strong>
-                                    <p style="margin: 5px 0 0; color: #666; font-size: 13px;">Pago instantáneo con billetera digital</p>
-                                </label>
-                            </div>
-
-                            <div class="payment-method" onclick="selectPayment('efectivo')">
-                                <input type="radio" name="metodo_pago" value="efectivo" id="pago_efectivo" required>
-                                <label for="pago_efectivo" style="cursor: pointer; margin: 0;">
-                                    <i class="fa fa-money"></i>
-                                    <strong>Efectivo Contra Entrega</strong>
-                                    <p style="margin: 5px 0 0; color: #666; font-size: 13px;">Paga en efectivo al recibir tu pedido</p>
-                                </label>
-                            </div>
-                        </div>
-
                         <!-- Notas Adicionales -->
                         <div class="form-section">
                             <h5><i class="fa fa-comment"></i> Notas del Pedido (Opcional)</h5>
@@ -1179,7 +1169,7 @@ try {
 
                         <!-- Place Order Button -->
                         <button type="submit" form="checkoutForm" class="btn-place-order" id="btnPlaceOrder">
-                            <i class="fa fa-lock"></i> Realizar Pedido
+                            <i class="fa fa-arrow-right"></i> Continuar al Pago
                         </button>
 
                         <!-- Security Notice -->
@@ -1215,8 +1205,8 @@ try {
             </div>
             <div class="mobile-checkout-footer__action">
                 <button type="submit" form="checkoutForm" class="mobile-place-order-btn" id="mobileBtnPlaceOrder">
-                    <i class="fa fa-lock"></i>
-                    <span>Realizar Pedido</span>
+                    <i class="fa fa-arrow-right"></i>
+                    <span>Continuar al Pago</span>
                 </button>
             </div>
         </div>
@@ -1240,7 +1230,23 @@ try {
                     <p style="margin: 0 0 20px 0; color: #555; line-height: 1.6;">
                         ¿Deseas guardar esta dirección para futuras compras? Esto te permitirá completar tus pedidos más rápidamente.
                     </p>
-                    <div style="background: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                    
+                    <?php if(!$tiene_direccion_predeterminada): ?>
+                    <!-- Opción para marcar como predeterminada -->
+                    <div style="background: #e8f5e9; border-radius: 8px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #4caf50;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="checkbox" id="chkSetAsDefault" style="width: 18px; height: 18px; cursor: pointer;">
+                            <label for="chkSetAsDefault" style="margin: 0; cursor: pointer; font-weight: 600; color: #2e7d32; font-size: 14px;">
+                                <i class="fa fa-star" style="color: #ffc107;"></i> Establecer como dirección predeterminada
+                            </label>
+                        </div>
+                        <p style="margin: 8px 0 0 30px; font-size: 12px; color: #558b2f; line-height: 1.4;">
+                            Esta dirección se usará automáticamente en tus próximas compras
+                        </p>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <div style="background: #f8f9fa; border-radius: 8px; padding: 16px;">
                         <p style="margin: 0; font-size: 13px; color: #666; line-height: 1.5;">
                             <i class="fa fa-info-circle" style="color: #667eea; margin-right: 6px;"></i>
                             La dirección se guardará de forma segura y podrás editarla o eliminarla en cualquier momento desde tu perfil.
@@ -1259,6 +1265,252 @@ try {
         </div>
     </div>
     <!-- Modal para Guardar Dirección End -->
+
+    <!-- Estilos para animaciones del modal -->
+    <style>
+        /* Animación de entrada del modal */
+        @keyframes modalSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-100px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes modalBackdropFade {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 0.5;
+            }
+        }
+        
+        @keyframes floatIcon {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Modal customizado - MODO OSCURO */
+        #useDefaultAddressModal.show .modal-dialog {
+            animation: modalSlideDown 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        #useDefaultAddressModal .modal-backdrop.show {
+            animation: modalBackdropFade 0.3s ease-in-out;
+        }
+        
+        #useDefaultAddressModal .modal-content {
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            background: #1a1a1a !important;
+        }
+        
+        #useDefaultAddressModal .modal-header .fa-star {
+            animation: floatIcon 2s ease-in-out infinite;
+            display: inline-block;
+        }
+        
+        #useDefaultAddressModal .info-card {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+        
+        #useDefaultAddressModal .info-section {
+            transition: all 0.3s ease;
+        }
+        
+        #useDefaultAddressModal .info-section:hover {
+            transform: translateX(5px);
+        }
+        
+        #useDefaultAddressModal .btn {
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #useDefaultAddressModal .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        #useDefaultAddressModal .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        #useDefaultAddressModal .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(201, 166, 124, 0.4);
+        }
+        
+        #useDefaultAddressModal .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        #useDefaultAddressModal .close {
+            transition: all 0.3s ease;
+        }
+        
+        #useDefaultAddressModal .close:hover {
+            transform: rotate(90deg) scale(1.2);
+        }
+        
+        /* Shimmer effect para el header - Color dorado */
+        #useDefaultAddressModal .modal-header {
+            background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%) !important;
+            position: relative;
+        }
+        
+        #useDefaultAddressModal .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 3s infinite;
+        }
+    </style>
+
+    <!-- Modal para Usar Dirección Predeterminada -->
+    <div id="useDefaultAddressModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" style="z-index: 9999;">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 550px;">
+            <div class="modal-content" style="border-radius: 16px; border: none; background: #1a1a1a;">
+                <div class="modal-header" style="border-bottom: 2px solid rgba(201, 166, 124, 0.2); padding: 20px 28px; border-radius: 16px 16px 0 0; position: relative;">
+                    <h5 class="modal-title" style="font-weight: 700; color: white; font-size: 18px; z-index: 1; position: relative;">
+                        <i class="fa fa-star" style="color: #ffd700; margin-right: 8px;"></i>
+                        Dirección Predeterminada Disponible
+                    </h5>
+                    <button type="button" class="close" onclick="$('#useDefaultAddressModal').modal('hide')" aria-label="Close" style="opacity: 1; color: white; z-index: 1; position: relative;">
+                        <span aria-hidden="true" style="font-size: 28px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding: 28px; background: #1a1a1a;">
+                    <?php if($tiene_direccion_predeterminada): ?>
+                    <!-- Mostrar información completa guardada -->
+                    <div class="info-card" style="background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%); border-radius: 12px; padding: 20px; margin-bottom: 0; border-left: 4px solid #c9a67c; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                        
+                        <!-- Información del Cliente -->
+                        <div class="info-section" style="margin-bottom: 18px;">
+                            <div style="color: #c9a67c; font-weight: 700; margin-bottom: 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                <i class="fa fa-user"></i> Información del Cliente
+                            </div>
+                            <div style="padding-left: 24px; color: #e0e0e0; font-size: 14px; line-height: 2;">
+                                <?php if(!empty($direccion_predeterminada['nombre_cliente_direccion'])): ?>
+                                <div style="display: flex; margin-bottom: 4px;">
+                                    <strong style="min-width: 100px; color: #c9a67c;">Nombre:</strong> 
+                                    <span style="color: #d0d0d0;"><?php echo htmlspecialchars($direccion_predeterminada['nombre_cliente_direccion']); ?></span>
+                                </div>
+                                <?php endif; ?>
+                                <?php if(!empty($direccion_predeterminada['email_direccion'])): ?>
+                                <div style="display: flex; margin-bottom: 4px;">
+                                    <strong style="min-width: 100px; color: #c9a67c;">Email:</strong> 
+                                    <span style="color: #d0d0d0;"><?php echo htmlspecialchars($direccion_predeterminada['email_direccion']); ?></span>
+                                </div>
+                                <?php endif; ?>
+                                <?php if(!empty($direccion_predeterminada['telefono_direccion'])): ?>
+                                <div style="display: flex; margin-bottom: 4px;">
+                                    <strong style="min-width: 100px; color: #c9a67c;">Teléfono:</strong> 
+                                    <span style="color: #d0d0d0;"><?php echo htmlspecialchars($direccion_predeterminada['telefono_direccion']); ?></span>
+                                </div>
+                                <?php endif; ?>
+                                <?php if(!empty($direccion_predeterminada['dni_ruc_direccion'])): ?>
+                                <div style="display: flex;">
+                                    <strong style="min-width: 100px; color: #c9a67c;">DNI/RUC:</strong> 
+                                    <span style="color: #d0d0d0;"><?php echo htmlspecialchars($direccion_predeterminada['dni_ruc_direccion']); ?></span>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        
+                        <!-- Dirección de Envío -->
+                        <div class="info-section" style="margin-bottom: 14px; padding-top: 14px; border-top: 2px solid rgba(201, 166, 124, 0.2);">
+                            <div style="color: #c9a67c; font-weight: 700; margin-bottom: 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                <i class="fa fa-map-marker"></i> Dirección de Envío
+                            </div>
+                            <div style="color: #d0d0d0; font-size: 14px; line-height: 1.8; padding-left: 24px;">
+                                <?php echo htmlspecialchars($direccion_predeterminada['direccion_completa_direccion'] ?? ''); ?>
+                            </div>
+                            <?php if(!empty($direccion_predeterminada['referencia_direccion'])): ?>
+                            <div style="color: #a0a0a0; font-size: 13px; margin-top: 10px; padding-left: 24px; font-style: italic;">
+                                <i class="fa fa-info-circle"></i> Ref: <?php echo htmlspecialchars($direccion_predeterminada['referencia_direccion']); ?>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <!-- Método de Pago Favorito -->
+                        <?php if(!empty($direccion_predeterminada['metodo_pago_favorito'])): ?>
+                        <div class="info-section" style="padding-top: 14px; border-top: 2px solid rgba(201, 166, 124, 0.2);">
+                            <div style="color: #c9a67c; font-weight: 700; margin-bottom: 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                <i class="fa fa-credit-card"></i> Método de Pago Favorito
+                            </div>
+                            <div style="color: #d0d0d0; font-size: 14px; padding-left: 24px;">
+                                <span style="background: #c9a67c; color: #1a1a1a; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                                    <?php 
+                                    $metodos = [
+                                        'tarjeta' => '💳 Tarjeta',
+                                        'transferencia' => '🏦 Transferencia',
+                                        'yape' => '📱 Yape/Plin',
+                                        'efectivo' => '💵 Efectivo'
+                                    ];
+                                    echo $metodos[$direccion_predeterminada['metodo_pago_favorito']] ?? $direccion_predeterminada['metodo_pago_favorito'];
+                                    ?>
+                                </span>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                </div>
+                <div class="modal-footer" style="border-top: 2px solid rgba(201, 166, 124, 0.2); padding: 20px 28px; display: flex; gap: 12px; justify-content: center; background: #1a1a1a; border-radius: 0 0 16px 16px;">
+                    <button type="button" class="btn btn-secondary" id="btnUseOtherAddress" style="flex: 1; padding: 10px 24px; border-radius: 10px; font-weight: 600; background: #3a3a3a; border: 1px solid #4a4a4a; font-size: 14px; color: #e0e0e0;">
+                        <i class="fa fa-pencil"></i> Usar otra dirección
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btnUseDefaultAddress" style="flex: 1; padding: 10px 24px; border-radius: 10px; font-weight: 600; background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%); border: none; font-size: 14px; color: #1a1a1a;">
+                        <i class="fa fa-check"></i> Usar esta información
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal para Usar Dirección Predeterminada End -->
 
     <!-- Footer -->
     <?php include 'includes/footer.php'; ?>
@@ -1316,9 +1568,13 @@ try {
         
         // Cuando selecciona departamento, cargar provincias
         document.getElementById('departamento').addEventListener('change', function() {
+            console.log('🔔 Evento change del departamento ejecutado. Valor:', this.value);
+            
             const selectedDepto = ubigeoData.departamentos.find(d => d.nombre === this.value);
             const selectProvincia = document.getElementById('provincia');
             const selectDistrito = document.getElementById('distrito');
+            
+            console.log('🔍 Departamento encontrado:', selectedDepto ? 'Sí' : 'No');
             
             // Limpiar provincia y distrito
             selectProvincia.innerHTML = '<option value="">Seleccionar...</option>';
@@ -1327,6 +1583,7 @@ try {
             
             if(selectedDepto) {
                 selectProvincia.disabled = false;
+                console.log('📋 Cargando', selectedDepto.provincias.length, 'provincias...');
                 selectedDepto.provincias.forEach(prov => {
                     const option = document.createElement('option');
                     option.value = prov.nombre;
@@ -1335,19 +1592,25 @@ try {
                     option.dataset.distritos = JSON.stringify(prov.distritos);
                     selectProvincia.appendChild(option);
                 });
+                console.log('✅ Provincias cargadas. Select habilitado:', !selectProvincia.disabled);
             } else {
                 selectProvincia.disabled = true;
+                console.log('❌ No se encontró el departamento en los datos');
             }
         });
         
         // Cuando selecciona provincia, cargar distritos
         document.getElementById('provincia').addEventListener('change', function() {
+            console.log('🔔 Evento change de provincia ejecutado. Valor:', this.value);
+            
             const selectDistrito = document.getElementById('distrito');
             selectDistrito.innerHTML = '<option value="">Seleccionar...</option>';
             
             if(this.value) {
                 const selectedOption = this.options[this.selectedIndex];
                 const distritos = JSON.parse(selectedOption.dataset.distritos || '[]');
+                
+                console.log('📋 Cargando', distritos.length, 'distritos...');
                 
                 selectDistrito.disabled = false;
                 distritos.forEach(distrito => {
@@ -1356,8 +1619,10 @@ try {
                     option.textContent = distrito;
                     selectDistrito.appendChild(option);
                 });
+                console.log('✅ Distritos cargados. Select habilitado:', !selectDistrito.disabled);
             } else {
                 selectDistrito.disabled = true;
+                console.log('⚠️ No hay provincia seleccionada');
             }
         });
         
@@ -1411,18 +1676,6 @@ try {
         });
         
         // ========================================
-        // MÉTODO DE PAGO
-        // ========================================
-        function selectPayment(metodo) {
-            // Remover selección anterior
-            document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
-            
-            // Seleccionar nuevo
-            document.querySelector(`#pago_${metodo}`).checked = true;
-            document.querySelector(`#pago_${metodo}`).closest('.payment-method').classList.add('selected');
-        }
-        
-        // ========================================
         // VALIDACIÓN DEL FORMULARIO
         // ========================================
         // MANEJO DEL FORMULARIO DE CHECKOUT CON MODAL DE GUARDAR DIRECCIÓN
@@ -1440,12 +1693,6 @@ try {
             if(!tipoComprobante) {
                 alert('Por favor ingresa un DNI (8 dígitos) o RUC (11 dígitos) válido');
                 document.getElementById('dni_ruc').focus();
-                return;
-            }
-            
-            // Validar que se haya seleccionado método de pago
-            if(!document.querySelector('input[name="metodo_pago"]:checked')) {
-                alert('Por favor selecciona un método de pago');
                 return;
             }
             
@@ -1497,6 +1744,12 @@ try {
             // Agregar flag para guardar dirección
             checkoutFormData.append('guardar_direccion', '1');
             
+            // Verificar si debe marcarse como predeterminada
+            const chkSetAsDefault = document.getElementById('chkSetAsDefault');
+            if(chkSetAsDefault && chkSetAsDefault.checked) {
+                checkoutFormData.append('marcar_predeterminada', '1');
+            }
+            
             procesarPedido(checkoutFormData);
         });
         
@@ -1517,11 +1770,11 @@ try {
             
             // Deshabilitar botones y mostrar loading
             btnSubmit.disabled = true;
-            btnSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Procesando pedido...';
+            btnSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Guardando información...';
             
             if(mobileBtnSubmit) {
                 mobileBtnSubmit.disabled = true;
-                mobileBtnSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Procesando...';
+                mobileBtnSubmit.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Guardando...';
             }
             
             // Enviar con AJAX
@@ -1538,25 +1791,25 @@ try {
                     if(data.direccion_guardada === true) {
                         // Mostrar notificación de éxito
                         if(typeof showToast === 'function') {
-                            showToast('✅ Pedido procesado y dirección guardada en tu perfil', 'success');
+                            showToast('✅ Dirección guardada en tu perfil', 'success');
                         } else {
                             console.log('✅ Dirección guardada en tu perfil');
                         }
                         
-                        // Esperar 1.5 segundos para que se vea el toast antes de redirigir
+                        // Esperar 1 segundo para que se vea el toast antes de redirigir
                         setTimeout(() => {
-                            window.location.href = 'order-confirmation.php?order=' + data.order_id;
-                        }, 1500);
+                            window.location.href = 'order-confirmation.php';
+                        }, 1000);
                     } else {
                         // Redirigir inmediatamente si no se guardó dirección
-                        window.location.href = 'order-confirmation.php?order=' + data.order_id;
+                        window.location.href = 'order-confirmation.php';
                     }
                     
                 } else {
                     // Mostrar error más detallado
                     console.error('Error del servidor:', data);
                     
-                    let errorMsg = data.message || 'Error al procesar el pedido';
+                    let errorMsg = data.message || 'Error al procesar la información';
                     if(data.error) {
                         errorMsg += '\n\nDetalle técnico: ' + data.error;
                     }
@@ -1565,25 +1818,25 @@ try {
                     
                     // Restaurar botones
                     btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = '<i class="fa fa-lock"></i> Realizar Pedido';
+                    btnSubmit.innerHTML = '<i class="fa fa-arrow-right"></i> Continuar al Pago';
                     
                     if(mobileBtnSubmit) {
                         mobileBtnSubmit.disabled = false;
-                        mobileBtnSubmit.innerHTML = '<i class="fa fa-lock"></i> <span>Realizar Pedido</span>';
+                        mobileBtnSubmit.innerHTML = '<i class="fa fa-arrow-right"></i> <span>Continuar al Pago</span>';
                     }
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error al procesar el pedido. Por favor intenta nuevamente.');
+                alert('Error al procesar la información. Por favor intenta nuevamente.');
                 
                 // Restaurar botones
                 btnSubmit.disabled = false;
-                btnSubmit.innerHTML = '<i class="fa fa-lock"></i> Realizar Pedido';
+                btnSubmit.innerHTML = '<i class="fa fa-arrow-right"></i> Continuar al Pago';
                 
                 if(mobileBtnSubmit) {
                     mobileBtnSubmit.disabled = false;
-                    mobileBtnSubmit.innerHTML = '<i class="fa fa-lock"></i> <span>Realizar Pedido</span>';
+                    mobileBtnSubmit.innerHTML = '<i class="fa fa-arrow-right"></i> <span>Continuar al Pago</span>';
                 }
             });
         }
@@ -1621,6 +1874,203 @@ try {
                 $('#userAccountModal').modal('show');
             }, 300);
         });
+
+        // ========================================
+        // MODAL DE DIRECCIÓN PREDETERMINADA
+        // ========================================
+        
+        <?php if($tiene_direccion_predeterminada): ?>
+        // Datos de la dirección predeterminada
+        const defaultAddress = {
+            nombre: '<?php echo addslashes($direccion_predeterminada["nombre_cliente_direccion"] ?? ""); ?>',
+            telefono: '<?php echo addslashes($direccion_predeterminada["telefono_direccion"] ?? ""); ?>',
+            email: '<?php echo addslashes($direccion_predeterminada["email_direccion"] ?? ""); ?>',
+            dni: '<?php echo addslashes($direccion_predeterminada["dni_ruc_direccion"] ?? ""); ?>',
+            razonSocial: '<?php echo addslashes($direccion_predeterminada["razon_social_direccion"] ?? ""); ?>',
+            direccion: '<?php echo addslashes($direccion_predeterminada["direccion_completa_direccion"] ?? ""); ?>',
+            departamento: '<?php echo addslashes($direccion_predeterminada["departamento_direccion"] ?? ""); ?>',
+            provincia: '<?php echo addslashes($direccion_predeterminada["provincia_direccion"] ?? ""); ?>',
+            distrito: '<?php echo addslashes($direccion_predeterminada["distrito_direccion"] ?? ""); ?>',
+            referencia: '<?php echo addslashes($direccion_predeterminada["referencia_direccion"] ?? ""); ?>',
+            metodoPago: '<?php echo addslashes($direccion_predeterminada["metodo_pago_favorito"] ?? ""); ?>'
+        };
+        
+        // Debug: Mostrar datos en consola
+        console.log('Dirección predeterminada:', defaultAddress);
+
+        // Mostrar modal automáticamente al cargar la página
+        $(document).ready(function() {
+            setTimeout(function() {
+                $('#useDefaultAddressModal').modal('show');
+            }, 800);
+        });
+
+        // Botón "Usar esta dirección" - Rellenar campos automáticamente
+        $('#btnUseDefaultAddress').on('click', function() {
+            $('#useDefaultAddressModal').modal('hide');
+            
+            console.log('🔄 Iniciando auto-rellenado de dirección...');
+            
+            // ==========================================
+            // 1. RELLENAR INFORMACIÓN DEL CLIENTE
+            // ==========================================
+            if(defaultAddress.nombre) {
+                $('#nombre').val(defaultAddress.nombre);
+                console.log('✅ Nombre rellenado:', defaultAddress.nombre);
+            }
+            if(defaultAddress.email) {
+                $('#email').val(defaultAddress.email);
+                console.log('✅ Email rellenado:', defaultAddress.email);
+            }
+            if(defaultAddress.telefono) {
+                $('#telefono').val(defaultAddress.telefono);
+                console.log('✅ Teléfono rellenado:', defaultAddress.telefono);
+            }
+            if(defaultAddress.dni) {
+                const dniField = $('#dni_ruc'); // Campo correcto: dni_ruc
+                if(dniField.length > 0) {
+                    dniField.val(defaultAddress.dni);
+                    
+                    // IMPORTANTE: Disparar evento 'input' para activar la validación automática
+                    const dniElement = document.getElementById('dni_ruc');
+                    const inputEvent = new Event('input', { bubbles: true });
+                    dniElement.dispatchEvent(inputEvent);
+                    
+                    console.log('✅ DNI/RUC rellenado:', defaultAddress.dni);
+                    console.log('🔔 Evento input disparado para validación automática');
+                } else {
+                    console.error('❌ Campo DNI no encontrado en el DOM');
+                }
+            } else {
+                console.warn('⚠️ No hay DNI guardado');
+            }
+            
+            // ==========================================
+            // 2. RELLENAR DIRECCIÓN DE ENVÍO
+            // ==========================================
+            
+            // Extraer la dirección de la dirección completa
+            // Formato: "Dirección, Distrito, Provincia, Departamento"
+            // o "Dirección (Ref: referencia), Distrito, Provincia, Departamento"
+            const parts = defaultAddress.direccion.split(',');
+            let direccionLimpia = parts[0]?.trim() || '';
+            
+            // Si hay referencia en paréntesis, quitarla
+            if(direccionLimpia.includes('(Ref:')) {
+                const refMatch = direccionLimpia.match(/\(Ref: (.+?)\)/);
+                if(refMatch) {
+                    $('#referencia').val(refMatch[1].trim());
+                }
+                direccionLimpia = direccionLimpia.replace(/\s*\(Ref:.+?\)\s*/, '').trim();
+            } else if(defaultAddress.referencia) {
+                $('#referencia').val(defaultAddress.referencia);
+            }
+            
+            // Rellenar campo de dirección
+            $('#direccion').val(direccionLimpia);
+            
+            // ==========================================
+            // 3. RELLENAR UBIGEO (Departamento, Provincia, Distrito)
+            // ==========================================
+            
+            console.log('🗺️ Iniciando auto-rellenado de Ubigeo...');
+            console.log('Departamento:', defaultAddress.departamento);
+            console.log('Provincia:', defaultAddress.provincia);
+            console.log('Distrito:', defaultAddress.distrito);
+            
+            // Función auxiliar mejorada para esperar a que un select tenga opciones
+            function waitForOptions(selector, expectedValue, callback, maxAttempts = 20) {
+                let attempts = 0;
+                const checkInterval = setInterval(function() {
+                    const selectElement = $(selector);
+                    const options = selectElement.find('option');
+                    const hasOptions = options.length > 1; // Más de 1 (la opción "Seleccionar...")
+                    const isEnabled = !selectElement.prop('disabled');
+                    
+                    attempts++;
+                    console.log(`🔍 Intento ${attempts} - ${selector}: ${options.length} opciones, habilitado: ${isEnabled}`);
+                    
+                    if (hasOptions && isEnabled) {
+                        clearInterval(checkInterval);
+                        console.log(`✅ Opciones cargadas para ${selector}`);
+                        // Pequeña pausa adicional para asegurar que el DOM está listo
+                        setTimeout(callback, 50);
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(checkInterval);
+                        console.error(`❌ Timeout esperando opciones para ${selector}`);
+                    }
+                }, 150); // Revisar cada 150ms
+            }
+            
+            // Seleccionar departamento
+            if(defaultAddress.departamento) {
+                const deptSelect = $('#departamento');
+                deptSelect.val(defaultAddress.departamento);
+                console.log('✅ Departamento seleccionado:', defaultAddress.departamento);
+                
+                // Disparar el evento change usando JavaScript nativo (más compatible)
+                const deptElement = document.getElementById('departamento');
+                const changeEvent = new Event('change', { bubbles: true });
+                deptElement.dispatchEvent(changeEvent);
+                console.log('🔄 Evento change disparado para departamento (nativo)');
+                
+                // Esperar a que se carguen las provincias
+                if(defaultAddress.provincia) {
+                    waitForOptions('#provincia', defaultAddress.provincia, function() {
+                        const provSelect = $('#provincia');
+                        provSelect.val(defaultAddress.provincia);
+                        console.log('✅ Provincia seleccionada:', defaultAddress.provincia);
+                        
+                        // Disparar el evento change para provincia usando JavaScript nativo
+                        const provElement = document.getElementById('provincia');
+                        const provChangeEvent = new Event('change', { bubbles: true });
+                        provElement.dispatchEvent(provChangeEvent);
+                        console.log('🔄 Evento change disparado para provincia (nativo)');
+                        
+                        // Esperar a que se carguen los distritos
+                        if(defaultAddress.distrito) {
+                            waitForOptions('#distrito', defaultAddress.distrito, function() {
+                                const distSelect = $('#distrito');
+                                distSelect.val(defaultAddress.distrito);
+                                console.log('✅ Distrito seleccionado:', defaultAddress.distrito);
+                            });
+                        }
+                    });
+                }
+            }
+            
+            // ==========================================
+            // 4. RELLENAR MÉTODO DE PAGO FAVORITO (si existe)
+            // ==========================================
+            if(defaultAddress.metodoPago) {
+                $('#metodo_pago').val(defaultAddress.metodoPago);
+            }
+            
+            // ==========================================
+            // 5. EFECTOS VISUALES
+            // ==========================================
+            
+            // Scroll suave hacia el formulario
+            $('html, body').animate({
+                scrollTop: $('#nombre').offset().top - 100
+            }, 600);
+            
+            // Resaltar brevemente los campos rellenados
+            $('#nombre, #email, #telefono, #dni_ruc, #direccion, #departamento, #provincia, #distrito, #referencia, #metodo_pago').each(function() {
+                if($(this).val()) {
+                    $(this).css('background-color', '#e8f5e9');
+                    setTimeout(() => {
+                        $(this).css('background-color', '');
+                    }, 2000);
+                }
+            });
+        });
+
+        // Botón "Usar otra dirección" - Cerrar modal sin rellenar
+        $('#btnUseOtherAddress').on('click', function() {
+            $('#useDefaultAddressModal').modal('hide');
+        });
+        <?php endif; ?>
     </script>
 
     <!-- Global Offcanvas Menu JavaScript -->

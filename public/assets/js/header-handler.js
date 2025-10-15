@@ -1,18 +1,179 @@
-/**
- * HEADER HANDLER - Controlador unificado del header
- * Maneja actualización en tiempo real de contadores
- * Compatible con todas las páginas
- * Versión: 1.0
- * Fecha: 2025-10-14
- */
+/**/**
 
-(function() {
-    'use strict';
+ * HEADER HANDLER - ULTRA SIMPLIFICADO * HEADER HANDLER - ULTRA SIMPLIFICADO
+
+ * Solo actualiza contadores cuando hay eventos EXPLÍCITOS * Solo actualiza contadores cuando hay eventos EXPLÍCITOS
+
+ * SIN actualizaciones periódicas, SIN observadores, SIN evaluaciones * SIN actualizaciones periódicas, SIN observadores, SIN evaluaciones
+
+ */ */
+
+
+
+(function() {(function() {
+
+    'use strict';    'use strict';
+
+        
+
+    // Actualizar contador de carrito    // Actualizar contador de carrito (sin verificaciones, directo)
+
+    function updateCartCount() {    function updateCartCount() {
+
+        fetch('app/actions/get_cart_count.php')        fetch('app/actions/get_cart_count.php')
+
+            .then(response => response.json())            .then(response => response.json())
+
+            .then(data => {            .then(data => {
+
+                if (data.success) {                if (data.success) {
+
+                    const count = parseInt(data.count) || 0;                    const count = parseInt(data.count) || 0;
+
+                    document.querySelectorAll('.cart-count, #cart-count').forEach(el => {                    document.querySelectorAll('.cart-count, #cart-count').forEach(el => {
+
+                        el.textContent = count;                        el.textContent = count;
+
+                        el.style.display = count > 0 ? 'inline-flex' : 'none';                        el.style.display = count > 0 ? 'inline-flex' : 'none';
+
+                    });                    });
+
+                }                }
+
+            })            })
+
+            .catch(() => {});            .catch(() => {}); // Silenciar errores
+
+    }    }
+
+        
+
+    // Actualizar contador de favoritos    // Actualizar contador de favoritos (sin verificaciones, directo)
+
+    function updateFavoritesCount() {    function updateFavoritesCount() {
+
+        fetch('app/actions/get_favorites_count.php')        fetch('app/actions/get_favorites_count.php')
+
+            .then(response => response.json())            .then(response => response.json())
+
+            .then(data => {            .then(data => {
+
+                if (data.success) {                if (data.success) {
+
+                    const count = parseInt(data.count) || 0;                    const count = parseInt(data.count) || 0;
+
+                    document.querySelectorAll('#favorites-count').forEach(el => {                    document.querySelectorAll('#favorites-count').forEach(el => {
+
+                        el.textContent = count;                        el.textContent = count;
+
+                        el.style.display = count > 0 ? 'inline-flex' : 'none';                        el.style.display = count > 0 ? 'inline-flex' : 'none';
+
+                    });                    });
+
+                }                }
+
+            })            })
+
+            .catch(() => {});            .catch(() => {}); // Silenciar errores
+
+    }    }
+
+        
+
+    // Actualizar contador de notificaciones    // Actualizar contador de notificaciones (sin verificaciones, directo)
+
+    function updateNotificationsCount() {    function updateNotificationsCount() {
+
+        fetch('app/actions/get_notifications_count.php')        fetch('app/actions/get_notifications_count.php')
+
+            .then(response => response.json())            .then(response => response.json())
+
+            .then(data => {            .then(data => {
+
+                if (data.success) {                if (data.success) {
+
+                    const count = parseInt(data.count) || 0;                    const count = parseInt(data.count) || 0;
+
+                    document.querySelectorAll('.notifications-count, #notifications-count').forEach(el => {                    document.querySelectorAll('.notifications-count, #notifications-count').forEach(el => {
+
+                        el.textContent = count;                        el.textContent = count;
+
+                        el.style.display = count > 0 ? 'inline-flex' : 'none';                        el.style.display = count > 0 ? 'inline-flex' : 'none';
+
+                    });                    });
+
+                }                }
+
+            })            })
+
+            .catch(() => {});            .catch(() => {}); // Silenciar errores
+
+    }    }
+
+        
+
+    // Actualizar todos    // Actualizar todos los contadores
+
+    function updateAllCounters() {    function updateAllCounters() {
+
+        updateCartCount();        updateCartCount();
+
+        updateFavoritesCount();        updateFavoritesCount();
+
+        updateNotificationsCount();        updateNotificationsCount();
+
+    }    }
+
+        
+
+    // Solo eventos personalizados    // EVENTOS PERSONALIZADOS (solo escuchar, no evaluar)
+
+    document.addEventListener('cartUpdated', updateCartCount);    document.addEventListener('cartUpdated', updateCartCount);
+
+    document.addEventListener('favoritesUpdated', updateFavoritesCount);    document.addEventListener('favoritesUpdated', updateFavoritesCount);
+
+    document.addEventListener('notificationsUpdated', updateNotificationsCount);    document.addEventListener('notificationsUpdated', updateNotificationsCount);
+
+    document.addEventListener('headerUpdate', updateAllCounters);    document.addEventListener('headerUpdate', updateAllCounters);
+
+        
+
+    // Actualizar UNA SOLA VEZ al cargar    // ELIMINAR: MutationObserver
+
+    if (document.readyState === 'loading') {    // ELIMINAR: Actualización periódica
+
+        document.addEventListener('DOMContentLoaded', updateAllCounters, { once: true });    // ELIMINAR: Interceptores de formularios
+
+    } else {    // ELIMINAR: Interceptores de clicks
+
+        updateAllCounters();    
+
+    }    // Actualizar SOLO al cargar la página (una sola vez)
+
+        if (document.readyState === 'loading') {
+
+    // Exponer globalmente        document.addEventListener('DOMContentLoaded', updateAllCounters, { once: true });
+
+    window.updateCartCount = updateCartCount;    } else {
+
+    window.updateFavoritesCount = updateFavoritesCount;        updateAllCounters();
+
+    window.updateNotificationsCount = updateNotificationsCount;    }
+
+    window.updateAllCounters = updateAllCounters;    
+
+        // Exponer funciones globalmente (para llamadas manuales)
+
+})();    window.updateCartCount = updateCartCount;
+
+    window.updateFavoritesCount = updateFavoritesCount;
+    window.updateNotificationsCount = updateNotificationsCount;
+    window.updateAllCounters = updateAllCounters;
     
-    console.log('🎯 Header Handler inicializando...');
+})();
     
     // ============================================
-    // ACTUALIZAR CONTADOR DE CARRITO
+    // ACTUALIZAR CONTADOR DE CARRITO (SIN REFLOW)
     // ============================================
     function updateCartCount() {
         fetch('app/actions/get_cart_count.php')
@@ -21,28 +182,34 @@
                 if (data.success) {
                     const count = parseInt(data.count) || 0;
                     
-                    // Actualizar todos los badges de carrito
+                    // Actualizar SOLO si el valor cambió (evitar repaints innecesarios)
                     document.querySelectorAll('.cart-count, #cart-count').forEach(el => {
-                        el.textContent = count;
+                        const currentCount = parseInt(el.textContent) || 0;
                         
-                        // Mostrar/ocultar badge
-                        if (count > 0) {
-                            el.style.display = 'inline-flex';
-                        } else {
-                            el.style.display = 'none';
+                        // Solo actualizar si cambió el valor
+                        if (currentCount !== count) {
+                            // Usar requestAnimationFrame para evitar bloqueo visual
+                            requestAnimationFrame(() => {
+                                el.textContent = count;
+                                el.style.display = count > 0 ? 'inline-flex' : 'none';
+                            });
                         }
                     });
                     
-                    console.log('🛒 Carrito actualizado:', count);
+                    // Log solo si cambió
+                    const currentTotal = parseInt(document.querySelector('.cart-count, #cart-count')?.textContent) || 0;
+                    if (currentTotal !== count) {
+                        console.log('🛒 Carrito actualizado:', count);
+                    }
                 }
             })
             .catch(error => {
-                console.error('❌ Error al actualizar carrito:', error);
+                // Silenciar errores para evitar spam en consola
             });
     }
     
     // ============================================
-    // ACTUALIZAR CONTADOR DE FAVORITOS
+    // ACTUALIZAR CONTADOR DE FAVORITOS (SIN REFLOW)
     // ============================================
     function updateFavoritesCount() {
         fetch('app/actions/get_favorites_count.php')
@@ -51,41 +218,45 @@
                 if (data.success) {
                     const count = parseInt(data.count) || 0;
                     
-                    // Actualizar badges del header (solo número)
+                    // Actualizar badges del header SOLO si cambió
                     document.querySelectorAll('#favorites-count').forEach(el => {
-                        el.textContent = count;
+                        const currentCount = parseInt(el.textContent) || 0;
                         
-                        // Mostrar/ocultar badge
-                        if (count > 0) {
-                            el.style.display = 'inline-flex';
-                        } else {
-                            el.style.display = 'none';
+                        if (currentCount !== count) {
+                            requestAnimationFrame(() => {
+                                el.textContent = count;
+                                el.style.display = count > 0 ? 'inline-flex' : 'none';
+                            });
                         }
                     });
                     
-                    // Actualizar contador del modal (con texto completo)
+                    // Actualizar contador del modal SOLO si cambió
                     const modalCount = document.querySelector('.favorites-count');
                     if (modalCount) {
-                        const countNumber = modalCount.querySelector('.fav-count-number');
-                        const countText = count === 1 ? 'producto favorito' : 'productos favoritos';
+                        const currentModalCount = parseInt(modalCount.querySelector('.fav-count-number')?.textContent) || 0;
                         
-                        if (countNumber) {
-                            countNumber.textContent = count;
-                        } else {
-                            modalCount.innerHTML = `<span class="fav-count-number">${count}</span> ${countText}`;
+                        if (currentModalCount !== count) {
+                            requestAnimationFrame(() => {
+                                const countNumber = modalCount.querySelector('.fav-count-number');
+                                const countText = count === 1 ? 'producto favorito' : 'productos favoritos';
+                                
+                                if (countNumber) {
+                                    countNumber.textContent = count;
+                                } else {
+                                    modalCount.innerHTML = `<span class="fav-count-number">${count}</span> ${countText}`;
+                                }
+                            });
                         }
                     }
-                    
-                    console.log('❤️ Favoritos actualizado:', count);
                 }
             })
             .catch(error => {
-                console.error('❌ Error al actualizar favoritos:', error);
+                // Silenciar errores
             });
     }
     
     // ============================================
-    // ACTUALIZAR CONTADOR DE NOTIFICACIONES
+    // ACTUALIZAR CONTADOR DE NOTIFICACIONES (SIN REFLOW)
     // ============================================
     function updateNotificationsCount() {
         fetch('app/actions/get_notifications_count.php')
@@ -94,23 +265,21 @@
                 if (data.success) {
                     const count = parseInt(data.count) || 0;
                     
-                    // Actualizar todos los badges de notificaciones
+                    // Actualizar SOLO si cambió
                     document.querySelectorAll('.notifications-count, #notifications-count').forEach(el => {
-                        el.textContent = count;
+                        const currentCount = parseInt(el.textContent) || 0;
                         
-                        // Mostrar/ocultar badge
-                        if (count > 0) {
-                            el.style.display = 'inline-flex';
-                        } else {
-                            el.style.display = 'none';
+                        if (currentCount !== count) {
+                            requestAnimationFrame(() => {
+                                el.textContent = count;
+                                el.style.display = count > 0 ? 'inline-flex' : 'none';
+                            });
                         }
                     });
-                    
-                    console.log('🔔 Notificaciones actualizado:', count);
                 }
             })
             .catch(error => {
-                console.error('❌ Error al actualizar notificaciones:', error);
+                // Silenciar errores
             });
     }
     
@@ -124,50 +293,36 @@
     }
     
     // ============================================
-    // ESCUCHAR EVENTOS PERSONALIZADOS
+    // ESCUCHAR EVENTOS PERSONALIZADOS (silencioso)
     // ============================================
     
     // Evento: Producto agregado al carrito
     document.addEventListener('cartUpdated', function() {
-        console.log('🎯 Evento cartUpdated detectado');
         updateCartCount();
     });
     
     // Evento: Favorito agregado/eliminado
     document.addEventListener('favoritesUpdated', function() {
-        console.log('🎯 Evento favoritesUpdated detectado');
         updateFavoritesCount();
     });
     
     // Evento: Notificación nueva
     document.addEventListener('notificationsUpdated', function() {
-        console.log('🎯 Evento notificationsUpdated detectado');
         updateNotificationsCount();
     });
     
     // Evento: Actualización general
     document.addEventListener('headerUpdate', function() {
-        console.log('🎯 Evento headerUpdate detectado');
         updateAllCounters();
     });
     
     // ============================================
-    // OBSERVADOR DE MUTACIONES (para cart.php)
+    // OBSERVADOR DE MUTACIONES (DESHABILITADO - causa reflows)
     // ============================================
     
-    // Observar cambios en la tabla del carrito
-    const cartTable = document.querySelector('.cart__table');
-    if (cartTable) {
-        const observer = new MutationObserver(function() {
-            console.log('🔄 Tabla del carrito modificada, actualizando contador...');
-            setTimeout(updateCartCount, 500);
-        });
-        
-        observer.observe(cartTable, {
-            childList: true,
-            subtree: true
-        });
-    }
+    // ELIMINADO: MutationObserver del carrito
+    // Causa actualizaciones constantes y refrescos visuales
+    // Las actualizaciones se hacen solo por eventos específicos
     
     // ============================================
     // INTERCEPTAR FORMULARIOS DE AGREGAR AL CARRITO
@@ -179,9 +334,7 @@
             e.target.matches('.add-to-cart-form') ||
             e.target.id === 'addToCartForm') {
             
-            console.log('📦 Formulario de carrito detectado, actualizará después del envío');
-            
-            // Actualizar después de 1 segundo
+            // Actualizar después de 1 segundo (solo una vez)
             setTimeout(updateCartCount, 1000);
         }
         
@@ -189,15 +342,13 @@
         if (e.target.matches('form[action*="add_to_favorites"]') || 
             e.target.matches('.add-to-favorites-form')) {
             
-            console.log('❤️ Formulario de favoritos detectado, actualizará después del envío');
-            
-            // Actualizar después de 1 segundo
+            // Actualizar después de 1 segundo (solo una vez)
             setTimeout(updateFavoritesCount, 1000);
         }
     });
     
     // ============================================
-    // INTERCEPTAR CLICKS EN BOTONES
+    // INTERCEPTAR CLICKS EN BOTONES (silencioso)
     // ============================================
     
     document.addEventListener('click', function(e) {
@@ -205,7 +356,6 @@
         if (e.target.matches('.add-to-cart') || 
             e.target.closest('.add-to-cart')) {
             
-            console.log('🛒 Botón agregar al carrito clickeado');
             setTimeout(updateCartCount, 1000);
         }
         
@@ -215,7 +365,6 @@
             e.target.matches('.btn-favorite') ||
             e.target.closest('.btn-favorite')) {
             
-            console.log('❤️ Botón favoritos clickeado');
             setTimeout(updateFavoritesCount, 1000);
         }
         
@@ -224,19 +373,18 @@
             e.target.closest('.remove-from-cart') ||
             e.target.matches('[data-action="remove-from-cart"]')) {
             
-            console.log('🗑️ Botón eliminar del carrito clickeado');
             setTimeout(updateCartCount, 1000);
         }
     });
     
     // ============================================
-    // ACTUALIZACIÓN PERIÓDICA (cada 30 segundos)
+    // ACTUALIZACIÓN PERIÓDICA (cada 5 MINUTOS - reducido para evitar refrescos)
     // ============================================
     
     setInterval(function() {
-        console.log('🔄 Actualización periódica de contadores...');
+        // Actualización silenciosa en segundo plano
         updateAllCounters();
-    }, 30000); // 30 segundos
+    }, 300000); // 5 minutos (300,000 ms) - era 30 segundos
     
     // ============================================
     // ACTUALIZACIÓN INICIAL
@@ -258,6 +406,6 @@
     window.updateNotificationsCount = updateNotificationsCount;
     window.updateAllCounters = updateAllCounters;
     
-    console.log('✅ Header Handler inicializado correctamente');
+    // Log final silencioso
     
 })();

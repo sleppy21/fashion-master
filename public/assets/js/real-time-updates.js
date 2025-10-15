@@ -786,8 +786,21 @@ const RealTimeUpdates = (function() {
                     btn,
                     productId,
                     classes: btn.className,
-                    dataId: btn.dataset.id
+                    dataId: btn.dataset.id,
+                    getAttribute: btn.getAttribute('data-id')
                 });
+                
+                // VALIDACIÓN: Verificar que productId existe y no está vacío
+                if (!productId || productId === 'null' || productId === 'undefined') {
+                    console.error('❌ ERROR: ID de producto no válido', {
+                        productId,
+                        btn,
+                        dataset: btn.dataset,
+                        attributes: Array.from(btn.attributes).map(a => ({name: a.name, value: a.value}))
+                    });
+                    showToast('Error: ID de producto no válido', 'error');
+                    return;
+                }
                 
                 // No agregar si está deshabilitado
                 if (btn.dataset.disabled === 'true') {

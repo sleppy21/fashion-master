@@ -51,7 +51,7 @@
                 
                 // Llenar el formulario
                 $('#address_id').val(dir.id_direccion);
-                $('#address_name').val(dir.nombre_direccion);
+                $('#address_name').val(dir.nombre_cliente_direccion);
                 $('#address_phone').val(dir.telefono_direccion || '');
                 $('#address_full').val(dir.direccion_completa_direccion);
                 $('#address_departamento').val(dir.departamento_direccion);

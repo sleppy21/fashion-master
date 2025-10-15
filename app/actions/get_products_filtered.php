@@ -13,7 +13,15 @@ header('Content-Type: application/json');
 
 try {
     // Obtener filtros de la URL
-    $filtro_categoria = isset($_GET['c']) ? (int)$_GET['c'] : (isset($_GET['categoria']) ? (int)$_GET['categoria'] : null);
+    // Manejar múltiples categorías
+    $filtro_categoria = [];
+    if (isset($_GET['c']) && is_array($_GET['c'])) {
+        $filtro_categoria = array_map('intval', $_GET['c']);
+    } elseif (isset($_GET['c']) && !empty($_GET['c'])) {
+        // Si viene como string separado por comas
+        $filtro_categoria = array_map('intval', explode(',', $_GET['c']));
+    }
+    
     $filtro_genero = isset($_GET['g']) ? $_GET['g'] : (isset($_GET['genero']) ? $_GET['genero'] : null);
     $filtro_marca = isset($_GET['m']) ? (int)$_GET['m'] : (isset($_GET['marca']) ? (int)$_GET['marca'] : null);
     $filtro_precio_min = isset($_GET['pmin']) ? (float)$_GET['pmin'] : (isset($_GET['precio_min']) ? (float)$_GET['precio_min'] : 0);
@@ -46,9 +54,11 @@ try {
 
     $params = [];
 
-    if ($filtro_categoria) {
-        $sql .= " AND p.id_categoria = ?";
-        $params[] = $filtro_categoria;
+    // Múltiples categorías
+    if (!empty($filtro_categoria)) {
+        $placeholders = implode(',', array_fill(0, count($filtro_categoria), '?'));
+        $sql .= " AND p.id_categoria IN ($placeholders)";
+        $params = array_merge($params, $filtro_categoria);
     }
 
     if ($filtro_genero && $filtro_genero !== 'all') {
@@ -62,11 +72,54 @@ try {
     }
 
     if (!empty($filtro_buscar)) {
-        $sql .= " AND (p.nombre_producto LIKE ? OR p.descripcion_producto LIKE ? OR m.nombre_marca LIKE ?)";
-        $search_term = "%{$filtro_buscar}%";
-        $params[] = $search_term;
-        $params[] = $search_term;
-        $params[] = $search_term;
+        // Calcular longitud mínima de coincidencia (mínimo 3 caracteres o 60% de la búsqueda)
+        $min_match_length = max(3, ceil(strlen($filtro_buscar) * 0.6));
+        
+        // Búsqueda por similitud solo si la búsqueda tiene al menos 3 caracteres
+        if (strlen($filtro_buscar) >= 3) {
+            // Crear patrón para buscar por caracteres individuales (con límite de relevancia)
+            $search_chars = str_split($filtro_buscar);
+            $search_pattern = '%' . implode('%', array_slice($search_chars, 0, $min_match_length)) . '%';
+            
+            $sql .= " AND (
+                p.nombre_producto LIKE ? OR 
+                p.descripcion_producto LIKE ? OR 
+                m.nombre_marca LIKE ? OR
+                c.nombre_categoria LIKE ? OR
+                (
+                    CHAR_LENGTH(p.nombre_producto) - CHAR_LENGTH(REPLACE(LOWER(p.nombre_producto), ?, '')) >= ? OR
+                    p.nombre_producto LIKE ?
+                )
+            )";
+            
+            // Primera coincidencia: búsqueda normal (más relevante)
+            $search_term = "%{$filtro_buscar}%";
+            $params[] = $search_term;
+            $params[] = $search_term;
+            $params[] = $search_term;
+            $params[] = $search_term;
+            
+            // Verificar que contenga suficientes caracteres del término de búsqueda
+            $params[] = strtolower($filtro_buscar);
+            $params[] = $min_match_length;
+            
+            // Patrón de caracteres espaciados (para coincidencias flexibles)
+            $params[] = $search_pattern;
+            
+        } else {
+            // Para búsquedas cortas (1-2 caracteres), solo coincidencia exacta
+            $sql .= " AND (
+                p.nombre_producto LIKE ? OR 
+                p.descripcion_producto LIKE ? OR 
+                m.nombre_marca LIKE ? OR
+                c.nombre_categoria LIKE ?
+            )";
+            $search_term = "%{$filtro_buscar}%";
+            $params[] = $search_term;
+            $params[] = $search_term;
+            $params[] = $search_term;
+            $params[] = $search_term;
+        }
     }
 
     $sql .= " GROUP BY p.id_producto";

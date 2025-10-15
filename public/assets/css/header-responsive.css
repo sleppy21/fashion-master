@@ -1,0 +1,618 @@
+/* ============================================
+   HEADER RESPONSIVE - ADAPTABLE A CUALQUIER CANTIDAD DE ITEMS
+   Versión 1.0 - Sistema de Grid Flexible
+   ============================================ */
+
+/* ==========================================
+   FORZAR HEADER ESTÁTICO - MÁXIMA PRIORIDAD
+   ========================================== */
+
+.header,
+.header *:not(.header__right__widget li a):not(.header__right__widget li span):not(.header-user-avatar),
+.header__logo,
+.header__menu,
+.header__menu ul,
+.header__menu ul li {
+    /* BLOQUEAR TODAS LAS ANIMACIONES Y TRANSICIONES */
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+    
+    /* PREVENIR REFLOWS Y REPAINTS */
+    will-change: auto !important;
+    contain: layout style !important;
+    
+    /* ESTABILIZAR DIMENSIONES */
+    backface-visibility: hidden !important;
+}
+
+/* ==========================================
+   LAYOUT PRINCIPAL DEL HEADER
+   ========================================== */
+
+.header {
+    width: 100%;
+    background: #fff;
+    position: relative;
+    z-index: 999;
+}
+
+.header .container-fluid {
+    max-width: 100%;
+    padding: 0 15px;
+}
+
+.header .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 10px;
+    min-height: 50px; /* Altura mínima del header */
+}
+
+/* ==========================================
+   LOGO - SIEMPRE COMPACTO
+   ========================================== */
+
+.header .col-xl-3,
+.header .col-lg-2 {
+    flex: 0 0 auto;
+    min-width: 50px;
+    max-width: 150px;
+}
+
+.header__logo {
+    padding: 4px 0;
+}
+
+/* ==========================================
+   MENÚ PRINCIPAL - TOTALMENTE FLEXIBLE
+   ========================================== */
+
+.header .col-xl-6,
+.header .col-lg-7 {
+    flex: 1 1 auto;
+    min-width: 0; /* Permite que se encoja */
+}
+
+.header__menu {
+    padding: 4px 0;
+    width: 100%;
+}
+
+.header__menu ul {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    gap: clamp(8px, 2vw, 40px); /* Gap adaptativo según viewport */
+}
+
+.header__menu ul li {
+    list-style: none;
+    margin: 0 !important;
+    padding: 0;
+    flex-shrink: 1;
+    white-space: nowrap;
+    display: flex !important;
+    align-items: center !important;
+    height: 50px !important;
+}
+
+.header__menu ul li a {
+    font-size: clamp(10px, 1.1vw, 14px);
+    padding: 0 clamp(4px, 0.8vw, 10px) !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 50px !important;
+    line-height: 50px !important;
+    /* Sin transiciones - menú estático */
+}
+
+/* ==========================================
+   MENÚ ADMIN - OCULTAR PARA NO ADMIN
+   ========================================== */
+
+.header__menu ul li.admin-menu-item {
+    display: flex;
+    align-items: center;
+}
+
+/* Si el usuario NO es admin, ocultar el item */
+body:not(.user-is-admin) .header__menu ul li.admin-menu-item {
+    display: none !important;
+}
+
+/* ==========================================
+   HEADER RIGHT - ICONOS Y WIDGETS
+   ========================================== */
+
+.header .col-lg-3 {
+    flex: 0 0 auto;
+    min-width: 200px;
+    max-width: 350px;
+}
+
+.header__right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: clamp(8px, 1vw, 15px);
+    padding: 4px 0;
+}
+
+.header__right__widget {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.header__right__widget li {
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-shrink: 0;
+    height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.header__right__widget li a,
+.header__right__widget li span {
+    font-size: clamp(14px, 1.2vw, 16px);
+}
+
+/* Reducir badges de notificaciones */
+.header__right__widget li a .tip {
+    position: absolute !important;
+    top: -4px !important;
+    right: -6px !important;
+    font-size: 13px !important;
+    min-width: 24px !important;
+    height: 24px !important;
+    line-height: 1 !important;
+    padding: 0 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 10 !important;
+    background: #ca1515 !important;
+    color: white !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 3px 6px rgba(202, 21, 21, 0.4) !important;
+}
+
+/* Avatar y botones especiales */
+.user-avatar-btn-container {
+    flex-shrink: 0;
+}
+
+.header-user-avatar {
+    width: clamp(28px, 2.5vw, 32px);
+    height: clamp(28px, 2.5vw, 32px);
+}
+
+.canvas__open {
+    display: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* ==========================================
+   RESPONSIVE BREAKPOINTS
+   ========================================== */
+
+/* PANTALLAS GRANDES (1200px+) - TODO VISIBLE */
+@media (min-width: 1200px) {
+    .header__menu ul {
+        gap: clamp(20px, 2.5vw, 40px);
+    }
+    
+    .header__menu ul li a {
+        font-size: 14px;
+    }
+}
+
+/* PANTALLAS MEDIANAS-GRANDES (992px - 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .header__menu ul {
+        gap: clamp(12px, 2vw, 25px);
+    }
+    
+    .header__menu ul li a {
+        font-size: clamp(12px, 1.3vw, 14px);
+        padding: 4px 8px;
+    }
+    
+    .header__right__widget {
+        gap: 10px;
+    }
+}
+
+/* TABLETS (768px - 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+    .header .row {
+        gap: 5px;
+    }
+    
+    .header .col-xl-3,
+    .header .col-lg-2 {
+        max-width: 100px;
+    }
+    
+    .header .col-lg-3 {
+        min-width: 180px;
+        max-width: 250px;
+    }
+    
+    .header__menu ul {
+        gap: clamp(6px, 1.5vw, 15px);
+        justify-content: center;
+    }
+    
+    .header__menu ul li a {
+        font-size: clamp(10px, 1.2vw, 13px);
+        padding: 3px 6px;
+        text-transform: uppercase;
+    }
+    
+    .header__right {
+        gap: 8px;
+    }
+    
+    .header__right__widget {
+        gap: 8px;
+    }
+    
+    .header__right__widget li a,
+    .header__right__widget li span {
+        font-size: 15px;
+    }
+    
+    .header-user-avatar {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* MÓVILES GRANDES (576px - 767px) */
+@media (max-width: 767px) and (min-width: 576px) {
+    .header .row {
+        flex-wrap: wrap;
+    }
+    
+    /* Logo ocupa menos espacio */
+    .header .col-xl-3,
+    .header .col-lg-2 {
+        flex: 0 0 80px;
+        max-width: 80px;
+    }
+    
+    /* Header right se ajusta */
+    .header .col-lg-3 {
+        flex: 1 1 auto;
+        min-width: 0;
+        max-width: 100%;
+    }
+    
+    /* Menú se mueve a segunda fila pero sigue visible */
+    .header .col-xl-6,
+    .header .col-lg-7 {
+        flex: 1 1 100%;
+        order: 3;
+    }
+    
+    .header__menu {
+        padding: 8px 0;
+    }
+    
+    .header__menu ul {
+        gap: clamp(8px, 2vw, 15px);
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .header__menu ul li a {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+    
+    .header__right {
+        padding: 8px 0;
+        gap: 6px;
+    }
+    
+    .header__right__widget {
+        gap: 6px;
+    }
+    
+    .header__right__widget li a,
+    .header__right__widget li span {
+        font-size: 16px;
+    }
+    
+    .canvas__open {
+        display: none; /* Aún no mostramos hamburguesa */
+    }
+    
+    .header-user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* MÓVILES PEQUEÑOS (menos de 576px) - USAR HAMBURGUESA */
+@media (max-width: 575px) {
+    /* Ocultar menú principal y mostrar hamburguesa */
+    .header .col-xl-6,
+    .header .col-lg-7 {
+        display: none !important;
+    }
+    
+    .canvas__open {
+        display: block !important;
+    }
+    
+    .header .col-xl-3,
+    .header .col-lg-2 {
+        flex: 0 0 60px;
+    }
+    
+    .header .col-lg-3 {
+        flex: 1 1 auto;
+    }
+    
+    .header__right {
+        gap: 4px;
+        padding: 8px 0;
+    }
+    
+    .header__right__widget {
+        gap: 4px;
+    }
+    
+    .header__right__widget li a,
+    .header__right__widget li span {
+        font-size: 14px;
+    }
+    
+    .header-user-avatar {
+        width: 28px;
+        height: 28px;
+    }
+    
+    /* Reducir algunos iconos en móvil pequeño */
+    .header__right__widget li:not(.user-avatar-btn-container) a .tip {
+        font-size: 12px !important;
+        min-width: 22px !important;
+        height: 22px !important;
+        line-height: 1 !important;
+        background: #ca1515 !important;
+        color: white !important;
+        font-weight: 700 !important;
+        border-radius: 11px !important;
+        box-shadow: 0 2px 4px rgba(202, 21, 21, 0.4) !important;
+    }
+}
+
+/* MÓVILES MUY PEQUEÑOS (menos de 400px) */
+@media (max-width: 399px) {
+    .header__right__widget li a,
+    .header__right__widget li span {
+        font-size: 13px;
+    }
+    
+    .header__right__widget {
+        gap: 2px;
+    }
+    
+    .header__right {
+        gap: 2px;
+    }
+    
+    .header-user-avatar {
+        width: 26px;
+        height: 26px;
+    }
+}
+
+/* ==========================================
+   ADAPTACIÓN SEGÚN CANTIDAD DE ITEMS
+   ========================================== */
+
+/* Ajustes automáticos según cantidad de items detectados por JS */
+.header__menu ul.menu-items-few {
+    gap: clamp(25px, 3vw, 50px) !important;
+}
+
+.header__menu ul.menu-items-few li a {
+    font-size: clamp(13px, 1.3vw, 16px) !important;
+    padding: 5px 15px !important;
+}
+
+.header__menu ul.menu-items-normal {
+    gap: clamp(15px, 2vw, 35px) !important;
+}
+
+.header__menu ul.menu-items-normal li a {
+    font-size: clamp(12px, 1.2vw, 15px) !important;
+}
+
+.header__menu ul.menu-items-many {
+    gap: clamp(8px, 1.5vw, 20px) !important;
+}
+
+.header__menu ul.menu-items-many li a {
+    font-size: clamp(10px, 1.1vw, 13px) !important;
+    padding: 3px 8px !important;
+}
+
+/* Reducir spacing automáticamente cuando hay muchos items */
+@media (max-width: 1199px) {
+    .header__menu ul li:nth-child(6) a,
+    .header__menu ul li:nth-child(7) a {
+        font-size: clamp(10px, 1.1vw, 12px);
+        padding: 3px 5px;
+    }
+}
+
+@media (max-width: 991px) {
+    .header__menu ul li:nth-child(5) a,
+    .header__menu ul li:nth-child(6) a,
+    .header__menu ul li:nth-child(7) a {
+        font-size: clamp(9px, 1vw, 11px);
+        padding: 2px 4px;
+    }
+}
+
+/* ==========================================
+   DARK MODE SUPPORT
+   ========================================== */
+
+body.dark-mode .header {
+    background: #1a1a1a;
+    border-bottom: 1px solid #333;
+}
+
+body.dark-mode .header__menu ul li a {
+    color: #e0e0e0;
+}
+
+body.dark-mode .header__menu ul li a:hover {
+    color: #c9a67c;
+}
+
+/* DESHABILITADO PARA FLUID MENU - Dark mode responsive ::after */
+/*
+body.dark-mode .header__menu ul li a:after {
+    background: #c9a67c;
+}
+*/
+
+body.dark-mode .header__right__widget li a,
+body.dark-mode .header__right__widget li span {
+    color: #e0e0e0;
+}
+
+body.dark-mode .canvas__open i {
+    color: #e0e0e0;
+}
+
+/* ==========================================
+   ANIMACIONES Y TRANSICIONES - SOLO LADO DERECHO
+   ========================================== */
+
+/* ELIMINADO: transiciones del menú */
+
+.header__right__widget li a {
+    transition: all 0.2s ease;
+}
+
+.header__right__widget li a:hover {
+    transform: translateY(-2px);
+}
+
+/* ==========================================
+   UTILIDADES DE OVERFLOW
+   ========================================== */
+
+/* Prevenir overflow horizontal */
+.header,
+.header .container-fluid,
+.header .row {
+    overflow-x: hidden;
+}
+
+/* Asegurar que el texto no se salga */
+.header__menu ul li a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ==========================================
+   SOPORTE PARA DROPDOWNS EN MENÚ
+   ========================================== */
+
+@media (min-width: 576px) {
+    .header__menu ul li .dropdown {
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 575px) {
+    .header__menu ul li .dropdown {
+        display: none; /* Los dropdowns se manejarán en el offcanvas */
+    }
+}
+
+/* ==========================================
+   FORZAR UNA SOLA FILA EN PANTALLAS GRANDES/MEDIANAS
+   ========================================== */
+
+@media (min-width: 576px) {
+    /* Asegurar que todo esté en una sola fila */
+    .header .row {
+        flex-wrap: nowrap !important;
+    }
+    
+    /* Prevenir que el menú se rompa en múltiples líneas */
+    .header__menu ul {
+        flex-wrap: nowrap !important;
+    }
+    
+    /* Si hay overflow, reducir más el font-size */
+    @supports (container-type: inline-size) {
+        .header__menu {
+            container-type: inline-size;
+        }
+        
+        @container (max-width: 500px) {
+            .header__menu ul li a {
+                font-size: 10px !important;
+                padding: 2px 4px !important;
+            }
+        }
+    }
+}
+
+/* ==========================================
+   MEJORAS DE BOTÓN LOGIN
+   ========================================== */
+
+.btn-login-header {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: #c9a67c;
+    color: white !important;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    /* Sin transiciones - menú estático */
+    white-space: nowrap;
+}
+
+/* Hover eliminado - menú estático */
+
+body.dark-mode .btn-login-header {
+    background: #c9a67c;
+}
+
+body.dark-mode .btn-login-header:hover {
+    background: #d4b58d;
+}
+
+@media (max-width: 575px) {
+    .btn-login-header {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+}
+

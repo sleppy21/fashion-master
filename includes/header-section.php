@@ -5,22 +5,7 @@
     // APLICAR DARK MODE INMEDIATAMENTE - ANTES DEL RENDER
     // Esto previene el flash blanco al cargar la página
     (function() {
-        const savedTheme = loc        // If a trigger element is provided, mark it as active so CSS can use it as parent
-        if (triggerElement && triggerElement.classList) {
-            try {
-                triggerElement.classList.add('modal-trigger-active');
-                lastModalTrigger = triggerElement;
-                console.log('✅ Modal trigger activado:', modalId, triggerElement.id || triggerElement.className);
-                // Notify other modules that a modal trigger changed
-                try { 
-                    document.dispatchEvent(new CustomEvent('modalTriggerChanged', { 
-                        detail: { action: 'opened', modalId: modalId, trigger: triggerElement } 
-                    })); 
-                } catch(e) {}
-            } catch (e) {
-                console.error('❌ Error al activar trigger:', e);
-            }
-        }etItem('theme');
+        const savedTheme = localStorage.getItem('theme');
         const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         
         if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
@@ -43,6 +28,10 @@
 
     <link rel="stylesheet" href="public/assets/css/style.css">
     <link rel="stylesheet" href="public/assets/css/modals-animations.css">
+    <link rel="stylesheet" href="public/assets/css/header-responsive.css">
+    <link rel="stylesheet" href="public/assets/css/header-bootstrap-layout.css">
+    <link rel="stylesheet" href="public/assets/css/badges-override.css">
+    <link rel="stylesheet" href="public/assets/css/global-search-modal.css?v=<?php echo time(); ?>">
 
 </head>
 <body>
@@ -53,23 +42,25 @@
 
 
 <header class="header">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xl-3 col-lg-2">
+    <div class="container-fluid px-3">
+        <div class="row align-items-center g-2 justify-content-between">
+            <!-- Logo Section - Oculto en móvil, visible en desktop -->
+            <div class="col-auto d-none d-lg-block" style="min-width: 80px;">
                 <div class="header__logo">
                     <!-- Logo removido -->
                 </div>
             </div>
-            <div class="col-xl-6 col-lg-7">
+            
+            <!-- Menu Section - Centrado y responsive -->
+            <div class="col-12 col-lg order-3 order-lg-2 d-flex justify-content-center">
                 <nav class="header__menu">
-                    <ul>
+                    <ul class="d-flex justify-content-center align-items-center flex-wrap m-0 p-0 list-unstyled">
                         <li><a href="./index.php">Inicio</a></li>
                         <li><a href="./shop.php">Tienda</a></li>
                         <li><a href="./contact.php">Contacto</a></li>
                         <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
                         <li><a href="./cart.php">Carrito</a></li>
-                        <li><a href="./order-confirmation.php">Mis Compras</a></li>
-                        <li><a href="#" id="user-profile-link">Mi Perfil</a></li>
+                        <li><a href="./mis-pedidos.php">Mis Compras</a></li>
                         <?php endif; ?>
                         <?php if(isset($usuario_logueado) && $usuario_logueado && $usuario_logueado['rol_usuario'] === 'admin'): ?>
                         <li class="admin-menu-item"><a href="./admin.php" class="admin-link">
@@ -80,27 +71,21 @@
                     </ul>
                 </nav>
             </div>
-            <div class="col-lg-3">
+            
+            <!-- Right Section - Icons and Avatar -->
+            <div class="col-auto order-2 order-lg-3" style="min-width: 200px;">
                 <div class="header__right">
-                    <div class="header__right__auth">
-                        <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
-                            <a href="profile.php" id="user-account-link">
-                                <i class="fa fa-user-circle"></i>
-                                <span>Hola, <?php echo htmlspecialchars($usuario_logueado['nombre_usuario']); ?></span>
-                            </a>
-                        <?php else: ?>
-                            <a href="login.php">Iniciar Sesión</a>
-                            <a href="register.php">Registrarse</a>
-                        <?php endif; ?>
-                    </div>
-                    <ul class="header__right__widget">
-                        <li><span class="icon_search search-switch"></span></li>
+                    <ul class="header__right__widget d-flex align-items-center justify-content-end m-0 p-0 list-unstyled">
+                        <li><span class="icon_search" id="global-search-trigger" style="cursor: pointer;"></span></li>
                         <li>
                             <a href="#" id="dark-mode-toggle" title="Cambiar tema">
                                 <i class="fa fa-moon"></i>
                             </a>
                         </li>
                         <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
+                        <li><a href="profile.php#settings" title="Ajustes">
+                            <i class="fa fa-cog"></i>
+                        </a></li>
                         <li><a href="#" id="notifications-link" title="Notificaciones">
                             <i class="fa fa-bell"></i>
                             <?php if(isset($notifications_count) && $notifications_count > 0): ?>
@@ -116,22 +101,55 @@
                             <div class="tip" id="favorites-count" style="display: none;">0</div>
                             <?php endif; ?>
                         </a></li>
-                        <li><a href="cart.php" title="Carrito"><span class="icon_bag_alt"></span>
+                        <li><a href="cart.php" title="Carrito"><i class="fa fa-shopping-cart"></i>
                             <?php if(isset($cart_count) && $cart_count > 0): ?>
                             <div class="tip" id="cart-count"><?php echo $cart_count; ?></div>
                             <?php else: ?>
                             <div class="tip" id="cart-count" style="display: none;">0</div>
                             <?php endif; ?>
                         </a></li>
+                        
+                        <!-- Botón de Avatar de Usuario -->
+                        <li class="user-avatar-btn-container">
+                            <a href="#" id="user-account-link" class="header-avatar-link" title="Mi cuenta">
+                                <?php 
+                                // Construir ruta del avatar
+                                $header_avatar_path = 'public/assets/img/profiles/default-avatar.png';
+                                if (!empty($usuario_logueado['avatar_usuario'])) {
+                                    if (strpos($usuario_logueado['avatar_usuario'], 'public/assets/img/profiles/') !== false) {
+                                        $header_avatar_path = $usuario_logueado['avatar_usuario'];
+                                    } elseif ($usuario_logueado['avatar_usuario'] !== 'default-avatar.png') {
+                                        $header_avatar_path = 'public/assets/img/profiles/' . $usuario_logueado['avatar_usuario'];
+                                    }
+                                }
+                                
+                                $tiene_avatar_custom = !empty($usuario_logueado['avatar_usuario']) && 
+                                                      $usuario_logueado['avatar_usuario'] !== 'default-avatar.png' &&
+                                                      file_exists($header_avatar_path);
+                                ?>
+                                
+                                <div class="header-user-avatar">
+                                    <?php if($tiene_avatar_custom): ?>
+                                        <img src="<?php echo $header_avatar_path; ?>" 
+                                             alt="Avatar" 
+                                             class="avatar-image"
+                                             crossorigin="anonymous"
+                                             style="width: 38px !important; height: 38px !important; border-radius: 50% !important; object-fit: cover !important; object-position: center !important; display: block !important;">
+                                    <?php else: ?>
+                                        <div class="avatar-initial">
+                                            <?php echo strtoupper(substr($usuario_logueado['nombre_usuario'], 0, 1)); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="avatar-status-dot"></div>
+                                </div>
+                            </a>
+                        </li>
                         <?php else: ?>
                         <li><a href="login.php" title="Favoritos"><span class="icon_heart_alt"></span></a></li>
                         <li><a href="cart.php" title="Carrito"><span class="icon_bag_alt"></span></a></li>
+                        <li><a href="login.php" class="btn-login-header">Iniciar Sesión</a></li>
                         <?php endif; ?>
                     </ul>
-                    <!-- Botón hamburguesa dentro del header__right -->
-                    <div class="canvas__open">
-                        <i class="fa fa-bars"></i>
-                    </div>
                 </div>
             </div>
         </div>
@@ -640,6 +658,7 @@
 include __DIR__ . '/favorites-modal.php';
 include __DIR__ . '/notifications-modal.php';
 include __DIR__ . '/user-account-modal.php';
+include __DIR__ . '/global-search-modal.php';
 
 // Script para actualización AJAX de contadores (solo si hay usuario)
 if(isset($usuario_logueado) && $usuario_logueado): 
@@ -649,5 +668,17 @@ if(isset($usuario_logueado) && $usuario_logueado):
         $secure_base_url = str_replace('http://', 'https://', $secure_base_url);
     }
     echo '<script src="' . $secure_base_url . '/public/assets/js/ajax-counters.js?v=' . time() . '"></script>';
+    
+    // Script para colores dinámicos de avatar (shadow extraction)
+    echo '<script src="' . $secure_base_url . '/public/assets/js/image-color-extractor.js?v=' . time() . '"></script>';
+    
+    // Script para gestionar shadow del avatar del header
+    echo '<script src="' . $secure_base_url . '/public/assets/js/header-avatar-shadow.js?v=' . time() . '"></script>';
 endif;
 ?>
+
+<!-- Script para header responsive (siempre cargado) -->
+<script src="public/assets/js/header-responsive.js?v=<?php echo time(); ?>"></script>
+
+<!-- Script para búsqueda global (siempre cargado) -->
+<script src="public/assets/js/global-search.js?v=<?php echo time(); ?>"></script>

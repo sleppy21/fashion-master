@@ -168,8 +168,17 @@ class ShopController {
      * Obtener filtros desde URL
      */
     private static function getFiltersFromURL() {
+        // Manejar múltiples categorías
+        $categorias = [];
+        if (isset($_GET['c']) && is_array($_GET['c'])) {
+            $categorias = array_map('intval', $_GET['c']);
+        } elseif (isset($_GET['c']) && !empty($_GET['c'])) {
+            // Si viene como string separado por comas
+            $categorias = array_map('intval', explode(',', $_GET['c']));
+        }
+        
         return [
-            'categoria' => isset($_GET['c']) ? intval($_GET['c']) : (isset($_GET['categoria']) ? intval($_GET['categoria']) : null),
+            'categoria' => !empty($categorias) ? $categorias : null,
             'genero' => isset($_GET['g']) ? $_GET['g'] : (isset($_GET['genero']) ? $_GET['genero'] : null),
             'marca' => isset($_GET['m']) ? intval($_GET['m']) : (isset($_GET['marca']) ? intval($_GET['marca']) : null),
             'precio_min' => isset($_GET['pmin']) ? floatval($_GET['pmin']) : (isset($_GET['precio_min']) ? floatval($_GET['precio_min']) : 0),
@@ -205,8 +214,16 @@ class ShopController {
         
         // Aplicar filtros
         if ($filters['categoria']) {
-            $query .= " AND p.id_categoria = ?";
-            $params[] = $filters['categoria'];
+            if (is_array($filters['categoria']) && count($filters['categoria']) > 0) {
+                // Múltiples categorías
+                $placeholders = implode(',', array_fill(0, count($filters['categoria']), '?'));
+                $query .= " AND p.id_categoria IN ($placeholders)";
+                $params = array_merge($params, $filters['categoria']);
+            } else {
+                // Una sola categoría (compatibilidad)
+                $query .= " AND p.id_categoria = ?";
+                $params[] = $filters['categoria'];
+            }
         }
         
         if ($filters['genero'] && $filters['genero'] !== 'all') {
@@ -277,7 +294,7 @@ class ShopController {
     private static function getCategories() {
         try {
             $resultado = executeQuery(
-                "SELECT id_categoria, nombre_categoria 
+                "SELECT id_categoria, nombre_categoria, url_imagen_categoria 
                  FROM categoria 
                  WHERE status_categoria = 1 
                  ORDER BY nombre_categoria ASC"

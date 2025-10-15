@@ -9,7 +9,7 @@
     
     // Estado global de filtros
     const FiltersState = {
-        categoria: null,
+        categorias: [], // CAMBIADO: ahora es array para múltiples categorías
         genero: null,
         marca: null,
         precio_min: 0,
@@ -24,7 +24,15 @@
     function initFiltersFromURL() {
         const urlParams = new URLSearchParams(window.location.search);
         
-        FiltersState.categoria = urlParams.get('c') || urlParams.get('categoria') || null;
+        // Manejar múltiples categorías (c[]=1&c[]=2 o c=1,2,3)
+        const categoriasParam = urlParams.getAll('c[]');
+        if (categoriasParam.length > 0) {
+            FiltersState.categorias = categoriasParam;
+        } else {
+            const categoriasString = urlParams.get('c') || urlParams.get('categoria');
+            FiltersState.categorias = categoriasString ? categoriasString.split(',') : [];
+        }
+        
         FiltersState.genero = urlParams.get('g') || urlParams.get('genero') || null;
         FiltersState.marca = urlParams.get('m') || urlParams.get('marca') || null;
         FiltersState.precio_min = parseFloat(urlParams.get('pmin') || urlParams.get('precio_min') || 0);
@@ -81,7 +89,13 @@
         // Construir parámetros de URL
         const params = new URLSearchParams();
         
-        if (FiltersState.categoria) params.append('c', FiltersState.categoria);
+        // Agregar categorías (múltiples)
+        if (FiltersState.categorias && FiltersState.categorias.length > 0) {
+            FiltersState.categorias.forEach(cat => {
+                params.append('c[]', cat);
+            });
+        }
+        
         if (FiltersState.genero) params.append('g', FiltersState.genero);
         if (FiltersState.marca) params.append('m', FiltersState.marca);
         if (FiltersState.precio_min > 0) params.append('pmin', FiltersState.precio_min);
@@ -143,7 +157,10 @@
         
         products.forEach((product, index) => {
             const productCard = createProductCard(product, index);
-            row.appendChild(productCard);
+            // Solo agregar si el card se creó correctamente (no null)
+            if (productCard) {
+                row.appendChild(productCard);
+            }
         });
         
         // Re-inicializar event handlers de carrito y favoritos
@@ -198,6 +215,12 @@
      * @returns {HTMLElement}
      */
     function createProductCard(product, index) {
+        // VALIDACIÓN: Asegurar que el producto tenga ID
+        if (!product || !product.id_producto) {
+            console.error('❌ ERROR: Producto sin ID', product);
+            return null;
+        }
+        
         const col = document.createElement('div');
         col.className = 'col-lg-4 col-md-6 col-sm-6';
         
@@ -239,7 +262,7 @@
         const imagenUrl = product.url_imagen_producto || 'public/assets/img/shop/default-product.jpg';
         const productUrl = `product-details.php?id=${product.id_producto}`;
         
-        col.innerHTML = `
+        console.log(`✅ Producto ${product.id_producto}: "${product.nombre_producto}"`);        col.innerHTML = `
             <div class="product-card-modern" data-product-id="${product.id_producto}" data-aos="fade-up">
                 
                 <!-- Imagen del producto -->
@@ -269,7 +292,8 @@
                         <li>
                             <a href="#" 
                                class="add-to-favorites ${esFavorito ? 'active' : ''}" 
-                               data-id="${product.id_producto}"
+                               data-id="${product.id_producto || ''}"
+                               ${!product.id_producto ? 'style="display:none;"' : ''}
                                title="${esFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos'}">
                                 <span class="icon_heart${esFavorito ? '' : '_alt'}"></span>
                             </a>
@@ -277,9 +301,10 @@
                         <li>
                             <a href="#" 
                                class="add-to-cart" 
-                               data-id="${product.id_producto}"
+                               data-id="${product.id_producto || ''}"
+                               ${!product.id_producto ? 'data-disabled="true" style="opacity:0.5;cursor:not-allowed;"' : ''}
                                ${sinStock ? 'style="opacity:0.5;cursor:not-allowed;" data-disabled="true"' : ''}
-                               title="${sinStock ? 'Sin stock' : 'Agregar al carrito'}">
+                               title="${!product.id_producto ? 'Error: ID no disponible' : (sinStock ? 'Sin stock' : 'Agregar al carrito')}">
                                 <span class="icon_bag_alt"></span>
                             </a>
                         </li>
@@ -341,16 +366,42 @@
         if (productsContainer) {
             productsContainer.innerHTML = `
                 <div class="col-12">
-                    <div class="no-results-message">
-                        <i class="fa fa-search"></i>
-                        <h3>No se encontraron productos</h3>
-                        <p>Intenta ajustar los filtros o buscar algo diferente</p>
-                        <button class="btn-primary" onclick="limpiarFiltros()">
-                            <i class="fa fa-redo"></i> Limpiar filtros
-                        </button>
+                    <div class="no-products-found" data-aos="fade-up">
+                        <div class="empty-state-icon">
+                            <i class="fa fa-shopping-bag"></i>
+                            <div class="icon-circle"></div>
+                        </div>
+                        <h2 class="empty-state-title">No se encontraron productos</h2>
+                        <p class="empty-state-description">
+                            Intenta ajustar los filtros o buscar algo diferente.<br>
+                            Explora nuestro catálogo completo para descubrir productos increíbles.
+                        </p>
+                        <div class="empty-state-actions">
+                            <button class="btn-clear-filters" onclick="limpiarFiltros()">
+                                <i class="fa fa-redo"></i>
+                                <span>Limpiar filtros</span>
+                            </button>
+                            <a href="shop.php" class="btn-view-all">
+                                <i class="fa fa-th"></i>
+                                <span>Ver todos los productos</span>
+                            </a>
+                        </div>
+                        <div class="empty-state-suggestions">
+                            <p class="suggestions-title">Sugerencias:</p>
+                            <ul class="suggestions-list">
+                                <li><i class="fa fa-check-circle"></i> Verifica la ortografía de tu búsqueda</li>
+                                <li><i class="fa fa-check-circle"></i> Usa términos más generales</li>
+                                <li><i class="fa fa-check-circle"></i> Prueba con menos filtros activos</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             `;
+            
+            // Re-inicializar AOS si existe
+            if (typeof AOS !== 'undefined') {
+                AOS.refresh();
+            }
         }
     }
     
@@ -389,8 +440,8 @@
     window.limpiarFiltros = function() {
         console.log('🧹 Limpiando todos los filtros...');
         
-        // Resetear estado
-        FiltersState.categoria = null;
+        // Resetear estado - Categorías vacías significa "TODAS"
+        FiltersState.categorias = [];
         FiltersState.genero = null;
         FiltersState.marca = null;
         FiltersState.precio_min = 0;
@@ -398,7 +449,11 @@
         FiltersState.buscar = '';
         FiltersState.ordenar = 'newest';
         
-        // Resetear UI
+        // Resetear UI - checkboxes y chips de categorías
+        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        
         document.querySelectorAll('.filter-chip.active, .filter-btn.active').forEach(btn => {
             btn.classList.remove('active');
         });
@@ -435,10 +490,10 @@
         const newUrl = window.location.pathname;
         window.history.replaceState({}, '', newUrl);
         
-        // Aplicar filtros (mostrará todos los productos)
-        applyFilters();
+        // Aplicar filtros (array vacío de categorías = TODAS las categorías)
+        aplicarFiltrosAjax();
         
-        console.log('✅ Filtros limpiados y productos recargados');
+        console.log('✅ Filtros limpiados - Mostrando TODOS los productos');
     };
     
     /**
@@ -448,15 +503,55 @@
         console.log('🎯 Inicializando módulo de filtros...');
         initFiltersFromURL();
         
-        // Event delegation para filtros
+        // Event delegation para filtros de botones
         document.addEventListener('click', function(e) {
             const filterBtn = e.target.closest('[data-filter-type]');
-            if (filterBtn) {
+            if (filterBtn && !filterBtn.classList.contains('filter-checkbox')) {
                 e.preventDefault();
                 const tipo = filterBtn.getAttribute('data-filter-type');
                 const valor = filterBtn.getAttribute('data-filter-value');
-                aplicarFiltro(tipo, valor);
+                const multiSelect = filterBtn.getAttribute('data-multi-select') === 'true';
+                
+                // Si es multi-selección (categorías)
+                if (multiSelect && tipo === 'categoria') {
+                    if (filterBtn.classList.contains('active')) {
+                        filterBtn.classList.remove('active');
+                        FiltersState.categorias = FiltersState.categorias.filter(cat => cat != valor);
+                    } else {
+                        filterBtn.classList.add('active');
+                        if (!FiltersState.categorias.includes(valor)) {
+                            FiltersState.categorias.push(valor);
+                        }
+                    }
+                    console.log('✅ Categorías seleccionadas:', FiltersState.categorias);
+                    aplicarFiltrosAjax();
+                } else {
+                    // Selección única (género, marca, etc.)
+                    aplicarFiltro(tipo, valor);
+                }
             }
+        });
+        
+        // Event listener para checkboxes de categorías (múltiple selección)
+        document.querySelectorAll('.filter-checkbox[data-filter-type="categoria"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const categoriaId = this.getAttribute('data-filter-value');
+                
+                if (this.checked) {
+                    // Agregar categoría al array
+                    if (!FiltersState.categorias.includes(categoriaId)) {
+                        FiltersState.categorias.push(categoriaId);
+                    }
+                } else {
+                    // Quitar categoría del array
+                    FiltersState.categorias = FiltersState.categorias.filter(id => id !== categoriaId);
+                }
+                
+                console.log('✅ Categorías seleccionadas:', FiltersState.categorias);
+                
+                // Aplicar filtros
+                aplicarFiltrosAjax();
+            });
         });
         
         // Botón flotante de filtros móvil
@@ -468,13 +563,13 @@
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Toggle sidebar en móvil
+                // Toggle sidebar en móvil - SIN AFECTAR SCROLLBAR
                 if (sidebar.classList.contains('show-mobile')) {
                     sidebar.classList.remove('show-mobile');
-                    document.body.style.overflow = '';
+                    // NO modificar overflow del body
                 } else {
                     sidebar.classList.add('show-mobile');
-                    document.body.style.overflow = 'hidden';
+                    // NO modificar overflow del body
                 }
             });
             
@@ -484,7 +579,7 @@
                     !sidebar.contains(e.target) && 
                     !btnMobileFilters.contains(e.target)) {
                     sidebar.classList.remove('show-mobile');
-                    document.body.style.overflow = '';
+                    // NO modificar overflow del body
                 }
             });
         }

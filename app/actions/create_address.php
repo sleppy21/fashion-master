@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 try {
     $id_usuario = $_SESSION['user_id'];
     
-    $nombre_direccion = trim($_POST['nombre_direccion'] ?? '');
+    $nombre_cliente_direccion = trim($_POST['nombre_direccion'] ?? '');
     $telefono = trim($_POST['telefono'] ?? '');
     $direccion_completa = trim($_POST['direccion_completa'] ?? '');
     $departamento = trim($_POST['departamento'] ?? '');
@@ -31,7 +31,7 @@ try {
     $referencia = trim($_POST['referencia'] ?? '');
 
     // Validaciones
-    if (empty($nombre_direccion)) {
+    if (empty($nombre_cliente_direccion)) {
         echo json_encode(['success' => false, 'error' => 'El nombre de la dirección es requerido']);
         exit;
     }
@@ -58,7 +58,7 @@ try {
     executeQuery(
         "INSERT INTO direccion (
             id_usuario,
-            nombre_direccion,
+            nombre_cliente_direccion,
             telefono_direccion,
             direccion_completa_direccion,
             departamento_direccion,
@@ -71,7 +71,7 @@ try {
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())",
         [
             $id_usuario,
-            $nombre_direccion,
+            $nombre_cliente_direccion,
             $telefono,
             $direccion_completa,
             $departamento,

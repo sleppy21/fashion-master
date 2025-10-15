@@ -773,36 +773,43 @@ body.dark-mode .user-modal-footer,
 body.dark-mode .user-modal-footer[style] {
     background: var(--modal-dark-content) !important;
     border-top: 2px solid var(--modal-dark-border) !important;
+    z-index: 1 !important;
 }
 
 body.dark-mode .btn-action,
 body.dark-mode .btn-action[style] {
-    background: var(--modal-dark-card) !important;
-    border: 1px solid var(--modal-dark-border) !important;
     color: var(--modal-dark-text) !important;
     transition: all 0.3s ease !important;
+    z-index: 2 !important;
+}
+
+body.dark-mode .btn-settings,
+body.dark-mode .btn-settings[style] {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
+    color: white !important;
+}
+
+body.dark-mode .btn-admin,
+body.dark-mode .btn-admin[style] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+body.dark-mode .btn-logout,
+body.dark-mode .btn-logout[style] {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+    color: white !important;
 }
 
 body.dark-mode .btn-action:hover,
 body.dark-mode .btn-action[style]:hover {
-    background: var(--modal-dark-hover) !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
 }
 
 body.dark-mode .btn-action i,
 body.dark-mode .btn-action i[style] {
-    color: var(--modal-dark-text-secondary) !important;
-}
-
-body.dark-mode .btn-action:hover i,
-body.dark-mode .btn-action[style]:hover i {
-    color: var(--modal-dark-accent-hover) !important;
-}
-
-body.dark-mode .btn-action span,
-body.dark-mode .btn-action span[style] {
-    color: var(--modal-dark-text) !important;
+    color: white !important;
 }
 
 body.dark-mode .btn-primary,
@@ -1189,50 +1196,45 @@ body.dark-mode .notification-item:hover {
 /* Info de la notificación */
 body.dark-mode .notification-info h6,
 body.dark-mode .notification-info h6[style] {
-    color: var(--modal-dark-text) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
 }
 
 body.dark-mode .notification-info p,
 body.dark-mode .notification-info p[style] {
-    color: var(--modal-dark-text-secondary) !important;
+    color: #e0e0e0 !important;
+    font-weight: 500 !important;
+    font-size: 13px !important;
 }
 
 body.dark-mode .notification-info small,
 body.dark-mode .notification-info small[style] {
-    color: var(--modal-dark-text-secondary) !important;
+    color: #b0b0b0 !important;
+    font-weight: 500 !important;
+    font-size: 11px !important;
 }
 
 /* Botones de acción */
 body.dark-mode .btn-notif-read,
 body.dark-mode .btn-notif-read[style] {
-    background: rgba(40, 167, 69, 0.1) !important;
-    color: #28a745 !important;
-    border: 1px solid rgba(40, 167, 69, 0.3) !important;
-    transition: all 0.3s ease !important;
-}
-
-body.dark-mode .btn-notif-read:hover,
-body.dark-mode .btn-notif-read[style]:hover {
-    background: #28a745 !important;
-    color: white !important;
-    border-color: #28a745 !important;
-    box-shadow: 0 0 15px rgba(40, 167, 69, 0.4) !important;
+    display: none !important;
 }
 
 body.dark-mode .btn-notif-delete,
 body.dark-mode .btn-notif-delete[style] {
-    background: rgba(220, 20, 60, 0.1) !important;
-    color: var(--modal-dark-accent) !important;
-    border: 1px solid rgba(220, 20, 60, 0.3) !important;
+    background: #9e9e9e !important;
+    color: #ffffff !important;
+    border: none !important;
     transition: all 0.3s ease !important;
 }
 
 body.dark-mode .btn-notif-delete:hover,
 body.dark-mode .btn-notif-delete[style]:hover {
-    background: var(--modal-dark-accent) !important;
-    color: white !important;
-    border-color: var(--modal-dark-accent) !important;
-    box-shadow: 0 0 15px rgba(220, 20, 60, 0.4) !important;
+    background: #757575 !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 /* Estado de carga */

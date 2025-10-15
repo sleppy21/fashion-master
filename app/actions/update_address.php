@@ -23,7 +23,7 @@ try {
     $id_direccion = $_POST['id_direccion'] ?? null;
     $id_usuario = $_SESSION['user_id'];
     
-    $nombre_direccion = trim($_POST['nombre_direccion'] ?? '');
+    $nombre_cliente_direccion = trim($_POST['nombre_direccion'] ?? '');
     $telefono = trim($_POST['telefono'] ?? '');
     $direccion_completa = trim($_POST['direccion_completa'] ?? '');
     $departamento = trim($_POST['departamento'] ?? '');
@@ -37,7 +37,7 @@ try {
         exit;
     }
 
-    if (empty($nombre_direccion)) {
+    if (empty($nombre_cliente_direccion)) {
         echo json_encode(['success' => false, 'error' => 'El nombre de la dirección es requerido']);
         exit;
     }
@@ -66,7 +66,7 @@ try {
     // Actualizar la dirección
     executeQuery(
         "UPDATE direccion SET 
-            nombre_direccion = ?,
+            nombre_cliente_direccion = ?,
             telefono_direccion = ?,
             direccion_completa_direccion = ?,
             departamento_direccion = ?,
@@ -75,7 +75,7 @@ try {
             referencia_direccion = ?
         WHERE id_direccion = ? AND id_usuario = ?",
         [
-            $nombre_direccion,
+            $nombre_cliente_direccion,
             $telefono,
             $direccion_completa,
             $departamento,

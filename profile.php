@@ -151,6 +151,9 @@ try {
     <!-- Global Responsive Styles - TODO EL PROYECTO -->
     <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
     
+    <!-- Avatar Flight Animation -->
+    <link rel="stylesheet" href="public/assets/css/avatar-flight-animation.css?v=1.0" type="text/css">
+    
     <!-- Modern Styles -->
     <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
     <link rel="stylesheet" href="public/assets/css/notifications-modal.css">
@@ -214,7 +217,6 @@ try {
                                 ?>
                                 <div class="profile-avatar">
                                     <img src="<?php echo $avatar_path; ?>" alt="Avatar" class="avatar-image">
-                                    <div class="avatar-status"></div>
                                 </div>
                                 <button type="button" class="btn-change-avatar" title="Cambiar foto">
                                     <i class="fa fa-camera"></i>
@@ -302,6 +304,9 @@ try {
                         </button>
                         <button class="tab-btn" data-tab="addresses">
                             <i class="fa fa-map-marker-alt"></i> Direcciones
+                        </button>
+                        <button class="tab-btn" data-tab="settings">
+                            <i class="fa fa-cog"></i> Configuración
                         </button>
                     </div>
                     
@@ -512,7 +517,7 @@ try {
                                             <div class="address-header">
                                                 <div class="address-title">
                                                     <i class="fas fa-map-marker-alt"></i>
-                                                    <strong><?= htmlspecialchars($direccion['nombre_direccion']) ?></strong>
+                                                    <strong><?= htmlspecialchars($direccion['nombre_cliente_direccion']) ?></strong>
                                                     <?php if ($direccion['es_principal'] == 1): ?>
                                                         <span class="badge-default">Predeterminada</span>
                                                     <?php endif; ?>
@@ -538,8 +543,20 @@ try {
                                                 </div>
                                             </div>
                                             <div class="address-body">
+                                                <?php if (!empty($direccion['nombre_cliente_direccion'])): ?>
+                                                    <p><i class="fas fa-user"></i> <strong><?= htmlspecialchars($direccion['nombre_cliente_direccion']) ?></strong></p>
+                                                <?php endif; ?>
+                                                
+                                                <?php if (!empty($direccion['email_direccion'])): ?>
+                                                    <p><i class="fas fa-envelope"></i> <?= htmlspecialchars($direccion['email_direccion']) ?></p>
+                                                <?php endif; ?>
+                                                
                                                 <?php if (!empty($direccion['telefono_direccion'])): ?>
                                                     <p><i class="fas fa-phone"></i> <?= htmlspecialchars($direccion['telefono_direccion']) ?></p>
+                                                <?php endif; ?>
+                                                
+                                                <?php if (!empty($direccion['dni_ruc_direccion'])): ?>
+                                                    <p><i class="fas fa-id-card"></i> DNI/RUC: <?= htmlspecialchars($direccion['dni_ruc_direccion']) ?></p>
                                                 <?php endif; ?>
                                                 
                                                 <?php if (!empty($direccion['direccion_completa_direccion'])): ?>
@@ -547,24 +564,46 @@ try {
                                                 <?php endif; ?>
                                                 
                                                 <div class="address-details">
+                                                    <?php if (!empty($direccion['distrito_direccion'])): ?>
                                                     <span class="detail-item">
                                                         <i class="fas fa-building"></i> 
                                                         <?= htmlspecialchars($direccion['distrito_direccion']) ?>
                                                     </span>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($direccion['provincia_direccion'])): ?>
                                                     <span class="detail-item">
                                                         <i class="fas fa-city"></i> 
                                                         <?= htmlspecialchars($direccion['provincia_direccion']) ?>
                                                     </span>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($direccion['departamento_direccion'])): ?>
                                                     <span class="detail-item">
                                                         <i class="fas fa-map"></i> 
                                                         <?= htmlspecialchars($direccion['departamento_direccion']) ?>
                                                     </span>
+                                                    <?php endif; ?>
                                                 </div>
                                                 
                                                 <?php if (!empty($direccion['referencia_direccion'])): ?>
                                                     <p class="address-reference">
                                                         <i class="fas fa-info-circle"></i> 
                                                         <em>Ref: <?= htmlspecialchars($direccion['referencia_direccion']) ?></em>
+                                                    </p>
+                                                <?php endif; ?>
+                                                
+                                                <?php if (!empty($direccion['metodo_pago_favorito'])): ?>
+                                                    <p class="address-payment">
+                                                        <i class="fas fa-credit-card"></i> 
+                                                        <strong>Método de pago favorito:</strong>
+                                                        <?php 
+                                                        $metodos = [
+                                                            'tarjeta' => 'Tarjeta de Crédito/Débito',
+                                                            'transferencia' => 'Transferencia Bancaria',
+                                                            'yape' => 'Yape / Plin',
+                                                            'efectivo' => 'Efectivo Contra Entrega'
+                                                        ];
+                                                        echo $metodos[$direccion['metodo_pago_favorito']] ?? $direccion['metodo_pago_favorito'];
+                                                        ?>
                                                     </p>
                                                 <?php endif; ?>
                                                 
@@ -579,7 +618,209 @@ try {
                             </div>
                         </div>
                     </div>
+
+                <!-- Tab Content: Settings -->
+                <div class="tab-content" id="settings">
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <h4><i class="fa fa-cog"></i> Configuración de la Aplicación</h4>
+                            <p style="font-size: 13px; color: #666; margin: 8px 0 0 0;">Personaliza tu experiencia en SleppyStore</p>
+                        </div>
+                        
+                        <form id="settings-form" style="padding: 25px;">
+                            <!-- Tema de Color -->
+                            <div class="settings-section">
+                                <h5 class="settings-title">
+                                    <i class="fa fa-palette"></i> Apariencia
+                                </h5>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-label">
+                                        <strong>Modo de Color</strong>
+                                        <p>Elige el tema de color de la interfaz</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <div class="theme-selector">
+                                            <label class="theme-option">
+                                                <input type="radio" name="theme_mode" value="light" checked>
+                                                <div class="theme-card">
+                                                    <i class="fa fa-sun"></i>
+                                                    <span>Claro</span>
+                                                </div>
+                                            </label>
+                                            <label class="theme-option">
+                                                <input type="radio" name="theme_mode" value="dark">
+                                                <div class="theme-card">
+                                                    <i class="fa fa-moon"></i>
+                                                    <span>Oscuro</span>
+                                                </div>
+                                            </label>
+                                            <label class="theme-option">
+                                                <input type="radio" name="theme_mode" value="auto">
+                                                <div class="theme-card">
+                                                    <i class="fa fa-palette"></i>
+                                                    <span>Dinámico</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notificaciones -->
+                            <div class="settings-section">
+                                <h5 class="settings-title">
+                                    <i class="fa fa-bell"></i> Notificaciones
+                                </h5>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-label">
+                                        <strong>Notificaciones Push</strong>
+                                        <p>Recibe notificaciones en tiempo real</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <label class="switch">
+                                            <input type="checkbox" name="push_notifications" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-label">
+                                        <strong>Notificaciones por Email</strong>
+                                        <p>Recibe actualizaciones en tu correo</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <label class="switch">
+                                            <input type="checkbox" name="email_notifications" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-label">
+                                        <strong>Ofertas y Promociones</strong>
+                                        <p>Recibe notificaciones sobre ofertas especiales</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <label class="switch">
+                                            <input type="checkbox" name="promo_notifications" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-label">
+                                        <strong>Actualizaciones de Pedidos</strong>
+                                        <p>Notificaciones sobre el estado de tus pedidos</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <label class="switch">
+                                            <input type="checkbox" name="order_notifications" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Preferencias de Compra -->
+                            <div class="settings-section">
+                                <h5 class="settings-title">
+                                    <i class="fa fa-shopping-bag"></i> Preferencias de Compra
+                                </h5>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-label">
+                                        <strong>Idioma</strong>
+                                        <p>Selecciona el idioma de la interfaz</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <select class="form-control" name="language" style="max-width: 200px;">
+                                            <option value="es" selected>Español</option>
+                                            <option value="en">English</option>
+                                            <option value="pt">Português</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-label">
+                                        <strong>Moneda</strong>
+                                        <p>Moneda predeterminada para precios</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <select class="form-control" name="currency" style="max-width: 200px;">
+                                            <option value="PEN" selected>Soles (S/)</option>
+                                            <option value="USD">Dólares ($)</option>
+                                            <option value="EUR">Euros (€)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-label">
+                                        <strong>Guardar Carrito</strong>
+                                        <p>Mantener productos en el carrito al cerrar sesión</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <label class="switch">
+                                            <input type="checkbox" name="save_cart" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Privacidad -->
+                            <div class="settings-section">
+                                <h5 class="settings-title">
+                                    <i class="fa fa-shield-alt"></i> Privacidad
+                                </h5>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-label">
+                                        <strong>Perfil Público</strong>
+                                        <p>Permite que otros usuarios vean tu perfil</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <label class="switch">
+                                            <input type="checkbox" name="public_profile">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-label">
+                                        <strong>Compartir Actividad</strong>
+                                        <p>Permite compartir tu actividad de compras</p>
+                                    </div>
+                                    <div class="setting-control">
+                                        <label class="switch">
+                                            <input type="checkbox" name="share_activity">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botones de Acción -->
+                            <div class="settings-actions" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
+                                <p style="margin: 0 0 15px 0; color: #2ecc71; font-size: 0.95rem;">
+                                    <i class="fa fa-check-circle"></i> 
+                                    <strong>Los cambios se guardan automáticamente</strong>
+                                </p>
+                                <button type="button" class="btn btn-secondary btn-reset-settings">
+                                    <i class="fa fa-undo"></i> Restaurar Predeterminados
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -741,6 +982,9 @@ try {
     <!-- Croppie JS for Avatar Upload -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
     
+    <!-- Avatar Flight Animation con Tracking en Tiempo Real -->
+    <script src="public/assets/js/avatar-flight-animation-realtime.js"></script>
+    
     <!-- Avatar Upload Script -->
     <script src="public/assets/js/avatar-upload.js"></script>
     
@@ -749,6 +993,9 @@ try {
     
     <!-- Address Manager Script -->
     <script src="public/assets/js/address-manager.js"></script>
+    
+    <!-- Settings Manager Script -->
+    <script src="public/assets/js/settings-manager.js"></script>
     
     <!-- Dark Mode Script -->
     <script src="public/assets/js/dark-mode.js"></script>
