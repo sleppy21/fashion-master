@@ -40,7 +40,6 @@
         FiltersState.buscar = urlParams.get('q') || urlParams.get('buscar') || '';
         FiltersState.ordenar = urlParams.get('sort') || 'newest';
         
-        console.log('✅ Filtros inicializados desde URL:', FiltersState);
     }
     
     /**
@@ -49,7 +48,6 @@
      * @param {any} valor - Valor del filtro
      */
     window.aplicarFiltro = function(tipo, valor) {
-        console.log(`🔍 Aplicando filtro: ${tipo} = ${valor}`);
         
         // Actualizar estado
         FiltersState[tipo] = valor;
@@ -84,7 +82,6 @@
      * Aplicar filtros con AJAX y actualizar productos
      */
     function aplicarFiltrosAjax() {
-        console.log('🚀 Aplicando filtros con AJAX...');
         
         // Construir parámetros de URL
         const params = new URLSearchParams();
@@ -217,7 +214,6 @@
     function createProductCard(product, index) {
         // VALIDACIÓN: Asegurar que el producto tenga ID
         if (!product || !product.id_producto) {
-            console.error('❌ ERROR: Producto sin ID', product);
             return null;
         }
         
@@ -262,7 +258,7 @@
         const imagenUrl = product.url_imagen_producto || 'public/assets/img/shop/default-product.jpg';
         const productUrl = `product-details.php?id=${product.id_producto}`;
         
-        console.log(`✅ Producto ${product.id_producto}: "${product.nombre_producto}"`);        col.innerHTML = `
+            col.innerHTML = `
             <div class="product-card-modern" data-product-id="${product.id_producto}" data-aos="fade-up">
                 
                 <!-- Imagen del producto -->
@@ -438,7 +434,6 @@
      * Limpiar todos los filtros
      */
     window.limpiarFiltros = function() {
-        console.log('🧹 Limpiando todos los filtros...');
         
         // Resetear estado - Categorías vacías significa "TODAS"
         FiltersState.categorias = [];
@@ -493,14 +488,12 @@
         // Aplicar filtros (array vacío de categorías = TODAS las categorías)
         aplicarFiltrosAjax();
         
-        console.log('✅ Filtros limpiados - Mostrando TODOS los productos');
     };
     
     /**
      * Inicializar módulo
      */
     function init() {
-        console.log('🎯 Inicializando módulo de filtros...');
         initFiltersFromURL();
         
         // Event delegation para filtros de botones
@@ -523,7 +516,6 @@
                             FiltersState.categorias.push(valor);
                         }
                     }
-                    console.log('✅ Categorías seleccionadas:', FiltersState.categorias);
                     aplicarFiltrosAjax();
                 } else {
                     // Selección única (género, marca, etc.)
@@ -547,7 +539,6 @@
                     FiltersState.categorias = FiltersState.categorias.filter(id => id !== categoriaId);
                 }
                 
-                console.log('✅ Categorías seleccionadas:', FiltersState.categorias);
                 
                 // Aplicar filtros
                 aplicarFiltrosAjax();
@@ -626,7 +617,6 @@
             });
         }
         
-        console.log('✅ Módulo de filtros iniciado correctamente');
     }
     
     // Iniciar cuando DOM esté listo

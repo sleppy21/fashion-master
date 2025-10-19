@@ -183,11 +183,9 @@ try {
         // Declaración temprana de switchTab para evitar errores en onclick
         // La función completa se define más abajo
         window.switchTab = function(tabId) {
-            console.log('⏳ switchTab llamado tempranamente para:', tabId);
             // Guardar la petición para ejecutarla cuando esté lista
             if (!window.switchTabReady) {
                 window.pendingSwitchTab = tabId;
-                console.log('📌 Tab guardado como pendiente:', tabId);
             }
         };
         window.switchTabReady = false;
@@ -406,7 +404,6 @@ try {
         
         // ===== SISTEMA DE DESTRUCCIÓN DE MÓDULOS =====
         window.destroyCurrentModule = function() {
-            console.log('🧹 Limpiando módulo actual...');
             
             // ✅ HABILITADO: Destruir módulos automáticamente para empezar desde cero
             // Cada módulo debe tener funciones con nombres únicos para evitar conflictos
@@ -414,7 +411,6 @@ try {
             // 1. Llamar a las funciones de destrucción específicas de cada módulo
             try {
                 if (typeof window.destroyProductosModule === 'function') {
-                    console.log('  → Limpiando módulo Productos');
                     window.destroyProductosModule();
                 }
             } catch (e) {
@@ -423,7 +419,6 @@ try {
             
             try {
                 if (typeof window.destroyCategoriasModule === 'function') {
-                    console.log('  → Limpiando módulo Categorías');
                     window.destroyCategoriasModule();
                 }
             } catch (e) {
@@ -432,7 +427,6 @@ try {
             
             try {
                 if (typeof window.destroyMarcasModule === 'function') {
-                    console.log('  → Limpiando módulo Marcas');
                     window.destroyMarcasModule();
                 }
             } catch (e) {
@@ -441,7 +435,6 @@ try {
             
             try {
                 if (typeof window.destroyUsuariosModule === 'function') {
-                    console.log('  → Limpiando módulo Usuarios');
                     window.destroyUsuariosModule();
                 }
             } catch (e) {

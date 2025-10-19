@@ -123,6 +123,8 @@ try {
 // Obtener dirección predeterminada del usuario
 $direccion_predeterminada = null;
 $tiene_direccion_predeterminada = false;
+$mostrar_formulario_completo = isset($_GET['show_full_form']); // Usuario quiere ver formulario completo
+
 try {
     $direccion_resultado = executeQuery("
         SELECT * FROM direccion 
@@ -130,12 +132,24 @@ try {
         LIMIT 1
     ", [$usuario_logueado['id_usuario']]);
     
-    if($direccion_resultado && !empty($direccion_resultado)) {
+    if($direccion_resultado && !empty($direccion_resultado) && !$mostrar_formulario_completo) {
         $direccion_predeterminada = $direccion_resultado[0];
         $tiene_direccion_predeterminada = true;
     }
 } catch(Exception $e) {
     error_log("Error al obtener dirección predeterminada: " . $e->getMessage());
+}
+
+// Obtener TODAS las direcciones del usuario para el modal de selección
+$todas_direcciones = [];
+try {
+    $todas_direcciones = executeQuery("
+        SELECT * FROM direccion 
+        WHERE id_usuario = ? AND status_direccion = 1
+        ORDER BY es_principal DESC, fecha_creacion_direccion DESC
+    ", [$usuario_logueado['id_usuario']]);
+} catch(Exception $e) {
+    error_log("Error al obtener todas las direcciones: " . $e->getMessage());
 }
 
 // Verificar si usuario tiene alguna dirección guardada
@@ -340,6 +354,329 @@ try {
         .form-control:focus {
             border-color: #ca1515;
             box-shadow: 0 0 0 0.2rem rgba(202,21,21,0.1);
+        }
+        
+        /* ============================================
+           GRID DE PRODUCTOS EN CHECKOUT
+           ============================================ */
+        .checkout-products-grid {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #c9a67c #f0f0f0;
+        }
+
+        .checkout-products-grid::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .checkout-products-grid::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .checkout-products-grid::-webkit-scrollbar-thumb {
+            background: #c9a67c;
+            border-radius: 10px;
+        }
+
+        .checkout-products-grid::-webkit-scrollbar-thumb:hover {
+            background: #a08661;
+        }
+
+        .checkout-products-more {
+            min-width: 100px;
+            width: 100px;
+            background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #1a1a1a;
+            font-weight: 700;
+            cursor: default;
+            border: 2px solid #c9a67c;
+        }
+
+        .checkout-products-more-count {
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .checkout-products-more-text {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .checkout-product-card {
+            min-width: 100px;
+            width: 100%;
+            background: white;
+            border: 2px solid #e1e1e1;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .checkout-product-card:hover {
+            border-color: #c9a67c;
+            box-shadow: 0 8px 20px rgba(201, 166, 124, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .checkout-product-image {
+            position: relative;
+            width: 100%;
+            padding-top: 100%; /* Aspect ratio 1:1 (cuadrado) */
+            overflow: hidden;
+            background: #f8f8f8;
+        }
+
+        .checkout-product-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .checkout-product-discount {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+            z-index: 2;
+        }
+
+        .checkout-product-quantity {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .checkout-product-info {
+            padding: 8px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .checkout-product-name {
+            font-size: 10px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+            min-height: 26px;
+        }
+
+        .checkout-product-prices {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .checkout-product-price-old {
+            font-size: 9px;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .checkout-product-price {
+            font-size: 11px;
+            font-weight: 700;
+            color: #c9a67c;
+        }
+
+        .checkout-product-subtotal {
+            display: none; /* Ocultar subtotal en cards pequeñas */
+        }
+        .checkout-product-subtotal strong {
+            color: #2c3e50;
+            font-weight: 700;
+        }
+
+        /* Responsive para grid de productos */
+        @media (max-width: 1200px) {
+            .checkout-products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .checkout-products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .checkout-products-grid {
+                gap: 6px;
+            }
+        }
+
+        /* ============================================
+           MÉTODOS DE PAGO
+           ============================================ */
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .payment-method-card {
+            background: white;
+            border: 2px solid #e1e1e1;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .payment-method-card:hover {
+            border-color: #c9a67c;
+            box-shadow: 0 4px 12px rgba(201, 166, 124, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .payment-method-card.selected {
+            border-color: #c9a67c;
+            background: linear-gradient(135deg, #fffbf5 0%, #fff8ed 100%);
+            box-shadow: 0 4px 12px rgba(201, 166, 124, 0.3);
+        }
+
+        .payment-method-check {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #e1e1e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method-card.selected .payment-method-check {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
+        }
+
+        .payment-method-card:not(.selected) .payment-method-check {
+            opacity: 0.3;
+        }
+
+        .payment-method-highlight {
+            border-color: #c9a67c;
+            background: linear-gradient(135deg, #fffbf5 0%, #fff8ed 100%);
+        }
+
+        .payment-method-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(255, 107, 107, 0.3);
+        }
+
+        .payment-method-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(201, 166, 124, 0.3);
+        }
+
+        .payment-method-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .payment-method-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .payment-method-desc {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .payment-method-note {
+            font-size: 11px;
+            color: #999;
+            line-height: 1.4;
+            margin-top: 4px;
+        }
+
+        .payment-method-promo {
+            font-size: 12px;
+            color: #ff6b6b;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        /* Responsive para métodos de pago */
+        @media (max-width: 768px) {
+            .payment-methods-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
         }
         
         .order-summary {
@@ -993,9 +1330,192 @@ try {
             </div>
 
             <div class="row">
-                <div class="col-lg-8">
+                <div class="col-lg-8 col-md-9 col-sm-12">
                     <form id="checkoutForm" action="app/actions/process_checkout.php" method="POST">
                         
+                        <?php if($tiene_direccion_predeterminada): ?>
+                        <!-- VISTA SIMPLIFICADA CON DIRECCIÓN PREDETERMINADA -->
+                        <div class="form-section" style="background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%); border-radius: 12px; padding: 20px; border: 2px solid #3a3a3a; margin-bottom: 25px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                                <h5 style="color: #c9a67c; margin: 0; font-size: 18px; font-weight: 700;">
+                                    <i class="fa fa-map-marker" style="margin-right: 8px;"></i> Dirección de Envío
+                                </h5>
+                                <button type="button" class="btn btn-sm" id="btnChangeAddress" 
+                                        style="background: #c9a67c; color: #1a1a1a; border: none; padding: 6px 16px; border-radius: 6px; font-weight: 600; font-size: 13px;">
+                                    <i class="fa fa-edit"></i> Cambiar
+                                </button>
+                            </div>
+                            
+                            <div style="background: rgba(201, 166, 124, 0.1); border-radius: 8px; padding: 16px; border-left: 4px solid #c9a67c;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; color: #d0d0d0; font-size: 14px;">
+                                    <div>
+                                        <strong style="color: #c9a67c; display: block; margin-bottom: 4px;">Destinatario</strong>
+                                        <span id="preview_nombre"><?php echo htmlspecialchars($direccion_predeterminada['nombre_cliente_direccion']); ?></span>
+                                    </div>
+                                    <div>
+                                        <strong style="color: #c9a67c; display: block; margin-bottom: 4px;">Teléfono</strong>
+                                        <span id="preview_telefono"><?php echo htmlspecialchars($direccion_predeterminada['telefono_direccion']); ?></span>
+                                    </div>
+                                    <div style="grid-column: 1 / -1;">
+                                        <strong style="color: #c9a67c; display: block; margin-bottom: 4px;">Dirección</strong>
+                                        <span id="preview_direccion"><?php echo htmlspecialchars($direccion_predeterminada['direccion_completa_direccion']); ?></span>
+                                    </div>
+                                    <?php if(!empty($direccion_predeterminada['referencia_direccion'])): ?>
+                                    <div style="grid-column: 1 / -1;">
+                                        <strong style="color: #c9a67c; display: block; margin-bottom: 4px;">Referencia</strong>
+                                        <span id="preview_referencia" style="font-style: italic; color: #a0a0a0;"><?php echo htmlspecialchars($direccion_predeterminada['referencia_direccion']); ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            
+                            <!-- Campos ocultos con los datos de la dirección -->
+                            <input type="hidden" name="nombre" value="<?php echo htmlspecialchars($direccion_predeterminada['nombre_cliente_direccion']); ?>">
+                            <input type="hidden" name="email" value="<?php echo htmlspecialchars($direccion_predeterminada['email_direccion'] ?? $usuario_logueado['email_usuario']); ?>">
+                            <input type="hidden" name="telefono" value="<?php echo htmlspecialchars($direccion_predeterminada['telefono_direccion']); ?>">
+                            <input type="hidden" name="dni" value="<?php echo htmlspecialchars($direccion_predeterminada['dni_ruc_direccion']); ?>">
+                            <input type="hidden" name="razon_social" value="<?php echo htmlspecialchars($direccion_predeterminada['razon_social_direccion'] ?? ''); ?>">
+                            <input type="hidden" name="direccion" value="<?php echo htmlspecialchars(explode(',', $direccion_predeterminada['direccion_completa_direccion'])[0]); ?>">
+                            <input type="hidden" name="referencia" value="<?php echo htmlspecialchars($direccion_predeterminada['referencia_direccion'] ?? ''); ?>">
+                            <input type="hidden" name="departamento" value="<?php echo htmlspecialchars($direccion_predeterminada['departamento_direccion']); ?>">
+                            <input type="hidden" name="provincia" value="<?php echo htmlspecialchars($direccion_predeterminada['provincia_direccion']); ?>">
+                            <input type="hidden" name="distrito" value="<?php echo htmlspecialchars($direccion_predeterminada['distrito_direccion']); ?>">
+                            <input type="hidden" name="tipo_comprobante" value="<?php echo strlen($direccion_predeterminada['dni_ruc_direccion']) === 11 ? 'factura' : 'boleta'; ?>">
+                        </div>
+
+                        <!-- Productos Seleccionados (Vista Simplificada) -->
+                        <div class="form-section" style="background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%); border-radius: 12px; padding: 20px; border: 2px solid #3a3a3a; margin-bottom: 25px;">
+                            <h5 style="color: #c9a67c; margin-bottom: 16px;">
+                                <i class="fa fa-shopping-bag"></i> Productos en tu pedido (<?php echo count($cart_items); ?>)
+                            </h5>
+                            <div class="checkout-products-grid">
+                                <?php 
+                                $max_visible_products = 5; // Mostrar 5 productos
+                                $total_products = count($cart_items);
+                                $products_to_show = array_slice($cart_items, 0, $max_visible_products);
+                                $remaining_products = $total_products - $max_visible_products;
+                                
+                                foreach($products_to_show as $item): 
+                                    $precio_original = $item['precio_producto'];
+                                    $precio_con_descuento = $precio_original;
+                                    
+                                    if($item['descuento_porcentaje_producto'] > 0) {
+                                        $precio_con_descuento = $precio_original - ($precio_original * $item['descuento_porcentaje_producto'] / 100);
+                                    }
+                                    
+                                    $subtotal_item = $precio_con_descuento * $item['cantidad_carrito'];
+                                ?>
+                                <div class="checkout-product-card">
+                                    <div class="checkout-product-image">
+                                        <img src="<?php echo htmlspecialchars($item['url_imagen_producto']); ?>" 
+                                             alt="<?php echo htmlspecialchars($item['nombre_producto']); ?>">
+                                        <?php if($item['descuento_porcentaje_producto'] > 0): ?>
+                                        <div class="checkout-product-discount">
+                                            -<?php echo $item['descuento_porcentaje_producto']; ?>%
+                                        </div>
+                                        <?php endif; ?>
+                                        <div class="checkout-product-quantity">
+                                            × <?php echo $item['cantidad_carrito']; ?>
+                                        </div>
+                                    </div>
+                                    <div class="checkout-product-info">
+                                        <h6 class="checkout-product-name"><?php echo htmlspecialchars($item['nombre_producto']); ?></h6>
+                                        <div class="checkout-product-prices">
+                                            <?php if($item['descuento_porcentaje_producto'] > 0): ?>
+                                            <span class="checkout-product-price-old">S/ <?php echo number_format($precio_original, 2); ?></span>
+                                            <?php endif; ?>
+                                            <span class="checkout-product-price">S/ <?php echo number_format($precio_con_descuento, 2); ?></span>
+                                        </div>
+                                        <div class="checkout-product-subtotal">
+                                            Subtotal: <strong>S/ <?php echo number_format($subtotal_item, 2); ?></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                                
+                                <?php if($remaining_products > 0): ?>
+                                <div class="checkout-products-more">
+                                    <div class="checkout-products-more-count">+<?php echo $remaining_products; ?></div>
+                                    <div class="checkout-products-more-text">Más</div>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <!-- Métodos de Pago -->
+                        <div class="form-section" style="background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%); border-radius: 12px; padding: 20px; border: 2px solid #3a3a3a; margin-bottom: 25px;">
+                            <h5 style="color: #c9a67c; margin-bottom: 16px;">
+                                <i class="fa fa-credit-card"></i> Método de Pago
+                            </h5>
+                            <div style="text-align: center; margin-bottom: 20px;">
+                                <p style="color: #888; font-size: 12px; margin: 0;">
+                                    <i class="fa fa-shield" style="color: #4caf50;"></i> Protegido con altos estándares de seguridad
+                                </p>
+                            </div>
+                            
+                            <h5><i class="fa fa-credit-card"></i> Métodos de pago *</h5>
+                            
+                            <!-- Campo oculto para guardar el método seleccionado -->
+                            <input type="hidden" id="metodo_pago" name="metodo_pago" value="" required>
+                            
+                            <div class="payment-methods-grid">
+                                <!-- Tarjeta -->
+                                <div class="payment-method-card" data-payment-method="tarjeta">
+                                    <div class="payment-method-icon">
+                                        <i class="fa fa-credit-card"></i>
+                                    </div>
+                                    <div class="payment-method-info">
+                                        <div class="payment-method-name">Tarjeta</div>
+                                        <div class="payment-method-desc">Paga ahora o paga mensualmente</div>
+                                    </div>
+                                    <div class="payment-method-check">
+                                        <i class="fa fa-check-circle"></i>
+                                    </div>
+                                </div>
+
+                                <!-- PagoEfectivo -->
+                                <div class="payment-method-card" data-payment-method="pagoefectivo">
+                                    <div class="payment-method-icon" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+                                        <i class="fa fa-money"></i>
+                                    </div>
+                                    <div class="payment-method-info">
+                                        <div class="payment-method-name">PagoEfectivo</div>
+                                        <div class="payment-method-desc">Por favor pague dentro de 2 días</div>
+                                        <div class="payment-method-note">Paga desde tu banca móvil, billetera QR o en efectivo en agentes antes de que expire el código.</div>
+                                    </div>
+                                    <div class="payment-method-check">
+                                        <i class="fa fa-check-circle"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Yape -->
+                                <div class="payment-method-card payment-method-highlight" data-payment-method="yape">
+                                    <div class="payment-method-badge">
+                                        <i class="fa fa-tag"></i> Extra S/ 4 de dto.
+                                    </div>
+                                    <div class="payment-method-icon" style="background: linear-gradient(135deg, #6a1b9a 0%, #8e24aa 100%);">
+                                        <i class="fa fa-mobile"></i>
+                                    </div>
+                                    <div class="payment-method-info">
+                                        <div class="payment-method-name">Yape</div>
+                                        <div class="payment-method-promo">Obtén extra S/ 4 de dto. en pedidos superiores a S/ 90.</div>
+                                    </div>
+                                    <div class="payment-method-check">
+                                        <i class="fa fa-check-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Mensaje de validación -->
+                            <div id="payment-method-error" style="display: none; margin-top: 12px; padding: 10px; background: #fff3cd; border-left: 3px solid #ffc107; border-radius: 6px;">
+                                <p style="color: #856404; font-size: 13px; margin: 0;">
+                                    <i class="fa fa-exclamation-triangle"></i> Por favor selecciona un método de pago
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <?php else: ?>
+                        <!-- VISTA COMPLETA SIN DIRECCIÓN PREDETERMINADA -->
                         <!-- Información del Cliente -->
                         <div class="form-section">
                             <h5><i class="fa fa-user"></i> Información del Cliente</h5>
@@ -1078,6 +1598,50 @@ try {
                             </div>
                         </div>
 
+                        <!-- Productos Seleccionados -->
+                        <div class="form-section">
+                            <h5><i class="fa fa-shopping-bag"></i> Productos en tu pedido (<?php echo count($cart_items); ?>)</h5>
+                            <div class="checkout-products-grid">
+                                <?php foreach($cart_items as $item): 
+                                    $precio_original = $item['precio_producto'];
+                                    $precio_con_descuento = $precio_original;
+                                    
+                                    if($item['descuento_porcentaje_producto'] > 0) {
+                                        $precio_con_descuento = $precio_original - ($precio_original * $item['descuento_porcentaje_producto'] / 100);
+                                    }
+                                    
+                                    $subtotal_item = $precio_con_descuento * $item['cantidad_carrito'];
+                                ?>
+                                <div class="checkout-product-card">
+                                    <div class="checkout-product-image">
+                                        <img src="<?php echo htmlspecialchars($item['url_imagen_producto']); ?>" 
+                                             alt="<?php echo htmlspecialchars($item['nombre_producto']); ?>">
+                                        <?php if($item['descuento_porcentaje_producto'] > 0): ?>
+                                        <div class="checkout-product-discount">
+                                            -<?php echo $item['descuento_porcentaje_producto']; ?>%
+                                        </div>
+                                        <?php endif; ?>
+                                        <div class="checkout-product-quantity">
+                                            × <?php echo $item['cantidad_carrito']; ?>
+                                        </div>
+                                    </div>
+                                    <div class="checkout-product-info">
+                                        <h6 class="checkout-product-name"><?php echo htmlspecialchars($item['nombre_producto']); ?></h6>
+                                        <div class="checkout-product-prices">
+                                            <?php if($item['descuento_porcentaje_producto'] > 0): ?>
+                                            <span class="checkout-product-price-old">S/ <?php echo number_format($precio_original, 2); ?></span>
+                                            <?php endif; ?>
+                                            <span class="checkout-product-price">S/ <?php echo number_format($precio_con_descuento, 2); ?></span>
+                                        </div>
+                                        <div class="checkout-product-subtotal">
+                                            Subtotal: <strong>S/ <?php echo number_format($subtotal_item, 2); ?></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
                         <!-- Campo oculto para tipo de comprobante (se auto-completa) -->
                         <input type="hidden" id="tipo_comprobante" name="tipo_comprobante" value="">
                         
@@ -1109,73 +1673,99 @@ try {
                                           placeholder="¿Alguna instrucción especial para tu pedido?"></textarea>
                             </div>
                         </div>
+                        
+                        <?php endif; ?> <!-- Fin de la vista condicional (completa/simplificada) -->
 
                     </form>
                 </div>
 
                 <!-- Order Summary Sidebar -->
-                <div class="col-lg-4">
-                    <div class="order-summary">
-                        <h5>Resumen del Pedido</h5>
+                <div class="col-lg-4 col-md-3 col-sm-12">
+                    <div class="order-summary" style="background: #fff; border-radius: 12px; padding: 24px; border: 2px solid #e1e1e1; position: sticky; top: 30px; z-index: 10;">
+                        <h5 style="color: #c9a67c; margin-bottom: 20px; font-size: 18px; font-weight: 700; border-bottom: 2px solid #e1e1e1; padding-bottom: 12px;">
+                            <i class="fa fa-file-text-o"></i> Resumen del Pedido
+                        </h5>
                         
-                        <!-- Cart Items -->
-                        <?php foreach($cart_items as $item): 
-                            $precio = $item['precio_producto'];
-                            $precio_original = $precio;
+                        <?php 
+                        // Calcular totales
+                        $total_articulos_precio = 0;
+                        $total_descuentos = 0;
+                        foreach($cart_items as $item): 
+                            $precio_original = $item['precio_producto'];
+                            $precio_con_descuento = $precio_original;
+                            $descuento_item = 0;
+                            
                             if($item['descuento_porcentaje_producto'] > 0) {
-                                $precio = $precio - ($precio * $item['descuento_porcentaje_producto'] / 100);
+                                $precio_con_descuento = $precio_original - ($precio_original * $item['descuento_porcentaje_producto'] / 100);
+                                $descuento_item = ($precio_original - $precio_con_descuento) * $item['cantidad_carrito'];
+                                $total_descuentos += $descuento_item;
                             }
-                            $item_total = $precio * $item['cantidad_carrito'];
+                            
+                            $total_articulos_precio += $precio_original * $item['cantidad_carrito'];
+                        endforeach;
                         ?>
-                        <div class="order-item">
-                            <img src="<?php echo htmlspecialchars($item['url_imagen_producto']); ?>" 
-                                 alt="<?php echo htmlspecialchars($item['nombre_producto']); ?>">
-                            <div class="order-item-info">
-                                <div class="order-item-name"><?php echo htmlspecialchars($item['nombre_producto']); ?></div>
-                                <div class="order-item-details">
-                                    Cantidad: <?php echo $item['cantidad_carrito']; ?> 
-                                    × $<?php echo number_format($precio, 2); ?>
-                                </div>
-                            </div>
-                            <div class="order-item-price">
-                                $<?php echo number_format($item_total, 2); ?>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
 
-                        <!-- Totals -->
-                        <div class="order-totals">
-                            <div class="order-total-row">
-                                <span>Subtotal:</span>
-                                <span>$<?php echo number_format($subtotal, 2); ?></span>
+                        <!-- Totals Breakdown -->
+                        <div class="order-totals" style="margin-bottom: 16px;">
+                            <!-- Total de artículos -->
+                            <div class="order-total-row" style="display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e1e1e1;">
+                                <span style="color: #333; font-size: 14px; font-weight: 600;">Total de artículos:</span>
+                                <span style="color: #333; font-size: 14px; font-weight: 600;">S/ <?php echo number_format($total_articulos_precio, 2); ?></span>
                             </div>
-                            <div class="order-total-row">
-                                <span>Envío:</span>
-                                <span><?php echo $costo_envio > 0 ? '$' . number_format($costo_envio, 2) : 'GRATIS'; ?></span>
-                            </div>
-                            <?php if($subtotal < 100 && $costo_envio > 0): ?>
-                            <div class="order-total-row" style="font-size: 12px; color: #ca1515;">
-                                <span colspan="2">
-                                    <i class="fa fa-info-circle"></i>
-                                    Agrega $<?php echo number_format(100 - $subtotal, 2); ?> más para envío gratis
-                                </span>
+                            
+                            <!-- Descuento de artículos -->
+                            <?php if($total_descuentos > 0): ?>
+                            <div class="order-total-row" style="display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e1e1e1;">
+                                <span style="color: #4caf50; font-size: 14px; font-weight: 600;">Descuento de artículo(s):</span>
+                                <span style="color: #4caf50; font-size: 14px; font-weight: 600;">-S/ <?php echo number_format($total_descuentos, 2); ?></span>
                             </div>
                             <?php endif; ?>
-                            <div class="order-total-row total">
-                                <span>Total:</span>
-                                <span>$<?php echo number_format($total, 2); ?></span>
+                            
+                            <!-- Envío -->
+                            <div class="order-total-row" style="display: flex; justify-content: space-between; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e1e1e1;">
+                                <span style="color: #333; font-size: 14px; font-weight: 600;">Envío:</span>
+                                <span style="color: <?php echo $costo_envio == 0 ? '#4caf50' : '#333'; ?>; font-weight: 700; font-size: 14px;">
+                                    <?php echo $costo_envio == 0 ? 'GRATIS' : 'S/ ' . number_format($costo_envio, 2); ?>
+                                </span>
+                            </div>
+                            
+                            <!-- Total -->
+                            <div class="order-total-row total" style="display: flex; justify-content: space-between; padding: 16px; background: rgba(201, 166, 124, 0.1); border-radius: 8px; margin-bottom: 20px;">
+                                <span style="color: #c9a67c; font-weight: 700; font-size: 18px;">Total</span>
+                                <span style="color: #c9a67c; font-weight: 700; font-size: 22px;">S/ <?php echo number_format($total, 2); ?></span>
+                            </div>
+                            <!-- Botón de pago justo después del total -->
+                            <div style="margin: 0 0 20px 0;">
+                                <button type="submit" form="checkoutForm" class="btn-place-order" id="btnPlaceOrder" 
+                                        style="width: 100%; background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%); color: #1a1a1a; border: none; padding: 16px; border-radius: 8px; font-weight: 700; font-size: 16px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(201, 166, 124, 0.3);">
+                                    <i class="fa fa-arrow-right"></i> Continuar al Pago
+                                </button>
                             </div>
                         </div>
 
-                        <!-- Place Order Button -->
-                        <button type="submit" form="checkoutForm" class="btn-place-order" id="btnPlaceOrder">
-                            <i class="fa fa-arrow-right"></i> Continuar al Pago
-                        </button>
+                        <!-- Notas informativas -->
+                        <div style="background: rgba(201, 166, 124, 0.1); border-left: 3px solid #c9a67c; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <p style="color: #d0d0d0; font-size: 12px; margin: 0; line-height: 1.6;">
+                                <i class="fa fa-info-circle" style="color: #c9a67c;"></i> 
+                                Por favor consulte el monto de su pago real final.
+                            </p>
+                        </div>
+                        
+                        <div style="background: rgba(255, 193, 7, 0.1); border-left: 3px solid #ffc107; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <p style="color: #ffc107; font-size: 12px; margin: 0; line-height: 1.6;">
+                                <i class="fa fa-exclamation-triangle"></i> 
+                                La disponibilidad y el precio de los artículos no están garantizados hasta que se finalice el pago.
+                            </p>
+                        </div>
 
                         <!-- Security Notice -->
-                        <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #f0f0f0;">
-                            <p style="font-size: 12px; color: #666; margin: 0;">
-                                <i class="fa fa-shield"></i> Pago 100% seguro y encriptado
+                        <div style="background: rgba(201, 166, 124, 0.05); border: 1px solid #3a3a3a; padding: 14px; border-radius: 8px; margin-bottom: 20px;">
+                            <h6 style="color: #c9a67c; font-size: 13px; font-weight: 700; margin-bottom: 8px;">
+                                <i class="fa fa-lock"></i> Opciones de pago seguro
+                            </h6>
+                            <p style="color: #a0a0a0; font-size: 11px; line-height: 1.6; margin: 0;">
+                                Temu se compromete a proteger tu información de pago. Seguimos los estándares PCI DSS, 
+                                utilizamos un encriptado sólido y realizamos revisiones periódicas del sistema para proteger tu privacidad.
                             </p>
                         </div>
                     </div>
@@ -1407,6 +1997,21 @@ try {
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
             animation: shimmer 3s infinite;
         }
+        
+        /* Estilos para el modal de selección de direcciones */
+        .address-option {
+            transition: all 0.3s ease;
+        }
+        
+        .address-option:hover {
+            border-color: #c9a67c !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 166, 124, 0.3);
+        }
+        
+        .address-option:active {
+            transform: translateY(0);
+        }
     </style>
 
     <!-- Modal para Usar Dirección Predeterminada -->
@@ -1452,9 +2057,17 @@ try {
                                 </div>
                                 <?php endif; ?>
                                 <?php if(!empty($direccion_predeterminada['dni_ruc_direccion'])): ?>
-                                <div style="display: flex;">
-                                    <strong style="min-width: 100px; color: #c9a67c;">DNI/RUC:</strong> 
+                                <div style="display: flex; margin-bottom: 4px;">
+                                    <strong style="min-width: 100px; color: #c9a67c;">
+                                        <?php echo strlen($direccion_predeterminada['dni_ruc_direccion']) === 11 ? 'RUC:' : 'DNI:'; ?>
+                                    </strong> 
                                     <span style="color: #d0d0d0;"><?php echo htmlspecialchars($direccion_predeterminada['dni_ruc_direccion']); ?></span>
+                                </div>
+                                <?php endif; ?>
+                                <?php if(!empty($direccion_predeterminada['razon_social_direccion'])): ?>
+                                <div style="display: flex;">
+                                    <strong style="min-width: 100px; color: #c9a67c;">Razón Social:</strong> 
+                                    <span style="color: #d0d0d0;"><?php echo htmlspecialchars($direccion_predeterminada['razon_social_direccion']); ?></span>
                                 </div>
                                 <?php endif; ?>
                             </div>
@@ -1511,6 +2124,78 @@ try {
         </div>
     </div>
     <!-- Modal para Usar Dirección Predeterminada End -->
+
+    <!-- Modal para Seleccionar Dirección (Múltiples opciones) -->
+    <div id="selectAddressModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" style="z-index: 9999;">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content" style="border-radius: 16px; border: none; background: #1a1a1a; max-height: 90vh; display: flex; flex-direction: column;">
+                <div class="modal-header" style="border-bottom: 2px solid rgba(201, 166, 124, 0.2); padding: 20px 28px; border-radius: 16px 16px 0 0; background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%);">
+                    <h5 class="modal-title" style="font-weight: 700; color: white; font-size: 18px;">
+                        <i class="fa fa-map-marker"></i> Selecciona una Dirección de Envío
+                    </h5>
+                    <button type="button" class="close" onclick="$('#selectAddressModal').modal('hide')" aria-label="Close" style="opacity: 1; color: white;">
+                        <span aria-hidden="true" style="font-size: 28px;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding: 24px; background: #1a1a1a; overflow-y: auto; flex: 1;">
+                    <?php if(!empty($todas_direcciones)): ?>
+                        <div style="display: grid; gap: 16px;">
+                            <?php foreach($todas_direcciones as $dir): ?>
+                            <div class="address-option" data-address-id="<?php echo $dir['id_direccion']; ?>" 
+                                 style="background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%); border-radius: 12px; padding: 18px; cursor: pointer; border: 2px solid <?php echo $dir['es_principal'] == 1 ? '#c9a67c' : '#3a3a3a'; ?>; transition: all 0.3s ease; position: relative;">
+                                
+                                <?php if($dir['es_principal'] == 1): ?>
+                                <div style="position: absolute; top: 12px; right: 12px; background: #c9a67c; color: #1a1a1a; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;">
+                                    <i class="fa fa-star"></i> PREDETERMINADA
+                                </div>
+                                <?php endif; ?>
+                                
+                                <div style="margin-right: 120px;">
+                                    <div style="color: #c9a67c; font-weight: 700; font-size: 15px; margin-bottom: 8px;">
+                                        <?php echo htmlspecialchars($dir['nombre_cliente_direccion']); ?>
+                                    </div>
+                                    <div style="color: #d0d0d0; font-size: 13px; line-height: 1.6;">
+                                        <div><?php echo htmlspecialchars($dir['direccion_completa_direccion']); ?></div>
+                                        <?php if(!empty($dir['telefono_direccion'])): ?>
+                                        <div style="margin-top: 6px; color: #a0a0a0;">
+                                            <i class="fa fa-phone"></i> <?php echo htmlspecialchars($dir['telefono_direccion']); ?>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                                
+                                <!-- Datos ocultos para JavaScript -->
+                                <input type="hidden" class="addr-nombre" value="<?php echo htmlspecialchars($dir['nombre_cliente_direccion']); ?>">
+                                <input type="hidden" class="addr-email" value="<?php echo htmlspecialchars($dir['email_direccion'] ?? ''); ?>">
+                                <input type="hidden" class="addr-telefono" value="<?php echo htmlspecialchars($dir['telefono_direccion']); ?>">
+                                <input type="hidden" class="addr-dni" value="<?php echo htmlspecialchars($dir['dni_ruc_direccion'] ?? ''); ?>">
+                                <input type="hidden" class="addr-razon-social" value="<?php echo htmlspecialchars($dir['razon_social_direccion'] ?? ''); ?>">
+                                <input type="hidden" class="addr-direccion" value="<?php echo htmlspecialchars($dir['direccion_completa_direccion']); ?>">
+                                <input type="hidden" class="addr-departamento" value="<?php echo htmlspecialchars($dir['departamento_direccion']); ?>">
+                                <input type="hidden" class="addr-provincia" value="<?php echo htmlspecialchars($dir['provincia_direccion']); ?>">
+                                <input type="hidden" class="addr-distrito" value="<?php echo htmlspecialchars($dir['distrito_direccion']); ?>">
+                                <input type="hidden" class="addr-referencia" value="<?php echo htmlspecialchars($dir['referencia_direccion'] ?? ''); ?>">
+                                <input type="hidden" class="addr-metodo-pago" value="<?php echo htmlspecialchars($dir['metodo_pago_favorito'] ?? ''); ?>">
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <div style="text-align: center; padding: 40px; color: #888;">
+                            <i class="fa fa-map-marker" style="font-size: 48px; color: #c9a67c; margin-bottom: 16px;"></i>
+                            <p>No tienes direcciones guardadas</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="modal-footer" style="border-top: 2px solid rgba(201, 166, 124, 0.2); padding: 20px 28px; background: #1a1a1a; border-radius: 0 0 16px 16px;">
+                    <button type="button" class="btn" onclick="window.location.href='profile.php#direcciones'" 
+                            style="flex: 1; padding: 12px 24px; border-radius: 10px; font-weight: 600; background: #3a3a3a; border: 1px solid #4a4a4a; font-size: 14px; color: #e0e0e0;">
+                        <i class="fa fa-plus"></i> Agregar nueva dirección
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal para Seleccionar Dirección End -->
 
     <!-- Footer -->
     <?php include 'includes/footer.php'; ?>
@@ -1676,6 +2361,28 @@ try {
         });
         
         // ========================================
+        // SELECCIÓN DE MÉTODO DE PAGO
+        // ========================================
+        document.querySelectorAll('.payment-method-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Remover selección de todas las tarjetas
+                document.querySelectorAll('.payment-method-card').forEach(c => c.classList.remove('selected'));
+                
+                // Agregar selección a la tarjeta clickeada
+                this.classList.add('selected');
+                
+                // Guardar el método seleccionado en el campo oculto
+                const metodoPago = this.dataset.paymentMethod;
+                document.getElementById('metodo_pago').value = metodoPago;
+                
+                // Ocultar mensaje de error si existe
+                document.getElementById('payment-method-error').style.display = 'none';
+                
+                console.log('✅ Método de pago seleccionado:', metodoPago);
+            });
+        });
+        
+        // ========================================
         // VALIDACIÓN DEL FORMULARIO
         // ========================================
         // MANEJO DEL FORMULARIO DE CHECKOUT CON MODAL DE GUARDAR DIRECCIÓN
@@ -1687,6 +2394,12 @@ try {
             
             const form = this;
             const btnSubmit = document.getElementById('btnPlaceOrder');
+            const tieneDireccionPredeterminada = <?php echo $tiene_direccion_predeterminada ? 'true' : 'false'; ?>;
+
+            // Si se usa dirección predeterminada, no se necesitan validaciones de campos de dirección
+            if (tieneDireccionPredeterminada) {
+                // Validar solo método de pago
+            } else {
             
             // Validar tipo de comprobante (automático)
             const tipoComprobante = document.getElementById('tipo_comprobante').value;
@@ -1729,12 +2442,32 @@ try {
                 alert('Por favor completa todos los campos de ubicación (Departamento, Provincia, Distrito)');
                 return;
             }
+            } // Fin del else para validaciones de formulario completo
+            
+            // Validar método de pago
+            const metodoPago = document.getElementById('metodo_pago').value;
+            if(!metodoPago) {
+                // Mostrar mensaje de error
+                document.getElementById('payment-method-error').style.display = 'block';
+                
+                // Scroll hacia la sección de métodos de pago
+                document.querySelector('.payment-methods-grid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                alert('Por favor selecciona un método de pago');
+                return;
+            }
             
             // Guardar datos del formulario
             checkoutFormData = new FormData(form);
-            
-            // Mostrar modal para preguntar si desea guardar la dirección
-            $('#saveAddressModal').modal('show');
+
+            // Si no se usa dirección predeterminada, preguntar si se quiere guardar.
+            // Si ya se usa, procesar directamente.
+            if (!tieneDireccionPredeterminada) {
+                $('#saveAddressModal').modal('show');
+            } else {
+                // Procesar directamente el pedido
+                procesarPedido(checkoutFormData);
+            }
         });
         
         // Botón "Sí, guardar" - Procesar pedido Y guardar dirección
@@ -1898,12 +2631,8 @@ try {
         // Debug: Mostrar datos en consola
         console.log('Dirección predeterminada:', defaultAddress);
 
-        // Mostrar modal automáticamente al cargar la página
-        $(document).ready(function() {
-            setTimeout(function() {
-                $('#useDefaultAddressModal').modal('show');
-            }, 800);
-        });
+        // NO mostrar modal automáticamente - el usuario ya tiene dirección predeterminada activa
+        // El modal solo se abrirá cuando haga clic en "Cambiar dirección"
 
         // Botón "Usar esta dirección" - Rellenar campos automáticamente
         $('#btnUseDefaultAddress').on('click', function() {
@@ -1938,6 +2667,17 @@ try {
                     
                     console.log('✅ DNI/RUC rellenado:', defaultAddress.dni);
                     console.log('🔔 Evento input disparado para validación automática');
+                    
+                    // Si hay razón social guardada, rellenarla después de que se active el campo
+                    if(defaultAddress.razonSocial && defaultAddress.dni.length === 11) {
+                        setTimeout(function() {
+                            const razonSocialField = $('#razon_social');
+                            if(razonSocialField.length > 0 && razonSocialField.is(':visible')) {
+                                razonSocialField.val(defaultAddress.razonSocial);
+                                console.log('✅ Razón Social rellenada:', defaultAddress.razonSocial);
+                            }
+                        }, 200); // Esperar a que se muestre el campo de razón social
+                    }
                 } else {
                     console.error('❌ Campo DNI no encontrado en el DOM');
                 }
@@ -2066,10 +2806,72 @@ try {
             });
         });
 
-        // Botón "Usar otra dirección" - Cerrar modal sin rellenar
+        // Botón "Usar otra dirección" - Mostrar formulario completo
         $('#btnUseOtherAddress').on('click', function() {
             $('#useDefaultAddressModal').modal('hide');
+            
+            // Recargar la página sin usar dirección predeterminada
+            // Agregamos un parámetro para indicar que queremos el formulario completo
+            window.location.href = 'checkout.php?show_full_form=1';
         });
+        
+        // Botón "Cambiar dirección" - Para abrir modal de selección de direcciones
+        $('#btnChangeAddress').on('click', function() {
+            // Mostrar el modal de selección de direcciones (todas las direcciones guardadas)
+            $('#selectAddressModal').modal('show');
+        });
+        
+        // Seleccionar una dirección del modal
+        $('.address-option').on('click', function() {
+            // Obtener todos los datos de la dirección seleccionada
+            const addressData = {
+                nombre: $(this).find('.addr-nombre').val(),
+                email: $(this).find('.addr-email').val(),
+                telefono: $(this).find('.addr-telefono').val(),
+                dni: $(this).find('.addr-dni').val(),
+                razon_social: $(this).find('.addr-razon-social').val(),
+                direccion: $(this).find('.addr-direccion').val(),
+                departamento: $(this).find('.addr-departamento').val(),
+                provincia: $(this).find('.addr-provincia').val(),
+                distrito: $(this).find('.addr-distrito').val(),
+                referencia: $(this).find('.addr-referencia').val(),
+                metodo_pago: $(this).find('.addr-metodo-pago').val()
+            };
+            
+            // Actualizar los campos del formulario (hidden inputs en vista simplificada)
+            $('#nombre_completo').val(addressData.nombre);
+            $('#email').val(addressData.email);
+            $('#telefono').val(addressData.telefono);
+            $('#dni_ruc').val(addressData.dni);
+            $('#razon_social').val(addressData.razon_social);
+            $('#direccion_completa').val(addressData.direccion);
+            $('#departamento').val(addressData.departamento);
+            $('#provincia').val(addressData.provincia);
+            $('#distrito').val(addressData.distrito);
+            $('#referencia').val(addressData.referencia);
+            $('#metodo_pago').val(addressData.metodo_pago);
+            
+            // Actualizar la vista previa en la vista simplificada
+            $('#preview_nombre').text(addressData.nombre);
+            $('#preview_telefono').text(addressData.telefono);
+            $('#preview_direccion').text(addressData.direccion + ', ' + addressData.distrito + ', ' + addressData.provincia + ', ' + addressData.departamento);
+            
+            // Cerrar el modal
+            $('#selectAddressModal').modal('hide');
+            
+            // Mostrar notificación de éxito
+            Swal.fire({
+                icon: 'success',
+                title: 'Dirección actualizada',
+                text: 'Se ha seleccionado la dirección correctamente',
+                timer: 2000,
+                showConfirmButton: false,
+                background: '#1a1a1a',
+                color: '#fff',
+                iconColor: '#c9a67c'
+            });
+        });
+        
         <?php endif; ?>
     </script>
 

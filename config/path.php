@@ -58,6 +58,6 @@ function absolute_url($path = '') {
 // Genera rutas a /assets/ que el .htaccess redirige a /public/assets/
 function asset($path) {
     $base = defined('BASE_URL') ? BASE_URL : '';
-    return $base . '/assets/' . ltrim($path, '/');
+    return $base . '/public/assets/' . ltrim($path, '/');
 }
 ?>

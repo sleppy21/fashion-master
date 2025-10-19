@@ -9,13 +9,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Verificar si las funciones globales ya están definidas (desde header-section.php)
     if (window.toggleUserModal && typeof window.toggleUserModal === 'function') {
-        console.log('✅ User Account Dropdown initialized successfully');
         // Las funciones ya están manejadas por header-section.php
         // No agregar event listeners adicionales
         return;
     }
     
-    console.warn('⚠️ header-section.php no cargado, usando funcionalidad limitada');
     
     // CÓDIGO LEGACY (solo si header-section.php no está cargado)
     // NO SE EJECUTA en condiciones normales
@@ -175,5 +173,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    console.log('⚠️ User Account Dropdown en modo LEGACY');
 });

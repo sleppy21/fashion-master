@@ -27,10 +27,7 @@
     function initLiveSearch() {
         searchInput = document.getElementById('search-input');
         
-        if (!searchInput) {
-            console.warn('Input de búsqueda no encontrado en el DOM');
-            return;
-        }
+       
 
         // Crear contenedor de sugerencias si no existe
         createSuggestionsContainer();
@@ -54,7 +51,6 @@
             searchInput.value = searchQuery;
         }
 
-        console.log('✅ Live Search inicializado correctamente');
     }
 
     /**
@@ -156,7 +152,6 @@
      * @param {string} query - Término de búsqueda
      */
     function performSearch(query) {
-        console.log(`🔍 Buscando: "${query}"`);
 
         // Cancelar petición anterior si existe
         if (currentRequest) {
@@ -176,13 +171,11 @@
             if (data.success) {
                 displaySuggestions(data.suggestions, query);
             } else {
-                console.warn('Error en búsqueda:', data.message);
                 hideSuggestions();
             }
         })
         .catch(error => {
             if (error.name !== 'AbortError') {
-                console.error('Error en búsqueda:', error);
                 hideSuggestions();
             }
         })
@@ -352,7 +345,6 @@
     function applySearch(query) {
         hideSuggestions();
 
-        console.log(`Aplicando búsqueda: "${query}"`);
 
         // Si existe la función global de filtros, usarla
         if (typeof window.aplicarFiltro === 'function') {
@@ -400,7 +392,6 @@
         performSearch: performSearch
     };
 
-    console.log('🔎 Módulo Live Search cargado');
 
 })();
 

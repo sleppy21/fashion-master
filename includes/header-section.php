@@ -83,9 +83,7 @@
                             </a>
                         </li>
                         <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
-                        <li><a href="profile.php#settings" title="Ajustes">
-                            <i class="fa fa-cog"></i>
-                        </a></li>
+                        
                         <li><a href="#" id="notifications-link" title="Notificaciones">
                             <i class="fa fa-bell"></i>
                             <?php if(isset($notifications_count) && $notifications_count > 0): ?>
@@ -107,6 +105,9 @@
                             <?php else: ?>
                             <div class="tip" id="cart-count" style="display: none;">0</div>
                             <?php endif; ?>
+                        </a></li>
+                        <li><a href="profile.php#settings" title="Ajustes">
+                            <i class="fa fa-cog"></i>
                         </a></li>
                         
                         <!-- Botón de Avatar de Usuario -->

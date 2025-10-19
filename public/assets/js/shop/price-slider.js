@@ -9,7 +9,6 @@
 
     // Verificar que noUiSlider esté disponible
     if (typeof noUiSlider === 'undefined') {
-        console.error('noUiSlider no está cargado. Asegúrate de incluir la librería.');
         return;
     }
 
@@ -37,7 +36,6 @@
      * Inicializar el slider de precios
      */
     function initPriceSlider() {
-        console.log('🎯 Inicializando Price Slider...');
         
         // Obtener elementos del DOM
         priceSlider = document.getElementById('price-slider');
@@ -50,7 +48,6 @@
         markCurrentMax = document.querySelector('.mark-current-max');
 
         if (!priceSlider || !minPriceInput || !maxPriceInput) {
-            console.warn('⚠️ Elementos del price slider no encontrados en el DOM');
             return;
         }
 
@@ -59,11 +56,9 @@
         const minValue = parseFloat(minPriceInput.value) || parseFloat(urlParams.get('precio_min')) || CONFIG.minPrice;
         const maxValue = parseFloat(maxPriceInput.value) || parseFloat(urlParams.get('precio_max')) || CONFIG.maxPrice;
 
-        console.log('📊 Valores iniciales:', { minValue, maxValue });
 
         // Verificar si el slider ya existe y destruirlo
         if (priceSlider.noUiSlider) {
-            console.log('🔄 Destruyendo slider existente...');
             priceSlider.noUiSlider.destroy();
         }
 
@@ -91,8 +86,6 @@
                 animationDuration: 300
             });
 
-            console.log('✅ Slider creado exitosamente con 2 handles');
-
             // Actualizar displays y marcas cuando el slider cambia (en tiempo real)
             priceSlider.noUiSlider.on('update', function(values, handle) {
                 const minVal = parseFloat(values[0]);
@@ -118,7 +111,6 @@
             priceSlider.noUiSlider.on('end', function(values) {
                 const minVal = parseFloat(values[0]);
                 const maxVal = parseFloat(values[1]);
-                console.log('🎯 Usuario soltó el slider. Aplicando filtro:', { min: minVal, max: maxVal });
                 applyPriceFilter(minVal, maxVal);
             });
 
@@ -126,7 +118,6 @@
             if (resetBtn) {
                 resetBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    console.log('🔄 Reseteando slider...');
                     resetPriceSlider();
                 });
             }
@@ -134,10 +125,8 @@
             // Inicializar marcas
             updateDynamicMarks(minValue, maxValue);
 
-            console.log('✅ Price Slider inicializado correctamente');
 
         } catch (error) {
-            console.error('❌ Error al crear el slider:', error);
         }
     }
 
@@ -177,13 +166,11 @@
 
         // Aplicar filtro con debounce para evitar llamadas múltiples
         debounceTimer = setTimeout(() => {
-            console.log(`✅ Aplicando filtro de precio: ${CONFIG.currency}${min} - ${CONFIG.currency}${max}`);
 
             // Si existe la función global de filtros, usarla
             if (typeof window.aplicarFiltro === 'function') {
                 window.aplicarFiltro('precio', { min: min, max: max });
             } else {
-                console.warn('⚠️ Función aplicarFiltro no encontrada');
                 // Fallback: actualizar URL y recargar
                 const url = new URL(window.location);
                 url.searchParams.set('precio_min', min);
@@ -202,7 +189,6 @@
         if (!priceSlider || !priceSlider.noUiSlider) return;
 
         priceSlider.noUiSlider.set([CONFIG.minPrice, CONFIG.maxPrice]);
-        console.log('Price slider reseteado');
     }
 
     /**
@@ -253,7 +239,6 @@
             }
         });
 
-        console.log(`Límites del slider actualizados: ${newMin} - ${newMax}`);
     }
 
     /**
@@ -333,6 +318,5 @@
         formatPrice: formatPrice
     };
 
-    console.log('📊 Módulo Price Slider cargado');
 
 })();

@@ -556,7 +556,15 @@ try {
                                                 <?php endif; ?>
                                                 
                                                 <?php if (!empty($direccion['dni_ruc_direccion'])): ?>
-                                                    <p><i class="fas fa-id-card"></i> DNI/RUC: <?= htmlspecialchars($direccion['dni_ruc_direccion']) ?></p>
+                                                    <p>
+                                                        <i class="fas fa-id-card"></i> 
+                                                        <?= strlen($direccion['dni_ruc_direccion']) === 11 ? 'RUC:' : 'DNI:' ?> 
+                                                        <?= htmlspecialchars($direccion['dni_ruc_direccion']) ?>
+                                                    </p>
+                                                <?php endif; ?>
+                                                
+                                                <?php if (!empty($direccion['razon_social_direccion'])): ?>
+                                                    <p><i class="fas fa-building"></i> Razón Social: <?= htmlspecialchars($direccion['razon_social_direccion']) ?></p>
                                                 <?php endif; ?>
                                                 
                                                 <?php if (!empty($direccion['direccion_completa_direccion'])): ?>

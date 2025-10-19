@@ -94,18 +94,15 @@ class SmoothTableUpdater {
      */
     async updateSingleProduct(productId, updatedData = null, changedFields = null) {
         try {
-            console.log('🔵 updateSingleProduct llamado:', { productId, updatedData, changedFields });
             
             // Soporte para pasar el objeto completo como primer parámetro
             if (typeof productId === 'object' && productId !== null) {
                 updatedData = productId;
                 productId = updatedData.id_producto || updatedData.id;
-                console.log('🔵 Convertido objeto a ID:', productId);
             }
 
             // Validar que tengamos los datos necesarios
             if (!updatedData) {
-                console.warn('⚠️ No se proporcionaron datos, obteniendo del servidor...');
                 const response = await fetch(`${window.CONFIG.apiUrl}?action=get&id=${productId}`);
                 const result = await response.json();
                 
@@ -125,19 +122,16 @@ class SmoothTableUpdater {
             // Esto fuerza a que se vuelva a buscar en el DOM con datos frescos
             this.cache.delete(`row-${productId}`);
             this.cache.delete(`card-${productId}`);
-            console.log('🧹 Cache DOM limpiado para producto', productId);
             
             // Detectar campos que cambiaron si no se especificaron
             if (!changedFields) {
                 changedFields = this.detectChangedFields(productId, updatedData);
-                console.log('🔵 Campos detectados automáticamente:', changedFields);
                 
                 // 🎯 PARCHE: Si viene desde EDICIÓN y solo detectó estado/stock,
                 // forzar actualización de TODOS los campos para evitar problemas de caché
                 // NOTA: NO incluir 'fecha' porque fecha_creacion nunca cambia
                 if (changedFields && changedFields.length <= 2 && 
                     updatedData.codigo && updatedData.nombre_marca) {
-                    console.log('⚠️ Solo se detectaron pocos campos, forzando actualización completa');
                     changedFields = ['imagen', 'nombre', 'codigo', 'categoria', 'marca', 'precio', 'stock', 'estado'];
                 }
             }
@@ -145,21 +139,17 @@ class SmoothTableUpdater {
             // 🆕 FORZAR ACTUALIZACIÓN DE TODOS LOS CAMPOS AL EDITAR DESDE MODAL
             // Si los datos vienen completos (con nombre_producto, codigo, etc.), actualizar TODO
             if (!changedFields && updatedData.nombre_producto && updatedData.codigo) {
-                console.log('🔄 Actualización completa forzada (edición desde modal)');
                 changedFields = ['imagen', 'nombre', 'codigo', 'categoria', 'marca', 'precio', 'stock', 'estado'];
             }
             
             // Si no hay cambios, salir
             if (!changedFields || changedFields.length === 0) {
-                console.log(`⏭️ Producto ${productId} sin cambios detectados`);
                 return;
             }
             
-            console.log(`🎯 Actualizando campos: [${changedFields.join(', ')}] del producto ${productId}`);
             
             // Detectar vista actual
             const currentView = this.getCurrentView();
-            console.log('🔵 Vista actual:', currentView);
             
             // Actualizar SOLO los campos específicos (SIN await)
             if (currentView === 'grid') {
@@ -1300,7 +1290,6 @@ if (typeof module !== 'undefined' && module.exports) {
  */
 window.updateMultipleProducts = async function(products) {
     if (!window.smoothTableUpdater) {
-        console.warn('⚠️ smoothTableUpdater no disponible');
         return;
     }
     
@@ -1319,7 +1308,6 @@ window.updateMultipleProducts = async function(products) {
     }
     
     const endTime = performance.now();
-    console.log(`✅ ${products.length} productos actualizados en ${(endTime - startTime).toFixed(2)}ms`);
 };
 
 /**
@@ -1329,15 +1317,5 @@ window.clearProductCache = function() {
     if (window.smoothTableUpdater) {
         window.smoothTableUpdater.clearCache();
         window.smoothTableUpdater.dataCache.clear();
-        console.log('✅ Cache de productos limpiado (DOM + Data)');
     }
 };
-
-console.log('🚀 SmoothTableUpdater V3.0 - Field-Level Updates cargado completamente');
-console.log('📊 Características V3.0:');
-console.log('  ✓ Actualizaciones granulares a nivel de campo');
-console.log('  ✓ Detección automática de cambios');
-console.log('  ✓ Funciones específicas ultra-rápidas (updateProductEstado, updateProductStock, etc.)');
-console.log('  ✓ Cache dual: DOM + Datos para comparación inteligente');
-console.log('  ✓ Animaciones sutiles sin cambios de color (solo transforms)');
-console.log('  ✓ 80% más rápido que V2.0 en actualizaciones simples');

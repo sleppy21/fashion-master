@@ -8,9 +8,12 @@ require_once __DIR__ . '/../../config/conexion.php';
 
 header('Content-Type: application/json');
 
+// Log de inicio
+error_log('Global Search - Query: ' . ($_GET['q'] ?? 'NONE'));
+
 // Verificar que hay un query
 if (!isset($_GET['q']) || empty(trim($_GET['q']))) {
-    echo json_encode(['products' => []]);
+    echo json_encode(['products' => [], 'debug' => 'No query provided']);
     exit;
 }
 
@@ -18,79 +21,41 @@ $search = trim($_GET['q']);
 $searchLength = strlen($search);
 
 try {
-    // Crear patrón de búsqueda flexible
-    $flexiblePattern = '%' . implode('%', str_split($search)) . '%';
+    // Búsqueda simple y efectiva
+    $searchPattern = '%' . $search . '%';
     
-    // Determinar modo de búsqueda
-    if ($searchLength >= 3) {
-        // Modo flexible: buscar coincidencias de caracteres
-        $minMatches = max(3, ceil($searchLength * 0.6));
-        
-        $sql = "SELECT DISTINCT
-                    p.id_producto,
-                    p.nombre_producto,
-                    p.precio_producto,
-                    p.precio_anterior_producto,
-                    p.stock_producto,
-                    p.url_imagen_producto,
-                    c.nombre_categoria
-                FROM producto p
-                LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
-                LEFT JOIN marca m ON p.id_marca = m.id_marca
-                WHERE p.estado_producto = 1
-                AND (
-                    p.nombre_producto LIKE :flexible
-                    OR p.descripcion_producto LIKE :flexible
-                    OR m.nombre_marca LIKE :flexible
-                    OR c.nombre_categoria LIKE :flexible
-                    OR p.nombre_producto LIKE :exact
-                    OR p.descripcion_producto LIKE :exact
-                )
-                ORDER BY 
-                    CASE 
-                        WHEN p.nombre_producto LIKE :exact THEN 1
-                        WHEN p.nombre_producto LIKE :flexible THEN 2
-                        WHEN p.descripcion_producto LIKE :exact THEN 3
-                        ELSE 4
-                    END,
-                    p.nombre_producto ASC
-                LIMIT 10";
-        
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':flexible', $flexiblePattern, PDO::PARAM_STR);
-        $stmt->bindValue(':exact', '%' . $search . '%', PDO::PARAM_STR);
-        
-    } else {
-        // Modo exacto: solo coincidencias exactas de substring
-        $exactPattern = '%' . $search . '%';
-        
-        $sql = "SELECT DISTINCT
-                    p.id_producto,
-                    p.nombre_producto,
-                    p.precio_producto,
-                    p.precio_anterior_producto,
-                    p.stock_producto,
-                    p.url_imagen_producto,
-                    c.nombre_categoria
-                FROM producto p
-                LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
-                LEFT JOIN marca m ON p.id_marca = m.id_marca
-                WHERE p.estado_producto = 1
-                AND (
-                    p.nombre_producto LIKE :search
-                    OR p.descripcion_producto LIKE :search
-                    OR m.nombre_marca LIKE :search
-                    OR c.nombre_categoria LIKE :search
-                )
-                ORDER BY p.nombre_producto ASC
-                LIMIT 10";
-        
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':search', $exactPattern, PDO::PARAM_STR);
-    }
+    $sql = "SELECT DISTINCT
+                p.id_producto,
+                p.nombre_producto,
+                p.precio_producto,
+                p.descuento_porcentaje_producto,
+                p.stock_actual_producto,
+                p.url_imagen_producto,
+                c.nombre_categoria,
+                CASE 
+                    WHEN p.descuento_porcentaje_producto > 0 THEN 
+                        p.precio_producto / (1 - (p.descuento_porcentaje_producto / 100))
+                    ELSE NULL 
+                END as precio_anterior
+            FROM producto p
+            LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
+            LEFT JOIN marca m ON p.id_marca = m.id_marca
+            WHERE p.status_producto = 1
+            AND (
+                p.nombre_producto LIKE ?
+                OR p.descripcion_producto LIKE ?
+                OR m.nombre_marca LIKE ?
+                OR c.nombre_categoria LIKE ?
+            )
+            ORDER BY p.nombre_producto ASC
+            LIMIT 10";
     
-    $stmt->execute();
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$searchPattern, $searchPattern, $searchPattern, $searchPattern]);
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Log de resultados
+    error_log('Global Search - Results count: ' . count($results));
     
     // Formatear resultados
     $products = [];
@@ -99,8 +64,9 @@ try {
             'id' => $row['id_producto'],
             'nombre' => $row['nombre_producto'],
             'precio' => $row['precio_producto'],
-            'precio_anterior' => $row['precio_anterior_producto'],
-            'stock' => $row['stock_producto'],
+            'precio_anterior' => $row['precio_anterior'],
+            'descuento' => $row['descuento_porcentaje_producto'],
+            'stock' => $row['stock_actual_producto'],
             'imagen' => $row['url_imagen_producto'],
             'categoria' => $row['nombre_categoria'] ?? 'Sin categoría'
         ];
@@ -108,13 +74,20 @@ try {
     
     echo json_encode([
         'products' => $products,
-        'count' => count($products)
+        'count' => count($products),
+        'debug' => [
+            'search' => $search,
+            'pattern' => $searchPattern,
+            'sql_results' => count($results)
+        ]
     ]);
     
 } catch (Exception $e) {
     error_log('Global search error: ' . $e->getMessage());
+    error_log('Global search trace: ' . $e->getTraceAsString());
     echo json_encode([
         'products' => [],
-        'error' => 'Error en la búsqueda'
+        'error' => 'Error en la búsqueda',
+        'debug' => $e->getMessage()
     ]);
 }

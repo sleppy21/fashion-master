@@ -1721,8 +1721,8 @@ try {
 
         /* Mejoras para tabletas en modo portrait */
         @media (min-width: 577px) and (max-width: 991px) {
-            .col-lg-8,
-            .col-lg-4 {
+            .col-lg-9,
+            .col-lg-3 {
                 padding-left: 15px;
                 padding-right: 15px;
             }
@@ -1750,11 +1750,11 @@ try {
 
     <!-- Shop Cart Section Begin -->
     <section class="shop-cart spad">
-        <div class="container">
+        <div class="container" style="max-width: 1400px;">
             <?php if(!empty($cart_items)): ?>
             <div class="row">
                 <!-- Lista de Productos (Izquierda) -->
-                <div class="col-lg-8">
+                <div class="col-lg-9">
                     <div class="shop__cart__table">
                         <table>
                             <thead>
@@ -1889,7 +1889,7 @@ try {
                 </div>
 
                 <!-- Resumen del Carrito (Derecha) -->
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <div class="cart-summary-sidebar">
                         
                         <!-- Código de descuento -->
@@ -2015,6 +2015,139 @@ try {
                 </div>
             </div>
             <?php endif; ?>
+
+            <!-- Productos Relacionados -->
+            <?php if(!empty($cart_items)): 
+                // Obtener IDs de productos en el carrito y sus categorías
+                $product_ids_in_cart = array_column($cart_items, 'id_producto');
+                $category_ids = [];
+                
+                foreach($cart_items as $item) {
+                    $cat_result = executeQuery("SELECT id_categoria FROM producto WHERE id_producto = ?", [$item['id_producto']]);
+                    if($cat_result && !empty($cat_result)) {
+                        $category_ids[] = $cat_result[0]['id_categoria'];
+                    }
+                }
+                
+                $category_ids = array_unique($category_ids);
+                
+                // Buscar productos relacionados (misma categoría, no en carrito, con stock)
+                $related_products = [];
+                if(!empty($category_ids)) {
+                    $placeholders = implode(',', array_fill(0, count($category_ids), '?'));
+                    $exclude_placeholders = implode(',', array_fill(0, count($product_ids_in_cart), '?'));
+                    
+                    $params = array_merge($category_ids, $product_ids_in_cart);
+                    
+                    $related_query = "
+                        SELECT DISTINCT
+                            p.id_producto,
+                            p.nombre_producto,
+                            p.precio_producto,
+                            p.descuento_porcentaje_producto,
+                            p.stock_actual_producto,
+                            p.url_imagen_producto,
+                            m.nombre_marca,
+                            c.nombre_categoria,
+                            COALESCE(AVG(r.calificacion), 0) as rating,
+                            COALESCE(COUNT(DISTINCT r.id_resena), 0) as total_reviews
+                        FROM producto p
+                        LEFT JOIN marca m ON p.id_marca = m.id_marca
+                        LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
+                        LEFT JOIN resena r ON p.id_producto = r.id_producto AND r.aprobada = 1
+                        WHERE p.id_categoria IN ($placeholders)
+                        AND p.id_producto NOT IN ($exclude_placeholders)
+                        AND p.status_producto = 1
+                        AND p.stock_actual_producto > 0
+                        GROUP BY p.id_producto
+                        ORDER BY RAND()
+                        LIMIT 8
+                    ";
+                    
+                    $related_products = executeQuery($related_query, $params);
+                }
+            ?>
+            
+            <?php if(!empty($related_products)): ?>
+            <div class="row" style="margin-top: 60px;">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <h4>Productos que tal vez quieras agregar</h4>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <?php foreach($related_products as $product): 
+                    $precio_original = $product['precio_producto'];
+                    $tiene_descuento = $product['descuento_porcentaje_producto'] > 0;
+                    $precio_final = $precio_original;
+                    $precio_anterior = null;
+                    
+                    if($tiene_descuento) {
+                        $precio_anterior = $precio_original;
+                        $precio_final = $precio_original * (1 - ($product['descuento_porcentaje_producto'] / 100));
+                    }
+                    
+                    $imagen_url = !empty($product['url_imagen_producto']) ? $product['url_imagen_producto'] : 'public/assets/img/default-product.jpg';
+                    $rating = round($product['rating'], 1);
+                    $total_reviews = $product['total_reviews'];
+                ?>
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="product__item">
+                        <?php if($tiene_descuento): ?>
+                        <div class="product__item__pic set-bg" data-setbg="<?php echo htmlspecialchars($imagen_url); ?>" style="background-image: url('<?php echo htmlspecialchars($imagen_url); ?>');">
+                            <div class="label sale">-<?php echo round($product['descuento_porcentaje_producto']); ?>%</div>
+                            <ul class="product__hover">
+                                <li><a href="<?php echo htmlspecialchars($imagen_url); ?>" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                <li><a href="#" class="add-to-favorites" data-id="<?php echo $product['id_producto']; ?>"><span class="icon_heart_alt"></span></a></li>
+                                <li><a href="product-details.php?id=<?php echo $product['id_producto']; ?>"><span class="icon_bag_alt"></span></a></li>
+                            </ul>
+                        </div>
+                        <?php else: ?>
+                        <div class="product__item__pic set-bg" data-setbg="<?php echo htmlspecialchars($imagen_url); ?>" style="background-image: url('<?php echo htmlspecialchars($imagen_url); ?>');">
+                            <ul class="product__hover">
+                                <li><a href="<?php echo htmlspecialchars($imagen_url); ?>" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                <li><a href="#" class="add-to-favorites" data-id="<?php echo $product['id_producto']; ?>"><span class="icon_heart_alt"></span></a></li>
+                                <li><a href="product-details.php?id=<?php echo $product['id_producto']; ?>"><span class="icon_bag_alt"></span></a></li>
+                            </ul>
+                        </div>
+                        <?php endif; ?>
+                        <div class="product__item__text">
+                            <h6><a href="product-details.php?id=<?php echo $product['id_producto']; ?>"><?php echo htmlspecialchars($product['nombre_producto']); ?></a></h6>
+                            <div class="rating">
+                                <?php 
+                                $full_stars = floor($rating);
+                                $has_half = ($rating - $full_stars) >= 0.5;
+                                
+                                for($i = 0; $i < $full_stars; $i++): ?>
+                                    <i class="fa fa-star"></i>
+                                <?php endfor; ?>
+                                
+                                <?php if($has_half): ?>
+                                    <i class="fa fa-star-half-o"></i>
+                                <?php endif; ?>
+                                
+                                <?php for($i = 0; $i < (5 - $full_stars - ($has_half ? 1 : 0)); $i++): ?>
+                                    <i class="fa fa-star-o"></i>
+                                <?php endfor; ?>
+                                
+                                <span>(<?php echo $total_reviews; ?>)</span>
+                            </div>
+                            <div class="product__price">
+                                $<?php echo number_format($precio_final, 2); ?>
+                                <?php if($tiene_descuento): ?>
+                                <span>$<?php echo number_format($precio_anterior, 2); ?></span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+            <?php endif; ?>
+            <!-- Productos Relacionados End -->
         </div>
     </section>
     <!-- Shop Cart Section End -->

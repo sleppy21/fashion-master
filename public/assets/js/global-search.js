@@ -1,237 +1,116 @@
 /**
- * GLOBAL SEARCH MODAL
- * Búsqueda global con productos y atajos de navegación
- * @version 1.0
+ * GLOBAL SEARCH DROPDOWN
+ * Búsqueda simple de productos
  */
 
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 
-    // ========================================
-    // NAVIGATION SHORTCUTS MAPPING
-    // ========================================
-    const navigationShortcuts = {
-        'carrito': { url: 'cart.php', icon: 'fa-shopping-cart', title: 'Carrito de Compras', desc: 'Ver tus productos en el carrito' },
-        'cart': { url: 'cart.php', icon: 'fa-shopping-cart', title: 'Carrito de Compras', desc: 'Ver tus productos en el carrito' },
-        
-        'tienda': { url: 'shop.php', icon: 'fa-store', title: 'Tienda', desc: 'Explorar todos los productos' },
-        'shop': { url: 'shop.php', icon: 'fa-store', title: 'Tienda', desc: 'Explorar todos los productos' },
-        
-        'favoritos': { url: '#', modal: 'favorites', icon: 'fa-heart', title: 'Favoritos', desc: 'Ver tus productos favoritos' },
-        'favorites': { url: '#', modal: 'favorites', icon: 'fa-heart', title: 'Favoritos', desc: 'Ver tus productos favoritos' },
-        
-        'notificaciones': { url: '#', modal: 'notifications', icon: 'fa-bell', title: 'Notificaciones', desc: 'Ver tus notificaciones' },
-        'notifications': { url: '#', modal: 'notifications', icon: 'fa-bell', title: 'Notificaciones', desc: 'Ver tus notificaciones' },
-        
-        'perfil': { url: 'profile.php', icon: 'fa-user', title: 'Mi Perfil', desc: 'Ver y editar tu perfil' },
-        'profile': { url: 'profile.php', icon: 'fa-user', title: 'Mi Perfil', desc: 'Ver y editar tu perfil' },
-        
-        'configuracion': { url: 'profile.php#settings', icon: 'fa-cog', title: 'Configuración', desc: 'Ajustes de tu cuenta' },
-        'settings': { url: 'profile.php#settings', icon: 'fa-cog', title: 'Configuración', desc: 'Ajustes de tu cuenta' },
-        'ajustes': { url: 'profile.php#settings', icon: 'fa-cog', title: 'Configuración', desc: 'Ajustes de tu cuenta' },
-        
-        'admin': { url: 'admin.php', icon: 'fa-shield-alt', title: 'Administración', desc: 'Panel de administrador' },
-        'administracion': { url: 'admin.php', icon: 'fa-shield-alt', title: 'Administración', desc: 'Panel de administrador' },
-        
-        'contacto': { url: 'contact.php', icon: 'fa-envelope', title: 'Contacto', desc: 'Envíanos un mensaje' },
-        'contact': { url: 'contact.php', icon: 'fa-envelope', title: 'Contacto', desc: 'Envíanos un mensaje' },
-        
-        'direccion': { url: 'profile.php#addresses', icon: 'fa-map-marker-alt', title: 'Direcciones', desc: 'Gestionar tus direcciones' },
-        'address': { url: 'profile.php#addresses', icon: 'fa-map-marker-alt', title: 'Direcciones', desc: 'Gestionar tus direcciones' },
-        
-        'seguridad': { url: 'profile.php#security', icon: 'fa-lock', title: 'Seguridad', desc: 'Cambiar contraseña y seguridad' },
-        'security': { url: 'profile.php#security', icon: 'fa-lock', title: 'Seguridad', desc: 'Cambiar contraseña y seguridad' },
-        
-        'info': { url: 'profile.php#info', icon: 'fa-info-circle', title: 'Información', desc: 'Información de la cuenta' },
-        'informacion': { url: 'profile.php#info', icon: 'fa-info-circle', title: 'Información', desc: 'Información de la cuenta' }
-    };
-
-    // ========================================
-    // ELEMENTS
-    // ========================================
+    // Elementos
     const modal = document.getElementById('global-search-modal');
     const trigger = document.getElementById('global-search-trigger');
-    const closeBtn = document.getElementById('search-modal-close-btn');
-    const overlay = document.querySelector('.search-modal-overlay');
     const searchInput = document.getElementById('global-search-input');
     const clearBtn = document.getElementById('search-clear-btn');
-    
-    const navResultsSection = document.getElementById('nav-results-section');
-    const navResults = document.getElementById('search-nav-results');
-    const productsResultsSection = document.getElementById('products-results-section');
-    const productsResults = document.getElementById('search-products-results');
+    const productsList = document.getElementById('search-products-list');
     const loadingState = document.getElementById('search-loading');
     const noResultsState = document.getElementById('search-no-results');
 
     let searchTimeout = null;
 
-    // Debug: Verificar que los elementos existen
-    console.log('Global Search - Elements found:', {
+    console.log('🔍 Global Search Inicializado', {
         modal: !!modal,
         trigger: !!trigger,
-        closeBtn: !!closeBtn,
-        searchInput: !!searchInput
+        input: !!searchInput
     });
 
-    if (!modal || !trigger) {
-        console.error('Global Search - Required elements not found!');
+    if (!modal || !trigger || !searchInput) {
+        console.error('❌ Elementos no encontrados');
         return;
     }
 
     // ========================================
-    // OPEN/CLOSE MODAL
+    // ABRIR/CERRAR
     // ========================================
-    function openModal() {
-        console.log('Opening modal...');
-        modal.style.display = 'flex';
-        setTimeout(() => {
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            searchInput.focus();
-        }, 10);
+    function abrirBuscador() {
+        console.log('✅ Abriendo buscador');
+        modal.classList.add('active');
+        setTimeout(() => searchInput.focus(), 100);
     }
 
-    function closeModal() {
-        console.log('Closing modal...');
+    function cerrarBuscador() {
+        console.log('🔒 Cerrando buscador');
         modal.classList.remove('active');
-        document.body.style.overflow = '';
         searchInput.value = '';
-        setTimeout(() => {
-            modal.style.display = 'none';
-        }, 200); // Esperar a que termine la animación
-        clearResults();
+        limpiarResultados();
     }
 
     // ========================================
-    // CLEAR RESULTS
+    // LIMPIAR RESULTADOS
     // ========================================
-    function clearResults() {
-        navResultsSection.style.display = 'none';
-        productsResultsSection.style.display = 'none';
+    function limpiarResultados() {
+        productsList.style.display = 'none';
         loadingState.style.display = 'none';
         noResultsState.style.display = 'none';
-        navResults.innerHTML = '';
-        productsResults.innerHTML = '';
+        productsList.innerHTML = '';
     }
 
     // ========================================
-    // SEARCH FUNCTION
+    // BUSCAR PRODUCTOS
     // ========================================
-    function performSearch(query) {
+    function buscarProductos(query) {
         clearTimeout(searchTimeout);
         
         if (query.length === 0) {
-            clearResults();
+            limpiarResultados();
+            clearBtn.style.display = 'none';
             return;
         }
 
-        // Show loading
-        clearResults();
-        loadingState.style.display = 'flex';
+        clearBtn.style.display = 'flex';
+
+        // Mostrar loading
+        limpiarResultados();
+        loadingState.style.display = 'block';
 
         searchTimeout = setTimeout(() => {
-            const queryLower = query.toLowerCase().trim();
+            console.log('🔎 Buscando:', query);
+            console.log('🌐 URL:', `app/actions/global_search.php?q=${encodeURIComponent(query)}`);
             
-            // Check navigation shortcuts first
-            const matchedShortcuts = [];
-            for (const [keyword, data] of Object.entries(navigationShortcuts)) {
-                if (keyword.includes(queryLower) || queryLower.includes(keyword)) {
-                    matchedShortcuts.push({ keyword, ...data });
-                }
-            }
-
-            // If exact navigation match, navigate directly
-            if (navigationShortcuts[queryLower]) {
-                const shortcut = navigationShortcuts[queryLower];
-                if (shortcut.modal) {
-                    closeModal();
-                    openModalById(shortcut.modal);
-                } else {
-                    window.location.href = shortcut.url;
-                }
-                return;
-            }
-
-            // Search products via AJAX
-            searchProducts(query, matchedShortcuts);
+            fetch(`app/actions/global_search.php?q=${encodeURIComponent(query)}`)
+                .then(response => {
+                    console.log('📡 Respuesta recibida, status:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    console.log('📄 Texto recibido:', text);
+                    const data = JSON.parse(text);
+                    console.log('📦 Datos parseados:', data);
+                    loadingState.style.display = 'none';
+                    
+                    if (data.products && data.products.length > 0) {
+                        mostrarProductos(data.products);
+                    } else {
+                        console.log('⚠️ No hay productos');
+                        noResultsState.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error completo:', error);
+                    loadingState.style.display = 'none';
+                    noResultsState.style.display = 'block';
+                });
         }, 300);
     }
 
     // ========================================
-    // SEARCH PRODUCTS
+    // MOSTRAR PRODUCTOS
     // ========================================
-    function searchProducts(query, navigationMatches) {
-        fetch(`app/actions/global_search.php?q=${encodeURIComponent(query)}`)
-            .then(response => response.json())
-            .then(data => {
-                loadingState.style.display = 'none';
-                
-                const hasNav = navigationMatches.length > 0;
-                const hasProducts = data.products && data.products.length > 0;
-
-                if (!hasNav && !hasProducts) {
-                    noResultsState.style.display = 'flex';
-                    return;
-                }
-
-                // Show navigation results
-                if (hasNav) {
-                    displayNavigationResults(navigationMatches);
-                }
-
-                // Show product results
-                if (hasProducts) {
-                    displayProductResults(data.products);
-                }
-            })
-            .catch(error => {
-                console.error('Search error:', error);
-                loadingState.style.display = 'none';
-                noResultsState.style.display = 'flex';
-            });
-    }
-
-    // ========================================
-    // DISPLAY NAVIGATION RESULTS
-    // ========================================
-    function displayNavigationResults(shortcuts) {
-        navResults.innerHTML = '';
-        
-        shortcuts.forEach(shortcut => {
-            const item = document.createElement('a');
-            item.className = 'search-nav-item';
-            item.href = shortcut.url;
-            
-            if (shortcut.modal) {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    closeModal();
-                    openModalById(shortcut.modal);
-                });
-            }
-            
-            item.innerHTML = `
-                <div class="search-nav-icon">
-                    <i class="fa ${shortcut.icon}"></i>
-                </div>
-                <div class="search-nav-info">
-                    <div class="search-nav-title">${shortcut.title}</div>
-                    <div class="search-nav-desc">${shortcut.desc}</div>
-                </div>
-                <i class="fa fa-chevron-right search-nav-arrow"></i>
-            `;
-            
-            navResults.appendChild(item);
-        });
-        
-        navResultsSection.style.display = 'block';
-    }
-
-    // ========================================
-    // DISPLAY PRODUCT RESULTS
-    // ========================================
-    function displayProductResults(products) {
-        productsResults.innerHTML = '';
+    function mostrarProductos(products) {
+        console.log('📋 Mostrando', products.length, 'productos');
+        productsList.innerHTML = '';
         
         products.forEach(product => {
             const item = document.createElement('a');
@@ -243,7 +122,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 : '';
             
             item.innerHTML = `
-                <img src="${product.imagen}" alt="${product.nombre}" class="search-product-image" onerror="this.src='public/assets/images/default-product.png'">
+                <img src="${product.imagen}" 
+                     alt="${product.nombre}" 
+                     class="search-product-image" 
+                     onerror="this.src='public/assets/images/default-product.png'">
                 <div class="search-product-info">
                     <div class="search-product-name">${product.nombre}</div>
                     <div class="search-product-meta">
@@ -254,104 +136,62 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
             
-            productsResults.appendChild(item);
+            productsList.appendChild(item);
         });
         
-        productsResultsSection.style.display = 'block';
+        productsList.style.display = 'block';
     }
 
     // ========================================
-    // OPEN MODAL BY ID
+    // EVENTOS
     // ========================================
-    function openModalById(modalType) {
-        const modals = {
-            'favorites': document.getElementById('favorites-modal'),
-            'notifications': document.getElementById('notifications-modal')
-        };
-        
-        if (modals[modalType]) {
-            modals[modalType].classList.add('active');
-        }
-    }
-
-    // ========================================
-    // QUICK ACTIONS
-    // ========================================
-    document.querySelectorAll('.quick-action-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const action = btn.dataset.action;
-            
-            switch(action) {
-                case 'cart':
-                    window.location.href = 'cart.php';
-                    break;
-                case 'shop':
-                    window.location.href = 'shop.php';
-                    break;
-                case 'favorites':
-                    closeModal();
-                    openModalById('favorites');
-                    break;
-                case 'notifications':
-                    closeModal();
-                    openModalById('notifications');
-                    break;
-                case 'profile':
-                    window.location.href = 'profile.php';
-                    break;
-                case 'settings':
-                    window.location.href = 'profile.php#settings';
-                    break;
-                case 'admin':
-                    window.location.href = 'admin.php';
-                    break;
-                case 'contact':
-                    window.location.href = 'contact.php';
-                    break;
-            }
-        });
-    });
-
-    // ========================================
-    // EVENT LISTENERS
-    // ========================================
-    trigger?.addEventListener('click', (e) => {
+    
+    // Click en trigger
+    trigger.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('Global Search - Trigger clicked!');
-        openModal();
-    });
-
-    closeBtn?.addEventListener('click', closeModal);
-    overlay?.addEventListener('click', closeModal);
-
-    searchInput?.addEventListener('input', (e) => {
-        const query = e.target.value;
-        performSearch(query);
+        console.log('🖱️ Click en trigger');
         
-        // Show/hide clear button
-        clearBtn.style.display = query.length > 0 ? 'flex' : 'none';
+        if (modal.classList.contains('active')) {
+            cerrarBuscador();
+        } else {
+            abrirBuscador();
+        }
     });
 
-    clearBtn?.addEventListener('click', () => {
+    // Input de búsqueda
+    searchInput.addEventListener('input', function(e) {
+        const query = e.target.value.trim();
+        console.log('⌨️ Input:', query);
+        buscarProductos(query);
+    });
+
+    // Botón limpiar
+    clearBtn.addEventListener('click', function() {
+        console.log('🗑️ Limpiar búsqueda');
         searchInput.value = '';
         clearBtn.style.display = 'none';
-        clearResults();
+        limpiarResultados();
         searchInput.focus();
     });
 
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-        // Ctrl/Cmd + K to open search
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-            e.preventDefault();
-            openModal();
-        }
-        
-        // Escape to close
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
-            closeModal();
+    // Cerrar al hacer click fuera
+    document.addEventListener('click', function(e) {
+        if (modal.classList.contains('active')) {
+            if (!modal.contains(e.target) && e.target !== trigger) {
+                console.log('🔒 Click fuera - cerrando');
+                cerrarBuscador();
+            }
         }
     });
 
+    // Cerrar con ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            console.log('⌨️ ESC - cerrando');
+            cerrarBuscador();
+        }
+    });
+
+    console.log('✅ Global Search listo!');
 });
