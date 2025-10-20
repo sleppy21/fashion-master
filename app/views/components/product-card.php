@@ -137,7 +137,6 @@ function renderProductCard($product, $is_favorite = false, $user_logged = false,
                     <span class="price-current">S/ <?= number_format($precio_final, 2) ?></span>
                     <?php if ($tiene_descuento): ?>
                         <span class="price-original">S/ <?= number_format($precio_original, 2) ?></span>
-                        <span class="price-discount">-<?= intval($descuento) ?>%</span>
                     <?php endif; ?>
                 </div>
                 

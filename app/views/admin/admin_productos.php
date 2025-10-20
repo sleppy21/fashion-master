@@ -138,14 +138,14 @@
                             <th class="sortable" data-sort="nombre" data-type="text">
                                 <span>Producto</span>
                             </th>
-                            <th class="sortable" data-sort="codigo" data-type="text">
-                                <span>Código</span>
-                            </th>
                             <th class="sortable" data-sort="categoria" data-type="text">
                                 <span>Categoría</span>
                             </th>
                             <th class="sortable" data-sort="marca" data-type="text">
                                 <span>Marca</span>
+                            </th>
+                            <th class="sortable" data-sort="genero" data-type="text">
+                                <span>Género</span>
                             </th>
                             <th class="sortable" data-sort="precio" data-type="number">
                                 <span>Precio</span>
@@ -339,21 +339,6 @@ function initMobileFiltersSidebar() {
                 console.log('🔒 Sidebar cerrado por click fuera');
             }
         });
-        
-        // Botón de cerrar dentro del sidebar
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'sidebar-close-btn';
-        closeBtn.innerHTML = '<i class="fa fa-times"></i>';
-        closeBtn.onclick = function() {
-            sidebar.classList.remove('show-mobile');
-            document.body.style.overflow = '';
-            setTimeout(() => {
-                btnMobileFilters.classList.remove('hidden');
-            }, 300);
-        };
-        
-        // Insertar botón de cerrar al inicio del sidebar
-        sidebar.insertBefore(closeBtn, sidebar.firstChild);
     } else {
         console.error('❌ No se pudo inicializar sidebar móvil:', {
             btnMissing: !btnMobileFilters,
@@ -769,21 +754,48 @@ async function loadProductsSmooth() {
         const response = await fetch(finalUrl);
         const data = await response.json();
         
-        if (data.success && data.data) {
-            // 🎨 SMOOTH UPDATE: Actualizar productos uno por uno sin recargar la tabla
-            await window.smoothTableUpdater.updateMultipleProducts(data.data);
-            
-            // Actualizar estadísticas y paginación
-            updateStats(data.pagination);
-            updatePaginationInfo(data.pagination);
-            // updatePaginationControls(); // TODO: Implementar si es necesario
-            
-            // Actualizar fechas del calendario SIN redibujar (invisible)
-            if (typeof loadProductDates === 'function') {
-                loadProductDates(data.data);
+        if (data.success) {
+            // Verificar si hay productos
+            if (data.data && data.data.length > 0) {
+                // 🎨 SMOOTH UPDATE: Actualizar productos uno por uno sin recargar la tabla
+                await window.smoothTableUpdater.updateMultipleProducts(data.data);
+                
+                // Actualizar estadísticas y paginación
+                updateStats(data.pagination);
+                updatePaginationInfo(data.pagination);
+                // updatePaginationControls(); // TODO: Implementar si es necesario
+                
+                // Actualizar fechas del calendario SIN redibujar (invisible)
+                if (typeof loadProductDates === 'function') {
+                    loadProductDates(data.data);
+                }
+                
+                console.log('✅ Productos actualizados con smooth update');
+            } else {
+                // No hay productos, mostrar mensaje
+                const tbody = document.getElementById('productos-table-body');
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="11" class="loading-cell">
+                                <div class="loading-content no-data">
+                                    <i class="fas fa-search" style="font-size: 48px; color: #cbd5e0; margin-bottom: 16px;"></i>
+                                    <span style="font-size: 16px; color: #4a5568;">No se encontraron productos</span>
+                                    <small style="color: #a0aec0; margin-top: 8px;">Intenta ajustar los filtros de búsqueda</small>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
+                
+                // Actualizar estadísticas y paginación con valores vacíos
+                updateStats({ total: 0 });
+                updatePaginationInfo({ total: 0, page: 1, totalPages: 0 });
+                
+                console.log('ℹ️ No se encontraron productos con los filtros actuales');
             }
-            
-            console.log('✅ Productos actualizados con smooth update');
+        } else {
+            throw new Error(data.message || 'Error al cargar productos');
         }
     } catch (error) {
         console.error('❌ Error en loadProductsSmooth:', error);
@@ -829,9 +841,9 @@ function sortTableLocally(column, type) {
     const columnIndexMap = {
         'numero': 0,      // N°
         'nombre': 2,      // Producto
-        'codigo': 3,      // Código
-        'categoria': 4,   // Categoría
-        'marca': 5,       // Marca
+        'categoria': 3,   // Categoría
+        'marca': 4,       // Marca
+        'genero': 5,      // Género
         'precio': 6,      // Precio
         'stock': 7,       // Stock
         'estado': 8,      // Estado
@@ -1279,13 +1291,15 @@ function displayProducts(products, forceCacheBust = false, preserveState = null)
                 </div>
             </td>
             <td>
-                <code>${producto.codigo || 'N/A'}</code>
-            </td>
-            <td>
                 ${producto.nombre_categoria || producto.categoria_nombre || 'Sin categoría'}
             </td>
             <td>
                 ${producto.nombre_marca || producto.marca_nombre || 'Sin marca'}
+            </td>
+            <td>
+                <span class="genero-badge ${getGeneroBadgeClass(producto.genero_producto)}">
+                    ${getGeneroLabel(producto.genero_producto)}
+                </span>
             </td>
             <td>
                 <div class="price-info">
@@ -1327,6 +1341,27 @@ function displayProducts(products, forceCacheBust = false, preserveState = null)
 function getStockClass(producto) {
     // ✅ Usar función centralizada
     return calcularEstadoStock(producto).clase;
+}
+
+// Funciones para género
+function getGeneroLabel(genero) {
+    const labels = {
+        'M': 'Masculino',
+        'F': 'Femenino',
+        'Unisex': 'Unisex',
+        'Kids': 'Niños'
+    };
+    return labels[genero] || genero || 'N/A';
+}
+
+function getGeneroBadgeClass(genero) {
+    const classes = {
+        'M': 'genero-masculino',
+        'F': 'genero-femenino',
+        'Unisex': 'genero-unisex',
+        'Kids': 'genero-kids'
+    };
+    return classes[genero] || 'genero-default';
 }
 
 // Función para actualizar estadísticas
@@ -1646,6 +1681,12 @@ function displayProductsGrid(products) {
                     ${producto.codigo ? `<div class="product-card-sku">Código: ${producto.codigo}</div>` : ''}
                     <div class="product-card-category">
                         <i class="fas fa-tag"></i> ${producto.nombre_categoria || producto.categoria_nombre || 'Sin categoría'}
+                    </div>
+                    
+                    <div class="product-card-genero">
+                        <span class="genero-badge ${getGeneroBadgeClass(producto.genero_producto)}">
+                            ${getGeneroLabel(producto.genero_producto)}
+                        </span>
                     </div>
                     
                     <div class="product-card-stock">
@@ -2725,80 +2766,297 @@ function forceCloseFloatingActions() {
 
 // Función para exportar productos
 async function exportProducts() {
-    
     try {
         showNotification('Preparando exportación...', 'info');
         
-        const response = await fetch(`${CONFIG.apiUrl}?action=export`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        if (response.ok) {
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `productos_${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-            
-            showNotification('Productos exportados exitosamente', 'success');
-        } else {
-            throw new Error(`Error HTTP: ${response.status}`);
+        if (!productos || productos.length === 0) {
+            showNotification('No hay productos para exportar', 'warning');
+            return;
         }
+
+        // Verificar que XLSX esté disponible
+        if (typeof XLSX === 'undefined') {
+            showNotification('Librería de Excel no disponible', 'error');
+            return;
+        }
+
+        // Preparar datos para Excel
+        const excelData = [];
+        
+        // Encabezados
+        excelData.push([
+            'ID',
+            'Nombre',
+            'Categoría',
+            'Marca',
+            'Género',
+            'Precio (S/)',
+            'Stock Actual',
+            'Stock Mínimo',
+            'Estado',
+            'Fecha Creación'
+        ]);
+
+        // Datos de productos
+        productos.forEach(producto => {
+            const genero = producto.genero_producto || producto.genero || 'Unisex';
+            const generoLabel = genero === 'M' ? 'Masculino' : 
+                              genero === 'F' ? 'Femenino' : 
+                              genero === 'Kids' ? 'Kids' : 'Unisex';
+            
+            excelData.push([
+                producto.id_producto || '',
+                producto.nombre_producto || '',
+                producto.categoria_nombre || producto.nombre_categoria || '',
+                producto.marca_producto || '',
+                generoLabel,
+                producto.precio_producto != null ? parseFloat(producto.precio_producto) : 0,
+                producto.stock_actual_producto != null ? parseInt(producto.stock_actual_producto) : 0,
+                producto.stock_minimo_producto != null ? parseInt(producto.stock_minimo_producto) : 0,
+                (producto.activo == 1 || producto.status_producto == 1) ? 'Activo' : 'Inactivo',
+                producto.fecha_creacion_producto || ''
+            ]);
+        });
+
+        // Crear libro de Excel
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(excelData);
+
+        // Configurar anchos de columna
+        ws['!cols'] = [
+            { wch: 8 },  // ID
+            { wch: 40 }, // Nombre (más ancho)
+            { wch: 20 }, // Categoría
+            { wch: 15 }, // Marca
+            { wch: 12 }, // Género
+            { wch: 12 }, // Precio
+            { wch: 12 }, // Stock Actual
+            { wch: 12 }, // Stock Mínimo
+            { wch: 10 }, // Estado
+            { wch: 18 }  // Fecha
+        ];
+
+        // Estilo para encabezados (primera fila)
+        const headerRange = XLSX.utils.decode_range(ws['!ref']);
+        for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
+            const address = XLSX.utils.encode_col(C) + "1";
+            if (!ws[address]) continue;
+            ws[address].s = {
+                font: { bold: true, color: { rgb: "FFFFFF" } },
+                fill: { fgColor: { rgb: "4472C4" } },
+                alignment: { horizontal: "center", vertical: "center" }
+            };
+        }
+
+        // Agregar hoja al libro
+        XLSX.utils.book_append_sheet(wb, ws, "Productos");
+
+        // Generar archivo
+        const fileName = `Productos_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+
+        showNotification(`Excel exportado: ${productos.length} productos`, 'success');
         
     } catch (error) {
-        
-        // Generar CSV del lado del cliente como fallback
-        if (productos && productos.length > 0) {
-            generateClientSideCSV();
-        } else {
-            showNotification('No hay productos para exportar', 'warning');
-        }
+        console.error('Error al exportar:', error);
+        showNotification('Error al exportar productos', 'error');
     }
-}
-
-// Función para generar CSV del lado del cliente
-function generateClientSideCSV() {
-    const headers = ['ID', 'Nombre', 'Código', 'Categoría', 'Stock', 'Precio', 'Estado'];
-    let csvContent = headers.join(',') + '\n';
-    
-    productos.forEach(producto => {
-        const row = [
-            producto.id_producto || '',
-            `"${(producto.nombre_producto || '').replace(/"/g, '""')}"`,
-            producto.codigo || '',
-            `"${(producto.categoria_nombre || producto.nombre_categoria || '').replace(/"/g, '""')}"`,
-            producto.stock_actual_producto != null ? producto.stock_actual_producto : 0,
-            producto.precio_producto != null ? producto.precio_producto : 0,
-            (producto.activo == 1 || producto.status_producto == 1) ? 'Activo' : 'Inactivo'
-        ];
-        csvContent += row.join(',') + '\n';
-    });
-    
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    a.download = `productos_${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-    
-    // showNotification('Productos exportados exitosamente', 'success');
 }
 
 // Función para mostrar reporte de stock
 function showStockReport() {
-    // Implementar modal de reporte de stock
-    // showNotification('Reporte de stock - Funcionalidad en desarrollo', 'info');
+    try {
+        if (!productos || productos.length === 0) {
+            showNotification('No hay productos para generar reporte', 'warning');
+            return;
+        }
+
+        // Verificar que XLSX esté disponible
+        if (typeof XLSX === 'undefined') {
+            showNotification('Librería de Excel no disponible', 'error');
+            return;
+        }
+
+        showNotification('Generando reporte de stock...', 'info');
+
+        // Clasificar productos por estado de stock
+        const stockCritico = [];  // Stock = 0
+        const stockBajo = [];     // Stock <= stock_minimo
+        const stockNormal = [];   // Stock > stock_minimo
+
+        productos.forEach(producto => {
+            const stockActual = parseInt(producto.stock_actual_producto) || 0;
+            const stockMinimo = parseInt(producto.stock_minimo_producto) || 5;
+            const genero = producto.genero_producto || producto.genero || 'Unisex';
+            const generoLabel = genero === 'M' ? 'Masculino' : 
+                              genero === 'F' ? 'Femenino' : 
+                              genero === 'Kids' ? 'Kids' : 'Unisex';
+
+            const item = {
+                id: producto.id_producto || '',
+                nombre: producto.nombre_producto || '',
+                categoria: producto.categoria_nombre || producto.nombre_categoria || '',
+                marca: producto.marca_producto || '',
+                genero: generoLabel,
+                stockActual: stockActual,
+                stockMinimo: stockMinimo,
+                diferencia: stockActual - stockMinimo,
+                precio: parseFloat(producto.precio_producto) || 0,
+                valorInventario: stockActual * (parseFloat(producto.precio_producto) || 0)
+            };
+
+            if (stockActual === 0) {
+                stockCritico.push(item);
+            } else if (stockActual <= stockMinimo) {
+                stockBajo.push(item);
+            } else {
+                stockNormal.push(item);
+            }
+        });
+
+        // Crear libro de Excel
+        const wb = XLSX.utils.book_new();
+
+        // ==================== HOJA 1: RESUMEN EJECUTIVO ====================
+        const resumenData = [];
+        resumenData.push(['REPORTE DE INVENTARIO - RESUMEN EJECUTIVO']);
+        resumenData.push(['Fecha de Generación:', new Date().toLocaleString('es-PE')]);
+        resumenData.push([]);
+        resumenData.push(['INDICADORES CLAVE']);
+        resumenData.push(['Total de Productos:', productos.length]);
+        resumenData.push(['Productos sin Stock (Crítico):', stockCritico.length]);
+        resumenData.push(['Productos con Stock Bajo:', stockBajo.length]);
+        resumenData.push(['Productos con Stock Normal:', stockNormal.length]);
+        resumenData.push([]);
+        
+        // Calcular valor total del inventario
+        const valorTotal = productos.reduce((sum, p) => {
+            return sum + ((parseInt(p.stock_actual_producto) || 0) * (parseFloat(p.precio_producto) || 0));
+        }, 0);
+        
+        resumenData.push(['VALOR DE INVENTARIO']);
+        resumenData.push(['Valor Total (S/):', valorTotal.toFixed(2)]);
+        resumenData.push([]);
+        
+        // Estadísticas por categoría
+        resumenData.push(['DISTRIBUCIÓN POR CATEGORÍA']);
+        const categorias = {};
+        productos.forEach(p => {
+            const cat = p.categoria_nombre || p.nombre_categoria || 'Sin categoría';
+            if (!categorias[cat]) {
+                categorias[cat] = { cantidad: 0, stock: 0 };
+            }
+            categorias[cat].cantidad++;
+            categorias[cat].stock += parseInt(p.stock_actual_producto) || 0;
+        });
+        
+        resumenData.push(['Categoría', 'Productos', 'Stock Total']);
+        Object.entries(categorias).forEach(([cat, data]) => {
+            resumenData.push([cat, data.cantidad, data.stock]);
+        });
+
+        const wsResumen = XLSX.utils.aoa_to_sheet(resumenData);
+        wsResumen['!cols'] = [{ wch: 35 }, { wch: 20 }];
+        XLSX.utils.book_append_sheet(wb, wsResumen, "Resumen");
+
+        // ==================== HOJA 2: STOCK CRÍTICO ====================
+        const criticoData = [];
+        criticoData.push(['PRODUCTOS SIN STOCK - REQUIEREN ATENCIÓN INMEDIATA']);
+        criticoData.push([]);
+        criticoData.push(['ID', 'Nombre', 'Categoría', 'Marca', 'Género', 'Stock Actual', 'Stock Mínimo', 'Precio (S/)']);
+        
+        stockCritico.forEach(item => {
+            criticoData.push([
+                item.id, item.nombre, item.categoria, 
+                item.marca, item.genero, item.stockActual, item.stockMinimo, item.precio
+            ]);
+        });
+
+        const wsCritico = XLSX.utils.aoa_to_sheet(criticoData);
+        wsCritico['!cols'] = [
+            { wch: 8 }, { wch: 40 }, { wch: 20 }, 
+            { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }
+        ];
+        XLSX.utils.book_append_sheet(wb, wsCritico, "Stock Crítico");
+
+        // ==================== HOJA 3: STOCK BAJO ====================
+        const bajoData = [];
+        bajoData.push(['PRODUCTOS CON STOCK BAJO - REQUIEREN REPOSICIÓN']);
+        bajoData.push([]);
+        bajoData.push(['ID', 'Nombre', 'Categoría', 'Marca', 'Género', 'Stock Actual', 'Stock Mínimo', 'Diferencia', 'Precio (S/)']);
+        
+        stockBajo.forEach(item => {
+            bajoData.push([
+                item.id, item.nombre, item.categoria, 
+                item.marca, item.genero, item.stockActual, item.stockMinimo, item.diferencia, item.precio
+            ]);
+        });
+
+        const wsBajo = XLSX.utils.aoa_to_sheet(bajoData);
+        wsBajo['!cols'] = [
+            { wch: 8 }, { wch: 40 }, { wch: 20 }, 
+            { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }
+        ];
+        XLSX.utils.book_append_sheet(wb, wsBajo, "Stock Bajo");
+
+        // ==================== HOJA 4: INVENTARIO COMPLETO ====================
+        const inventarioData = [];
+        inventarioData.push(['INVENTARIO COMPLETO - TODOS LOS PRODUCTOS']);
+        inventarioData.push([]);
+        inventarioData.push([
+            'ID', 'Nombre', 'Categoría', 'Marca', 'Género', 
+            'Stock Actual', 'Stock Mínimo', 'Diferencia', 'Precio (S/)', 
+            'Valor Inventario (S/)', 'Estado Stock'
+        ]);
+        
+        productos.forEach(producto => {
+            const stockActual = parseInt(producto.stock_actual_producto) || 0;
+            const stockMinimo = parseInt(producto.stock_minimo_producto) || 5;
+            const precio = parseFloat(producto.precio_producto) || 0;
+            const genero = producto.genero_producto || producto.genero || 'Unisex';
+            const generoLabel = genero === 'M' ? 'Masculino' : 
+                              genero === 'F' ? 'Femenino' : 
+                              genero === 'Kids' ? 'Kids' : 'Unisex';
+            
+            let estadoStock = 'Normal';
+            if (stockActual === 0) estadoStock = 'CRÍTICO';
+            else if (stockActual <= stockMinimo) estadoStock = 'Bajo';
+            
+            inventarioData.push([
+                producto.id_producto || '',
+                producto.nombre_producto || '',
+                producto.categoria_nombre || producto.nombre_categoria || '',
+                producto.marca_producto || '',
+                generoLabel,
+                stockActual,
+                stockMinimo,
+                stockActual - stockMinimo,
+                precio,
+                (stockActual * precio).toFixed(2),
+                estadoStock
+            ]);
+        });
+
+        const wsInventario = XLSX.utils.aoa_to_sheet(inventarioData);
+        wsInventario['!cols'] = [
+            { wch: 8 }, { wch: 40 }, { wch: 20 }, 
+            { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, 
+            { wch: 12 }, { wch: 12 }, { wch: 15 }, { wch: 12 }
+        ];
+        XLSX.utils.book_append_sheet(wb, wsInventario, "Inventario Completo");
+
+        // Generar archivo
+        const fileName = `Reporte_Stock_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+
+        // Mostrar resumen en notificación
+        const mensaje = `Reporte generado: ${stockCritico.length} críticos, ${stockBajo.length} bajos, ${stockNormal.length} normales`;
+        showNotification(mensaje, 'success');
+        
+    } catch (error) {
+        console.error('Error al generar reporte:', error);
+        showNotification('Error al generar reporte de stock', 'error');
+    }
 }
 
 // Función para limpiar búsqueda con animación
@@ -6486,6 +6744,66 @@ tbody tr {
 
 tbody tr.sorting {
     opacity: 0.5;
+}
+
+/* ===== BADGES DE GÉNERO (SOLO COLOR DE TEXTO) ===== */
+.genero-badge {
+    font-weight: 600;
+}
+
+/* Margen inferior en vista grid */
+.product-card-genero {
+    margin-bottom: 10px;
+}
+
+.genero-masculino {
+    color: #3b82f6;
+}
+
+.genero-femenino {
+    color: #ec4899;
+}
+
+.genero-unisex {
+    color: #8b5cf6;
+}
+
+.genero-kids {
+    color: #f59e0b;
+}
+
+.genero-default {
+    color: #6b7280;
+}
+
+/* ===== MENSAJE DE NO HAY RESULTADOS ===== */
+.loading-content.no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #94a3b8;
+}
+
+.loading-content.no-data i {
+    font-size: 64px;
+    color: #475569;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.loading-content.no-data span {
+    font-size: 18px;
+    font-weight: 500;
+    color: #cbd5e0;
+    margin-bottom: 8px;
+}
+
+.loading-content.no-data small {
+    font-size: 14px;
+    color: #64748b;
+    text-align: center;
 }
 </style>
 

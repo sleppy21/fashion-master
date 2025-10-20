@@ -48,12 +48,11 @@ $page_title = "Tienda";
     <link rel="stylesheet" href="public/assets/css/shop/shop-modern.css?v=2.0">
     <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0">
     <link rel="stylesheet" href="public/assets/css/shop/shop-filters-modern.css?v=2.0">
-    <link rel="stylesheet" href="public/assets/css/shop/shop-sticky-header.css?v=<?= time() ?>">
     <link rel="stylesheet" href="public/assets/css/shop/fix-grid.css?v=<?= time() ?>">
     <link rel="stylesheet" href="public/assets/css/shop/empty-state.css?v=<?= time() ?>">
     
-    <!-- noUiSlider CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
+    <!-- noUiSlider CSS - Desactivado (filtro de precio removido) -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css"> -->
     
     <!-- Modals -->
     <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
@@ -65,7 +64,16 @@ $page_title = "Tienda";
     <!-- Dark Mode -->
     <link rel="stylesheet" href="public/assets/css/dark-mode.css?v=<?= time() ?>">
     
-    <!-- HEADER FIX - CARGADO AL FINAL PARA SOBRESCRIBIR CONFLICTOS -->
+    <!-- ✅ Badges Override - ESTILOS AUTORITATIVOS PARA BADGES -->
+    <link rel="stylesheet" href="public/assets/css/badges-override.css?v=<?= time() ?>">
+    
+    <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
+    <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
+    
+    <!-- SIDEBAR NORMAL - SIN STICKY -->
+    <link rel="stylesheet" href="public/assets/css/shop/sidebar-normal.css?v=<?= time() ?>">
+    
+    <!-- HEADER FIX - SOLO PARA HEADER -->
     <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
     
     <!-- Config Script -->
@@ -108,22 +116,23 @@ $page_title = "Tienda";
             <div class="row">
                 
                 <!-- ========== SIDEBAR - FILTROS ========== -->
-                <aside class="col-lg-3 col-md-4">
-                    <div class="shop-sidebar modern-sidebar" data-aos="fade-right">
+                <aside class="col-lg-3 col-md-4 col-12">
+                    <div class="shop-sidebar modern-sidebar">
                         
                         <!-- Header -->
                         <div class="sidebar-header">
                             <h2><i class="fa fa-sliders"></i> Filtros</h2>
-                            <button class="btn-clear" onclick="limpiarFiltros()" title="Limpiar filtros">
-                                <i class="fa fa-redo"></i>
+                            <button class="btn-clear" onclick="limpiarFiltros()" title="Limpiar todos los filtros">
+                                <i class="fa fa-times-circle"></i>
+                                <span class="btn-text">Limpiar</span>
                             </button>
                         </div>
                         
                         <!-- Filtro: Categorías -->
-                        <div class="filter-section">
+                        <div class="filter-section filter-section-first">
                             <h3 class="filter-title">
                                 <i class="fa fa-th-large"></i> Categorías
-                                <small style="font-size: 11px; opacity: 0.7;">(Múltiple)</small>
+                                <small style="font-size: 11px; opacity: 0.7; margin-left: 4px;">(Múltiple)</small>
                             </h3>
                             <div class="filter-buttons">
                                 <?php foreach($categorias as $cat): 
@@ -151,10 +160,11 @@ $page_title = "Tienda";
                             </h3>
                             <div class="filter-buttons">
                                 <?php 
+                                // VALORES CORREGIDOS: Usar M, F, Unisex como en BD
                                 $generos = [
-                                    'hombre' => ['icon' => 'mars', 'label' => 'Hombre'],
-                                    'mujer' => ['icon' => 'venus', 'label' => 'Mujer'],
-                                    'unisex' => ['icon' => 'genderless', 'label' => 'Unisex']
+                                    'M' => ['icon' => 'mars', 'label' => 'Hombre'],
+                                    'F' => ['icon' => 'venus', 'label' => 'Mujer'],
+                                    'Unisex' => ['icon' => 'genderless', 'label' => 'Unisex']
                                 ];
                                 
                                 foreach($generos as $value => $genero): 
@@ -197,57 +207,11 @@ $page_title = "Tienda";
                             </div>
                         </div>
                         
-                        <!-- Filtro: Precio -->
-                        <div class="filter-section price-filter-section">
-                            <h3 class="filter-title">
-                                <i class="fa fa-dollar"></i> Rango de Precio
-                                <button class="price-reset-btn" id="resetPriceBtn" title="Restablecer precio">
-                                    <i class="fa fa-refresh"></i>
-                                </button>
-                            </h3>
-                            <div class="price-filter-modern">
-                                <!-- Display de Precio Seleccionado -->
-                                <div class="price-display">
-                                    <div class="price-badge">
-                                        <span class="price-label">Desde</span>
-                                        <span class="price-value" id="display-min-price">$0</span>
-                                    </div>
-                                    <div class="price-divider">
-                                        <i class="fa fa-arrows-h"></i>
-                                    </div>
-                                    <div class="price-badge">
-                                        <span class="price-label">Hasta</span>
-                                        <span class="price-value" id="display-max-price">$10,000</span>
-                                    </div>
-                                </div>
-
-                                <!-- Slider de Precio -->
-                                <div class="price-slider-container">
-                                    <div id="price-slider" class="price-slider"></div>
-                                    <div class="price-marks" id="price-marks">
-                                        <span class="mark-min" data-value="0">$0</span>
-                                        <span class="mark-current-min" data-value="">-</span>
-                                        <span class="mark-mid" data-value="5000">$5k</span>
-                                        <span class="mark-current-max" data-value="">-</span>
-                                        <span class="mark-max" data-value="10000">$10k</span>
-                                    </div>
-                                </div>
-
-                                <!-- Inputs ocultos para mantener la funcionalidad -->
-                                <input type="hidden" 
-                                       id="min-price" 
-                                       value="<?= $filters['precio_min'] ?>">
-                                <input type="hidden" 
-                                       id="max-price" 
-                                       value="<?= $filters['precio_max'] ?>">
-                            </div>
-                        </div>
-                        
                     </div>
                 </aside>
                 
                 <!-- ========== PRODUCTOS GRID ========== -->
-                <main class="col-lg-9 col-md-8">
+                <main class="col-lg-9 col-md-8 col-12 ps-lg-4">
                     
                     <!-- Barra superior -->
                     <div class="shop-topbar modern-topbar" data-aos="fade-left">
@@ -361,14 +325,14 @@ $page_title = "Tienda";
     <!-- Core Scripts -->
     <script src="public/assets/js/jquery-3.3.1.min.js"></script>
     <script src="public/assets/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+    <!-- noUiSlider desactivado (filtro de precio removido) -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script> -->
     
     <!-- Header Handler - Actualización en tiempo real -->
     <script src="public/assets/js/header-handler.js?v=1.0"></script>
     
     <!-- Shop Scripts -->
     <script src="public/assets/js/shop/shop-filters.js?v=2.0"></script>
-    <script src="public/assets/js/shop/price-slider.js?v=2.0"></script>
     <script src="public/assets/js/shop/search-live.js?v=2.0"></script>
     
     <!-- Global Scripts -->
@@ -377,6 +341,9 @@ $page_title = "Tienda";
     <script src="public/assets/js/scroll-position-memory.js"></script>
     <script src="public/assets/js/image-color-extractor.js"></script>
     
+    <!-- Fix Modal Scrollbar - PREVENIR BARRA LATERAL -->
+    <script src="public/assets/js/fix-modal-scrollbar.js"></script>
+    
     <!-- AOS Animations -->
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
@@ -384,8 +351,24 @@ $page_title = "Tienda";
             duration: 600,
             easing: 'ease-out-cubic',
             once: true,
-            offset: 50
+            offset: 50,
+            // Desactivar AOS en sidebar
+            disable: function() {
+                return this.classList && this.classList.contains('modern-sidebar');
+            }
         });
+        
+        // Remover AOS del sidebar inmediatamente
+        setTimeout(function() {
+            const sidebar = document.querySelector('.modern-sidebar');
+            if (sidebar) {
+                sidebar.removeAttribute('data-aos');
+                sidebar.classList.remove('aos-init', 'aos-animate');
+                sidebar.style.transform = 'none';
+                sidebar.style.animation = 'none';
+                console.log('🚫 AOS desactivado en sidebar');
+            }
+        }, 100);
         
         // Sticky Header Scroll Effect
         document.addEventListener('DOMContentLoaded', function() {
@@ -395,7 +378,6 @@ $page_title = "Tienda";
             window.addEventListener('scroll', function() {
                 const currentScroll = window.pageYOffset;
                 
-                // Agregar clase cuando se hace scroll
                 if (currentScroll > 50) {
                     header.classList.add('scrolled');
                 } else {
@@ -404,22 +386,6 @@ $page_title = "Tienda";
                 
                 lastScroll = currentScroll;
             });
-        });
-        
-        // Sticky Sidebar Scroll Effect
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebar = document.querySelector('.modern-sidebar');
-            const sidebarHeader = document.querySelector('.sidebar-header');
-            
-            if (sidebar && sidebarHeader) {
-                sidebar.addEventListener('scroll', function() {
-                    if (sidebar.scrollTop > 10) {
-                        sidebarHeader.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
-                    } else {
-                        sidebarHeader.style.boxShadow = 'none';
-                    }
-                });
-            }
         });
     </script>
     

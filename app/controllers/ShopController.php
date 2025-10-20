@@ -207,7 +207,9 @@ class ShopController {
             LEFT JOIN marca m ON p.id_marca = m.id_marca
             LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
             LEFT JOIN resena r ON p.id_producto = r.id_producto AND r.aprobada = 1
-            WHERE p.status_producto = 1 AND p.estado = 'activo'
+            WHERE p.status_producto = 1 
+              AND p.estado = 'activo' 
+              AND p.stock_actual_producto > 0
         ";
         
         $params = [];

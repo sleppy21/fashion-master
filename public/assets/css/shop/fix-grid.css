@@ -19,21 +19,28 @@
     height: auto !important;
     max-height: none !important;
     min-height: auto !important;
+    width: 100%;
 }
 
-/* Asegurar que el row tampoco tenga restricciones */
+/* Asegurar que el row use Bootstrap flex normal */
 .products-grid-modern .row {
     overflow: visible !important;
     height: auto !important;
     max-height: none !important;
     min-height: auto !important;
+    display: flex !important; /* FLEX Bootstrap, no Grid */
+    flex-wrap: wrap !important;
+    margin-left: -15px !important;
+    margin-right: -15px !important;
 }
 
-/* Asegurar que las columnas sean visibles */
+/* Asegurar que las columnas sean visibles con Bootstrap */
 .products-grid-modern .row > [class*='col-'] {
     opacity: 1 !important;
     visibility: visible !important;
-    display: block !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    margin-bottom: 30px !important;
 }
 
 /* Asegurar que las tarjetas sean visibles */

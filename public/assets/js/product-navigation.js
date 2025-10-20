@@ -31,7 +31,6 @@
             image.style.cursor = 'pointer';
         });
         
-        console.log(`✅ Product navigation initialized for ${productImages.length} images`);
     }
     
     // Prevenir click simple en links dentro de la imagen
@@ -95,7 +94,6 @@
         
         // Si se encontró el ID, navegar
         if(productId) {
-            console.log(`🔄 Navigating to product ${productId}`);
             window.location.href = `product-details.php?id=${productId}`;
         } else {
             console.warn('⚠️ Could not find product ID for navigation');

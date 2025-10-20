@@ -58,7 +58,6 @@
         // Emitir evento global
         EventBus.emit('cartCountUpdated', { count });
         
-        console.log(`✅ Cart count updated: ${count}`);
     }
 
     /**
@@ -101,7 +100,6 @@
         // Emitir evento global
         EventBus.emit('favoritesCountUpdated', { count });
         
-        console.log(`✅ Favorites count updated: ${count}`);
     }
 
     /**
@@ -132,14 +130,12 @@
         // Emitir evento global
         EventBus.emit('notificationsCountUpdated', { count });
         
-        console.log(`✅ Notifications count updated: ${count}`);
     }
 
     /**
      * Refresca todos los contadores desde el servidor
      */
     function refreshAllCounters() {
-        console.log('🔄 Refreshing all counters...');
         
         // Obtener BASE_URL y asegurar que termine con /
         const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '') + '/';
@@ -183,7 +179,6 @@
 
     // ===== AUTO-INICIALIZACIÓN =====
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 Global counters system initialized');
         
         // Refrescar contadores cada 30 segundos si el usuario está logueado
         if (document.querySelector('#user-account-link')) {

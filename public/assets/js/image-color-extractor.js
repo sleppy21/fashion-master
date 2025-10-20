@@ -8,7 +8,6 @@
 (function() {
     'use strict';
 
-    console.log('🎨 Image Color Extractor cargado');
 
     /**
      * Extrae el color dominante de una imagen
@@ -123,8 +122,6 @@
         const saturatedColor = increaseSaturation(color.r, color.g, color.b, saturation);
         
         if (debug) {
-            console.log('🎨 Color extraído:', color);
-            console.log('🎨 Color saturado:', saturatedColor);
         }
         
         // Crear shadows múltiples con el color extraído
@@ -135,8 +132,6 @@
         const shadowValue = shadows.join(', ');
         
         if (debug) {
-            console.log('🎨 Aplicando shadow:', shadowValue);
-            console.log('🎨 A elemento:', img);
         }
         
         // Aplicar shadow con setProperty para mayor compatibilidad
@@ -147,7 +142,6 @@
         img.dataset.shadowApplied = 'true';
         
         if (debug) {
-            console.log('✅ Shadow aplicado. Valor final:', img.style.boxShadow);
         }
     }
 
@@ -184,7 +178,6 @@
      * Inicializar el sistema para diferentes tipos de imágenes
      */
     function init() {
-        console.log('🎨 Inicializando Image Color Extractor...');
         
         // CONFIGURACIONES POR TIPO DE IMAGEN
         const imageConfigs = [
@@ -267,7 +260,6 @@
             subtree: true
         });
 
-        console.log('✅ Image Color Extractor inicializado');
     }
 
     // Ejecutar cuando el DOM esté listo

@@ -41,6 +41,8 @@ try {
             LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
             LEFT JOIN marca m ON p.id_marca = m.id_marca
             WHERE p.status_producto = 1
+            AND p.estado = 'activo'
+            AND p.stock_actual_producto > 0
             AND (
                 p.nombre_producto LIKE ?
                 OR p.descripcion_producto LIKE ?

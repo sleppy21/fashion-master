@@ -693,9 +693,10 @@
     }
 }
 
-/* Mantener scroll de la página */
+/* Prevenir scroll de la página cuando el modal está abierto */
 body.fs-chat-open {
-    overflow: visible !important;
+    overflow: hidden !important;
+    /* El padding-right se manejará dinámicamente desde JS para compensar el scrollbar */
 }
 
 /* RESPONSIVE DESIGN OPTIMIZADO PARA MODAL */

@@ -7,7 +7,6 @@
     'use strict';
 
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 [FLUID MENU] Script simple cargado');
 
         const menuItems = document.querySelectorAll('.header__menu li');
         if (!menuItems.length) return console.error('❌ [FLUID MENU] No hay items');
@@ -15,7 +14,6 @@
         const menuList = document.querySelector('.header__menu > ul');
         if (!menuList) return console.error('❌ [FLUID MENU] No hay UL');
 
-        console.log('✅ [FLUID MENU] Menú encontrado con', menuItems.length, 'items');
 
         // Crear indicador simple
         const indicator = document.createElement('div');
@@ -46,7 +44,6 @@
             indicator.style.width = width + 'px';
             indicator.style.opacity = '1';
 
-            console.log('🎯 [FLUID MENU] Moviendo a:', item.textContent.trim());
         }
 
         // Event listeners
@@ -56,10 +53,8 @@
 
         menuList.addEventListener('mouseleave', () => {
             indicator.style.opacity = '0';
-            console.log('👋 [FLUID MENU] Mouse salió');
         });
 
-        console.log('🎉 [FLUID MENU] Sistema simple activado');
     });
 })();
 
@@ -120,17 +115,14 @@
             });
             menuList.insertBefore(fluidWave, menuList.firstChild);
 
-            console.log('✨ [FLUID MENU] Elementos creados con inline styles forzados');
             
             // quick verify
             setTimeout(() => {
                 const blobExists = !!document.querySelector('.menu-fluid-blob');
                 const waveExists = !!document.querySelector('.menu-fluid-wave');
-                console.log('🔍 [FLUID MENU] DOM check:', { blob: blobExists, wave: waveExists });
                 
                 if (blobExists) {
                     const computedBlob = window.getComputedStyle(fluidBlob);
-                    console.log('📊 [FLUID MENU] Blob computed styles:', {
                         position: computedBlob.position,
                         zIndex: computedBlob.zIndex,
                         opacity: computedBlob.opacity,
@@ -185,7 +177,6 @@
             const leftPosition = itemRect.left - menuListRect.left;
             const blobWidth = itemRect.width;
 
-            console.log('🌊 [FLUID MENU] Animando a item', index, ':', item.textContent.trim(), {
                 leftPosition,
                 blobWidth,
                 itemRect: {
@@ -221,7 +212,6 @@
         });
 
         menu.addEventListener('mouseleave', () => {
-            console.log('👋 [FLUID MENU] Mouse salió del menú');
             if (fluidBlob) {
                 fluidBlob.style.opacity = '0';
                 fluidBlob.classList.remove('active');
@@ -244,8 +234,6 @@
 
         // quick test - MÁS AGRESIVO Y VISIBLE
         setTimeout(() => {
-            console.log('🧪 [FLUID MENU] ===== INICIANDO TEST VISUAL =====');
-            console.log('🧪 [FLUID MENU] Mostrando blob en el primer item por 2.5 segundos');
             animateBlobToItem(0);
             
             // Verificar que el blob sea visible
@@ -256,8 +244,6 @@
                     const parent = fluidBlob.parentElement;
                     const parentComputed = parent ? window.getComputedStyle(parent) : null;
                     
-                    console.log('🧪 [FLUID MENU] ===== DIAGNÓSTICO COMPLETO =====');
-                    console.log('🧪 [FLUID MENU] Estado del blob:', {
                         opacity: fluidBlob.style.opacity,
                         opacityComputed: blobComputed.opacity,
                         left: fluidBlob.style.left,
@@ -271,7 +257,6 @@
                     });
                     
                     if (parent) {
-                        console.log('🧪 [FLUID MENU] Contenedor padre:', {
                             overflow: parentComputed.overflow,
                             overflowX: parentComputed.overflowX,
                             overflowY: parentComputed.overflowY,
@@ -282,7 +267,6 @@
                     
                     // Buscar elementos ::after que puedan estar bloqueando
                     const menuLinks = document.querySelectorAll('.header__menu ul li a');
-                    console.log('🧪 [FLUID MENU] Verificando ::after en', menuLinks.length, 'links:');
                     menuLinks.forEach((link, i) => {
                         const afterStyles = window.getComputedStyle(link, '::after');
                         if (afterStyles.content !== 'none' && afterStyles.display !== 'none') {
@@ -299,7 +283,6 @@
             }, 100);
             
             setTimeout(() => {
-                console.log('🧪 [FLUID MENU] Ocultando blob');
                 if (fluidBlob) {
                     fluidBlob.style.opacity = '0';
                     fluidBlob.classList.remove('active');
@@ -312,6 +295,5 @@
             }, 2500);
         }, 500);
 
-        console.log('🎉 [FLUID MENU] (vanilla) Sistema activado');
     });
 })();

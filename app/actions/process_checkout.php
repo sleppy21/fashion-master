@@ -54,18 +54,42 @@ try {
     $tipo_comprobante = $_POST['tipo_comprobante'] ?? '';
     $razon_social = trim($_POST['razon_social'] ?? '');
     
+    // Método de pago
+    $metodo_pago = trim($_POST['metodo_pago'] ?? '');
+    
     // Notas
     $notas = trim($_POST['notas'] ?? '');
     
     // ==========================
     // 2. VALIDACIONES BÁSICAS
     // ==========================
+    
+    // Debug: Log de todos los campos recibidos
+    error_log("=== CHECKOUT DEBUG ===");
+    error_log("nombre: " . ($nombre ? 'OK' : 'VACIO'));
+    error_log("email: " . ($email ? 'OK' : 'VACIO'));
+    error_log("telefono: " . ($telefono ? 'OK' : 'VACIO'));
+    error_log("dni: " . ($dni ? 'OK' : 'VACIO'));
+    error_log("direccion: " . ($direccion ? 'OK' : 'VACIO'));
+    error_log("departamento: " . ($departamento ? 'OK' : 'VACIO'));
+    error_log("provincia: " . ($provincia ? 'OK' : 'VACIO'));
+    error_log("distrito: " . ($distrito ? 'OK' : 'VACIO'));
+    error_log("tipo_comprobante: " . $tipo_comprobante);
+    error_log("metodo_pago: " . ($metodo_pago ? $metodo_pago : 'VACIO'));
+    error_log("======================");
+    
     if (empty($nombre) || empty($email) || empty($telefono) || empty($dni)) {
         header('Content-Type: application/json');
         echo json_encode([
             'success' => false,
             'message' => 'Por favor completa todos los campos obligatorios de información del cliente.',
-            'error' => 'Campos vacíos: nombre, email, telefono o dni'
+            'error' => 'Campos vacíos: nombre, email, telefono o dni',
+            'debug' => [
+                'nombre' => $nombre,
+                'email' => $email,
+                'telefono' => $telefono,
+                'dni' => $dni
+            ]
         ]);
         exit;
     }
@@ -75,7 +99,24 @@ try {
         echo json_encode([
             'success' => false,
             'message' => 'Por favor completa todos los campos obligatorios de dirección de envío.',
-            'error' => 'Campos vacíos en dirección'
+            'error' => 'Campos vacíos en dirección',
+            'debug' => [
+                'direccion' => $direccion,
+                'departamento' => $departamento,
+                'provincia' => $provincia,
+                'distrito' => $distrito
+            ]
+        ]);
+        exit;
+    }
+    
+    // Validar método de pago
+    if (empty($metodo_pago)) {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Por favor selecciona un método de pago.',
+            'error' => 'Método de pago vacío'
         ]);
         exit;
     }
@@ -292,37 +333,189 @@ try {
     }
     
     // ==========================
-    // 7. GUARDAR TODO EN SESIÓN PARA LA PÁGINA DE PAGO
+    // 7. CREAR EL PEDIDO INMEDIATAMENTE
     // ==========================
-    $_SESSION['checkout_data'] = [
-        'nombre' => $nombre,
-        'email' => $email,
-        'telefono' => $telefono,
-        'dni' => $dni,
-        'direccion' => $direccion,
-        'referencia' => $referencia,
-        'departamento' => $departamento,
-        'provincia' => $provincia,
-        'distrito' => $distrito,
-        'tipo_comprobante' => $tipo_comprobante,
-        'razon_social' => $razon_social,
-        'notas' => $notas,
-        'cart_items' => $cart_items,
-        'subtotal' => $subtotal,
-        'costo_envio' => $costo_envio,
-        'total' => $total
-    ];
+    $conexion = getDB();
+    $conexion->beginTransaction();
     
-    // ==========================
-    // 8. RESPONDER CON ÉXITO
-    // ==========================
-    header('Content-Type: application/json');
-    echo json_encode([
-        'success' => true,
-        'message' => 'Información guardada exitosamente',
-        'direccion_guardada' => $direccion_guardada
-    ]);
-    exit;
+    try {
+        // Construir dirección completa
+        $direccion_completa = $direccion . 
+                            ($referencia ? ' (Ref: ' . $referencia . ')' : '') . 
+                            ', ' . $distrito . ', ' . $provincia . ', ' . $departamento;
+        
+        // Lógica inteligente: detectar si es DNI (8 dígitos) o RUC (11 dígitos)
+        $dni_value = null;
+        $ruc_value = null;
+        
+        if (strlen($dni) == 8) {
+            $dni_value = $dni;
+        } elseif (strlen($dni) == 11) {
+            $ruc_value = $dni;
+        }
+        
+        // Crear el pedido
+        $sql_pedido = "INSERT INTO pedido (
+            id_usuario,
+            nombre_cliente_pedido,
+            email_cliente_pedido,
+            telefono_cliente_pedido,
+            dni_pedido,
+            ruc_pedido,
+            direccion_envio_pedido,
+            departamento_pedido,
+            provincia_pedido,
+            distrito_pedido,
+            tipo_comprobante_pedido,
+            razon_social_pedido,
+            metodo_pago_pedido,
+            subtotal_pedido,
+            costo_envio_pedido,
+            total_pedido,
+            notas_pedido,
+            estado_pedido,
+            fecha_pedido
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', NOW())";
+        
+        $stmt_pedido = $conexion->prepare($sql_pedido);
+        $stmt_pedido->execute([
+            $id_usuario,
+            $nombre,
+            $email,
+            $telefono,
+            $dni_value,
+            $ruc_value,
+            $direccion_completa,
+            $departamento,
+            $provincia,
+            $distrito,
+            $tipo_comprobante,
+            $razon_social ?: null,
+            $metodo_pago,
+            $subtotal,
+            $costo_envio,
+            $total,
+            $notas ?: null
+        ]);
+        
+        $id_pedido = $conexion->lastInsertId();
+        
+        // Crear detalles del pedido y descontar stock
+        $sql_detalle = "INSERT INTO detalle_pedido (
+            id_pedido,
+            id_producto,
+            nombre_producto_detalle,
+            cantidad_detalle,
+            precio_unitario_detalle,
+            descuento_porcentaje_detalle,
+            subtotal_detalle
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        
+        $stmt_detalle = $conexion->prepare($sql_detalle);
+        
+        $sql_update_stock = "UPDATE producto 
+                            SET stock_actual_producto = stock_actual_producto - ? 
+                            WHERE id_producto = ? AND stock_actual_producto >= ?";
+        
+        $stmt_update_stock = $conexion->prepare($sql_update_stock);
+        
+        foreach ($cart_items as $item) {
+            $precio_unitario = $item['precio_producto'];
+            $descuento = $item['descuento_porcentaje_producto'];
+            $cantidad = $item['cantidad_carrito'];
+            
+            $precio_con_descuento = $precio_unitario;
+            if ($descuento > 0) {
+                $precio_con_descuento = $precio_unitario - ($precio_unitario * $descuento / 100);
+            }
+            
+            $subtotal_item = $precio_con_descuento * $cantidad;
+            
+            // Insertar detalle del pedido
+            $stmt_detalle->execute([
+                $id_pedido,
+                $item['id_producto'],
+                $item['nombre_producto'],
+                $cantidad,
+                $precio_unitario,
+                $descuento,
+                $subtotal_item
+            ]);
+            
+            // Descontar stock
+            $stmt_update_stock->execute([
+                $cantidad,
+                $item['id_producto'],
+                $cantidad
+            ]);
+            
+            // Verificar que se actualizó el stock
+            if ($stmt_update_stock->rowCount() === 0) {
+                throw new Exception("Error al actualizar stock del producto: " . $item['nombre_producto']);
+            }
+        }
+        
+        // Limpiar el carrito
+        $sql_clear_cart = "DELETE FROM carrito WHERE id_usuario = ?";
+        $stmt_clear_cart = $conexion->prepare($sql_clear_cart);
+        $stmt_clear_cart->execute([$id_usuario]);
+        
+        // Crear notificación
+        try {
+            $titulo_notificacion = "¡Pedido Realizado! #" . str_pad($id_pedido, 6, '0', STR_PAD_LEFT);
+            $mensaje_notificacion = "Tu pedido por S/ " . number_format($total, 2) . " ha sido procesado exitosamente. Te notificaremos cuando sea enviado.";
+            
+            $sql_notificacion = "INSERT INTO notificacion (
+                id_usuario,
+                tipo_notificacion,
+                titulo_notificacion,
+                mensaje_notificacion,
+                id_referencia_notificacion,
+                tipo_referencia_notificacion,
+                leida_notificacion,
+                estado_notificacion,
+                fecha_creacion_notificacion
+            ) VALUES (?, 'pedido', ?, ?, ?, 'pedido', 0, 'activo', NOW())";
+            
+            $stmt_notificacion = $conexion->prepare($sql_notificacion);
+            $stmt_notificacion->execute([
+                $id_usuario,
+                $titulo_notificacion,
+                $mensaje_notificacion,
+                $id_pedido
+            ]);
+        } catch (Exception $e) {
+            error_log("Error al crear notificación: " . $e->getMessage());
+        }
+        
+        // Confirmar transacción
+        $conexion->commit();
+        
+        // Limpiar sesión
+        unset($_SESSION['checkout_data']);
+        
+        // Responder con éxito
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'message' => 'Pedido creado exitosamente',
+            'order_id' => $id_pedido,
+            'direccion_guardada' => $direccion_guardada
+        ]);
+        exit;
+        
+    } catch (Exception $e) {
+        // Rollback en caso de error
+        $conexion->rollBack();
+        error_log("Error al crear pedido: " . $e->getMessage());
+        
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error al crear el pedido: ' . $e->getMessage()
+        ]);
+        exit;
+    }
     
 } catch (Exception $e) {
     error_log("Error general en checkout: " . $e->getMessage());

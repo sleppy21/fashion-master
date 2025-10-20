@@ -28,7 +28,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100%; /* 100% para que todas tengan la misma altura */
     z-index: 1; /* Mantener bajo para que dropdowns queden encima */
 }
 
@@ -44,7 +44,7 @@
 .product-image-wrapper {
     position: relative;
     width: 100%;
-    padding-top: 125%; /* Ratio 4:5 */
+    padding-top: 125%; /* Proporción 4:5 - ALTURA FIJA */
     overflow: hidden;
     background: #f8f9fa;
 }
@@ -55,8 +55,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* Cubre todo el espacio */
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    display: block;
 }
 
 .product-card-modern:hover .product-image {
@@ -64,12 +65,12 @@
 }
 
 /* ========================================
-   BADGES Y ETIQUETAS
+   BADGES Y ETIQUETAS - DISEÑO MODERNO SIN ANIMACIONES
    ======================================== */
 .product-badges {
     position: absolute;
-    top: 12px;
-    left: 12px;
+    top: 16px;
+    left: 16px;
     z-index: 2;
     display: flex;
     flex-direction: column;
@@ -78,27 +79,33 @@
 
 .badge-modern {
     padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 11px;
+    border-radius: 6px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    backdrop-filter: blur(10px);
-    animation: fadeInLeft 0.5s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    backdrop-filter: blur(4px);
+    transition: transform 0.2s ease;
+}
+
+.badge-modern:hover {
+    transform: translateY(-2px);
 }
 
 .badge-new {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    background: #10b981; /* Verde moderno */
 }
 
 .badge-sale {
-    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    background: #ef4444; /* Rojo moderno más suave */
+    font-size: 13px;
+    font-weight: 800;
 }
 
 .badge-out-of-stock {
-    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    background: #6b7280; /* Gris neutro */
 }
 
 /* ========================================
@@ -270,40 +277,37 @@
 }
 
 /* ========================================
-   PRECIO DEL PRODUCTO
+   PRECIO DEL PRODUCTO - MEJORADO PARA MAYOR VISIBILIDAD
    ======================================== */
 .product-price {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
-    margin-top: 4px;
+    margin-top: 8px;
+    padding: 8px 0;
 }
 
 .price-current {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 32px; /* Aumentado aún más de 28px a 32px */
+    font-weight: 900; /* Más negrita */
     color: #2a2a2e;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    letter-spacing: -0.5px;
+    letter-spacing: -1px;
+    line-height: 1;
 }
 
 .price-original {
-    font-size: 15px;
+    font-size: 20px; /* Aumentado de 18px a 20px */
     color: #9ca3af;
     text-decoration: line-through;
-    font-weight: 500;
+    font-weight: 600; /* Más visible */
+    opacity: 0.8;
 }
 
 .price-discount {
-    padding: 3px 8px;
-    background: linear-gradient(135deg, #ff3b3b 0%, #ff6b6b 100%);
-    color: #ffffff;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    box-shadow: 0 2px 6px rgba(255, 59, 59, 0.25);
+    /* OCULTO - Ya no se muestra debajo del precio */
+    display: none !important;
 }
 
 /* ========================================
@@ -415,27 +419,33 @@
    RESPONSIVE
    ======================================== */
    
-/* Masonry Layout - Efecto de apilado */
+/* Layout con Bootstrap Flexbox */
 .products-grid-modern .row {
     display: flex;
     flex-wrap: wrap;
-    margin-left: -30px;
-    margin-right: -30px;
+    margin-right: -15px;
+    margin-left: -15px;
 }
 
 .products-grid-modern .row > [class*='col-'] {
-    margin-bottom: 24px;
-    padding-left: 0px;
-    padding-right: 20px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-bottom: 30px;
 }
 
 .product-card-modern {
-    height: 100%;
+    height: 100%; /* Todas las tarjetas misma altura */
     display: flex;
     flex-direction: column;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px) and (min-width: 577px) {
+    /* 2 columnas en tablet con masonry */
+    .products-grid-modern .row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
     .product-info {
         padding: 14px 16px 16px;
         gap: 3px;
@@ -447,7 +457,20 @@
     }
     
     .price-current {
-        font-size: 20px;
+        font-size: 26px;
+    }
+    
+    .price-original {
+        font-size: 18px;
+    }
+    
+    .badge-modern {
+        font-size: 12px;
+        padding: 6px 14px;
+    }
+    
+    .badge-sale {
+        font-size: 14px;
     }
     
     .btn-quick-action {
@@ -455,44 +478,18 @@
         height: 36px;
         font-size: 14px;
     }
-    
-    /* Ajuste del row para tablet */
-    .products-grid-modern .row {
-        margin-left: -25px;
-        margin-right: -25px;
-    }
-    
-    /* 2 productos por fila en móvil */
-    .products-grid-modern .col-lg-4,
-    .products-grid-modern .col-md-6,
-    .products-grid-modern .col-sm-6 {
-        flex: 0 0 50%;
-        max-width: 50%;
-        padding-left: 25px;
-        padding-right: 25px;
-    }
 }
 
 @media (max-width: 576px) {
+    /* 2 columnas en móvil con masonry */
+    .products-grid-modern .row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+    
     .product-quick-actions {
         opacity: 1;
         transform: translateX(0);
-    }
-    
-    /* Ajuste del row para móvil */
-    .products-grid-modern .row {
-        margin-left: -20px;
-        margin-right: -20px;
-    }
-    
-    /* Mantener 2 productos por fila en móviles pequeños */
-    .products-grid-modern .col-lg-4,
-    .products-grid-modern .col-md-6,
-    .products-grid-modern .col-sm-6 {
-        flex: 0 0 50%;
-        max-width: 50%;
-        padding-left: 20px;
-        padding-right: 20px;
     }
     
     .product-card-modern {
@@ -505,7 +502,21 @@
     }
     
     .price-current {
-        font-size: 18px;
+        font-size: 24px;
+        font-weight: 900;
+    }
+    
+    .price-original {
+        font-size: 16px;
+    }
+    
+    .badge-modern {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+    
+    .badge-sale {
+        font-size: 12px;
     }
 }
 
@@ -550,10 +561,20 @@ body.dark-mode .product-card-modern:hover .product-name {
 
 body.dark-mode .price-current {
     color: #f9fafb;
+    font-weight: 900; /* Más negrita en dark mode para mejor contraste */
 }
 
 body.dark-mode .price-original {
     color: #6b7280;
+}
+
+body.dark-mode .price-discount {
+    background: linear-gradient(135deg, #ff3b3b 0%, #ff6b6b 100%);
+    box-shadow: 0 4px 12px rgba(255, 59, 59, 0.4);
+}
+
+body.dark-mode .badge-sale {
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.6);
 }
 
 body.dark-mode .rating-count {

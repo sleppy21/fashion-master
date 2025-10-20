@@ -181,28 +181,17 @@
             });
         });
         
-        // Botones de favoritos
-        document.querySelectorAll('.add-to-favorites').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const productId = this.getAttribute('data-id');
-                if (window.toggleFavorite) {
-                    window.toggleFavorite(productId);
-                }
-            });
-        });
+        // FAVORITOS: NO agregar listeners aquí porque real-time-updates.js
+        // ya los maneja con event delegation (document.addEventListener)
+        // Si agregamos listeners aquí, se duplican y se envían 2 peticiones
         
-        // Botones de carrito
-        document.querySelectorAll('.add-to-cart').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (this.getAttribute('data-disabled') === 'true') return;
-                const productId = this.getAttribute('data-id');
-                if (window.addToCart) {
-                    window.addToCart(productId);
-                }
-            });
-        });
+        // CARRITO: Usar event delegation de real-time-updates.js también
+        // NO agregar listeners directos para evitar duplicados
+        
+        // Re-inicializar AOS animations
+        if (typeof AOS !== 'undefined') {
+            AOS.refresh();
+        }
     }
     
     /**
@@ -336,7 +325,6 @@
                         <span class="price-current">S/ ${precioFinal.toFixed(2)}</span>
                         ${tieneDescuento ? `
                             <span class="price-original">S/ ${precioOriginal.toFixed(2)}</span>
-                            <span class="price-discount">-${Math.round(descuento)}%</span>
                         ` : ''}
                     </div>
                     

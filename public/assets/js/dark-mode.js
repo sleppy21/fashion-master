@@ -1,10 +1,23 @@
 /**
  * DARK MODE TOGGLE
- * Sistema de cambio de tema oscuro/claro
+ * Sistema de cambio de tema oscuro/claro con persistencia global
  */
 
 (function() {
     'use strict';
+
+    // Función para aplicar el tema
+    function applyTheme(isDark) {
+        if (isDark) {
+            document.documentElement.classList.add('dark-mode');
+            document.body.classList.add('dark-mode');
+        } else {
+            document.documentElement.classList.remove('dark-mode');
+            document.body.classList.remove('dark-mode');
+        }
+        updateToggleIcon(isDark);
+        cleanModalInlineStyles();
+    }
 
     // Actualizar icono del botón
     function updateToggleIcon(isDark) {
@@ -61,17 +74,26 @@
         }
     }
 
-    // Verificar preferencia guardada o preferencia del sistema
+    // Verificar preferencia guardada (SIEMPRE usar localStorage primero)
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    // Aplicar tema inicial
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    // Aplicar tema inicial INMEDIATAMENTE (antes de que cargue la página)
+    const isDarkMode = savedTheme === 'dark' || (!savedTheme && prefersDark);
+    
+    // Aplicar tema lo más rápido posible
+    if (isDarkMode) {
+        document.documentElement.classList.add('dark-mode');
         document.body.classList.add('dark-mode');
-        updateToggleIcon(true);
-        // Limpiar inline styles al cargar si ya está en dark mode
-        setTimeout(() => cleanModalInlineStyles(), 100);
     }
+    
+    // Esperar a que el DOM esté listo para el resto
+    document.addEventListener('DOMContentLoaded', function() {
+        applyTheme(isDarkMode);
+        
+        // Limpiar inline styles al cargar
+        setTimeout(() => cleanModalInlineStyles(), 100);
+    });
 
     // Event listener para el botón de toggle (verificar que existe)
     const toggleBtn = document.getElementById('dark-mode-toggle');
@@ -111,7 +133,6 @@
                 subtree: true
             });
             
-            console.log('✅ Modal observer initialized');
         }
     };
 
@@ -122,11 +143,12 @@
         observeModalChanges();
     }
 
-    // Función para cambiar el modo
+    // Función para cambiar el modo (CON PERSISTENCIA GLOBAL)
     function toggleDarkMode() {
         const isDark = document.body.classList.toggle('dark-mode');
+        document.documentElement.classList.toggle('dark-mode');
         
-        // Guardar preferencia
+        // ✅ Guardar preferencia en localStorage (se aplicará en TODAS las páginas)
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         
         // Actualizar icono
@@ -138,8 +160,22 @@
         // Limpiar inline styles de modales
         cleanModalInlineStyles();
         
-        console.log('Modo oscuro:', isDark ? 'Activado' : 'Desactivado');
+        // 🔄 Disparar evento para sincronizar otras pestañas
+        window.dispatchEvent(new CustomEvent('themeChanged', { 
+            detail: { isDark: isDark } 
+        }));
+        
+        console.log('🌓 Tema cambiado a:', isDark ? 'Oscuro' : 'Claro', '- Se aplicará en todas las páginas');
     }
+
+    // 🔄 Escuchar cambios de tema desde otras pestañas/ventanas
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'theme') {
+            const newIsDark = e.newValue === 'dark';
+            applyTheme(newIsDark);
+            console.log('🔄 Tema sincronizado desde otra pestaña:', newIsDark ? 'Oscuro' : 'Claro');
+        }
+    });
 
     // Detectar cambios en la preferencia del sistema
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
@@ -155,5 +191,4 @@
         }
     });
 
-    console.log('✅ Dark Mode system initialized');
 })();

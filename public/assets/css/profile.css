@@ -7,16 +7,75 @@
     padding: 100px 0 60px;
     background: #f8f9fa;
     min-height: 100vh;
+    display: flex;
+    justify-content: center;
 }
 
-/* Profile Sidebar */
+/* Contenedor centrado */
+.profile-section > div {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* Row sin overflow para prevenir movimiento */
+.profile-section .row {
+    overflow: visible;
+}
+
+/* Columna del sidebar fija */
+.profile-section .row > div:first-child {
+    position: relative;
+}
+
+/* Profile Sidebar - COMPLETAMENTE INMÓVIL */
 .profile-sidebar {
     background: white;
     border-radius: 16px;
     padding: 30px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    position: sticky;
-    top: 120px;
+    position: fixed;
+    top: 100px;
+    width: 380px; /* Ancho aumentado para col-lg-4 */
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 100;
+    /* Scroll suave */
+    scroll-behavior: smooth;
+    /* Scrollbar INVISIBLE pero funcional */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    /* Prevenir movimiento durante interacciones */
+    will-change: auto;
+}
+
+/* Ocultar scrollbar en Webkit (Chrome, Safari, Edge) */
+.profile-sidebar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+/* Ajuste del ancho del sidebar según el tamaño de pantalla */
+@media (min-width: 1200px) {
+    .profile-sidebar {
+        width: 320px; /* Ancho aumentado para col-xl-3 */
+    }
+}
+
+@media (max-width: 991px) {
+    .profile-sidebar {
+        position: relative;
+        width: 100%;
+        top: 0;
+    }
+}
+
+/* Dark mode para sidebar fijo */
+body.dark-mode .profile-sidebar {
+    background: #2d3748;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Avatar Section */
@@ -225,6 +284,22 @@
     font-size: 14px;
     transition: all 0.3s ease;
     position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.action-btn:hover::before {
+    left: 100%;
 }
 
 .action-btn:hover {
@@ -232,12 +307,22 @@
     color: #667eea;
     transform: translateX(5px);
     text-decoration: none;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.action-btn:active {
+    transform: translateX(3px);
 }
 
 .action-btn i {
     font-size: 18px;
     width: 24px;
     text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.action-btn:hover i {
+    transform: scale(1.15) rotate(5deg);
 }
 
 .action-badge {
@@ -934,6 +1019,55 @@
     }
 }
 
+/* ============================================
+   LIGHT MODE - REFUERZO DE COLORES
+   ============================================ */
+
+/* Asegurar que todos los iconos sean visibles en modo claro */
+.address-card .address-title i,
+.address-card .address-body p i,
+.address-card .detail-item i {
+    color: #667eea !important;
+}
+
+.address-card .address-reference i {
+    color: #ffc107 !important;
+}
+
+.address-card .address-payment i {
+    color: #4caf50 !important;
+}
+
+.address-card .address-date i {
+    color: #6c757d !important;
+}
+
+.address-card .btn-action {
+    color: #6c757d !important;
+}
+
+.address-card .btn-action:hover {
+    color: #667eea !important;
+}
+
+.address-card .btn-set-default:hover {
+    color: #ffc107 !important;
+}
+
+.address-card .btn-delete-address:hover {
+    color: #dc3545 !important;
+}
+
+/* Asegurar textos visibles en modo claro */
+.address-card .address-header strong {
+    color: #2c3e50 !important;
+}
+
+.address-card .address-body p,
+.address-card .detail-item {
+    color: #495057 !important;
+}
+
 /* Dark Mode Styles */
 body.dark-mode .profile-section {
     background: #0f0f0f;
@@ -1120,98 +1254,200 @@ body.dark-mode .btn-delete-address:hover {
     color: white;
 }
 
-/* Modal de Direcciones */
+/* ============================================
+   MODAL DE DIRECCIONES - DISEÑO MEJORADO
+   ============================================ */
+
+/* Modal Dialog centrado y con scroll */
+#addressModal .modal-dialog {
+    margin: 1.75rem auto !important;
+    max-height: calc(100vh - 3.5rem) !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+#addressModal.modal {
+    padding-right: 0 !important;
+}
+
 #addressModal .modal-content {
-    border-radius: 16px;
-    border: none;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 20px !important;
+    border: none !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2) !important;
+    overflow: hidden !important;
+    max-height: calc(100vh - 3.5rem) !important;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
 #addressModal .modal-header {
-    background: #c9a67c;
-    color: white;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    padding: 20px 25px;
-    border-bottom: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    padding: 25px 30px !important;
+    border-bottom: none !important;
+    flex-shrink: 0 !important;
 }
 
 #addressModal .modal-title {
-    font-weight: 700;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    font-weight: 700 !important;
+    font-size: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    color: white !important;
 }
 
 #addressModal .modal-title i {
-    font-size: 20px;
+    font-size: 24px !important;
+    opacity: 0.95 !important;
+    color: white !important;
 }
 
 #addressModal .close {
-    color: white;
-    opacity: 0.9;
-    text-shadow: none;
+    color: white !important;
+    opacity: 0.9 !important;
+    text-shadow: none !important;
+    font-size: 32px !important;
+    font-weight: 300 !important;
+    transition: all 0.3s ease !important;
 }
 
 #addressModal .close:hover {
-    opacity: 1;
+    opacity: 1 !important;
+    transform: rotate(90deg) !important;
 }
 
 #addressModal .modal-body {
-    padding: 30px 25px;
+    padding: 35px 30px !important;
+    background: #f8f9fa !important;
+    overflow-y: auto !important;
+    max-height: calc(100vh - 250px) !important;
+    flex: 1 1 auto !important;
 }
 
+/* Labels mejoradas */
+#addressModal label {
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+    font-size: 13px !important;
+    margin-bottom: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+#addressModal label::before {
+    content: '•' !important;
+    color: #667eea !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+}
+
+/* Inputs mejorados */
 #addressModal .form-control {
-    border-radius: 8px;
-    border: 1px solid #e9ecef;
-    padding: 10px 15px;
-    font-size: 14px;
-    transition: all 0.3s ease;
+    border-radius: 12px !important;
+    border: 2px solid #e9ecef !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+    background: white !important;
+}
+
+#addressModal .form-control:hover {
+    border-color: #cbd5e0 !important;
 }
 
 #addressModal .form-control:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1) !important;
+    background: white !important;
+    transform: translateY(-1px) !important;
 }
 
+#addressModal .form-control::placeholder {
+    color: #a0aec0 !important;
+    font-size: 13px !important;
+}
+
+/* Form group spacing */
+#addressModal .form-group {
+    margin-bottom: 20px !important;
+}
+
+/* Form text mejorado */
+#addressModal .form-text {
+    font-size: 12px !important;
+    color: #718096 !important;
+    margin-top: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+#addressModal .form-text::before {
+    content: 'ℹ' !important;
+    color: #667eea !important;
+    font-weight: bold !important;
+}
+
+/* Textarea */
+#addressModal textarea.form-control {
+    resize: vertical !important;
+    min-height: 80px !important;
+}
+
+/* Modal Footer */
 #addressModal .modal-footer {
-    padding: 20px 25px;
-    border-top: 1px solid #e9ecef;
+    padding: 20px 30px !important;
+    border-top: 2px solid #e9ecef !important;
+    background: #f8f9fa !important;
+    gap: 12px !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+}
+
+#addressModal .btn {
+    border-radius: 10px !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    border: none !important;
+}
+
+#addressModal .btn i {
+    font-size: 16px !important;
 }
 
 #addressModal .btn-secondary {
-    background: #6c757d;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    background: #6c757d !important;
+    color: white !important;
 }
 
 #addressModal .btn-secondary:hover {
-    background: #5a6268;
-    transform: translateY(-2px);
+    background: #5a6268 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3) !important;
 }
 
 #addressModal .btn-primary {
-    background: #c9a67c !important;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
 }
 
 #addressModal .btn-primary:hover {
-    background: #b8956b !important;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4);
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
 }
 
-/* Dark Mode para Modal */
+/* ============================================
+   DARK MODE - MODAL DE DIRECCIONES
+   ============================================ */
 body.dark-mode #addressModal .modal-content {
-    background: #1a1a1a;
+    background: #1e1e1e;
     color: #f0f0f0;
 }
 
@@ -1219,24 +1455,37 @@ body.dark-mode #addressModal .modal-body {
     background: #1a1a1a;
 }
 
+body.dark-mode #addressModal .modal-footer {
+    background: #1a1a1a;
+    border-top-color: #333333;
+}
+
+body.dark-mode #addressModal label {
+    color: #e2e8f0;
+}
+
 body.dark-mode #addressModal .form-control {
-    background: #2a2a2a;
-    border-color: #333333;
-    color: #f0f0f0;
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+body.dark-mode #addressModal .form-control:hover {
+    border-color: #5a6578;
 }
 
 body.dark-mode #addressModal .form-control:focus {
-    background: #2a2a2a;
+    background: #2d3748;
     border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+}
+
+body.dark-mode #addressModal .form-control::placeholder {
+    color: #718096;
 }
 
 body.dark-mode #addressModal .form-text {
     color: #9ca3af;
-}
-
-body.dark-mode #addressModal .modal-footer {
-    background: #1a1a1a;
-    border-top-color: #333333;
 }
 
 /* ============================================
@@ -1560,4 +1809,115 @@ body.dark-mode .form-control {
     .btn-reset-settings {
         width: 100%;
     }
+}
+
+/* ============================================
+   SELECT IMPROVEMENTS - MEJOR LEGIBILIDAD
+   ============================================ */
+
+/* Estilos mejorados para todos los select */
+select.form-control {
+    /* Mejorar legibilidad del texto */
+    color: #2c3e50 !important;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.5;
+    
+    /* Prevenir corte de texto */
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    
+    /* Mejor contraste de fondo */
+    background-color: white !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    padding-left: 16px !important;
+    min-height: 46px;
+    
+    /* Apariencia del select */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+/* Opciones del select - Mejor visibilidad */
+select.form-control option {
+    color: #2c3e50 !important;
+    font-weight: 500;
+    padding: 12px 16px !important;
+    background-color: white !important;
+    line-height: 1.6;
+    min-height: 40px;
+}
+
+/* Hover en select */
+select.form-control:hover {
+    border-color: #667eea;
+    background-color: #f8f9fa !important;
+}
+
+/* Focus en select */
+select.form-control:focus {
+    border-color: #667eea !important;
+    background-color: white !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15) !important;
+}
+
+/* Select deshabilitado */
+select.form-control:disabled {
+    background-color: #f8f9fa !important;
+    color: #95a5a6 !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Dark Mode para Select */
+body.dark-mode select.form-control {
+    color: #e2e8f0 !important;
+    background-color: #2d3748 !important;
+    border-color: #4a5568;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+    min-height: 46px;
+}
+
+body.dark-mode select.form-control option {
+    color: #e2e8f0 !important;
+    background-color: #2d3748 !important;
+    font-weight: 500;
+    padding: 12px 16px !important;
+    line-height: 1.6;
+    min-height: 40px;
+}
+
+body.dark-mode select.form-control:hover {
+    background-color: #1a202c !important;
+    border-color: #667eea;
+}
+
+body.dark-mode select.form-control:focus {
+    background-color: #2d3748 !important;
+    border-color: #667eea !important;
+}
+
+body.dark-mode select.form-control:disabled {
+    background-color: #1a202c !important;
+    color: #718096 !important;
+}
+
+/* Select en modales (address modal) */
+#addressModal select.form-control {
+    color: #2c3e50 !important;
+    background-color: white !important;
+}
+
+body.dark-mode #addressModal select.form-control {
+    color: #e2e8f0 !important;
+    background-color: #2d3748 !important;
 }

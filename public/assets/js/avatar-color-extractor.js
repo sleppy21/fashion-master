@@ -7,7 +7,6 @@
 (function() {
     'use strict';
 
-    console.log('🎨 Avatar Color Extractor cargado');
 
     /**
      * Extrae el color dominante de una imagen
@@ -108,13 +107,10 @@
      * Aplica el box-shadow dinámico al avatar
      */
     function applyDynamicShadow(avatarElement, img) {
-        console.log('🎨 Aplicando shadow dinámico...');
         
         const color = getAverageColor(img);
         const saturatedColor = increaseSaturation(color.r, color.g, color.b, 1.8);
         
-        console.log('🎨 Color extraído:', color);
-        console.log('🎨 Color saturado:', saturatedColor);
         
         // Crear shadows múltiples con el color extraído
         const shadows = [
@@ -136,11 +132,9 @@
         const avatarImg = container.querySelector(isModal ? '.modal-avatar-img' : '.avatar-image');
         
         if (!avatarImg) {
-            console.log('⚠️ No se encontró imagen de avatar en', isModal ? 'modal' : 'profile');
             return;
         }
 
-        console.log('🖼️ Procesando avatar:', isModal ? 'MODAL' : 'PROFILE');
 
         // Si la imagen ya está cargada
         if (avatarImg.complete && avatarImg.naturalWidth > 0) {
@@ -161,7 +155,6 @@
      * Inicializar cuando el DOM esté listo
      */
     function init() {
-        console.log('🎨 Inicializando Avatar Color Extractor...');
         
         // Procesar avatar del profile (sidebar)
         const profileAvatar = document.querySelector('.profile-avatar');
@@ -196,7 +189,6 @@
             }
         }
 
-        console.log('✅ Avatar Color Extractor inicializado');
     }
 
     // Ejecutar cuando el DOM esté listo

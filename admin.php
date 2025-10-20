@@ -170,9 +170,13 @@ try {
     
     <!-- Sistema de actualización suave de tabla -->
     <script src="public/assets/js/smooth-table-update.js"></script>
+    <script src="public/assets/js/smooth-table-update-categories.js"></script>
     
     <!-- Sistema de modales de productos -->
     <script src="public/assets/js/product-modals.js"></script>
+    
+    <!-- Sistema de notificaciones toast -->
+    <script src="public/assets/js/cart-favorites-handler.js"></script>
     
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -1043,7 +1047,7 @@ try {
                     console.log('✅ Clase show agregada al overlay');
                 });
                 
-                const fetchUrl = 'app/views/admin/categoria_modal.php?action=create';
+                const fetchUrl = 'app/views/admin/categorias_modal.php?action=create';
                 console.log('🆕 URL para CREAR categoría:', fetchUrl);
                 
                 fetch(fetchUrl)
@@ -1135,7 +1139,7 @@ try {
                     console.log('✅ Clase show agregada al overlay');
                 });
                 
-                const fetchUrl = `app/views/admin/categoria_modal.php?action=edit&id=${categoriaId}`;
+                const fetchUrl = `app/views/admin/categorias_modal.php?action=edit&id=${categoriaId}`;
                 console.log('✏️ URL para EDITAR categoría:', fetchUrl);
                 
                 fetch(fetchUrl)
@@ -1226,7 +1230,7 @@ try {
                     console.log('✅ Clase show agregada al overlay');
                 });
                 
-                const fetchUrl = `app/views/admin/categoria_modal.php?action=view&id=${categoriaId}`;
+                const fetchUrl = `app/views/admin/categorias_modal.php?action=view&id=${categoriaId}`;
                 console.log('👁️ URL para VER categoría:', fetchUrl);
                 
                 fetch(fetchUrl)
@@ -1310,6 +1314,11 @@ try {
         window.showModalOverlayEditCategoria = showModalOverlayEditCategoria;
         window.showModalOverlayViewCategoria = showModalOverlayViewCategoria;
         window.closeCategoriaModal = closeCategoriaModal;
+        
+        // Alias en inglés para compatibilidad
+        window.showCreateCategoryModal = showCreateCategoriaModal;
+        window.showEditCategoryModal = showEditCategoriaModal;
+        window.showViewCategoryModal = showViewCategoriaModal;
         
         // ===== FUNCIÓN PARA NUEVA CATEGORÍA =====
         window.openNewCategoryModal = function() {
@@ -3518,9 +3527,6 @@ try {
     console.log('✅ Todas las librerías modernas inicializadas correctamente');
     console.log('✅ Sistema de actualización en tiempo real configurado');
     </script>
-
-    <!-- Modales de Categorías -->
-    <?php include 'app/views/admin/categoria_modal.php'; ?>
 
 </body>
 </html>

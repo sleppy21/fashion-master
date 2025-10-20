@@ -9,12 +9,10 @@
     // ===== AGREGAR AL CARRITO =====
     function initCartButtons() {
         // DESHABILITADO - Ahora usa real-time-updates.js con toggle
-        console.log('cart-favorites-handler.js: Carrito manejado por real-time-updates.js (toggle)');
         return;
         
         // No inicializar en product-details.php (tiene su propio handler)
         if (window.location.pathname.includes('product-details.php')) {
-            console.log('cart-favorites-handler.js: Saltando inicialización en product-details.php');
             return;
         }
         
@@ -108,12 +106,10 @@
     // ===== AGREGAR/QUITAR DE FAVORITOS =====
     function initFavoriteButtons() {
         // DESHABILITADO - Ahora usa real-time-updates.js
-        console.log('cart-favorites-handler.js: Favoritos manejados por real-time-updates.js');
         return;
         
         // No inicializar en product-details.php (tiene su propio handler)
         if (window.location.pathname.includes('product-details.php')) {
-            console.log('cart-favorites-handler.js: Saltando inicialización de favoritos en product-details.php');
             return;
         }
         
@@ -181,14 +177,12 @@
             return;
         }
 
-        console.log('🔄 Recargando modal de favoritos...');
         
         // NO mostrar loading, solo actualizar silenciosamente
         const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
         fetch(baseUrl + '/app/actions/get_favorites.php')
             .then(response => response.json())
             .then(data => {
-                console.log('✅ Respuesta get_favorites:', data);
                 
                 if (data.success) {
                     // Actualizar el HTML del modal
@@ -207,7 +201,6 @@
                         }
                     }
                     
-                    console.log(`✅ Modal actualizado con ${data.count} productos`);
                 } else {
                     console.error('❌ Error al cargar favoritos:', data.message);
                 }
@@ -269,7 +262,6 @@
     function initFavoritesModal() {
         // Verificar si las funciones globales ya están definidas (desde header-section.php)
         if (window.toggleFavoritesModal && typeof window.toggleFavoritesModal === 'function') {
-            console.log('✅ Favorites Modal ya manejado por header-section.php');
             // Las funciones ya están manejadas por header-section.php
             // NO agregar event listeners duplicados
             return;
@@ -713,25 +705,20 @@
     
     function initProductImageClick() {
         // DESHABILITADO - Interfiere con real-time-updates.js
-        console.log('✅ Product image click handler initialized');
         return;
         
         // Prevenir registros múltiples
         if (imageClickInitialized) {
-            console.log('⚠️ Product image click already initialized');
             return;
         }
         
         // Delegación de eventos para manejar productos cargados dinámicamente
         document.addEventListener('click', function(e) {
-            console.log('🖱️ Click detectado en:', e.target);
             
             // Click en imagen de producto
             const productImage = e.target.closest('.product-image-clickable');
             
             if (productImage) {
-                console.log('📦 Click en imagen de producto detectado');
-                console.log('🎯 Target:', e.target.tagName, e.target.className);
                 
                 // Solo navegar si NO se hizo click en un botón de acción
                 const clickedOnButton = e.target.closest('.product__hover') || 
@@ -742,13 +729,11 @@
                                        e.target.closest('button');
                 
                 if (clickedOnButton) {
-                    console.log('❌ Click en botón detectado, no navegar');
                     return;
                 }
                 
                 const url = productImage.getAttribute('data-product-url');
                 if (url) {
-                    console.log('✅ Navegando a:', url);
                     e.preventDefault();
                     e.stopPropagation();
                     window.location.href = url;
@@ -759,7 +744,6 @@
         }, true); // Usar captura
         
         imageClickInitialized = true;
-        console.log('✅ Product image click handler initialized');
     }
 
     // Agregar animaciones CSS
@@ -851,7 +835,6 @@
      * @param {number} count - Nuevo número de productos en el carrito
      */
     window.updateCartCount = function(count) {
-        console.log('🛒 Actualizando contador de carrito:', count);
         
         // Actualizar el badge/tip del carrito
         const cartTips = document.querySelectorAll('.header__right__widget a[href*="cart"] .tip');
@@ -880,7 +863,6 @@
      * @param {number} count - Nuevo número de favoritos
      */
     window.updateFavoritesCount = function(count) {
-        console.log('❤️ Actualizando contador de favoritos:', count);
         
         // Si no se proporciona count, hacer fetch al servidor
         if (count === undefined || count === null) {
@@ -940,7 +922,6 @@
      * @param {number} productId - ID del producto
      */
     window.toggleFavorite = function(productId) {
-        console.log('❤️ Toggle favorito para producto:', productId);
         
         // Verificar si el usuario está logueado
         const isLoggedIn = document.querySelector('#favorites-link') !== null;
@@ -1012,7 +993,6 @@
      * @param {number} productId - ID del producto
      */
     window.addToCart = function(productId) {
-        console.log('🛒 Agregando al carrito producto:', productId);
         
         fetch('app/actions/add_to_cart.php', {
             method: 'POST',
@@ -1043,11 +1023,5 @@
     // Exportar funciones globalmente
     window.showNotification = showNotification;
     
-    console.log('✅ cart-favorites-handler.js cargado completamente');
-    console.log('✅ showNotification exportada globalmente');
-    console.log('✅ updateCartCount exportada globalmente');
-    console.log('✅ updateFavoritesCount exportada globalmente');
-    console.log('✅ toggleFavorite exportada globalmente');
-    console.log('✅ addToCart exportada globalmente');
 
 })();

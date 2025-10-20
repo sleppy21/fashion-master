@@ -199,7 +199,6 @@
                     // Log solo si cambió
                     const currentTotal = parseInt(document.querySelector('.cart-count, #cart-count')?.textContent) || 0;
                     if (currentTotal !== count) {
-                        console.log('🛒 Carrito actualizado:', count);
                     }
                 }
             })

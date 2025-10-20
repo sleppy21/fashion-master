@@ -7,16 +7,13 @@
 // FUNCIÓN TOAST NOTIFICATION (REUTILIZABLE)
 // ============================================
 function showNotification(message, type = 'info') {
-    console.log('🔔 showNotification llamada:', message, type);
     
     // Usar la función global si existe (de cart-favorites-handler.js)
     if (typeof window.showNotification === 'function' && window.showNotification !== showNotification) {
-        console.log('✅ Usando window.showNotification (global)');
         window.showNotification(message, type);
         return;
     }
     
-    console.log('⚠️ Usando implementación standalone');
     
     // Fallback: Implementación standalone
     const existingNotif = document.querySelector('.modern-toast');
@@ -158,8 +155,6 @@ function showNotification(message, type = 'info') {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🎯 profile.js: DOMContentLoaded iniciado');
-    console.log('🔍 window.showNotification disponible:', typeof window.showNotification === 'function');
     
     // ============================================
     // TABS FUNCTIONALITY
@@ -182,6 +177,98 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // ============================================
+    // REAL-TIME VALIDATION
+    // ============================================
+    function addRealTimeValidation(input) {
+        input.addEventListener('input', function() {
+            validateField(this);
+        });
+        
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+    }
+    
+    function validateField(input) {
+        const value = input.value.trim();
+        let isValid = true;
+        let errorMessage = '';
+        
+        // Remove previous error
+        removeFieldError(input);
+        
+        // Validate based on field type
+        switch(input.name) {
+            case 'nombre':
+            case 'apellido':
+                if (value.length < 2) {
+                    isValid = false;
+                    errorMessage = 'Debe tener al menos 2 caracteres';
+                } else if (value.length > 50) {
+                    isValid = false;
+                    errorMessage = 'Máximo 50 caracteres';
+                } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+                    isValid = false;
+                    errorMessage = 'Solo se permiten letras';
+                }
+                break;
+                
+            case 'telefono':
+                if (value && !/^[\d\s\+\-\(\)]+$/.test(value)) {
+                    isValid = false;
+                    errorMessage = 'Solo números y símbolos: + - ( )';
+                } else if (value && (value.length < 7 || value.length > 15)) {
+                    isValid = false;
+                    errorMessage = 'Debe tener entre 7 y 15 caracteres';
+                }
+                break;
+                
+            case 'fecha_nacimiento':
+                if (value) {
+                    const birthDate = new Date(value);
+                    const today = new Date();
+                    const age = today.getFullYear() - birthDate.getFullYear();
+                    
+                    if (age < 18) {
+                        isValid = false;
+                        errorMessage = 'Debes ser mayor de 18 años';
+                    } else if (age > 120) {
+                        isValid = false;
+                        errorMessage = 'Fecha inválida';
+                    }
+                }
+                break;
+        }
+        
+        // Show error if invalid
+        if (!isValid) {
+            showFieldError(input, errorMessage);
+        }
+        
+        return isValid;
+    }
+    
+    function showFieldError(input, message) {
+        input.classList.add('is-invalid');
+        
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'invalid-feedback';
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+        
+        input.parentElement.appendChild(errorDiv);
+    }
+    
+    function removeFieldError(input) {
+        input.classList.remove('is-invalid');
+        
+        const existingError = input.parentElement.querySelector('.invalid-feedback');
+        if (existingError) {
+            existingError.remove();
+        }
+    }
+    
+    // ============================================
     // EDIT PERSONAL INFO
     // ============================================
     const btnEditPersonal = document.getElementById('btn-edit-personal');
@@ -199,11 +286,12 @@ document.addEventListener('DOMContentLoaded', function() {
             originalValues[input.name] = input.value;
         });
         
-        // Enable inputs
+        // Enable inputs (except username and email which are readonly)
         formInputs.forEach(input => {
-            // Don't enable username and email (usually shouldn't be changed easily)
             if (input.name !== 'username' && input.name !== 'email') {
                 input.disabled = false;
+                // Add real-time validation
+                addRealTimeValidation(input);
             }
         });
         
@@ -227,7 +315,20 @@ document.addEventListener('DOMContentLoaded', function() {
     formPersonalInfo.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        console.log('📝 Formulario personal enviado');
+        // Validar todos los campos antes de enviar
+        let allValid = true;
+        formInputs.forEach(input => {
+            if (!input.disabled && input.name !== 'username' && input.name !== 'email') {
+                if (!validateField(input)) {
+                    allValid = false;
+                }
+            }
+        });
+        
+        if (!allValid) {
+            showNotification('Por favor corrige los errores en el formulario', 'error');
+            return;
+        }
         
         const formData = new FormData(this);
         const data = Object.fromEntries(formData.entries());
@@ -237,10 +338,6 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let key in data) {
             if (originalValues[key] !== data[key]) {
                 hasChanges = true;
-                console.log(`✏️ Campo modificado: ${key}`, {
-                    anterior: originalValues[key],
-                    nuevo: data[key]
-                });
                 break;
             }
         }
@@ -256,12 +353,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        if (data.telefono && !/^[\d\s\+\-\(\)]+$/.test(data.telefono)) {
-            showNotification('El teléfono solo puede contener números y símbolos válidos', 'error');
-            return;
-        }
-        
-        console.log('✅ Validaciones pasadas, enviando datos...');
+        // Mostrar indicador de carga
+        const submitBtn = formActions.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Guardando...';
         
         try {
             const response = await fetch('app/actions/update_profile.php', {
@@ -272,14 +368,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify(data)
             });
             
-            console.log('📡 Respuesta recibida:', response.status);
-            
             const result = await response.json();
             
-            console.log('📦 Resultado:', result);
-            
             if (result.success) {
-                showNotification('Perfil actualizado correctamente', 'success');
+                showNotification('✅ Perfil actualizado correctamente', 'success');
                 
                 // Actualizar valores originales con los nuevos
                 formInputs.forEach(input => {
@@ -289,6 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Disable inputs again
                 formInputs.forEach(input => {
                     input.disabled = true;
+                    removeFieldError(input);
                 });
                 
                 // Hide form actions
@@ -303,12 +396,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 
+                // Actualizar nombre en el header si existe
+                const headerUserName = document.querySelector('.header-user-name');
+                if (headerUserName) {
+                    headerUserName.textContent = `${data.nombre} ${data.apellido}`;
+                }
+                
             } else {
                 showNotification(result.message || 'No se pudo actualizar el perfil', 'error');
             }
         } catch (error) {
             console.error('Error:', error);
-            showNotification('Ocurrió un error al actualizar el perfil', 'error');
+            showNotification('❌ Ocurrió un error al actualizar el perfil', 'error');
+        } finally {
+            // Restaurar botón
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
         }
     });
     
@@ -317,10 +420,57 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     const formChangePassword = document.getElementById('form-change-password');
     
+    // Agregar indicador de fortaleza de contraseña
+    const newPasswordInput = formChangePassword.querySelector('[name="new_password"]');
+    if (newPasswordInput) {
+        const strengthIndicator = document.createElement('div');
+        strengthIndicator.className = 'password-strength-indicator';
+        strengthIndicator.style.cssText = `
+            margin-top: 8px;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+            display: none;
+        `;
+        
+        const strengthBar = document.createElement('div');
+        strengthBar.className = 'password-strength-bar';
+        strengthBar.style.cssText = `
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s;
+            border-radius: 2px;
+        `;
+        
+        strengthIndicator.appendChild(strengthBar);
+        newPasswordInput.parentElement.appendChild(strengthIndicator);
+        
+        const strengthText = document.createElement('small');
+        strengthText.className = 'password-strength-text';
+        strengthText.style.cssText = 'display: block; margin-top: 4px; font-size: 12px;';
+        newPasswordInput.parentElement.appendChild(strengthText);
+        
+        newPasswordInput.addEventListener('input', function() {
+            const password = this.value;
+            const strength = calculatePasswordStrength(password);
+            
+            if (password.length === 0) {
+                strengthIndicator.style.display = 'none';
+                strengthText.textContent = '';
+                return;
+            }
+            
+            strengthIndicator.style.display = 'block';
+            strengthBar.style.width = strength.percentage + '%';
+            strengthBar.style.background = strength.color;
+            strengthText.textContent = strength.text;
+            strengthText.style.color = strength.color;
+        });
+    }
+    
     formChangePassword.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        console.log('🔐 Formulario de contraseña enviado');
         
         const formData = new FormData(this);
         const data = Object.fromEntries(formData.entries());
@@ -333,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Validate passwords match
         if (data.new_password !== data.confirm_password) {
-            showNotification('Las contraseñas no coinciden', 'error');
+            showNotification('Las contraseñas nuevas no coinciden', 'error');
             return;
         }
         
@@ -349,7 +499,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        console.log('✅ Validaciones de contraseña pasadas');
+        // Mostrar indicador de carga
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Cambiando...';
         
         try {
             const response = await fetch('app/actions/change_password.php', {
@@ -363,19 +517,70 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
             
             if (result.success) {
-                showNotification('Contraseña actualizada correctamente', 'success');
+                showNotification('✅ Contraseña actualizada correctamente', 'success');
                 
                 // Reset form
                 formChangePassword.reset();
+                
+                // Ocultar indicador de fortaleza
+                const strengthIndicator = formChangePassword.querySelector('.password-strength-indicator');
+                const strengthText = formChangePassword.querySelector('.password-strength-text');
+                if (strengthIndicator) strengthIndicator.style.display = 'none';
+                if (strengthText) strengthText.textContent = '';
                 
             } else {
                 showNotification(result.message || 'No se pudo cambiar la contraseña', 'error');
             }
         } catch (error) {
             console.error('Error:', error);
-            showNotification('Ocurrió un error al cambiar la contraseña', 'error');
+            showNotification('❌ Ocurrió un error al cambiar la contraseña', 'error');
+        } finally {
+            // Restaurar botón
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
         }
     });
+    
+    // ============================================
+    // PASSWORD STRENGTH CALCULATOR
+    // ============================================
+    function calculatePasswordStrength(password) {
+        let strength = 0;
+        
+        if (password.length >= 6) strength += 20;
+        if (password.length >= 8) strength += 10;
+        if (password.length >= 10) strength += 10;
+        if (/[a-z]/.test(password)) strength += 15;
+        if (/[A-Z]/.test(password)) strength += 15;
+        if (/[0-9]/.test(password)) strength += 15;
+        if (/[^a-zA-Z0-9]/.test(password)) strength += 15;
+        
+        let text = '';
+        let color = '';
+        
+        if (strength <= 30) {
+            text = 'Muy débil';
+            color = '#e74c3c';
+        } else if (strength <= 50) {
+            text = 'Débil';
+            color = '#f39c12';
+        } else if (strength <= 70) {
+            text = 'Regular';
+            color = '#f1c40f';
+        } else if (strength <= 85) {
+            text = 'Buena';
+            color = '#3498db';
+        } else {
+            text = 'Muy fuerte';
+            color = '#2ecc71';
+        }
+        
+        return {
+            percentage: strength,
+            text: text,
+            color: color
+        };
+    }
     
     // ============================================
     // TOGGLE PASSWORD VISIBILITY
@@ -405,21 +610,76 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnAddAddress = document.getElementById('btn-add-address');
     const btnAddFirstAddress = document.getElementById('btn-add-first-address');
     
-    if (btnAddAddress) {
-        btnAddAddress.addEventListener('click', function() {
-            showNotification('La gestión de direcciones estará disponible próximamente', 'info');
-        });
-    }
-    
-    if (btnAddFirstAddress) {
-        btnAddFirstAddress.addEventListener('click', function() {
-            showNotification('La gestión de direcciones estará disponible próximamente', 'info');
-        });
-    }
+    // Los botones de agregar dirección están deshabilitados porque se usa el modal
+    // La funcionalidad está en address-manager.js
     
     // ============================================
     // CHANGE AVATAR
     // ============================================
     // La funcionalidad de avatar está manejada por avatar-upload.js
+    
+    // ============================================
+    // TOGGLE FAVORITES MODAL
+    // ============================================
+    const toggleFavoritesBtn = document.getElementById('toggle-favorites-btn');
+    
+    if (toggleFavoritesBtn) {
+        toggleFavoritesBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const favoritesModal = document.getElementById('favorites-modal');
+            
+            if (!favoritesModal) {
+                console.warn('Modal de favoritos no encontrado');
+                return;
+            }
+            
+            // Toggle del modal
+            if (favoritesModal.style.display === 'block') {
+                // Cerrar modal
+                favoritesModal.style.display = 'none';
+                document.body.style.overflow = ''; // Restaurar scroll
+            } else {
+                // Abrir modal
+                favoritesModal.style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+                
+                // Cargar favoritos si existe la función
+                if (typeof window.loadFavorites === 'function') {
+                    window.loadFavorites();
+                }
+            }
+        });
+    }
+    
+    // Cerrar modal al hacer click en el overlay o botón cerrar
+    const favoritesModal = document.getElementById('favorites-modal');
+    
+    if (favoritesModal) {
+        // Click en el overlay (fuera del contenido)
+        favoritesModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Click en botón cerrar
+        const closeBtn = favoritesModal.querySelector('.favorites-modal-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                favoritesModal.style.display = 'none';
+                document.body.style.overflow = '';
+            });
+        }
+        
+        // Cerrar con tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && favoritesModal.style.display === 'block') {
+                favoritesModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+    }
     
 });

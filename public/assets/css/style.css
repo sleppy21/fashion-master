@@ -37,8 +37,9 @@ body {
 	font-family: "Montserrat", sans-serif;
 	-webkit-font-smoothing: antialiased;
 	background-color: #f8f5f2; /* Color por defecto para todas las páginas */
-	/* ===== FORZAR SCROLLBAR VISIBLE SIEMPRE ===== */
-	overflow-y: scroll !important; /* Scrollbar SIEMPRE visible */
+	/* Scrollbar solo cuando sea necesario */
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
 }
 
 h1,

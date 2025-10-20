@@ -30,6 +30,11 @@ try {
     $provincia = trim($_POST['provincia'] ?? '');
     $distrito = trim($_POST['distrito'] ?? '');
     $referencia = trim($_POST['referencia'] ?? '');
+    
+    // Nuevos campos de facturación
+    $email = trim($_POST['email'] ?? '');
+    $dni_ruc = trim($_POST['dni'] ?? '');
+    $razon_social = trim($_POST['razon_social'] ?? '');
 
     // Validaciones
     if (!$id_direccion) {
@@ -51,6 +56,29 @@ try {
         echo json_encode(['success' => false, 'error' => 'Debe seleccionar departamento, provincia y distrito']);
         exit;
     }
+    
+    // Validaciones de facturación
+    if (empty($email)) {
+        echo json_encode(['success' => false, 'error' => 'El email es requerido']);
+        exit;
+    }
+    
+    if (empty($dni_ruc)) {
+        echo json_encode(['success' => false, 'error' => 'El DNI o RUC es requerido']);
+        exit;
+    }
+    
+    // Validar formato de DNI/RUC
+    if (strlen($dni_ruc) !== 8 && strlen($dni_ruc) !== 11) {
+        echo json_encode(['success' => false, 'error' => 'El DNI debe tener 8 dígitos o el RUC 11 dígitos']);
+        exit;
+    }
+    
+    // Si es RUC (11 dígitos), validar que tenga razón social
+    if (strlen($dni_ruc) === 11 && empty($razon_social)) {
+        echo json_encode(['success' => false, 'error' => 'La razón social es requerida para RUC']);
+        exit;
+    }
 
     // Verificar que la dirección pertenece al usuario
     $verificar = executeQuery(
@@ -63,11 +91,14 @@ try {
         exit;
     }
 
-    // Actualizar la dirección
+    // Actualizar la dirección con datos de facturación
     executeQuery(
         "UPDATE direccion SET 
             nombre_cliente_direccion = ?,
             telefono_direccion = ?,
+            email_direccion = ?,
+            dni_ruc_direccion = ?,
+            razon_social_direccion = ?,
             direccion_completa_direccion = ?,
             departamento_direccion = ?,
             provincia_direccion = ?,
@@ -77,6 +108,9 @@ try {
         [
             $nombre_cliente_direccion,
             $telefono,
+            $email,
+            $dni_ruc,
+            $razon_social,
             $direccion_completa,
             $departamento,
             $provincia,

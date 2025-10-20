@@ -4,7 +4,6 @@
  */
 
 $(document).ready(function() {
-    console.log('✅ Product Details Handler inicializado');
     
     // =================================================================
     // CONTROL DE CANTIDAD +/-
@@ -18,7 +17,6 @@ $(document).ready(function() {
         
         if(val > 0) {
             input.val(val - 1);
-            console.log('➖ Cantidad reducida a:', val - 1);
         }
     });
     
@@ -31,12 +29,10 @@ $(document).ready(function() {
         
         if(val < maxStock) {
             input.val(val + 1);
-            console.log('➕ Cantidad aumentada a:', val + 1);
         } else {
             if (typeof window.showNotification === 'function') {
                 showNotification('Stock máximo: ' + maxStock + ' unidades', 'warning');
             }
-            console.log('⚠️ Stock máximo alcanzado');
         }
     });
     
@@ -49,7 +45,6 @@ $(document).ready(function() {
     if (typeof window.showNotification !== 'function') {
         // Fallback simple si cart-favorites-handler.js no está cargado
         window.showNotification = function(message, type) {
-            console.log(`[${type.toUpperCase()}] ${message}`);
             alert(message);
         };
     }

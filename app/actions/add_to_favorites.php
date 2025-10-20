@@ -99,13 +99,19 @@ try {
     $total = $total_favoritos && !empty($total_favoritos) ? (int)$total_favoritos[0]['total'] : 0;
     
     error_log("Total favoritos después de operación: $total");
+    error_log("Action: $action");
+    error_log("Message: $message");
     
-    echo json_encode([
+    $response = [
         'success' => true,
         'message' => $message,
         'action' => $action,
         'favorites_count' => $total
-    ]);
+    ];
+    
+    error_log("Response JSON: " . json_encode($response));
+    
+    echo json_encode($response);
     
 } catch (Exception $e) {
     error_log("=== ERROR EN FAVORITOS ===");

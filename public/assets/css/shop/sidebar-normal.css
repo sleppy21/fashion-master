@@ -1,0 +1,166 @@
+/**
+ * SIDEBAR NORMAL - SIN STICKY
+ * El sidebar ocupa todo el espacio vertical necesario SIN SCROLL
+ */
+
+/* Sidebar principal - ALTURA AUTOMÁTICA SIN RESTRICCIONES */
+.modern-sidebar {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    /* FORZAR ALTURA COMPLETA SIN LIMITACIONES */
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    transform: none !important;
+    animation: none !important;
+    position: relative !important;
+}
+
+/* Contenedor del sidebar sin límites */
+.shop-sidebar {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+/* Asegurar que columna del sidebar no tenga restricciones */
+aside.col-lg-3,
+aside.col-md-4 {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+/* Header del sidebar */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.sidebar-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar-header h2 i {
+    color: #667eea;
+}
+
+/* Botón limpiar */
+.btn-clear {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    background: white;
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-clear:hover {
+    border-color: #dc3545;
+    background: #dc3545;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.btn-clear i {
+    font-size: 16px;
+}
+
+/* Responsive: ocultar texto en móvil */
+@media (max-width: 768px) {
+    .btn-clear .btn-text {
+        display: none;
+    }
+    
+    .btn-clear {
+        padding: 8px 12px;
+    }
+}
+
+/* Primera sección de filtros con margen superior */
+.filter-section-first {
+    margin-top: 8px;
+}
+
+/* Dark Mode */
+body.dark-mode .modern-sidebar {
+    background: #2a2a2e;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+body.dark-mode .sidebar-header {
+    border-bottom-color: #404040;
+}
+
+body.dark-mode .sidebar-header h2 {
+    color: #ffffff;
+}
+
+body.dark-mode .btn-clear {
+    background: transparent;
+    border-color: #404040;
+    color: #adb5bd;
+}
+
+body.dark-mode .btn-clear:hover {
+    border-color: #dc3545;
+    background: #dc3545;
+    color: white;
+}
+
+/* Mobile: Sidebar como offcanvas */
+@media (max-width: 991px) {
+    .modern-sidebar {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 320px;
+        max-width: 85vw;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 9999;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: 4px 0 12px rgba(0,0,0,0.15);
+        border-radius: 0;
+    }
+    
+    .modern-sidebar.show-mobile {
+        display: block;
+        transform: translateX(0);
+    }
+    
+    /* Overlay oscuro cuando sidebar está abierto */
+    .modern-sidebar.show-mobile::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 320px;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: -1;
+    }
+}

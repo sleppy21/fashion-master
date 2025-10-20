@@ -76,6 +76,20 @@ try {
     error_log("Error al obtener carrito: " . $e->getMessage());
 }
 
+// Verificar si el usuario tiene dirección predeterminada
+$tiene_direccion_predeterminada = false;
+try {
+    $direccion_check = executeQuery("
+        SELECT COUNT(*) as total 
+        FROM direccion 
+        WHERE id_usuario = ? AND es_principal = 1 AND status_direccion = 1
+    ", [$usuario_logueado['id_usuario']]);
+    
+    $tiene_direccion_predeterminada = ($direccion_check && $direccion_check[0]['total'] > 0);
+} catch(Exception $e) {
+    error_log("Error al verificar dirección: " . $e->getMessage());
+}
+
 // Obtener contadores para el header
 $cart_count = count($cart_items);
 $favorites_count = 0;
@@ -139,6 +153,9 @@ try {
     
     <!-- Dark Mode Styles -->
     <link rel="stylesheet" href="public/assets/css/dark-mode.css" type="text/css">
+    
+    <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
+    <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
     
     <!-- Modern Styles -->
     <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
@@ -1939,9 +1956,15 @@ try {
                                 </div>
                             </div>
                             
+                            <?php if($tiene_direccion_predeterminada): ?>
                             <a href="checkout.php" class="btn-proceed-checkout">
                                 <i class="fa fa-lock"></i> Proceder al Pago
                             </a>
+                            <?php else: ?>
+                            <a href="profile.php?seccion=direcciones" class="btn-proceed-checkout" id="btn-add-address">
+                                <i class="fa fa-arrow-right"></i> Continuar
+                            </a>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Información de Seguridad y Confianza -->
@@ -2168,10 +2191,17 @@ try {
                 <?php endif; ?>
             </div>
             <div class="mobile-cart-footer__action">
+                <?php if($tiene_direccion_predeterminada): ?>
                 <a href="checkout.php" class="mobile-checkout-btn">
                     <span>Proceder al Pago</span>
                     <i class="fa fa-arrow-right"></i>
                 </a>
+                <?php else: ?>
+                <a href="profile.php?seccion=direcciones" class="mobile-checkout-btn" id="mobile-btn-add-address">
+                    <span>Continuar</span>
+                    <i class="fa fa-arrow-right"></i>
+                </a>
+                <?php endif; ?>
             </div>
         </div>
     </div>

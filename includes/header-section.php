@@ -668,7 +668,8 @@ if(isset($usuario_logueado) && $usuario_logueado):
     if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
         $secure_base_url = str_replace('http://', 'https://', $secure_base_url);
     }
-    echo '<script src="' . $secure_base_url . '/public/assets/js/ajax-counters.js?v=' . time() . '"></script>';
+    // DESHABILITADO: ajax-counters.js - real-time-updates.js maneja los contadores
+    // echo '<script src="' . $secure_base_url . '/public/assets/js/ajax-counters.js?v=' . time() . '"></script>';
     
     // Script para colores dinámicos de avatar (shadow extraction)
     echo '<script src="' . $secure_base_url . '/public/assets/js/image-color-extractor.js?v=' . time() . '"></script>';

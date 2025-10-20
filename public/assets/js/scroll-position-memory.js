@@ -17,13 +17,11 @@
         // Limpiar después de restaurar
         sessionStorage.removeItem('scrollPosition_' + window.location.pathname);
         
-        console.log('📍 Scroll restaurado inmediatamente a:', savedPosition);
     }
 
     // Guardar posición del scroll antes de salir de la página
     window.addEventListener('beforeunload', function() {
         sessionStorage.setItem('scrollPosition_' + window.location.pathname, window.scrollY);
-        console.log('💾 Scroll guardado:', window.scrollY);
     });
 
     // También manejar navegación con botón atrás del navegador
@@ -37,6 +35,5 @@
         }
     });
 
-    console.log('✅ Scroll position memory initialized');
 
 })();

@@ -135,6 +135,33 @@ async function updateFavoritesCount() {
 }
 
 /**
+ * Actualizar contador de favoritos directamente (sin hacer fetch)
+ */
+function updateFavoritesCountDirectly(count) {
+    // Actualizar badges en el header
+    document.querySelectorAll('#favorites-count, .favorites-count-badge').forEach(el => {
+        el.textContent = count;
+        if (count > 0) {
+            el.style.display = '';
+        } else {
+            el.style.display = 'none';
+        }
+    });
+    
+    // Actualizar texto completo de favoritos
+    document.querySelectorAll('.favorites-count').forEach(el => {
+        const countNumber = el.querySelector('.fav-count-number');
+        const countText = count === 1 ? 'producto favorito' : 'productos favoritos';
+        
+        if (countNumber) {
+            countNumber.textContent = count;
+        } else {
+            el.innerHTML = `<span class="fav-count-number">${count}</span> ${countText}`;
+        }
+    });
+}
+
+/**
  * Agregar producto al carrito usando Fetch API
  */
 async function addToCart(productId, quantity = 1) {
@@ -200,24 +227,28 @@ async function addToCart(productId, quantity = 1) {
  */
 async function toggleFavorite(productId) {
     try {
-        const data = await fetchPOST('app/actions/toggle_favorite.php', {
+        const data = await fetchPOST('app/actions/add_to_favorites.php', {
             id_producto: productId
         });
 
         if (data.success) {
             // Actualizar contador de favoritos
-            await updateFavoritesCount();
+            if (typeof data.favorites_count !== 'undefined') {
+                updateFavoritesCountDirectly(data.favorites_count);
+            } else {
+                await updateFavoritesCount();
+            }
 
             // Actualizar icono del botón
-            const buttons = document.querySelectorAll(`[data-id="${productId}"].add-to-favorites`);
+            const buttons = document.querySelectorAll(`[data-id="${productId}"].add-to-favorites, [data-id="${productId}"].btn-favorite`);
             buttons.forEach(btn => {
                 const icon = btn.querySelector('span');
                 if (data.action === 'added') {
                     btn.classList.add('active');
-                    icon.className = 'icon_heart';
+                    if (icon) icon.className = 'icon_heart';
                 } else {
                     btn.classList.remove('active');
-                    icon.className = 'icon_heart_alt';
+                    if (icon) icon.className = 'icon_heart_alt';
                 }
             });
 
@@ -227,6 +258,8 @@ async function toggleFavorite(productId) {
                     icon: 'success',
                     title: data.message
                 });
+            } else if (typeof showToast === 'function') {
+                showToast(data.message, data.action === 'added' ? 'success' : 'info');
             }
 
             // Disparar evento personalizado
@@ -246,6 +279,8 @@ async function toggleFavorite(productId) {
                 icon: 'error',
                 title: error.message || 'Error al actualizar favoritos'
             });
+        } else if (typeof showToast === 'function') {
+            showToast(error.message || 'Error al actualizar favoritos', 'error');
         }
         
         return false;
@@ -451,7 +486,6 @@ function searchProducts(query) {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ Fetch API Handler loaded');
 
     // Auto-actualizar contadores cada 30 segundos
     setInterval(() => {
@@ -461,11 +495,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Escuchar eventos de actualización
     document.addEventListener('cartUpdated', () => {
-        console.log('Cart updated event fired');
     });
 
     document.addEventListener('favoritesUpdated', () => {
-        console.log('Favorites updated event fired');
     });
 });
 

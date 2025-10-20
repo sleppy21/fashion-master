@@ -171,37 +171,7 @@ body[class*="checkout"] .breadcrumb-option,
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Badges de notificación - ARREGLADOS */
-.header__right__auth a .tip,
-.header__right__widget li a .tip {
-    position: absolute !important;
-    right: -6px !important;
-    top: -4px !important;
-    height: 24px !important;
-    min-width: 24px !important;
-    background: #ca1515 !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    color: #ffffff !important;
-    line-height: 1 !important;
-    text-align: center !important;
-    border-radius: 12px !important;
-    z-index: 10 !important;
-    pointer-events: none !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0 6px !important;
-    box-shadow: 0 3px 6px rgba(202, 21, 21, 0.4) !important;
-}
-
-/* Dark mode badges */
-body.dark-mode .header__right__auth a .tip,
-body.dark-mode .header__right__widget li a .tip {
-    background: #ca1515 !important;
-    color: #ffffff !important;
-    box-shadow: 0 3px 6px rgba(202, 21, 21, 0.5) !important;
-}
+/* NOTA: Los estilos de badges están en badges-override.css - NO sobrescribir aquí */
 
 /* ========================================
    ANIMACIONES HOVER - MODO OSCURO
@@ -411,14 +381,17 @@ body .shop-modern aside .modern-sidebar,
     scrollbar-color: rgba(102, 126, 234, 0.3) transparent;
 }
 
-/* Sidebar header NO sticky - Solo scroll con el contenido */
+/* Sidebar header STICKY dentro del sidebar - se mantiene visible al hacer scroll */
 body .shop-modern .sidebar-header,
 .shop-modern .sidebar-header,
 body .modern-sidebar .sidebar-header {
-    position: relative !important;
-    top: auto !important;
-    z-index: 1 !important;
-    background: transparent !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    background: var(--shop-card-bg, #ffffff) !important;
+    margin: -24px -24px 24px -24px !important; /* Compensar padding del sidebar */
+    padding: 24px 24px 16px 24px !important;
+    transition: box-shadow 0.3s ease !important;
 }
 
 /* Scrollbar webkit */
@@ -461,6 +434,13 @@ body.dark-mode .modern-sidebar::-webkit-scrollbar-thumb {
 body.dark-mode .shop-modern .modern-sidebar::-webkit-scrollbar-thumb:hover,
 body.dark-mode .modern-sidebar::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 23, 68, 0.5);
+}
+
+/* Dark mode sidebar header */
+body.dark-mode .shop-modern .sidebar-header,
+body.dark-mode .modern-sidebar .sidebar-header {
+    background: var(--dark-bg-secondary, #2a2a2e) !important;
+    border-bottom-color: var(--dark-border, #404040) !important;
 }
 
 /* Desactivar AOS en sidebar */

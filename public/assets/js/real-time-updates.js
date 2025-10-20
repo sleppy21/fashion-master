@@ -32,12 +32,16 @@ const RealTimeUpdates = (function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // Actualizar contador inmediatamente con el valor del servidor
+                if (typeof data.notifications_count !== 'undefined') {
+                    updateNotificationCountDirectly(data.notifications_count);
+                }
+                
                 // Eliminar elemento del DOM después de la animación
                 setTimeout(() => {
                     if (element) {
                         element.remove();
                     }
-                    updateNotificationCount();
                     updateNotificationsList();
                 }, 300);
                 
@@ -82,7 +86,12 @@ const RealTimeUpdates = (function() {
                         unreadIndicator.remove();
                     }
                 }
-                updateNotificationCount();
+                
+                // Actualizar contador inmediatamente con el valor del servidor
+                if (typeof data.notifications_count !== 'undefined') {
+                    updateNotificationCountDirectly(data.notifications_count);
+                }
+                
                 showToast('Notificación marcada como leída', 'success');
             } else {
                 showToast(data.message || 'Error al marcar notificación', 'error');
@@ -91,6 +100,21 @@ const RealTimeUpdates = (function() {
         .catch(error => {
             console.error('Error:', error);
             showToast('Error al marcar notificación', 'error');
+        });
+    }
+
+    // Actualizar contador de notificaciones con un valor directo (sin fetch)
+    function updateNotificationCountDirectly(count) {
+        count = parseInt(count) || 0;
+        
+        const countElements = document.querySelectorAll('#notifications-count');
+        countElements.forEach(el => {
+            if (count > 0) {
+                el.textContent = count;
+                el.style.display = 'flex';
+            } else {
+                el.style.display = 'none';
+            }
         });
     }
 
@@ -135,7 +159,7 @@ const RealTimeUpdates = (function() {
     // ============================================
     
     function addToFavorites(productId, button) {
-        console.log('❤️ addToFavorites llamada para producto:', productId);
+        console.log('🎯 addToFavorites llamado con productId:', productId);
         
         // Animación inmediata del botón
         if (button) {
@@ -152,17 +176,24 @@ const RealTimeUpdates = (function() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('✅ Respuesta de add_to_favorites.php:', data);
+            console.log('📦 Respuesta del servidor:', data);
+            console.log('✅ Success:', data.success);
+            console.log('🎬 Action:', data.action);
+            console.log('💬 Message:', data.message);
             
             if (data.success) {
                 // Actualizar TODOS los botones de este producto en la página
                 updateFavoriteButtons(productId, data.action === 'added');
                 
-                // Actualizar contador
-                updateFavoritesCount();
+                // Actualizar contador con el valor del servidor (más confiable)
+                if (typeof data.favorites_count !== 'undefined') {
+                    updateFavoritesCountDirectly(data.favorites_count);
+                } else {
+                    // Fallback: hacer fetch si el servidor no devuelve el count
+                    updateFavoritesCount();
+                }
                 
                 // SIEMPRE actualizar el modal completo para reflejar cambios en tiempo real
-                console.log('🔄 Actualizando modal de favoritos...');
                 refreshFavoritesModal();
                 
                 // Mostrar notificación apropiada
@@ -263,6 +294,11 @@ const RealTimeUpdates = (function() {
                 // Actualizar TODOS los botones de este producto en la página
                 updateFavoriteButtons(productId, false);
                 
+                // Actualizar contador inmediatamente con el valor del servidor
+                if (typeof data.favorites_count !== 'undefined') {
+                    updateFavoritesCountDirectly(data.favorites_count);
+                }
+                
                 // Eliminar del modal después de la animación
                 setTimeout(() => {
                     if (listItem) {
@@ -301,11 +337,6 @@ const RealTimeUpdates = (function() {
                             countEl.innerHTML = `<span class="fav-count-number">${remainingCount}</span> ${countText}`;
                         }
                     }
-                    
-                    // Actualizar contador del badge (CRÍTICO: usar remainingCount del DOM)
-                    if (typeof window.updateFavoritesCount === 'function') {
-                        window.updateFavoritesCount(remainingCount);
-                    }
                 }, 300);
                 
                 showToast('Quitado de favoritos', 'success');
@@ -332,6 +363,35 @@ const RealTimeUpdates = (function() {
                 button.disabled = false;
             }
         });
+    }
+
+    // Actualizar contador de favoritos con un valor directo (sin fetch)
+    function updateFavoritesCountDirectly(count) {
+        count = parseInt(count) || 0;
+        
+        // Actualizar badges del header
+        const countElements = document.querySelectorAll('#favorites-count');
+        countElements.forEach(el => {
+            if (count > 0) {
+                el.textContent = count;
+                el.style.display = 'flex';
+            } else {
+                el.style.display = 'none';
+            }
+        });
+        
+        // Actualizar contador del modal
+        const modalCount = document.querySelector('.favorites-count');
+        if (modalCount) {
+            const countNumber = modalCount.querySelector('.fav-count-number');
+            const countText = count === 1 ? 'producto favorito' : 'productos favoritos';
+            
+            if (countNumber) {
+                countNumber.textContent = count;
+            } else {
+                modalCount.innerHTML = `<span class="fav-count-number">${count}</span> ${countText}`;
+            }
+        }
     }
 
     function updateFavoritesCount() {
@@ -399,12 +459,10 @@ const RealTimeUpdates = (function() {
             return;
         }
 
-        console.log('🔄 Actualizando modal de favoritos...');
 
         fetch(baseUrl + '/app/actions/get_favorites.php')
             .then(response => response.json())
             .then(data => {
-                console.log('✅ Respuesta de get_favorites.php:', data);
                 
                 if (data.success) {
                     // Actualizar el HTML del modal usando la respuesta correcta
@@ -425,7 +483,6 @@ const RealTimeUpdates = (function() {
                         }
                     }
                     
-                    console.log(`✅ Modal actualizado con ${data.count} productos`);
                 } else {
                     console.error('❌ Error en la respuesta:', data.message);
                     showToast('Error al actualizar favoritos', 'error');
@@ -531,7 +588,6 @@ const RealTimeUpdates = (function() {
             .btn-cart[data-id="${productId}"]
         `);
         
-        console.log(`🔄 Actualizando botones de carrito para producto ${productId}, inCart: ${inCart}, botones encontrados: ${buttons.length}`);
         
         buttons.forEach(btn => {
             const icon = btn.querySelector('i');
@@ -614,14 +670,6 @@ const RealTimeUpdates = (function() {
                     }
                 }
             }
-            
-            console.log(`  ✅ Botón actualizado:`, {
-                element: btn.tagName,
-                class: btn.className,
-                dataInCart: btn.dataset.inCart,
-                iconFA: icon?.className,
-                iconSpan: iconSpan?.className
-            });
         });
     }
 
@@ -646,7 +694,6 @@ const RealTimeUpdates = (function() {
                     window.GlobalCounters.updateCart(data.count);
                 }
                 
-                console.log('🛒 Contador de carrito actualizado:', data.count);
             })
             .catch(error => console.error('❌ Error al actualizar contador de carrito:', error));
     }
@@ -665,7 +712,6 @@ const RealTimeUpdates = (function() {
             window.showNotification(message, type);
         } else {
             // Fallback si no está disponible
-            console.log(`[${type.toUpperCase()}] ${message}`);
         }
     }
 
@@ -674,7 +720,6 @@ const RealTimeUpdates = (function() {
     // ============================================
     
     function init() {
-        console.log('🚀 Real-time-updates.js: Inicializando event listeners...');
         
         // Event delegation para botones dinámicos
         document.addEventListener('click', function(e) {
@@ -698,17 +743,10 @@ const RealTimeUpdates = (function() {
 
             // FAVORITOS - Agregar/Quitar desde SHOP (clase: add-to-favorites)
             if (e.target.closest('.add-to-favorites')) {
-                console.log('❤️ Click detectado en .add-to-favorites');
                 e.preventDefault();
                 e.stopPropagation();
                 const btn = e.target.closest('.add-to-favorites');
                 const productId = btn.dataset.id || btn.getAttribute('data-id');
-                
-                console.log('💝 Botón de favoritos:', {
-                    btn,
-                    productId,
-                    classes: btn.className
-                });
                 
                 addToFavorites(productId, btn);
             }
@@ -740,7 +778,6 @@ const RealTimeUpdates = (function() {
 
             // CARRITO - Botón de PRODUCT DETAILS (clase: btn-add-cart-modern) - IR AL CARRITO
             if (e.target.closest('.btn-add-cart-modern')) {
-                console.log('🎯 Click detectado en .btn-add-cart-modern (Product Details)');
                 e.preventDefault();
                 e.stopPropagation();
                 const btn = e.target.closest('.btn-add-cart-modern');
@@ -755,16 +792,8 @@ const RealTimeUpdates = (function() {
                 // Verificar si ya está en carrito
                 const inCart = btn.dataset.inCart === 'true' || btn.classList.contains('in-cart');
                 
-                console.log('🛒 Product Details - Estado Carrito:', {
-                    productId,
-                    inCart,
-                    dataInCart: btn.dataset.inCart,
-                    hasClass: btn.classList.contains('in-cart')
-                });
-                
                 if (inCart) {
                     // Si ya está en carrito, ir a cart.php
-                    console.log('🛒 Producto ya en carrito - Redirigiendo a cart.php');
                     window.location.href = baseUrl + '/cart.php';
                 } else {
                     // Si no está en carrito, agregarlo
@@ -776,28 +805,13 @@ const RealTimeUpdates = (function() {
 
             // CARRITO - Botón de SHOP (clase: add-to-cart en <a>) - TOGGLE Agregar/Quitar
             if (e.target.closest('.add-to-cart')) {
-                console.log('🎯 Click detectado en .add-to-cart (Shop)');
                 e.preventDefault();
                 e.stopPropagation();
                 const btn = e.target.closest('.add-to-cart');
                 const productId = btn.dataset.id || btn.getAttribute('data-id');
                 
-                console.log('📦 Botón de carrito Shop:', {
-                    btn,
-                    productId,
-                    classes: btn.className,
-                    dataId: btn.dataset.id,
-                    getAttribute: btn.getAttribute('data-id')
-                });
-                
                 // VALIDACIÓN: Verificar que productId existe y no está vacío
                 if (!productId || productId === 'null' || productId === 'undefined') {
-                    console.error('❌ ERROR: ID de producto no válido', {
-                        productId,
-                        btn,
-                        dataset: btn.dataset,
-                        attributes: Array.from(btn.attributes).map(a => ({name: a.name, value: a.value}))
-                    });
                     showToast('Error: ID de producto no válido', 'error');
                     return;
                 }
@@ -811,13 +825,6 @@ const RealTimeUpdates = (function() {
                 // TOGGLE: verificar si ya está en carrito
                 const inCart = btn.dataset.inCart === 'true' || btn.classList.contains('in-cart');
                 
-                console.log('🛒 Shop - Toggle Carrito:', {
-                    productId,
-                    inCart,
-                    dataInCart: btn.dataset.inCart,
-                    hasClass: btn.classList.contains('in-cart')
-                });
-                
                 if (inCart) {
                     // Si está en carrito, QUITARLO
                     removeFromCart(productId, btn);
@@ -829,7 +836,6 @@ const RealTimeUpdates = (function() {
             }
         });
 
-        console.log('✅ Real-time updates initialized');
     }
 
     // Agregar estilos para animaciones
@@ -916,7 +922,9 @@ const RealTimeUpdates = (function() {
         addToCart,
         removeFromCart,
         updateNotificationCount,
+        updateNotificationCountDirectly,
         updateFavoritesCount,
+        updateFavoritesCountDirectly,
         updateCartCount,
         showToast,
         refreshFavoritesModal,

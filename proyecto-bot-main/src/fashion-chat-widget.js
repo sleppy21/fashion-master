@@ -587,6 +587,16 @@ class FashionStoreChatWidget {
      * Mostrar interfaz del chat
      */
     showChatInterface() {
+        // 🔧 FIX: Calcular ancho del scrollbar antes de ocultar overflow
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        
+        // Solo compensar si hay scrollbar visible
+        if (scrollbarWidth > 0) {
+            document.body.style.paddingRight = `${scrollbarWidth}px`;
+            // Guardar el valor para restaurarlo después
+            document.body.setAttribute('data-scrollbar-width', scrollbarWidth);
+        }
+        
         this.chatContainer.classList.add('fs-visible');
         document.body.classList.add('fs-chat-open');
     }
@@ -607,6 +617,10 @@ class FashionStoreChatWidget {
         if (this.chatContainer) {
             this.chatContainer.classList.remove('fs-visible');
         }
+        
+        // 🔧 FIX: Remover el padding agregado cuando se abrió el chat
+        document.body.style.paddingRight = '';
+        document.body.removeAttribute('data-scrollbar-width');
         
         document.body.classList.remove('fs-chat-open');
     }

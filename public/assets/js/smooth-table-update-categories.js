@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SISTEMA DE ACTUALIZACIÓN SUAVE DE TABLA/GRID V3.0 - FIELD-LEVEL UPDATE
  * Actualización GRANULAR a nivel de campo individual
  * Solo actualiza los campos específicos que cambiaron - Ultra rápido
@@ -9,14 +9,14 @@
 
 /**
  * 📦 FUNCIÓN CENTRALIZADA PARA CALCULAR ESTADO DE STOCK (JavaScript)
- * Replica EXACTAMENTE la misma lógica que ProductController.php
+ * Replica EXACTAMENTE la misma lógica que CategoryController.php
  * 
- * @param {Object} producto - Objeto con stock_actual_producto y stock_minimo_producto
+ * @param {Object} categoria - Objeto con stock_actual_categoria y stock_minimo_categoria
  * @returns {Object} - {clase: string, texto: string, textoTabla: string}
  */
-function calcularEstadoStock(producto) {
-    const stockActual = parseInt(producto.stock_actual_producto) || 0;
-    const stockMinimo = producto.stock_minimo_producto ? parseInt(producto.stock_minimo_producto) : null;
+function calcularEstadoStock(categoria) {
+    const stockActual = parseInt(categoria.stock_actual_categoria) || 0;
+    const stockMinimo = categoria.stock_minimo_categoria ? parseInt(categoria.stock_minimo_categoria) : null;
     
     // Prioridad 1: Stock en 0 = Agotado
     if (stockActual === 0) {
@@ -81,37 +81,31 @@ class SmoothTableUpdater {
         this.observer = null; // Intersection Observer para lazy updates
         this.rafId = null; // RequestAnimationFrame ID para cancelar animaciones
         
-        // Mapeo de campos a selectores CSS (Vista Tabla)
+        // Mapeo de campos a selectores CSS (Vista Tabla) - ADAPTADO PARA CATEGORÍAS
         this.fieldSelectorsTable = {
             imagen: 'td:nth-child(2) img',
-            nombre: 'td:nth-child(3) strong',
-            categoria: 'td:nth-child(4)',
-            marca: 'td:nth-child(5)',
-            genero: 'td:nth-child(6) .genero-badge',
-            precio: 'td:nth-child(7) strong',
-            stock: 'td:nth-child(8) .stock-number',
-            stock_status: 'td:nth-child(8) .stock-status',
-            stock_class: 'td:nth-child(8) .stock-number',
-            estado: 'td:nth-child(9) .status-badge',
-            fecha: 'td:nth-child(10)'
+            codigo: 'td:nth-child(3)',
+            nombre: 'td:nth-child(4) strong',
+            descripcion: 'td:nth-child(5)',
+            total_productos: 'td:nth-child(6) .badge',
+            estado: 'td:nth-child(7) .status-badge',
+            fecha: 'td:nth-child(8)'
         };
         
-        // Mapeo de campos a selectores CSS (Vista Grid)
+        // Mapeo de campos a selectores CSS (Vista Grid) - ADAPTADO PARA CATEGORÍAS
         this.fieldSelectorsGrid = {
             imagen: '.product-card-image-mobile img',
+            codigo: '.product-card-code',
             nombre: '.product-card-title',
-            categoria: '.product-card-category',
-            marca: '.product-card-brand',
-            genero: '.product-card-genero .genero-badge',
-            precio: '.product-card-price',
-            stock: '.product-card-stock span',
+            descripcion: '.product-card-description',
+            total_productos: '.product-card-total',
             estado: '.product-card-status'
         };
     }
 
     /**
      * 🚀 NUEVA FUNCIÓN: Actualizar SOLO campos específicos que cambiaron
-     * @param {number|object} productId - ID del producto o datos completos
+     * @param {number|object} productId - ID del categoria o datos completos
      * @param {object} updatedData - Datos actualizados
      * @param {array} changedFields - Array de campos que cambiaron (opcional, se detecta automáticamente)
      */
@@ -121,7 +115,7 @@ class SmoothTableUpdater {
             // Soporte para pasar el objeto completo como primer parámetro
             if (typeof productId === 'object' && productId !== null) {
                 updatedData = productId;
-                productId = updatedData.id_producto || updatedData.id;
+                productId = updatedData.id_categoria || updatedData.id;
             }
 
             // Validar que tengamos los datos necesarios
@@ -130,7 +124,7 @@ class SmoothTableUpdater {
                 const result = await response.json();
                 
                 if (!result.success) {
-                    throw new Error('Error al obtener datos del producto');
+                    throw new Error('Error al obtener datos del categoria');
                 }
                 
                 updatedData = result.product;
@@ -138,7 +132,7 @@ class SmoothTableUpdater {
 
             // Validar ID
             if (!productId || productId <= 0) {
-                throw new Error('ID de producto inválido');
+                throw new Error('ID de categoria inválido');
             }
             
             // 🆕 LIMPIAR CACHE DEL ELEMENTO DOM ANTES DE ACTUALIZAR
@@ -150,19 +144,19 @@ class SmoothTableUpdater {
             if (!changedFields) {
                 changedFields = this.detectChangedFields(productId, updatedData);
                 
-                // 🎯 PARCHE: Si viene desde EDICIÓN y solo detectó estado/stock,
+                // 🎯 PARCHE: Si viene desde EDICIÓN y solo detectó estado,
                 // forzar actualización de TODOS los campos para evitar problemas de caché
                 // NOTA: NO incluir 'fecha' porque fecha_creacion nunca cambia
                 if (changedFields && changedFields.length <= 2 && 
-                    updatedData.nombre_producto && updatedData.nombre_marca) {
-                    changedFields = ['imagen', 'nombre', 'categoria', 'marca', 'genero', 'precio', 'stock', 'estado'];
+                    updatedData.nombre_categoria) {
+                    changedFields = ['imagen', 'codigo', 'nombre', 'descripcion', 'total_productos', 'estado'];
                 }
             }
             
             // 🆕 FORZAR ACTUALIZACIÓN DE TODOS LOS CAMPOS AL EDITAR DESDE MODAL
-            // Si los datos vienen completos (con nombre_producto, etc.), actualizar TODO
-            if (!changedFields && updatedData.nombre_producto) {
-                changedFields = ['imagen', 'nombre', 'categoria', 'marca', 'genero', 'precio', 'stock', 'estado'];
+            // Si los datos vienen completos (con nombre_categoria, etc.), actualizar TODO
+            if (!changedFields && updatedData.nombre_categoria) {
+                changedFields = ['imagen', 'codigo', 'nombre', 'descripcion', 'total_productos', 'estado'];
             }
             
             // Si no hay cambios, salir
@@ -184,12 +178,12 @@ class SmoothTableUpdater {
             // ✅ SOBRESCRIBIR COMPLETAMENTE datos en cache (no mergear)
             // Esto asegura que la próxima comparación use los datos más recientes
             this.dataCache.set(`data-${productId}`, { ...updatedData });
-            console.log('💾 Cache de datos actualizado para producto', productId);
+            console.log('💾 Cache de datos actualizado para categoria', productId);
             
-            console.log(`✅ Producto ${productId} actualizado exitosamente (${changedFields.length} campo(s))`);
+            console.log(`✅ categoria ${productId} actualizado exitosamente (${changedFields.length} campo(s))`);
             
         } catch (error) {
-            console.error('❌ Error actualizando producto:', error);
+            console.error('❌ Error actualizando categoria:', error);
             // Fallback mejorado: recargar solo si es crítico
             if (error.message.includes('inválido')) {
                 console.error('Error crítico, recargando tabla completa...');
@@ -201,33 +195,33 @@ class SmoothTableUpdater {
     }
 
     /**
-     * 🎯 Actualizar múltiples productos con smooth transition (para filtros/búsqueda)
+     * 🎯 Actualizar múltiples categorias con smooth transition (para filtros/búsqueda)
      */
     async updateMultipleProducts(newProductsList) {
-        console.log('🔄 Actualizando múltiples productos con smooth transition:', newProductsList.length);
+        console.log('🔄 Actualizando múltiples categorias con smooth transition:', newProductsList.length);
         
         try {
-            // Obtener productos actuales en la tabla/grid
+            // Obtener categorias actuales en la tabla/grid
             const currentView = this.getCurrentView();
             const currentProductIds = this.getCurrentProductIds(currentView);
-            const newProductIds = newProductsList.map(p => p.id_producto);
+            const newProductIds = newProductsList.map(p => p.id_categoria);
             
-            console.log('📊 Productos actuales:', currentProductIds);
-            console.log('📊 Productos nuevos:', newProductIds);
+            console.log('📊 categorias actuales:', currentProductIds);
+            console.log('📊 categorias nuevos:', newProductIds);
             
-            // 1. Ocultar productos que ya no están en la lista
+            // 1. Ocultar categorias que ya no están en la lista
             const productsToHide = currentProductIds.filter(id => !newProductIds.includes(id));
             for (const productId of productsToHide) {
                 await this.hideProduct(productId, currentView);
             }
             
-            // 2. Actualizar o mostrar productos existentes/nuevos
+            // 2. Actualizar o mostrar categorias existentes/nuevos
             for (const product of newProductsList) {
-                if (currentProductIds.includes(product.id_producto)) {
-                    // Actualizar producto existente
-                    await this.updateSingleProduct(product.id_producto, product);
+                if (currentProductIds.includes(product.id_categoria)) {
+                    // Actualizar categoria existente
+                    await this.updateSingleProduct(product.id_categoria, product);
                 } else {
-                    // Mostrar nuevo producto (si estaba oculto) o agregarlo
+                    // Mostrar nuevo categoria (si estaba oculto) o agregarlo
                     await this.showProduct(product, currentView);
                 }
             }
@@ -251,8 +245,8 @@ class SmoothTableUpdater {
             this.dataCache.set(`data-${productId}`, { ...newData });
             // ✅ Retornar TODOS los campos principales para actualizar en primera carga
             // NOTA: NO incluir 'fecha' porque fecha_creacion nunca cambia y puede causar problemas
-            console.log('🆕 Sin caché previo, actualizando TODOS los campos del producto', productId);
-            return ['imagen', 'nombre', 'categoria', 'marca', 'genero', 'precio', 'stock', 'estado'];
+            console.log('🆕 Sin caché previo, actualizando TODOS los campos de la categoría', productId);
+            return ['imagen', 'codigo', 'nombre', 'descripcion', 'total_productos', 'estado'];
         }
         
         const changed = [];
@@ -260,45 +254,36 @@ class SmoothTableUpdater {
         // 🔍 Log de comparación para debugging
         console.log('🔍 Comparando datos:', {
             productId,
-            cached_marca: cachedData.nombre_marca,
-            new_marca: newData.nombre_marca,
-            cached_stock: cachedData.stock_actual_producto,
-            new_stock: newData.stock_actual_producto
+            cached_nombre: cachedData.nombre_categoria,
+            new_nombre: newData.nombre_categoria,
+            cached_estado: cachedData.estado_categoria,
+            new_estado: newData.estado_categoria
         });
         
         // Comparar campo por campo
-        if (cachedData.url_imagen_producto !== newData.url_imagen_producto || 
-            cachedData.imagen_producto !== newData.imagen_producto) {
+        if (cachedData.url_imagen_categoria !== newData.url_imagen_categoria || 
+            cachedData.imagen_categoria !== newData.imagen_categoria) {
             changed.push('imagen');
         }
         
-        if (cachedData.nombre_producto !== newData.nombre_producto) {
-            changed.push('nombre');
+        if (cachedData.codigo_categoria !== newData.codigo_categoria) {
+            changed.push('codigo');
         }
         
         if (cachedData.nombre_categoria !== newData.nombre_categoria) {
-            changed.push('categoria');
+            changed.push('nombre');
         }
         
-        if (cachedData.nombre_marca !== newData.nombre_marca) {
-            console.log('✅ Marca cambió:', cachedData.nombre_marca, '→', newData.nombre_marca);
-            changed.push('marca');
+        if (cachedData.descripcion_categoria !== newData.descripcion_categoria) {
+            changed.push('descripcion');
         }
         
-        if (cachedData.genero_producto !== newData.genero_producto) {
-            console.log('✅ Género cambió:', cachedData.genero_producto, '→', newData.genero_producto);
-            changed.push('genero');
+        if (parseInt(cachedData.total_productos) !== parseInt(newData.total_productos)) {
+            changed.push('total_productos');
         }
         
-        if (parseFloat(cachedData.precio_producto) !== parseFloat(newData.precio_producto)) {
-            changed.push('precio');
-        }
-        
-        if (parseInt(cachedData.stock_actual_producto) !== parseInt(newData.stock_actual_producto)) {
-            changed.push('stock');
-        }
-        
-        if (String(cachedData.estado).toLowerCase() !== String(newData.estado).toLowerCase()) {
+        if (String(cachedData.estado_categoria).toLowerCase() !== String(newData.estado_categoria).toLowerCase()) {
+            console.log('✅ Estado cambió:', cachedData.estado_categoria, '→', newData.estado_categoria);
             changed.push('estado');
         }
         
@@ -316,11 +301,11 @@ class SmoothTableUpdater {
         let row = this.cache.get(`row-${productId}`);
         
         if (!row || !document.contains(row)) {
-            row = document.querySelector(`#productos-table-body tr[data-product-id="${productId}"]`);
+            row = document.querySelector(`#categorias-table-body tr[data-product-id="${productId}"]`);
             console.log('🔵 Fila encontrada en DOM:', row);
             
             if (!row) {
-                console.warn(`⚠️ Fila del producto ${productId} no encontrada`);
+                console.warn(`⚠️ Fila del categoria ${productId} no encontrada`);
                 return;
             }
             
@@ -344,7 +329,7 @@ class SmoothTableUpdater {
             card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
             
             if (!card) {
-                console.warn(`⚠️ Card del producto ${productId} no encontrada`);
+                console.warn(`⚠️ Card del categoria ${productId} no encontrada`);
                 return;
             }
             
@@ -416,33 +401,30 @@ class SmoothTableUpdater {
     }
 
     /**
-     * 📝 Obtener valor de un campo desde los datos del producto
+     * 📝 Obtener valor de un campo desde los datos de la categoría
      */
     getFieldValue(field, productData) {
         switch (field) {
+            case 'codigo':
+                return productData.codigo_categoria || '-';
             case 'nombre':
-                return productData.nombre_producto || 'Sin nombre';
-            case 'categoria':
-                return productData.nombre_categoria || productData.categoria_nombre || 'Sin categoría';
-            case 'marca':
-                return productData.nombre_marca || productData.marca_nombre || 'Sin marca';
-            case 'genero':
-                return getGeneroLabel(productData.genero_producto);
-            case 'precio':
-                return productData.precio_formato || '$' + parseFloat(productData.precio_producto || 0).toFixed(2);
-            case 'stock':
-                return String(parseInt(productData.stock_actual_producto) || 0);
+                return productData.nombre_categoria || 'Sin nombre';
+            case 'descripcion':
+                // Truncar descripción si es muy larga
+                const desc = productData.descripcion_categoria || 'Sin descripción';
+                return desc.length > 100 ? desc.substring(0, 97) + '...' : desc;
+            case 'total_productos':
+                return String(parseInt(productData.total_productos) || 0);
             case 'estado':
-                return productData.estado === 'activo' ? 'Activo' : 'Inactivo';
+                return productData.estado_categoria === 'activo' ? 'Activo' : 'Inactivo';
             case 'imagen':
-                return this.getProductImageUrl(productData, true);
+                return this.getCategoryImageUrl(productData, true);
             case 'fecha':
                 // Extraer solo la fecha (YYYY-MM-DD) sin la hora
-                const fecha = productData.fecha_creacion_producto || 
-                             productData.fecha_actualizacion_producto || 
+                const fecha = productData.fecha_creacion_categoria || 
+                             productData.fecha_actualizacion_categoria || 
                              productData.fecha || '';
                 const fechaSplit = fecha ? fecha.split(' ')[0] : '-';
-                console.log('📅 Fecha extraída:', { raw: fecha, split: fechaSplit });
                 return fechaSplit;
             default:
                 return '';
@@ -470,13 +452,25 @@ class SmoothTableUpdater {
         
         if (field === 'imagen') {
             element.src = newValue;
-        } else if (field === 'genero') {
+        } else if (field === 'codigo') {
             element.textContent = newValue;
-            // Actualizar clase de color
-            const generoClass = getGeneroBadgeClass(productData.genero_producto);
-            element.className = 'genero-badge ' + generoClass;
+        } else if (field === 'nombre') {
+            element.textContent = newValue;
+        } else if (field === 'descripcion') {
+            element.textContent = newValue;
+        } else if (field === 'total_productos') {
+            // Actualizar badge de total de productos
+            element.textContent = newValue;
+            // Opcional: cambiar clase según la cantidad
+            if (parseInt(newValue) === 0) {
+                element.className = 'badge badge-secondary';
+            } else if (parseInt(newValue) > 10) {
+                element.className = 'badge badge-success';
+            } else {
+                element.className = 'badge badge-info';
+            }
         } else if (field === 'estado') {
-            const isActive = productData.estado === 'activo';
+            const isActive = productData.estado_categoria === 'activo';
             element.textContent = newValue;
             
             // Detectar si es GRID o TABLA y aplicar clases correctas
@@ -487,43 +481,7 @@ class SmoothTableUpdater {
                 // Es TABLA
                 element.className = 'status-badge ' + (isActive ? 'status-active' : 'status-inactive');
             }
-        } else if (field === 'stock') {
-            const stock = parseInt(productData.stock_actual_producto) || 0;
-            
-            // ✅ Usar función centralizada para calcular estado del stock
-            const estadoStock = calcularEstadoStock(productData);
-            
-            // 🔍 LOG TEMPORAL PARA DIAGNÓSTICO
-            console.log('🔍 STOCK UPDATE DEBUG:', {
-                productId: productData.id_producto,
-                stock_actual: stock,
-                stock_minimo_raw: productData.stock_minimo_producto,
-                stock_minimo_parsed: productData.stock_minimo_producto ? parseInt(productData.stock_minimo_producto) : null,
-                resultado: estadoStock
-            });
-            
-            // Para TABLA: Actualizar número y clase
-            if (element.classList.contains('stock-number')) {
-                element.textContent = stock;
-                // Reemplazar solo la clase stock-*
-                element.className = element.className.replace(/stock-\w+/g, '') + ' ' + estadoStock.clase;
-                element.className = element.className.trim();
-                
-                // Actualizar también el texto de estado si existe
-                const statusElement = element.parentElement?.querySelector('.stock-status');
-                if (statusElement) {
-                    statusElement.textContent = estadoStock.textoTabla;
-                }
-            }
-            // Para GRID: Actualizar el texto completo del span (con icono)
-            else if (element.closest('.product-card-stock')) {
-                // El element YA ES el span correcto (por el selector .product-card-stock span)
-                // Actualizar clase
-                element.className = estadoStock.clase;
-                // Actualizar contenido completo con icono
-                element.innerHTML = `<i class="fas fa-box"></i> ${stock} unidades (${estadoStock.texto})`;
-            }
-        } else if (field === 'precio') {
+        } else if (field === 'fecha') {
             element.textContent = newValue;
         } else {
             element.textContent = newValue;
@@ -531,25 +489,25 @@ class SmoothTableUpdater {
     }
 
     /**
-     * 🖼️ Obtener URL de imagen del producto
+     * 🖼️ Obtener URL de imagen del categoria
      */
-    getProductImageUrl(producto, forceCacheBust = false) {
+    getCategoryImageUrl(categoria, forceCacheBust = false) {
         const timestamp = forceCacheBust ? '?t=' + new Date().getTime() : '';
-        if (producto.url_imagen_producto && producto.url_imagen_producto !== 'NULL') {
-            return producto.url_imagen_producto + timestamp;
-        } else if (producto.imagen_producto && producto.imagen_producto !== 'NULL') {
-            return '/fashion-master/public/assets/img/products/' + producto.imagen_producto + timestamp;
+        if (categoria.url_imagen_categoria && categoria.url_imagen_categoria !== 'NULL') {
+            return categoria.url_imagen_categoria + timestamp;
+        } else if (categoria.imagen_categoria && categoria.imagen_categoria !== 'NULL') {
+            return '/fashion-master/public/assets/img/categories/' + categoria.imagen_categoria + timestamp;
         }
-        return '/fashion-master/public/assets/img/default-product.jpg';
+        return '/fashion-master/public/assets/img/default-category.png';
     }
 
     /**
-     * 🎯 FUNCIÓN ESPECÍFICA: Actualizar solo el estado del producto
+     * 🎯 FUNCIÓN ESPECÍFICA: Actualizar solo el estado del categoria
      * Ultra-rápido para cambios de estado
      */
     async updateProductEstado(productId, newEstado) {
         const productData = {
-            id_producto: productId,
+            id_categoria: productId,
             estado: newEstado
         };
         
@@ -558,14 +516,14 @@ class SmoothTableUpdater {
     }
 
     /**
-     * 📦 FUNCIÓN ESPECÍFICA: Actualizar solo el stock del producto
+     * 📦 FUNCIÓN ESPECÍFICA: Actualizar solo el stock del categoria
      * Ultra-rápido para cambios de stock
      */
     async updateProductStock(productId, productData) {
         // productData puede ser solo el objeto completo del servidor
-        // o un objeto simple con stock_actual_producto
+        // o un objeto simple con stock_actual_categoria
         const updateData = {
-            id_producto: productId,
+            id_categoria: productId,
             ...productData
         };
         
@@ -574,43 +532,43 @@ class SmoothTableUpdater {
     }
 
     /**
-     * 💰 FUNCIÓN ESPECÍFICA: Actualizar solo el precio del producto
+     * 💰 FUNCIÓN ESPECÍFICA: Actualizar solo el precio del categoria
      */
     async updateProductPrecio(productId, newPrecio) {
         const productData = {
-            id_producto: productId,
-            precio_producto: newPrecio
+            id_categoria: productId,
+            precio_categoria: newPrecio
         };
         
         await this.updateSingleProduct(productId, productData, ['precio']);
     }
 
     /**
-     * 🖼️ FUNCIÓN ESPECÍFICA: Actualizar solo la imagen del producto
+     * 🖼️ FUNCIÓN ESPECÍFICA: Actualizar solo la imagen del categoria
      */
     async updateProductImagen(productId, newImageUrl) {
         const productData = {
-            id_producto: productId,
-            url_imagen_producto: newImageUrl
+            id_categoria: productId,
+            url_imagen_categoria: newImageUrl
         };
         
         await this.updateSingleProduct(productId, productData, ['imagen']);
     }
 
     /**
-     * 📝 FUNCIÓN ESPECÍFICA: Actualizar solo el nombre del producto
+     * 📝 FUNCIÓN ESPECÍFICA: Actualizar solo el nombre del categoria
      */
     async updateProductNombre(productId, newNombre) {
         const productData = {
-            id_producto: productId,
-            nombre_producto: newNombre
+            id_categoria: productId,
+            nombre_categoria: newNombre
         };
         
         await this.updateSingleProduct(productId, productData, ['nombre']);
     }
 
     /**
-     * LEGACY: Actualizar producto en la vista tabla (mantener compatibilidad)
+     * LEGACY: Actualizar categoria en la vista tabla (mantener compatibilidad)
      * @deprecated Usar updateSingleProduct() en su lugar
      */
     async updateProductInTable(productId, productData) {
@@ -618,10 +576,10 @@ class SmoothTableUpdater {
         let row = this.cache.get(`row-${productId}`);
         
         if (!row || !document.contains(row)) {
-            row = document.querySelector(`#productos-table-body tr[data-product-id="${productId}"]`);
+            row = document.querySelector(`#categorias-table-body tr[data-product-id="${productId}"]`);
             
             if (!row) {
-                console.warn(`⚠️ Fila del producto ${productId} no encontrada, recargando tabla...`);
+                console.warn(`⚠️ Fila del categoria ${productId} no encontrada, recargando tabla...`);
                 if (typeof window.loadProducts === 'function') {
                     window.loadProducts();
                 }
@@ -640,7 +598,7 @@ class SmoothTableUpdater {
         
         // Verificar si realmente hay cambios (evitar updates innecesarios)
         if (this.isRowEqual(row, newRow)) {
-            console.log(`⏭️ Producto ${productId} sin cambios, omitiendo actualización`);
+            console.log(`⏭️ categoria ${productId} sin cambios, omitiendo actualización`);
             return;
         }
         
@@ -665,7 +623,7 @@ class SmoothTableUpdater {
     }
 
     /**
-     * LEGACY: Actualizar producto en la vista grid (mantener compatibilidad)
+     * LEGACY: Actualizar categoria en la vista grid (mantener compatibilidad)
      * @deprecated Usar updateSingleProduct() en su lugar
      */
     async updateProductInGrid(productId, productData) {
@@ -676,7 +634,7 @@ class SmoothTableUpdater {
             card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
             
             if (!card) {
-                console.warn(`⚠️ Card del producto ${productId} no encontrada, recargando grid...`);
+                console.warn(`⚠️ Card del categoria ${productId} no encontrada, recargando grid...`);
                 if (typeof window.loadProducts === 'function') {
                     window.loadProducts();
                 }
@@ -723,7 +681,7 @@ class SmoothTableUpdater {
     }
 
     /**
-     * Agregar nuevo producto a la tabla/grid
+     * Agregar nuevo categoria a la tabla/grid
      */
     async addNewProduct(productData) {
         const currentView = this.getCurrentView();
@@ -736,10 +694,10 @@ class SmoothTableUpdater {
     }
 
     /**
-     * Agregar producto a la tabla
+     * Agregar categoria a la tabla
      */
     async addProductToTable(productData) {
-        const tbody = document.getElementById('productos-table-body');
+        const tbody = document.getElementById('categorias-table-body');
         
         if (!tbody) return;
         
@@ -769,7 +727,7 @@ class SmoothTableUpdater {
     }
 
     /**
-     * Agregar producto al grid
+     * Agregar categoria al grid
      */
     async addProductToGrid(productData) {
         const grid = document.querySelector('.products-grid');
@@ -802,16 +760,16 @@ class SmoothTableUpdater {
     }
 
     /**
-     * Eliminar producto de la tabla/grid con animación
+     * Eliminar categoria de la tabla/grid con animación
      */
     async removeProduct(productId) {
         const currentView = this.getCurrentView();
         const element = currentView === 'grid' 
             ? document.querySelector(`.product-card[data-product-id="${productId}"]`)
-            : document.querySelector(`#productos-table-body tr[data-product-id="${productId}"]`);
+            : document.querySelector(`#categorias-table-body tr[data-product-id="${productId}"]`);
         
         if (!element) {
-            console.warn(`⚠️ Elemento del producto ${productId} no encontrado`);
+            console.warn(`⚠️ Elemento del categoria ${productId} no encontrado`);
             return;
         }
         
@@ -828,7 +786,7 @@ class SmoothTableUpdater {
         element.remove();
         this.cache.delete(currentView === 'grid' ? `card-${productId}` : `row-${productId}`);
         
-        console.log(`✅ Producto ${productId} eliminado`);
+        console.log(`✅ categoria ${productId} eliminado`);
     }
 
     /**
@@ -871,9 +829,9 @@ class SmoothTableUpdater {
      * Crear HTML de fila de tabla
      * IMPORTANTE: Este HTML debe coincidir EXACTAMENTE con el generado en displayProducts()
      */
-    createTableRow(producto) {
+    createTableRow(categoria) {
         // Calcular clase de stock
-        const stock = parseInt(producto.stock_actual_producto) || 0;
+        const stock = parseInt(categoria.stock_actual_categoria) || 0;
         let stockClass = 'stock-normal';
         let estadoStock = 'En stock';
         if (stock === 0) {
@@ -885,72 +843,59 @@ class SmoothTableUpdater {
         }
         
         // URL de imagen con AppConfig o fallback
-        const getProductImageUrl = (producto, forceCacheBust = false) => {
+        const getProductImageUrl = (categoria, forceCacheBust = false) => {
             const timestamp = forceCacheBust ? '?t=' + new Date().getTime() : '';
-            if (producto.url_imagen_producto && producto.url_imagen_producto !== 'NULL') {
-                return producto.url_imagen_producto + timestamp;
-            } else if (producto.imagen_producto && producto.imagen_producto !== 'NULL') {
-                return '/fashion-master/public/assets/img/products/' + producto.imagen_producto + timestamp;
+            if (categoria.url_imagen_categoria && categoria.url_imagen_categoria !== 'NULL') {
+                return categoria.url_imagen_categoria + timestamp;
+            } else if (categoria.imagen_categoria && categoria.imagen_categoria !== 'NULL') {
+                return '/fashion-master/public/assets/img/categories/' + categoria.imagen_categoria + timestamp;
             }
-            return '/fashion-master/public/assets/img/default-product.jpg';
+            return '/fashion-master/public/assets/img/default-category.png';
         };
         
-        const imageUrl = getProductImageUrl(producto, true);
-        const fallbackImage = window.AppConfig 
-            ? window.AppConfig.getImageUrl('default-product.jpg') 
-            : '/fashion-master/public/assets/img/default-product.jpg';
+        const imageUrl = getProductImageUrl(categoria, true);
+        const fallbackImage = '/fashion-master/public/assets/img/default-category.png';
         
-        // Formatear precio
-        const precioFormato = producto.precio_formato || '$' + parseFloat(producto.precio_producto || 0).toFixed(2);
+        // Total productos
+        const totalProductos = categoria.total_productos || categoria.productos_count || 0;
         
         // Fecha
-        const fecha = producto.fecha_creacion_formato || producto.fecha_creacion_producto || 'N/A';
+        const fecha = categoria.fecha_creacion_categoria ? categoria.fecha_creacion_categoria.split(' ')[0] : 'N/A';
         
-        // HTML EXACTO como en displayProducts()
+        // HTML EXACTO como en displayProducts() de admin_categorias.php
         return `
-        <tr oncontextmenu="return false;" ondblclick="editProduct(${producto.id_producto})" style="cursor: pointer;" data-product-id="${producto.id_producto}">
-            <td>${producto.id_producto}</td>
-            <td onclick="event.stopPropagation();" ondblclick="event.stopPropagation(); showImageFullSize('${imageUrl}', '${(producto.nombre_producto || '').replace(/'/g, "\\'")}')"; style="cursor: zoom-in;">
+        <tr oncontextmenu="return false;" ondblclick="editCategoria(${categoria.id_categoria})" style="cursor: pointer;" data-product-id="${categoria.id_categoria}">
+            <td>${categoria.id_categoria}</td>
+            <td onclick="event.stopPropagation();" ondblclick="event.stopPropagation(); showImageFullSize('${imageUrl}', '${(categoria.nombre_categoria || '').replace(/'/g, "\\'")}')"; style="cursor: zoom-in;">
                 <div class="product-image-small">
                     <img src="${imageUrl}" 
-                         alt="Producto" 
+                         alt="categoría" 
                          onerror="this.src='${fallbackImage}'; this.onerror=null;">
                 </div>
             </td>
             <td>
+                <code>${categoria.codigo_categoria || 'N/A'}</code>
+            </td>
+            <td>
                 <div class="product-info">
-                    <strong>${producto.nombre_producto || 'Sin nombre'}</strong>
+                    <strong>${categoria.nombre_categoria || 'Sin nombre'}</strong>
                 </div>
             </td>
             <td>
-                <code>${producto.codigo || 'N/A'}</code>
+                ${categoria.descripcion_categoria || 'Sin descripción'}
             </td>
             <td>
-                ${producto.nombre_categoria || producto.categoria_nombre || 'Sin categoría'}
+                <span class="badge badge-info">${totalProductos}</span>
             </td>
             <td>
-                ${producto.nombre_marca || producto.marca_nombre || 'Sin marca'}
-            </td>
-            <td>
-                <div class="price-info">
-                    <strong>${precioFormato}</strong>
-                </div>
-            </td>
-            <td>
-                <div class="stock-info">
-                    <span class="stock-number ${stockClass}">${stock}</span>
-                    <small class="stock-status">${estadoStock}</small>
-                </div>
-            </td>
-            <td>
-                <span class="status-badge ${producto.estado === 'activo' ? 'status-active' : 'status-inactive'}">
-                    ${producto.estado === 'activo' ? 'Activo' : 'Inactivo'}
+                <span class="status-badge ${categoria.estado_categoria === 'activo' ? 'status-active' : 'status-inactive'}">
+                    ${categoria.estado_categoria === 'activo' ? 'Activo' : 'Inactivo'}
                 </span>
             </td>
             <td>${fecha}</td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn-action btn-menu" onclick="event.stopPropagation(); showActionMenu(${producto.id_producto}, '${(producto.nombre_producto || '').replace(/'/g, "\\'")}', ${stock}, '${producto.estado}', event)" title="Acciones">
+                    <button class="btn-action btn-menu" onclick="event.stopPropagation(); showActionMenu(${categoria.id_categoria}, '${(categoria.nombre_categoria || '').replace(/'/g, "\\'")}', 0, '${categoria.estado_categoria}', event)" title="Acciones">
                         <i class="fas fa-ellipsis-v"></i>
                     </button>
                 </div>
@@ -965,78 +910,68 @@ class SmoothTableUpdater {
      * Crear HTML de card del grid
      * IMPORTANTE: Este HTML debe coincidir EXACTAMENTE con el generado en displayProductsGrid()
      */
-    createGridCard(producto) {
-        const stock = parseInt(producto.stock_actual_producto) || 0;
+    createGridCard(categoria) {
+        const stock = parseInt(categoria.stock_actual_categoria) || 0;
         
         // ✅ Usar función centralizada para calcular estado del stock
-        const estadoStock = calcularEstadoStock(producto);
+        const estadoStock = calcularEstadoStock(categoria);
         
-        const precio = parseFloat(producto.precio_producto || 0).toLocaleString('es-CO');
-        const descuentoPrecio = producto.precio_descuento_producto 
-            ? `<span class="discount-price">$${parseFloat(producto.precio_descuento_producto).toLocaleString('es-CO')}</span>` 
+        const precio = parseFloat(categoria.precio_categoria || 0).toLocaleString('es-CO');
+        const descuentoPrecio = categoria.precio_descuento_categoria 
+            ? `<span class="discount-price">$${parseFloat(categoria.precio_descuento_categoria).toLocaleString('es-CO')}</span>` 
             : '';
         
         // Generar HTML de imagen usando la misma función que displayProductsGrid
         const imageUrl = typeof window.getProductImageUrl === 'function' 
-            ? window.getProductImageUrl(producto) 
-            : (producto.url_imagen_producto || '');
+            ? window.getProductImageUrl(categoria) 
+            : (categoria.url_imagen_categoria || '');
         const hasImage = imageUrl && !imageUrl.includes('default-product.jpg');
         
         const imageHTML = `
             <div class="product-card-image-mobile ${hasImage ? '' : 'no-image'}">
                 ${hasImage 
-                    ? `<img src="${imageUrl}" alt="${producto.nombre_producto || 'Producto'}" onerror="this.parentElement.classList.add('no-image'); this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fas fa-image\\'></i>';">` 
+                    ? `<img src="${imageUrl}" alt="${categoria.nombre_categoria || 'categoria'}" onerror="this.parentElement.classList.add('no-image'); this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fas fa-image\\'></i>';">` 
                     : '<i class="fas fa-image"></i>'}
             </div>
         `;
         
-        // HTML EXACTO como en displayProductsGrid()
+        // Total de productos para mostrar
+        const totalProductos = categoria.total_productos || categoria.productos_count || 0;
+        
+        // HTML EXACTO como en displayProductsGrid() de admin_categorias.php
         return `
-            <div class="product-card" ondblclick="editProduct(${producto.id_producto})" style="cursor: pointer;" data-product-id="${producto.id_producto}">
+            <div class="product-card" ondblclick="editCategoria(${categoria.id_categoria})" style="cursor: pointer;" data-product-id="${categoria.id_categoria}">
                 ${imageHTML}
                 <div class="product-card-header">
-                    <h3 class="product-card-title">${producto.nombre_producto || 'Sin nombre'}</h3>
-                    <span class="product-card-status ${producto.estado === 'activo' ? 'active' : 'inactive'}">
-                        ${producto.estado === 'activo' ? 'Activo' : 'Inactivo'}
+                    <h3 class="product-card-title">${categoria.nombre_categoria || 'Sin nombre'}</h3>
+                    <span class="product-card-status ${categoria.estado_categoria === 'activo' ? 'active' : 'inactive'}">
+                        ${categoria.estado_categoria === 'activo' ? 'Activo' : 'Inactivo'}
                     </span>
                 </div>
                 
                 <div class="product-card-body">
-                    ${producto.codigo ? `<div class="product-card-sku">Código: ${producto.codigo}</div>` : ''}
                     <div class="product-card-category">
-                        <i class="fas fa-tag"></i> ${producto.nombre_categoria || producto.categoria_nombre || 'Sin categoría'}
+                        <i class="fas fa-boxes"></i> ${totalProductos} producto${totalProductos !== 1 ? 's' : ''}
                     </div>
                     
-                    <div class="product-card-stock">
-                        <span class="${estadoStock.clase}">
-                            <i class="fas fa-box"></i> ${stock} unidades (${estadoStock.texto})
-                        </span>
+                    ${categoria.descripcion_categoria ? `
+                    <div class="product-card-description" style="margin-top: 10px; font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.4;">
+                        ${categoria.descripcion_categoria.substring(0, 80)}${categoria.descripcion_categoria.length > 80 ? '...' : ''}
                     </div>
-                    
-                    <div class="product-card-price">
-                        <i class="fas fa-dollar-sign"></i>
-                        $${precio}
-                        ${descuentoPrecio}
-                    </div>
+                    ` : ''}
                 </div>
                 
                 <div class="product-card-actions">
-                    <button class="product-card-btn btn-view" onclick="event.stopPropagation(); window.location.href='product-details.php?id=${producto.id_producto}'" title="Ver producto" style="background-color: #1a73e8 !important; color: white !important; border: none !important; box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3) !important;">
-                        <i class="fas fa-eye" style="color: white !important;"></i>
-                    </button>
-                    <button class="product-card-btn btn-edit" onclick="event.stopPropagation(); editProduct(${producto.id_producto})" title="Editar producto" style="background-color: #34a853 !important; color: white !important; border: none !important; box-shadow: 0 4px 8px rgba(52, 168, 83, 0.3) !important;">
+                    <button class="product-card-btn btn-edit" onclick="event.stopPropagation(); editCategoria(${categoria.id_categoria})" title="Editar categoría" style="background-color: #34a853 !important; color: white !important; border: none !important; box-shadow: 0 4px 8px rgba(52, 168, 83, 0.3) !important;">
                         <i class="fas fa-edit" style="color: white !important;"></i>
                     </button>
-                    <button class="product-card-btn ${producto.estado === 'activo' ? 'btn-deactivate' : 'btn-activate'}" 
-                            onclick="event.stopPropagation(); changeProductEstado(${producto.id_producto})" 
-                            title="${producto.estado === 'activo' ? 'Desactivar' : 'Activar'} producto"
+                    <button class="product-card-btn ${categoria.estado_categoria === 'activo' ? 'btn-deactivate' : 'btn-activate'}" 
+                            onclick="event.stopPropagation(); changeCategoriaEstado(${categoria.id_categoria})" 
+                            title="${categoria.estado_categoria === 'activo' ? 'Desactivar' : 'Activar'} categoría"
                             style="background-color: #6f42c1 !important; color: white !important; border: none !important;">
-                        <i class="fas fa-${producto.estado === 'activo' ? 'power-off' : 'toggle-on'}" style="color: white !important;"></i>
+                        <i class="fas fa-${categoria.estado_categoria === 'activo' ? 'power-off' : 'toggle-on'}" style="color: white !important;"></i>
                     </button>
-                    <button class="product-card-btn btn-stock" onclick="event.stopPropagation(); updateStock(${producto.id_producto}, ${producto.stock_actual_producto}, event)" title="Actualizar stock" style="background-color: #fd7e14 !important; color: white !important; border: none !important;">
-                        <i class="fas fa-boxes" style="color: white !important;"></i>
-                    </button>
-                    <button class="product-card-btn btn-delete" onclick="event.stopPropagation(); deleteProduct(${producto.id_producto}, '${(producto.nombre_producto || 'Producto').replace(/'/g, "\\'")}')\" title="Eliminar producto" style="background-color: #f44336 !important; color: white !important; border: none !important; box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3) !important;">
+                    <button class="product-card-btn btn-delete" onclick="event.stopPropagation(); deleteCategoria(${categoria.id_categoria}, '${(categoria.nombre_categoria || 'categoría').replace(/'/g, "\\'")}')\" title="Eliminar categoría" style="background-color: #f44336 !important; color: white !important; border: none !important; box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3) !important;">
                         <i class="fas fa-trash" style="color: white !important;"></i>
                     </button>
                 </div>
@@ -1121,7 +1056,7 @@ class SmoothTableUpdater {
     }
 
     /**
-     * 📋 Obtener IDs de productos actualmente visibles
+     * 📋 Obtener IDs de categorias actualmente visibles
      */
     getCurrentProductIds(viewType) {
         const ids = [];
@@ -1132,7 +1067,7 @@ class SmoothTableUpdater {
                 if (id) ids.push(id);
             });
         } else {
-            const rows = document.querySelectorAll('#productos-table-body tr[data-product-id]');
+            const rows = document.querySelectorAll('#categorias-table-body tr[data-product-id]');
             rows.forEach(row => {
                 const id = parseInt(row.dataset.productId);
                 if (id) ids.push(id);
@@ -1142,7 +1077,7 @@ class SmoothTableUpdater {
     }
 
     /**
-     * 🙈 Ocultar producto con animación smooth
+     * 🙈 Ocultar categoria con animación smooth
      */
     async hideProduct(productId, viewType) {
         return new Promise((resolve) => {
@@ -1150,7 +1085,7 @@ class SmoothTableUpdater {
             if (viewType === 'grid') {
                 element = document.querySelector(`.product-card[data-product-id="${productId}"]`);
             } else {
-                element = document.querySelector(`#productos-table-body tr[data-product-id="${productId}"]`);
+                element = document.querySelector(`#categorias-table-body tr[data-product-id="${productId}"]`);
             }
             
             if (!element) {
@@ -1171,15 +1106,15 @@ class SmoothTableUpdater {
     }
 
     /**
-     * 👁️ Mostrar producto con animación smooth
+     * 👁️ Mostrar categoria con animación smooth
      */
     async showProduct(product, viewType) {
         return new Promise((resolve) => {
             let element;
             if (viewType === 'grid') {
-                element = document.querySelector(`.product-card[data-product-id="${product.id_producto}"]`);
+                element = document.querySelector(`.product-card[data-product-id="${product.id_categoria}"]`);
             } else {
-                element = document.querySelector(`#productos-table-body tr[data-product-id="${product.id_producto}"]`);
+                element = document.querySelector(`#categorias-table-body tr[data-product-id="${product.id_categoria}"]`);
             }
             
             if (element && element.style.display === 'none') {
@@ -1199,8 +1134,8 @@ class SmoothTableUpdater {
                     }, 200);
                 }, 10);
             } else if (!element) {
-                // Producto nuevo - recargar tabla completa
-                console.log('⚠️ Producto nuevo detectado, recargando tabla');
+                // categoria nuevo - recargar tabla completa
+                console.log('⚠️ categoria nuevo detectado, recargando tabla');
                 if (typeof window.loadProducts === 'function') {
                     window.loadProducts();
                 }
@@ -1243,10 +1178,10 @@ try {
         this.dataCache.clear();
         if (typeof window.loadProducts === 'function') {
             window.loadProducts();
-        } else if (typeof window.loadProductos === 'function') {
-            window.loadProductos();
+        } else if (typeof window.loadcategorias === 'function') {
+            window.loadcategorias();
         } else {
-            console.warn('⚠️ Función de carga de productos no encontrada');
+            console.warn('⚠️ Función de carga de categorias no encontrada');
         }
     };
     
@@ -1312,14 +1247,14 @@ if (typeof module !== 'undefined' && module.exports) {
 // ===== UTILIDADES GLOBALES =====
 
 /**
- * Función helper para actualizar múltiples productos de forma eficiente
+ * Función helper para actualizar múltiples categorias de forma eficiente
  */
 window.updateMultipleProducts = async function(products) {
     if (!window.smoothTableUpdater) {
         return;
     }
     
-    console.log(`📦 Actualizando ${products.length} productos...`);
+    console.log(`📦 Actualizando ${products.length} categorias...`);
     const startTime = performance.now();
     
     // Actualizar en lotes para mejor performance

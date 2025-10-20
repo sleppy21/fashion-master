@@ -20,7 +20,7 @@
     border-radius: 9px !important;
     border: none !important;
     box-shadow: 0 2px 6px rgba(238, 90, 111, 0.3) !important;
-    display: flex !important;
+    /* NO forzar display: flex aquí - usar regla separada */
     align-items: center !important;
     justify-content: center !important;
     padding: 0 4px !important;
@@ -29,6 +29,28 @@
     top: -6px !important;
     right: -6px !important;
     z-index: 10 !important;
+}
+
+/* Mostrar badge solo cuando NO tenga display: none inline */
+.header__right__widget li a .tip:not([style*="display: none"]),
+.header__right__auth a .tip:not([style*="display: none"]),
+.offcanvas__widget li a .tip:not([style*="display: none"]),
+.header .tip:not([style*="display: none"]),
+#cart-count:not([style*="display: none"]),
+#favorites-count:not([style*="display: none"]),
+#notifications-count:not([style*="display: none"]) {
+    display: flex !important;
+}
+
+/* Ocultar badge cuando tenga display: none inline */
+.header__right__widget li a .tip[style*="display: none"],
+.header__right__auth a .tip[style*="display: none"],
+.offcanvas__widget li a .tip[style*="display: none"],
+.header .tip[style*="display: none"],
+#cart-count[style*="display: none"],
+#favorites-count[style*="display: none"],
+#notifications-count[style*="display: none"] {
+    display: none !important;
 }
 
 /* Dark mode - mismo estilo con sombra más visible */

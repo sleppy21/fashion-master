@@ -26,7 +26,6 @@
             
             // Si es 401 (no autorizado), el usuario no está logueado - no es un error
             if (response.status === 401) {
-                console.log('ℹ️ Usuario no autenticado - no se actualizan contadores');
                 stopAutoRefresh(); // Detener actualizaciones automáticas
                 return;
             }
@@ -40,7 +39,6 @@
                 updateCounter('favorites', data.favorites_count || 0);
                 updateCounter('notifications', data.notifications_unread || 0);
                 
-                console.log(`✅ Contadores actualizados [${data.timestamp}]`);
             }
             
         } catch (error) {
@@ -89,7 +87,6 @@
     function startAutoRefresh() {
         if (refreshTimer) clearInterval(refreshTimer);
         refreshTimer = setInterval(refreshCounters, REFRESH_INTERVAL);
-        console.log(`🔄 Auto-refresh activado (${REFRESH_INTERVAL/1000}s)`);
     }
     
     /**
@@ -99,7 +96,6 @@
         if (refreshTimer) {
             clearInterval(refreshTimer);
             refreshTimer = null;
-            console.log('⏸️ Auto-refresh desactivado');
         }
     }
     

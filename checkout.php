@@ -196,6 +196,9 @@ try {
     <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/dark-mode.css" type="text/css">
     
+    <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
+    <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
+    
     <!-- Global Responsive Styles - TODO EL PROYECTO -->
     <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
     
@@ -210,6 +213,31 @@ try {
         /* ============================================
            ESTILOS DEL CHECKOUT
            ============================================ */
+        
+        /* Quitar línea del breadcrumb y ajustar márgenes */
+        .breadcrumb-option {
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .checkout.spad {
+            padding-top: 30px !important;
+        }
+
+        /* Eliminar padding extra en columna del resumen */
+        .checkout .row {
+            margin-top: 0 !important;
+            display: flex !important;
+            flex-wrap: wrap !important;
+        }
+
+        .checkout .col-lg-8,
+        .checkout .col-lg-4,
+        .checkout .col-md-4,
+        .checkout .col-md-8 {
+            padding-top: 0 !important;
+        }
         
         .checkout-steps {
             display: flex;
@@ -330,6 +358,7 @@ try {
             padding: 30px;
             border-radius: 10px;
             margin-bottom: 30px;
+            border: 1px solid #e1e1e1;
         }
         .form-section h5 {
             font-size: 18px;
@@ -350,27 +379,64 @@ try {
             border-radius: 5px;
             padding: 12px 15px;
             font-size: 14px;
+            background: white;
         }
         .form-control:focus {
             border-color: #ca1515;
             box-shadow: 0 0 0 0.2rem rgba(202,21,21,0.1);
         }
         
+        /* MODO OSCURO - Form Sections */
+        body.dark-mode .form-section {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            border: 2px solid #3a3a3a;
+        }
+        
+        body.dark-mode .form-section h5 {
+            color: #c9a67c;
+            border-bottom-color: #c9a67c;
+        }
+        
+        body.dark-mode .form-group label {
+            color: #c9a67c;
+        }
+        
+        body.dark-mode .form-control {
+            background: #1a1a1a;
+            border-color: #3a3a3a;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .form-control:focus {
+            border-color: #c9a67c;
+            box-shadow: 0 0 0 0.2rem rgba(201, 166, 124, 0.2);
+        }
+        
+        body.dark-mode .form-control::placeholder {
+            color: #666;
+        }
+        
+        body.dark-mode select.form-control option {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        
         /* ============================================
-           GRID DE PRODUCTOS EN CHECKOUT
+           GRID DE PRODUCTOS EN CHECKOUT - UNA SOLA FILA CON SCROLL
            ============================================ */
         .checkout-products-grid {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             margin-top: 20px;
             overflow-x: auto;
+            overflow-y: hidden;
             padding-bottom: 10px;
             scrollbar-width: thin;
             scrollbar-color: #c9a67c #f0f0f0;
         }
 
         .checkout-products-grid::-webkit-scrollbar {
-            height: 6px;
+            height: 8px;
         }
 
         .checkout-products-grid::-webkit-scrollbar-track {
@@ -388,10 +454,11 @@ try {
         }
 
         .checkout-products-more {
-            min-width: 100px;
-            width: 100px;
+            min-width: 140px;
+            width: 140px;
+            flex-shrink: 0;
             background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%);
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -401,6 +468,7 @@ try {
             font-weight: 700;
             cursor: default;
             border: 2px solid #c9a67c;
+            min-height: 200px;
         }
 
         .checkout-products-more-count {
@@ -415,28 +483,28 @@ try {
         }
 
         .checkout-product-card {
-            min-width: 100px;
-            width: 100%;
+            min-width: 140px;
+            width: 140px;
+            flex-shrink: 0;
             background: white;
             border: 2px solid #e1e1e1;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
-            flex-shrink: 0;
         }
 
         .checkout-product-card:hover {
             border-color: #c9a67c;
-            box-shadow: 0 8px 20px rgba(201, 166, 124, 0.2);
-            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(201, 166, 124, 0.2);
+            transform: translateY(-2px);
         }
 
         .checkout-product-image {
             position: relative;
             width: 100%;
-            padding-top: 100%; /* Aspect ratio 1:1 (cuadrado) */
+            padding-top: 100%;
             overflow: hidden;
             background: #f8f8f8;
         }
@@ -452,28 +520,28 @@ try {
 
         .checkout-product-discount {
             position: absolute;
-            top: 6px;
-            left: 6px;
+            top: 4px;
+            left: 4px;
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
             color: white;
-            padding: 3px 6px;
+            padding: 2px 5px;
             border-radius: 4px;
             font-size: 9px;
             font-weight: 700;
-            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 2px 6px rgba(255, 107, 107, 0.3);
             z-index: 2;
         }
 
         .checkout-product-quantity {
             position: absolute;
-            bottom: 6px;
-            right: 6px;
+            bottom: 4px;
+            right: 4px;
             background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(6px);
             color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 10px;
+            font-size: 9px;
             font-weight: 700;
             z-index: 2;
         }
@@ -497,46 +565,38 @@ try {
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis; 
-            min-height: 26px;
+            min-height: 24px;
         }
 
         .checkout-product-prices {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             flex-wrap: wrap;
         }
 
         .checkout-product-price-old {
-            font-size: 9px;
+            font-size: 8px;
             color: #999;
             text-decoration: line-through;
         }
 
         .checkout-product-price {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             color: #c9a67c;
         }
 
         .checkout-product-subtotal {
-            display: none; /* Ocultar subtotal en cards pequeñas */
-        }
-        .checkout-product-subtotal strong {
-            color: #2c3e50;
-            font-weight: 700;
+            display: none;
         }
 
         /* Responsive para grid de productos */
-        @media (max-width: 1200px) {
-            .checkout-products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
-            }
-        }
-
         @media (max-width: 768px) {
-            .checkout-products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            .checkout-product-card,
+            .checkout-products-more {
+                min-width: 120px;
+                width: 120px;
             }
         }
 
@@ -544,6 +604,39 @@ try {
             .checkout-products-grid {
                 gap: 6px;
             }
+            
+            .checkout-product-card,
+            .checkout-products-more {
+                min-width: 100px;
+                width: 100px;
+            }
+        }
+        
+        /* MODO OSCURO - Productos */
+        body.dark-mode .checkout-product-card {
+            background: #2a2a2a;
+            border-color: #3a3a3a;
+        }
+        
+        body.dark-mode .checkout-product-card:hover {
+            border-color: #c9a67c;
+            box-shadow: 0 6px 16px rgba(201, 166, 124, 0.3);
+        }
+        
+        body.dark-mode .checkout-product-name {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .checkout-product-image {
+            background: #1a1a1a;
+        }
+        
+        body.dark-mode .checkout-products-grid::-webkit-scrollbar-track {
+            background: #2a2a2a;
+        }
+        
+        body.dark-mode .checkout-products-grid::-webkit-scrollbar-thumb {
+            background: #c9a67c;
         }
 
         /* ============================================
@@ -670,6 +763,38 @@ try {
             font-weight: 600;
             margin-top: 4px;
         }
+        
+        /* MODO OSCURO - Métodos de Pago */
+        body.dark-mode .payment-method-card {
+            background: #2a2a2a;
+            border-color: #3a3a3a;
+        }
+        
+        body.dark-mode .payment-method-card:hover {
+            border-color: #c9a67c;
+            box-shadow: 0 4px 12px rgba(201, 166, 124, 0.3);
+        }
+        
+        body.dark-mode .payment-method-card.selected {
+            border-color: #c9a67c;
+            background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+        }
+        
+        body.dark-mode .payment-method-name {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .payment-method-desc {
+            color: #a0a0a0;
+        }
+        
+        body.dark-mode .payment-method-note {
+            color: #888;
+        }
+        
+        body.dark-mode .payment-method-check {
+            background: #3a3a3a;
+        }
 
         /* Responsive para métodos de pago */
         @media (max-width: 768px) {
@@ -693,6 +818,31 @@ try {
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 2px solid #f0f0f0;
+        }
+        
+        /* MODO OSCURO - Order Summary */
+        body.dark-mode .order-summary {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            border: 2px solid #3a3a3a;
+        }
+        
+        body.dark-mode .order-summary h5 {
+            color: #c9a67c;
+            border-bottom-color: rgba(201, 166, 124, 0.2);
+        }
+        
+        body.dark-mode .order-total-row span {
+            color: #d0d0d0 !important;
+        }
+        
+        body.dark-mode .order-total-row.total span {
+            color: #c9a67c !important;
+        }
+        
+        body.dark-mode .alert {
+            background: #2a2a2a;
+            border-color: #3a3a3a;
+            color: #d0d0d0;
         }
         .order-item {
             display: flex;
@@ -769,7 +919,7 @@ try {
         }
         
         .btn-place-order {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             padding: 15px 40px;
@@ -783,7 +933,7 @@ try {
             transition: all 0.3s;
         }
         .btn-place-order:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(55, 61, 69, 0.7);
         }
@@ -791,6 +941,23 @@ try {
             background: #ccc;
             cursor: not-allowed;
             transform: none;
+        }
+        
+        /* MODO OSCURO - Botones */
+        body.dark-mode .btn-place-order {
+            background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%);
+            color: #1a1a1a;
+            box-shadow: 0 4px 15px rgba(201, 166, 124, 0.3);
+        }
+        
+        body.dark-mode .btn-place-order:hover {
+            background: linear-gradient(135deg, #a08661 0%, #c9a67c 100%);
+            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4);
+        }
+        
+        body.dark-mode .btn-place-order:disabled {
+            background: #3a3a3a;
+            color: #666;
         }
         
         .comprobante-type {
@@ -855,6 +1022,77 @@ try {
         body {
             padding-top: 0;
             background-color: #f8f5f2;
+            padding-left: 20px; /* Margen izquierdo para toda la página */
+            overflow-x: hidden; /* Evitar scroll horizontal por el padding */
+        }
+        
+        /* Ocultar scrollbar con estilo (quitar barra celeste/transparente) */
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        body::-webkit-scrollbar-track {
+            background: transparent; /* Eliminar fondo celeste/transparente */
+        }
+        
+        body::-webkit-scrollbar-thumb {
+            background: #c9a67c;
+            border-radius: 4px;
+        }
+        
+        body::-webkit-scrollbar-thumb:hover {
+            background: #a08661;
+        }
+        
+        /* Para Firefox */
+        body {
+            scrollbar-width: thin;
+            scrollbar-color: #c9a67c transparent;
+        }
+        
+        /* MODO OSCURO - Body y Backgrounds */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            padding-left: 20px; /* Mantener margen izquierdo en modo oscuro */
+        }
+        
+        /* Scrollbar en modo oscuro */
+        body.dark-mode::-webkit-scrollbar-track {
+            background: transparent; /* Eliminar fondo celeste/transparente en modo oscuro */
+        }
+        
+        body.dark-mode::-webkit-scrollbar-thumb {
+            background: #c9a67c;
+        }
+        
+        body.dark-mode::-webkit-scrollbar-thumb:hover {
+            background: #a08661;
+        }
+        
+        body.dark-mode .checkout.spad {
+            background: #1a1a1a;
+        }
+        
+        body.dark-mode .breadcrumb-option {
+            background: #2a2a2a;
+            border-bottom: 1px solid #3a3a3a;
+        }
+        
+        body.dark-mode .breadcrumb__links a,
+        body.dark-mode .breadcrumb__links span {
+            color: #c9a67c;
+        }
+        
+        body.dark-mode .breadcrumb__links a:hover {
+            color: #a08661;
+        }
+        
+        body.dark-mode .checkout-step .step-title {
+            color: #888;
+        }
+        
+        body.dark-mode .checkout-step.active .step-title {
+            color: #c9a67c;
         }
         
         /* Ajustar ancho de los selects de ubigeo */
@@ -933,7 +1171,37 @@ try {
         
         /* Mejorar orden summary para que no se superponga con header */
         .order-summary {
-            top: 120px !important; /* Espacio para el header fijo */
+            top: 20px !important; /* Espacio para el header fijo */
+        }
+
+        /* ============================================
+           FIX: ASEGURAR LAYOUT DE 2 COLUMNAS EN DESKTOP
+           ============================================ */
+        
+        /* Mantener estructura similar a shop.php */
+        @media (min-width: 992px) {
+            .checkout .row {
+                display: flex !important;
+                flex-wrap: nowrap !important;
+            }
+            
+            .checkout .col-lg-8 {
+                flex: 0 0 66.666667% !important;
+                max-width: 66.666667% !important;
+                padding-left: 1.5rem;
+            }
+            
+            .checkout .col-lg-4 {
+                flex: 0 0 33.333333% !important;
+                max-width: 33.333333% !important;
+            }
+        }
+        
+        /* Para tablets medianos */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .checkout .col-md-8 {
+                padding-left: 1rem;
+            }
         }
 
         /* ============================================
@@ -1258,6 +1526,567 @@ try {
                 font-size: 13px;
             }
         }
+
+        /* ========================================
+           ESTILOS PARA MÉTODOS DE PAGO - MODO CLARO/OSCURO
+        ======================================== */
+        
+        /* Contenedor principal de métodos de pago */
+        .payment-methods-section {
+            background: white !important;
+            border: 2px solid #dee2e6;
+            overflow: visible !important; /* Importante para que el badge no se corte */
+            position: relative;
+        }
+
+        body.dark-mode .payment-methods-section {
+            background: white !important; /* Mantener blanco en modo oscuro */
+            border: 2px solid #3a3a3a;
+            overflow: visible !important;
+        }
+        
+        /* Badge de Yape - Asegurar visibilidad */
+        .yape-badge {
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-badge {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 6px 16px rgba(76, 175, 80, 0.7);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 8px 20px rgba(76, 175, 80, 0.9);
+            }
+        }
+
+        /* Texto de seguridad */
+        .payment-security-text {
+            color: #6c757d;
+        }
+
+        body.dark-mode .payment-security-text {
+            color: #888;
+        }
+
+        /* Filas de métodos de pago */
+        .payment-method-row {
+            background: #ffffff;
+            border: 2px solid #dee2e6;
+        }
+
+        body.dark-mode .payment-method-row {
+            background: #1a1a1a;
+            border: 2px solid #3a3a3a;
+        }
+
+        /* Yape tiene borde especial */
+        .payment-method-row.payment-yape {
+            border: 2px solid #e1bee7;
+        }
+
+        body.dark-mode .payment-method-row.payment-yape {
+            border: 2px solid #6a1b9a;
+        }
+
+        /* Hover en métodos de pago */
+        .payment-method-row:hover {
+            transform: translateX(4px);
+            border-color: #c9a67c;
+        }
+
+        body.dark-mode .payment-method-row:hover {
+            border-color: #c9a67c;
+        }
+
+        /* Títulos de métodos de pago */
+        .payment-title {
+            color: #212529;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        body.dark-mode .payment-title {
+            color: #fff;
+        }
+
+        /* Subtítulos de métodos de pago */
+        .payment-subtitle {
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+        body.dark-mode .payment-subtitle {
+            color: #888;
+        }
+
+        /* Highlight de Yape */
+        .payment-yape-highlight {
+            color: #6a1b9a;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        body.dark-mode .payment-yape-highlight {
+            color: #ba68c8;
+        }
+
+        /* Check de pago */
+        .payment-check {
+            border: 2px solid #dee2e6;
+        }
+
+        body.dark-mode .payment-check {
+            border: 2px solid #3a3a3a;
+        }
+
+        /* Método de pago seleccionado */
+        .payment-method-row.selected {
+            border-color: #c9a67c !important;
+            background: rgba(201, 166, 124, 0.1) !important;
+        }
+
+        .payment-method-row.selected .payment-check {
+            border-color: #c9a67c !important;
+            background: linear-gradient(135deg, #c9a67c 0%, #a8865e 100%) !important;
+        }
+
+        .payment-method-row.selected .payment-check i {
+            color: white !important;
+        }
+
+        /* ========================================
+           NUEVAS CARDS DE PAGO - DISEÑO INTUITIVO V2.0
+        ======================================== */
+        
+        .payment-card-new {
+            position: relative;
+            overflow: visible !important; /* Cambiar de hidden a visible para que el badge se muestre */
+        }
+        
+        /* Card de Yape con badge - overflow visible */
+        .payment-card-featured {
+            overflow: visible !important;
+        }
+        
+        .payment-card-new::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, transparent, transparent);
+            border-radius: 16px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: -1;
+        }
+        
+        .payment-card-new:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(201, 166, 124, 0.2) !important;
+            border-color: #c9a67c !important;
+        }
+        
+        .payment-card-new.selected {
+            border-color: #c9a67c !important;
+            background: linear-gradient(135deg, rgba(201, 166, 124, 0.08) 0%, #ffffff 100%) !important;
+            box-shadow: 0 8px 24px rgba(201, 166, 124, 0.25) !important;
+            transform: translateY(-2px);
+        }
+        
+        body.dark-mode .payment-card-new {
+            background: white !important; /* Mantener fondo blanco en modo oscuro */
+            border-color: #3a3a3a !important;
+        }
+        
+        body.dark-mode .payment-card-new:hover {
+            border-color: #c9a67c !important;
+            box-shadow: 0 4px 16px rgba(201, 166, 124, 0.3) !important;
+        }
+        
+        body.dark-mode .payment-card-new.selected {
+            border-color: #c9a67c !important;
+            background: white !important; /* Mantener fondo blanco cuando está seleccionado */
+            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4) !important;
+        }
+        
+        body.dark-mode .payment-card-new h6 {
+            color: #2c3e50 !important; /* Texto oscuro para contraste con fondo blanco */
+        }
+        
+        body.dark-mode .payment-card-new p {
+            color: #666 !important; /* Texto oscuro para contraste con fondo blanco */
+        }
+        
+        /* Fondo blanco de la sección de pagos en modo oscuro */
+        body.dark-mode .payment-methods-section {
+            background: white !important;
+        }
+        
+        body.dark-mode .payment-security-text {
+            color: #888 !important;
+        }
+        
+        /* Radio button en las cards - Actualizado para estructura horizontal */
+        .payment-card-new .payment-radio-inner {
+            transition: all 0.3s ease;
+        }
+        
+        /* Cuando la card está seleccionada */
+        .payment-card-new.selected {
+            border-color: #c9a67c !important;
+            background: #f9f9f9 !important;
+            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.3) !important;
+        }
+        
+        /* Radio button seleccionado (buscar el div con el círculo) */
+        .payment-card-new.selected > div > div.payment-radio-inner,
+        .payment-card-new.selected div[style*="border-radius: 50%"] .payment-radio-inner {
+            background: #c9a67c !important;
+            box-shadow: 0 0 0 3px rgba(201, 166, 124, 0.2);
+        }
+        
+        /* Borde del radio button cuando está seleccionado */
+        .payment-card-new.selected div[style*="width: 24px"] {
+            border-color: #c9a67c !important;
+        }
+        
+        /* Animación shake */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        /* Responsive para cards de pago - FILA HORIZONTAL EN DESKTOP */
+        .payment-methods-row {
+            display: flex;
+            gap: 16px;
+            overflow: visible !important; /* Permitir que el badge se vea completo */
+            position: relative;
+        }
+        
+        @media (min-width: 769px) {
+            .payment-methods-row {
+                flex-direction: row; /* Forzar fila horizontal en desktop */
+                overflow: visible !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .payment-methods-row {
+                flex-direction: column; /* Stack vertical en móvil */
+                overflow: visible !important;
+            }
+            
+            body {
+                padding-left: 10px; /* Reducir margen izquierdo en móvil */
+            }
+            
+            body.dark-mode {
+                padding-left: 10px;
+            }
+        }
+
+        /* ========================================
+           ESTILOS PARA RESUMEN DEL PEDIDO - MODO CLARO/OSCURO
+        ======================================== */
+        
+        /* Contenedor del resumen */
+        .checkout-summary {
+            background: #ffffff;
+            border: 2px solid #e1e1e1;
+        }
+
+        body.dark-mode .checkout-summary {
+            background: #1a1a1a;
+            border: 2px solid #3a3a3a;
+        }
+
+        /* Título del resumen */
+        .summary-title {
+            color: #c9a67c;
+            border-bottom: 2px solid #e1e1e1;
+        }
+
+        body.dark-mode .summary-title {
+            color: #c9a67c;
+            border-bottom: 2px solid #3a3a3a;
+        }
+
+        /* Filas del resumen */
+        .summary-row {
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        body.dark-mode .summary-row {
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        /* Labels y valores del resumen */
+        .summary-label {
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        body.dark-mode .summary-label {
+            color: #e0e0e0;
+        }
+
+        .summary-value {
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        body.dark-mode .summary-value {
+            color: #e0e0e0;
+        }
+
+        /* Total destacado */
+        .summary-total {
+            background: rgba(201, 166, 124, 0.1);
+        }
+
+        body.dark-mode .summary-total {
+            background: rgba(201, 166, 124, 0.15);
+        }
+
+        .summary-total span {
+            color: #c9a67c;
+        }
+
+        body.dark-mode .summary-total span {
+            color: #c9a67c;
+        }
+
+        /* ========================================
+           ESTILOS PARA SECCIONES DE CHECKOUT - MODO CLARO/OSCURO
+        ======================================== */
+        
+        /* Sección de dirección */
+        .checkout-address-section {
+            background: #ffffff;
+            border: 2px solid #e1e1e1;
+        }
+
+        body.dark-mode .checkout-address-section {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            border: 2px solid #3a3a3a;
+        }
+
+        /* Sección de productos */
+        .checkout-products-section {
+            background: #ffffff;
+            border: 2px solid #e1e1e1;
+        }
+
+        body.dark-mode .checkout-products-section {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            border: 2px solid #3a3a3a;
+        }
+
+        /* Botón cambiar dirección */
+        .btn-change-address {
+            background: #c9a67c;
+            color: #1a1a1a;
+        }
+
+        body.dark-mode .btn-change-address {
+            background: #c9a67c;
+            color: #1a1a1a;
+        }
+
+        /* Card de preview de dirección */
+        .address-preview-card {
+            background: rgba(201, 166, 124, 0.1);
+        }
+
+        body.dark-mode .address-preview-card {
+            background: rgba(201, 166, 124, 0.1);
+        }
+
+        /* Labels de dirección */
+        .address-label {
+            color: #c9a67c;
+        }
+
+        body.dark-mode .address-label {
+            color: #c9a67c;
+        }
+
+        /* Valores de dirección */
+        .address-value {
+            color: #333;
+        }
+
+        body.dark-mode .address-value {
+            color: #d0d0d0;
+        }
+
+        /* Referencia (estilo especial) */
+        .address-value-ref {
+            font-style: italic;
+            color: #6c757d;
+        }
+
+        body.dark-mode .address-value-ref {
+            font-style: italic;
+            color: #a0a0a0;
+        }
+
+        /* ========================================
+           ESTILOS PARA MODAL DE DIRECCIÓN - MODO CLARO/OSCURO
+        ======================================== */
+        
+        /* Contenido del modal */
+        .address-modal-content {
+            background: #ffffff;
+        }
+
+        body.dark-mode .address-modal-content {
+            background: #1a1a1a;
+        }
+
+        /* Body del modal */
+        .address-modal-body {
+            background: #ffffff;
+        }
+
+        body.dark-mode .address-modal-body {
+            background: #1a1a1a;
+        }
+
+        /* Footer del modal */
+        .address-modal-footer {
+            background: #f8f9fa;
+        }
+
+        body.dark-mode .address-modal-footer {
+            background: #1a1a1a;
+        }
+
+        /* Opciones de dirección */
+        .address-option {
+            background: #f8f9fa;
+            border: 2px solid #e1e1e1;
+        }
+
+        body.dark-mode .address-option {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            border: 2px solid #3a3a3a;
+        }
+
+        .address-option:hover {
+            border-color: #c9a67c !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 166, 124, 0.2);
+        }
+
+        /* Nombre en la opción */
+        .address-option-name {
+            color: #c9a67c;
+        }
+
+        body.dark-mode .address-option-name {
+            color: #c9a67c;
+        }
+
+        /* Detalles de dirección */
+        .address-option-details {
+            color: #333;
+        }
+
+        body.dark-mode .address-option-details {
+            color: #d0d0d0;
+        }
+
+        /* Teléfono */
+        .address-option-phone {
+            color: #6c757d;
+        }
+
+        body.dark-mode .address-option-phone {
+            color: #a0a0a0;
+        }
+
+        /* Estado vacío */
+        .address-empty-state {
+            color: #6c757d;
+        }
+
+        body.dark-mode .address-empty-state {
+            color: #888;
+        }
+
+        /* Botón agregar dirección */
+        .btn-add-address {
+            background: #3a3a3a;
+            border: 1px solid #4a4a4a;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .btn-add-address {
+            background: #3a3a3a;
+            border: 1px solid #4a4a4a;
+            color: #e0e0e0;
+        }
+
+        .btn-add-address:hover {
+            background: #c9a67c;
+            border: 1px solid #c9a67c;
+            color: #1a1a1a;
+        }
+
+        /* ========================================
+           PREVENIR MOVIMIENTO DE PÁGINA CON MODAL
+        ======================================== */
+        
+        /* Mantener scroll visible cuando modal está abierto */
+        body.modal-open {
+            overflow: auto !important;
+        }
+
+        /* ========================================
+           ESTILOS DEL SCROLLBAR GLOBAL
+        ======================================== */
+        
+        /* Scrollbar principal del body */
+        body::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        body.dark-mode::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background: #c9a67c;
+            border-radius: 6px;
+        }
+
+        body::-webkit-scrollbar-thumb:hover {
+            background: #a08661;
+        }
+
+        /* Firefox scrollbar */
+        body {
+            scrollbar-width: thin;
+            scrollbar-color: #c9a67c #f1f1f1;
+        }
+
+        body.dark-mode {
+            scrollbar-color: #c9a67c #1a1a1a;
+        }
     </style>
 </head>
 
@@ -1284,9 +2113,9 @@ try {
 
     <!-- Checkout Section Begin -->
     <section class="checkout spad">
-        <div class="container">
-            <!-- Steps Progress -->
-            <div class="checkout-steps">
+        <div class="container-fluid px-lg-5">
+            <!-- Steps Progress - OCULTO (Espacio reservado para QR de pago) -->
+            <div class="checkout-steps" style="display: none;">
                 <div class="checkout-step completed">
                     <div class="step-number">1</div>
                     <div class="step-title">Carrito</div>
@@ -1302,6 +2131,16 @@ try {
                 <div class="checkout-step">
                     <div class="step-number">4</div>
                     <div class="step-title">Confirmación</div>
+                </div>
+            </div>
+
+            <!-- Espacio reservado para QR de Yape/PagoEfectivo -->
+            <div id="payment-qr-container" style="display: none; text-align: center; padding: 30px; background: rgba(201, 166, 124, 0.1); border-radius: 12px; margin-bottom: 30px;">
+                <h4 style="color: #c9a67c; margin-bottom: 20px;">
+                    <i class="fa fa-qrcode"></i> Escanea el código QR para pagar
+                </h4>
+                <div id="qr-code-display" style="display: inline-block; padding: 20px; background: white; border-radius: 12px;">
+                    <!-- Aquí se mostrará el QR de Yape o PagoEfectivo -->
                 </div>
             </div>
 
@@ -1329,63 +2168,103 @@ try {
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-lg-8 col-md-9 col-sm-12">
+            <div class="row" style="align-items: flex-start;">
+                <div class="col-lg-8 col-md-8 col-12 ps-lg-4">
                     <form id="checkoutForm" action="app/actions/process_checkout.php" method="POST">
                         
                         <?php if($tiene_direccion_predeterminada): ?>
                         <!-- VISTA SIMPLIFICADA CON DIRECCIÓN PREDETERMINADA -->
-                        <div class="form-section" style="background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%); border-radius: 12px; padding: 20px; border: 2px solid #3a3a3a; margin-bottom: 25px;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                        <div class="form-section checkout-address-section" style="border-radius: 12px; padding: 24px; margin-bottom: 25px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
                                 <h5 style="color: #c9a67c; margin: 0; font-size: 18px; font-weight: 700;">
                                     <i class="fa fa-map-marker" style="margin-right: 8px;"></i> Dirección de Envío
                                 </h5>
-                                <button type="button" class="btn btn-sm" id="btnChangeAddress" 
-                                        style="background: #c9a67c; color: #1a1a1a; border: none; padding: 6px 16px; border-radius: 6px; font-weight: 600; font-size: 13px;">
+                                <button type="button" class="btn btn-sm btn-change-address" id="btnChangeAddress" 
+                                        style="border: none; padding: 6px 16px; border-radius: 6px; font-weight: 600; font-size: 13px;">
                                     <i class="fa fa-edit"></i> Cambiar
                                 </button>
                             </div>
                             
-                            <div style="background: rgba(201, 166, 124, 0.1); border-radius: 8px; padding: 16px; border-left: 4px solid #c9a67c;">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; color: #d0d0d0; font-size: 14px;">
+                            <div class="address-preview-card" style="border-radius: 8px; padding: 16px; border-left: 4px solid #c9a67c;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 14px;">
                                     <div>
-                                        <strong style="color: #c9a67c; display: block; margin-bottom: 4px;">Destinatario</strong>
-                                        <span id="preview_nombre"><?php echo htmlspecialchars($direccion_predeterminada['nombre_cliente_direccion']); ?></span>
+                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">
+                                            <?php 
+                                            // Mostrar nombre completo del usuario logueado
+                                            $nombre_titular = trim(($usuario_logueado['nombre_usuario'] ?? '') . ' ' . ($usuario_logueado['apellido_usuario'] ?? ''));
+                                            echo htmlspecialchars($nombre_titular ?: $usuario_logueado['username']); 
+                                            ?>
+                                        </strong>
+                                        <span class="address-value" id="preview_nombre"><?php echo htmlspecialchars($direccion_predeterminada['nombre_cliente_direccion']); ?></span>
                                     </div>
                                     <div>
-                                        <strong style="color: #c9a67c; display: block; margin-bottom: 4px;">Teléfono</strong>
-                                        <span id="preview_telefono"><?php echo htmlspecialchars($direccion_predeterminada['telefono_direccion']); ?></span>
+                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">Teléfono</strong>
+                                        <span class="address-value" id="preview_telefono"><?php echo htmlspecialchars($direccion_predeterminada['telefono_direccion']); ?></span>
+                                    </div>
+                                    <div>
+                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">DNI/RUC</strong>
+                                        <span class="address-value" id="preview_dni"><?php echo htmlspecialchars($direccion_predeterminada['dni_ruc_direccion'] ?? 'No especificado'); ?></span>
+                                    </div>
+                                    <div>
+                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">Tipo</strong>
+                                        <span class="address-value" id="preview_tipo">
+                                            <?php 
+                                            $dni_length = strlen($direccion_predeterminada['dni_ruc_direccion'] ?? '');
+                                            echo $dni_length === 11 ? 'Factura' : 'Boleta';
+                                            ?>
+                                        </span>
                                     </div>
                                     <div style="grid-column: 1 / -1;">
-                                        <strong style="color: #c9a67c; display: block; margin-bottom: 4px;">Dirección</strong>
-                                        <span id="preview_direccion"><?php echo htmlspecialchars($direccion_predeterminada['direccion_completa_direccion']); ?></span>
+                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">Dirección</strong>
+                                        <span class="address-value" id="preview_direccion"><?php echo htmlspecialchars($direccion_predeterminada['direccion_completa_direccion']); ?></span>
                                     </div>
                                     <?php if(!empty($direccion_predeterminada['referencia_direccion'])): ?>
                                     <div style="grid-column: 1 / -1;">
-                                        <strong style="color: #c9a67c; display: block; margin-bottom: 4px;">Referencia</strong>
-                                        <span id="preview_referencia" style="font-style: italic; color: #a0a0a0;"><?php echo htmlspecialchars($direccion_predeterminada['referencia_direccion']); ?></span>
+                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">Referencia</strong>
+                                        <span class="address-value-ref" id="preview_referencia"><?php echo htmlspecialchars($direccion_predeterminada['referencia_direccion']); ?></span>
                                     </div>
                                     <?php endif; ?>
                                 </div>
                             </div>
                             
-                            <!-- Campos ocultos con los datos de la dirección -->
-                            <input type="hidden" name="nombre" value="<?php echo htmlspecialchars($direccion_predeterminada['nombre_cliente_direccion']); ?>">
-                            <input type="hidden" name="email" value="<?php echo htmlspecialchars($direccion_predeterminada['email_direccion'] ?? $usuario_logueado['email_usuario']); ?>">
-                            <input type="hidden" name="telefono" value="<?php echo htmlspecialchars($direccion_predeterminada['telefono_direccion']); ?>">
-                            <input type="hidden" name="dni" value="<?php echo htmlspecialchars($direccion_predeterminada['dni_ruc_direccion']); ?>">
-                            <input type="hidden" name="razon_social" value="<?php echo htmlspecialchars($direccion_predeterminada['razon_social_direccion'] ?? ''); ?>">
-                            <input type="hidden" name="direccion" value="<?php echo htmlspecialchars(explode(',', $direccion_predeterminada['direccion_completa_direccion'])[0]); ?>">
+                            <!-- Campos Ocultos con TODOS los datos de la dirección predeterminada -->
+                        <div style="display: none;">
+                            <?php
+                            // Obtener datos completos de la dirección predeterminada
+                            $nombre_completo = $direccion_predeterminada['nombre_cliente_direccion'];
+                            $email_direccion = $direccion_predeterminada['email_direccion'] ?? $usuario_logueado['email_usuario'];
+                            $telefono_direccion = $direccion_predeterminada['telefono_direccion'];
+                            $dni_ruc = $direccion_predeterminada['dni_ruc_direccion'] ?? '';
+                            $razon_social = $direccion_predeterminada['razon_social_direccion'] ?? '';
+                            
+                            // Extraer solo la dirección (primera parte antes de la primera coma)
+                            $partes_direccion = explode(',', $direccion_predeterminada['direccion_completa_direccion']);
+                            $solo_direccion = trim($partes_direccion[0]);
+                            // Quitar referencia si existe (formato: "Dirección (Ref: xxx)")
+                            if(preg_match('/^(.+?)\s*\(Ref:/', $solo_direccion, $matches)) {
+                                $solo_direccion = trim($matches[1]);
+                            }
+                            
+                            // Determinar tipo de comprobante basado en longitud del DNI/RUC
+                            $tipo_comprobante = (strlen($dni_ruc) === 11) ? 'factura' : 'boleta';
+                            ?>
+                            <input type="hidden" name="nombre" value="<?php echo htmlspecialchars($nombre_completo); ?>">
+                            <input type="hidden" name="email" value="<?php echo htmlspecialchars($email_direccion); ?>">
+                            <input type="hidden" name="telefono" value="<?php echo htmlspecialchars($telefono_direccion); ?>">
+                            <input type="hidden" name="dni" value="<?php echo htmlspecialchars($dni_ruc); ?>">
+                            <input type="hidden" name="razon_social" value="<?php echo htmlspecialchars($razon_social); ?>">
+                            <input type="hidden" name="tipo_comprobante" value="<?php echo htmlspecialchars($tipo_comprobante); ?>">
+                            <input type="hidden" name="direccion" value="<?php echo htmlspecialchars($solo_direccion); ?>">
                             <input type="hidden" name="referencia" value="<?php echo htmlspecialchars($direccion_predeterminada['referencia_direccion'] ?? ''); ?>">
                             <input type="hidden" name="departamento" value="<?php echo htmlspecialchars($direccion_predeterminada['departamento_direccion']); ?>">
                             <input type="hidden" name="provincia" value="<?php echo htmlspecialchars($direccion_predeterminada['provincia_direccion']); ?>">
                             <input type="hidden" name="distrito" value="<?php echo htmlspecialchars($direccion_predeterminada['distrito_direccion']); ?>">
-                            <input type="hidden" name="tipo_comprobante" value="<?php echo strlen($direccion_predeterminada['dni_ruc_direccion']) === 11 ? 'factura' : 'boleta'; ?>">
+                        </div>
                         </div>
 
                         <!-- Productos Seleccionados (Vista Simplificada) -->
-                        <div class="form-section" style="background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%); border-radius: 12px; padding: 20px; border: 2px solid #3a3a3a; margin-bottom: 25px;">
-                            <h5 style="color: #c9a67c; margin-bottom: 16px;">
+                        <div class="form-section checkout-products-section" style="border-radius: 12px; padding: 24px; margin-bottom: 25px;">
+                            <h5 style="color: #c9a67c; margin-bottom: 16px; font-size: 18px; font-weight: 700;">
                                 <i class="fa fa-shopping-bag"></i> Productos en tu pedido (<?php echo count($cart_items); ?>)
                             </h5>
                             <div class="checkout-products-grid">
@@ -1442,74 +2321,81 @@ try {
                             </div>
                         </div>
 
-                        <!-- Métodos de Pago -->
-                        <div class="form-section" style="background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%); border-radius: 12px; padding: 20px; border: 2px solid #3a3a3a; margin-bottom: 25px;">
-                            <h5 style="color: #c9a67c; margin-bottom: 16px;">
-                                <i class="fa fa-credit-card"></i> Método de Pago
+                        <!-- Métodos de Pago - EN FILA HORIZONTAL -->
+                        <div class="form-section payment-methods-section" style="border-radius: 12px; padding: 24px 24px 20px 24px; margin-bottom: 25px; background: white; overflow: visible; position: relative;">
+                            <p class="payment-security-text" style="font-size: 13px; margin: 0 0 12px 0; color: #888; text-align: center;">
+                                <i class="fa fa-shield" style="color: #4caf50;"></i> Pago 100% seguro y encriptado
+                            </p>
+                            <h5 style="color: #c9a67c; margin-bottom: 24px; font-size: 18px; font-weight: 700; text-align: center;">
+                                <i class="fa fa-credit-card"></i> Selecciona tu método de pago
                             </h5>
-                            <div style="text-align: center; margin-bottom: 20px;">
-                                <p style="color: #888; font-size: 12px; margin: 0;">
-                                    <i class="fa fa-shield" style="color: #4caf50;"></i> Protegido con altos estándares de seguridad
-                                </p>
-                            </div>
-                            
-                            <h5><i class="fa fa-credit-card"></i> Métodos de pago *</h5>
                             
                             <!-- Campo oculto para guardar el método seleccionado -->
                             <input type="hidden" id="metodo_pago" name="metodo_pago" value="" required>
                             
-                            <div class="payment-methods-grid">
-                                <!-- Tarjeta -->
-                                <div class="payment-method-card" data-payment-method="tarjeta">
-                                    <div class="payment-method-icon">
-                                        <i class="fa fa-credit-card"></i>
+                            <!-- MÉTODOS DE PAGO EN FILA HORIZONTAL -->
+                            <div class="payment-methods-row" style="display: flex; gap: 16px; margin-bottom: 20px; margin-top: 20px; position: relative;">
+                                
+                                <!-- Card Tarjeta - HORIZONTAL -->
+                                <div class="payment-card-new" data-payment-method="tarjeta" style="flex: 1; position: relative; border: 3px solid #e1e1e1; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s ease; background: white; display: flex; align-items: center; gap: 16px; min-height: 80px;">
+                                    <div style="flex-shrink: 0; width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fa fa-credit-card" style="font-size: 24px; color: white;"></i>
                                     </div>
-                                    <div class="payment-method-info">
-                                        <div class="payment-method-name">Tarjeta</div>
-                                        <div class="payment-method-desc">Paga ahora o paga mensualmente</div>
+                                    <div style="flex: 1;">
+                                        <h6 style="font-size: 15px; font-weight: 700; color: #2c3e50; margin: 0 0 4px 0;">Tarjeta</h6>
+                                        <p style="font-size: 12px; color: #666; margin: 0;">Crédito o Débito</p>
                                     </div>
-                                    <div class="payment-method-check">
-                                        <i class="fa fa-check-circle"></i>
-                                    </div>
-                                </div>
-
-                                <!-- PagoEfectivo -->
-                                <div class="payment-method-card" data-payment-method="pagoefectivo">
-                                    <div class="payment-method-icon" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
-                                        <i class="fa fa-money"></i>
-                                    </div>
-                                    <div class="payment-method-info">
-                                        <div class="payment-method-name">PagoEfectivo</div>
-                                        <div class="payment-method-desc">Por favor pague dentro de 2 días</div>
-                                        <div class="payment-method-note">Paga desde tu banca móvil, billetera QR o en efectivo en agentes antes de que expire el código.</div>
-                                    </div>
-                                    <div class="payment-method-check">
-                                        <i class="fa fa-check-circle"></i>
+                                    <div style="position: absolute; top: 50%; right: 16px; transform: translateY(-50%); width: 24px; height: 24px; border: 3px solid #e1e1e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <div class="payment-radio-inner" style="width: 12px; height: 12px; border-radius: 50%; background: transparent; transition: all 0.3s ease;"></div>
                                     </div>
                                 </div>
 
-                                <!-- Yape -->
-                                <div class="payment-method-card payment-method-highlight" data-payment-method="yape">
-                                    <div class="payment-method-badge">
-                                        <i class="fa fa-tag"></i> Extra S/ 4 de dto.
+                                <!-- Card PagoEfectivo - HORIZONTAL -->
+                                <div class="payment-card-new" data-payment-method="pagoefectivo" style="flex: 1; position: relative; border: 3px solid #e1e1e1; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s ease; background: white; display: flex; align-items: center; gap: 16px; min-height: 80px;">
+                                    <div style="flex-shrink: 0; width: 50px; height: 50px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 2px solid #FF6B35;">
+                                        <!-- Logo PagoEfectivo simplificado -->
+                                        <svg width="36" height="36" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="100" cy="100" r="95" fill="#FF6B35"/>
+                                            <path d="M60 60 L60 140 L100 140 C120 140 130 130 130 110 C130 90 120 80 100 80 L60 80 Z M75 75 L100 75 C115 75 120 85 120 100 C120 115 115 125 100 125 L75 125 Z" fill="white"/>
+                                        </svg>
                                     </div>
-                                    <div class="payment-method-icon" style="background: linear-gradient(135deg, #6a1b9a 0%, #8e24aa 100%);">
-                                        <i class="fa fa-mobile"></i>
+                                    <div style="flex: 1;">
+                                        <h6 style="font-size: 15px; font-weight: 700; color: #2c3e50; margin: 0 0 4px 0;">PagoEfectivo</h6>
+                                        <p style="font-size: 12px; color: #666; margin: 0;">Agentes y banca</p>
                                     </div>
-                                    <div class="payment-method-info">
-                                        <div class="payment-method-name">Yape</div>
-                                        <div class="payment-method-promo">Obtén extra S/ 4 de dto. en pedidos superiores a S/ 90.</div>
+                                    <div style="position: absolute; top: 50%; right: 16px; transform: translateY(-50%); width: 24px; height: 24px; border: 3px solid #e1e1e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <div class="payment-radio-inner" style="width: 12px; height: 12px; border-radius: 50%; background: transparent; transition: all 0.3s ease;"></div>
                                     </div>
-                                    <div class="payment-method-check">
-                                        <i class="fa fa-check-circle"></i>
+                                </div>
+
+                                <!-- Card Yape - HORIZONTAL CON BADGE -->
+                                <div class="payment-card-new payment-card-featured" data-payment-method="yape" style="flex: 1; position: relative; border: 3px solid #e1e1e1; border-radius: 12px; padding: 20px 20px 20px 20px; cursor: pointer; transition: all 0.3s ease; background: white; display: flex; align-items: center; gap: 16px; min-height: 80px; overflow: visible;">
+                                    <!-- Badge de descuento - SÚPER VISIBLE -->
+                                    <div class="yape-badge" style="position: absolute; top: -14px; right: 20px; background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%); color: white; padding: 7px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; box-shadow: 0 6px 16px rgba(76, 175, 80, 0.7); z-index: 100; letter-spacing: 0.5px; white-space: nowrap; border: 2px solid white;">
+                                        <i class="fa fa-tag"></i> S/4 DESCUENTO
+                                    </div>
+                                    
+                                    <div style="flex-shrink: 0; width: 50px; height: 50px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 2px solid #6A1B9A;">
+                                        <!-- Logo Yape simplificado -->
+                                        <svg width="40" height="40" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="200" height="200" rx="40" fill="#6A1B9A"/>
+                                            <path d="M100 40 L140 100 L115 100 L115 160 L85 160 L85 100 L60 100 Z" fill="white"/>
+                                        </svg>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <h6 style="font-size: 15px; font-weight: 700; color: #2c3e50; margin: 0 0 4px 0;">Yape</h6>
+                                        <p style="font-size: 12px; color: #6a1b9a; margin: 0; font-weight: 600;">Pago instantáneo</p>
+                                    </div>
+                                    <div style="position: absolute; top: 50%; right: 16px; transform: translateY(-50%); width: 24px; height: 24px; border: 3px solid #e1e1e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <div class="payment-radio-inner" style="width: 12px; height: 12px; border-radius: 50%; background: transparent; transition: all 0.3s ease;"></div>
                                     </div>
                                 </div>
                             </div>
                             
                             <!-- Mensaje de validación -->
-                            <div id="payment-method-error" style="display: none; margin-top: 12px; padding: 10px; background: #fff3cd; border-left: 3px solid #ffc107; border-radius: 6px;">
-                                <p style="color: #856404; font-size: 13px; margin: 0;">
-                                    <i class="fa fa-exclamation-triangle"></i> Por favor selecciona un método de pago
+                            <div id="payment-method-error" style="display: none; margin-top: 0; padding: 14px 18px; background: linear-gradient(135deg, #fff3cd 0%, #fffbf0 100%); border-left: 4px solid #ffc107; border-radius: 8px; animation: shake 0.5s;">
+                                <p style="color: #856404; font-size: 13px; margin: 0; font-weight: 600;">
+                                    <i class="fa fa-exclamation-triangle" style="margin-right: 8px;"></i> Por favor selecciona un método de pago
                                 </p>
                             </div>
                         </div>
@@ -1524,7 +2410,11 @@ try {
                                     <div class="form-group">
                                         <label for="nombre">Nombre Completo *</label>
                                         <input type="text" class="form-control" id="nombre" name="nombre" 
-                                               value="<?php echo htmlspecialchars($usuario_logueado['nombre_usuario'] . ' ' . $usuario_logueado['apellido_usuario']); ?>" required>
+                                               value="<?php 
+                                               // Usar nombre real (nombre + apellido), no el username
+                                               $nombre_real = trim(($usuario_logueado['nombre_usuario'] ?? '') . ' ' . ($usuario_logueado['apellido_usuario'] ?? ''));
+                                               echo htmlspecialchars($nombre_real ?: $usuario_logueado['username']); 
+                                               ?>" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -1665,6 +2555,71 @@ try {
                             </div>
                         </div>
 
+                        <!-- Métodos de Pago (Formulario Completo) - COMENTADO -->
+                        <?php /* ?>
+                        <div class="form-section">
+                            <h5><i class="fa fa-credit-card"></i> Método de Pago</h5>
+                            <div style="text-align: center; margin-bottom: 20px;">
+                                <p style="color: #888; font-size: 12px; margin: 0;">
+                                    <i class="fa fa-shield" style="color: #4caf50;"></i> Protegido con altos estándares de seguridad
+                                </p>
+                            </div>
+                            
+                            <input type="hidden" id="metodo_pago_full" name="metodo_pago" value="" required>
+                            
+                            <div class="payment-methods-grid">
+                                <div class="payment-method-card" data-payment-method="tarjeta">
+                                    <div class="payment-method-icon">
+                                        <i class="fa fa-credit-card"></i>
+                                    </div>
+                                    <div class="payment-method-info">
+                                        <div class="payment-method-name">Tarjeta</div>
+                                        <div class="payment-method-desc">Paga ahora o paga mensualmente</div>
+                                    </div>
+                                    <div class="payment-method-check">
+                                        <i class="fa fa-check-circle"></i>
+                                    </div>
+                                </div>
+
+                                <div class="payment-method-card" data-payment-method="pagoefectivo">
+                                    <div class="payment-method-icon" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+                                        <i class="fa fa-money"></i>
+                                    </div>
+                                    <div class="payment-method-info">
+                                        <div class="payment-method-name">PagoEfectivo</div>
+                                        <div class="payment-method-desc">Por favor pague dentro de 2 días</div>
+                                        <div class="payment-method-note">Paga desde tu banca móvil, billetera QR o en efectivo en agentes antes de que expire el código.</div>
+                                    </div>
+                                    <div class="payment-method-check">
+                                        <i class="fa fa-check-circle"></i>
+                                    </div>
+                                </div>
+
+                                <div class="payment-method-card payment-method-highlight" data-payment-method="yape">
+                                    <div class="payment-method-badge">
+                                        <i class="fa fa-tag"></i> Extra S/ 4 de dto.
+                                    </div>
+                                    <div class="payment-method-icon" style="background: linear-gradient(135deg, #6a1b9a 0%, #8e24aa 100%);">
+                                        <i class="fa fa-mobile"></i>
+                                    </div>
+                                    <div class="payment-method-info">
+                                        <div class="payment-method-name">Yape</div>
+                                        <div class="payment-method-promo">Obtén extra S/ 4 de dto. en pedidos superiores a S/ 90.</div>
+                                    </div>
+                                    <div class="payment-method-check">
+                                        <i class="fa fa-check-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="payment-method-error-full" style="display: none; margin-top: 12px; padding: 10px; background: #fff3cd; border-left: 3px solid #ffc107; border-radius: 6px;">
+                                <p style="color: #856404; font-size: 13px; margin: 0;">
+                                    <i class="fa fa-exclamation-triangle"></i> Por favor selecciona un método de pago
+                                </p>
+                            </div>
+                        </div>
+                        <?php */ ?>
+
                         <!-- Notas Adicionales -->
                         <div class="form-section">
                             <h5><i class="fa fa-comment"></i> Notas del Pedido (Opcional)</h5>
@@ -1680,9 +2635,9 @@ try {
                 </div>
 
                 <!-- Order Summary Sidebar -->
-                <div class="col-lg-4 col-md-3 col-sm-12">
-                    <div class="order-summary" style="background: #fff; border-radius: 12px; padding: 24px; border: 2px solid #e1e1e1; position: sticky; top: 30px; z-index: 10;">
-                        <h5 style="color: #c9a67c; margin-bottom: 20px; font-size: 18px; font-weight: 700; border-bottom: 2px solid #e1e1e1; padding-bottom: 12px;">
+                <div class="col-lg-4 col-md-4 col-12">
+                    <div class="order-summary checkout-summary" style="border-radius: 12px; padding: 20px; position: sticky !important; top: 20px !important; z-index: 10; margin-top: 0 !important;">
+                        <h5 class="summary-title" style="margin-bottom: 18px; font-size: 17px; font-weight: 700; padding-bottom: 12px; margin-top: 0;">
                             <i class="fa fa-file-text-o"></i> Resumen del Pedido
                         </h5>
                         
@@ -1708,31 +2663,31 @@ try {
                         <!-- Totals Breakdown -->
                         <div class="order-totals" style="margin-bottom: 16px;">
                             <!-- Total de artículos -->
-                            <div class="order-total-row" style="display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e1e1e1;">
-                                <span style="color: #333; font-size: 14px; font-weight: 600;">Total de artículos:</span>
-                                <span style="color: #333; font-size: 14px; font-weight: 600;">S/ <?php echo number_format($total_articulos_precio, 2); ?></span>
+                            <div class="order-total-row summary-row" style="display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px;">
+                                <span class="summary-label">Total de artículos:</span>
+                                <span class="summary-value">S/ <?php echo number_format($total_articulos_precio, 2); ?></span>
                             </div>
                             
                             <!-- Descuento de artículos -->
                             <?php if($total_descuentos > 0): ?>
-                            <div class="order-total-row" style="display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e1e1e1;">
+                            <div class="order-total-row summary-row" style="display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px;">
                                 <span style="color: #4caf50; font-size: 14px; font-weight: 600;">Descuento de artículo(s):</span>
                                 <span style="color: #4caf50; font-size: 14px; font-weight: 600;">-S/ <?php echo number_format($total_descuentos, 2); ?></span>
                             </div>
                             <?php endif; ?>
                             
                             <!-- Envío -->
-                            <div class="order-total-row" style="display: flex; justify-content: space-between; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e1e1e1;">
-                                <span style="color: #333; font-size: 14px; font-weight: 600;">Envío:</span>
-                                <span style="color: <?php echo $costo_envio == 0 ? '#4caf50' : '#333'; ?>; font-weight: 700; font-size: 14px;">
+                            <div class="order-total-row summary-row" style="display: flex; justify-content: space-between; margin-bottom: 16px; padding-bottom: 16px;">
+                                <span class="summary-label">Envío:</span>
+                                <span style="color: <?php echo $costo_envio == 0 ? '#4caf50' : ''; ?>; font-weight: 700; font-size: 14px;" class="<?php echo $costo_envio == 0 ? '' : 'summary-value'; ?>">
                                     <?php echo $costo_envio == 0 ? 'GRATIS' : 'S/ ' . number_format($costo_envio, 2); ?>
                                 </span>
                             </div>
                             
                             <!-- Total -->
-                            <div class="order-total-row total" style="display: flex; justify-content: space-between; padding: 16px; background: rgba(201, 166, 124, 0.1); border-radius: 8px; margin-bottom: 20px;">
-                                <span style="color: #c9a67c; font-weight: 700; font-size: 18px;">Total</span>
-                                <span style="color: #c9a67c; font-weight: 700; font-size: 22px;">S/ <?php echo number_format($total, 2); ?></span>
+                            <div class="order-total-row total summary-total" style="display: flex; justify-content: space-between; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                                <span style="font-weight: 700; font-size: 18px;">Total</span>
+                                <span style="font-weight: 700; font-size: 22px;">S/ <?php echo number_format($total, 2); ?></span>
                             </div>
                             <!-- Botón de pago justo después del total -->
                             <div style="margin: 0 0 20px 0;">
@@ -1747,25 +2702,25 @@ try {
                         <div style="background: rgba(201, 166, 124, 0.1); border-left: 3px solid #c9a67c; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
                             <p style="color: #d0d0d0; font-size: 12px; margin: 0; line-height: 1.6;">
                                 <i class="fa fa-info-circle" style="color: #c9a67c;"></i> 
-                                Por favor consulte el monto de su pago real final.
+                                Verifica tu pedido antes de confirmar. El monto final incluye envío e impuestos.
                             </p>
                         </div>
                         
                         <div style="background: rgba(255, 193, 7, 0.1); border-left: 3px solid #ffc107; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
                             <p style="color: #ffc107; font-size: 12px; margin: 0; line-height: 1.6;">
                                 <i class="fa fa-exclamation-triangle"></i> 
-                                La disponibilidad y el precio de los artículos no están garantizados hasta que se finalice el pago.
+                                Los productos están sujetos a disponibilidad de stock. Confirma tu compra pronto.
                             </p>
                         </div>
 
                         <!-- Security Notice -->
                         <div style="background: rgba(201, 166, 124, 0.05); border: 1px solid #3a3a3a; padding: 14px; border-radius: 8px; margin-bottom: 20px;">
                             <h6 style="color: #c9a67c; font-size: 13px; font-weight: 700; margin-bottom: 8px;">
-                                <i class="fa fa-lock"></i> Opciones de pago seguro
+                                <i class="fa fa-lock"></i> Compra 100% Segura
                             </h6>
                             <p style="color: #a0a0a0; font-size: 11px; line-height: 1.6; margin: 0;">
-                                Temu se compromete a proteger tu información de pago. Seguimos los estándares PCI DSS, 
-                                utilizamos un encriptado sólido y realizamos revisiones periódicas del sistema para proteger tu privacidad.
+                                Protegemos tu información personal y de pago con encriptación SSL de última generación. 
+                                Tus datos están seguros y nunca serán compartidos con terceros. Compra con total confianza.
                             </p>
                         </div>
                     </div>
@@ -2044,30 +2999,14 @@ try {
                                     <span style="color: #d0d0d0;"><?php echo htmlspecialchars($direccion_predeterminada['nombre_cliente_direccion']); ?></span>
                                 </div>
                                 <?php endif; ?>
-                                <?php if(!empty($direccion_predeterminada['email_direccion'])): ?>
                                 <div style="display: flex; margin-bottom: 4px;">
                                     <strong style="min-width: 100px; color: #c9a67c;">Email:</strong> 
-                                    <span style="color: #d0d0d0;"><?php echo htmlspecialchars($direccion_predeterminada['email_direccion']); ?></span>
+                                    <span style="color: #d0d0d0;"><?php echo htmlspecialchars($usuario_logueado['email_usuario']); ?></span>
                                 </div>
-                                <?php endif; ?>
                                 <?php if(!empty($direccion_predeterminada['telefono_direccion'])): ?>
                                 <div style="display: flex; margin-bottom: 4px;">
                                     <strong style="min-width: 100px; color: #c9a67c;">Teléfono:</strong> 
                                     <span style="color: #d0d0d0;"><?php echo htmlspecialchars($direccion_predeterminada['telefono_direccion']); ?></span>
-                                </div>
-                                <?php endif; ?>
-                                <?php if(!empty($direccion_predeterminada['dni_ruc_direccion'])): ?>
-                                <div style="display: flex; margin-bottom: 4px;">
-                                    <strong style="min-width: 100px; color: #c9a67c;">
-                                        <?php echo strlen($direccion_predeterminada['dni_ruc_direccion']) === 11 ? 'RUC:' : 'DNI:'; ?>
-                                    </strong> 
-                                    <span style="color: #d0d0d0;"><?php echo htmlspecialchars($direccion_predeterminada['dni_ruc_direccion']); ?></span>
-                                </div>
-                                <?php endif; ?>
-                                <?php if(!empty($direccion_predeterminada['razon_social_direccion'])): ?>
-                                <div style="display: flex;">
-                                    <strong style="min-width: 100px; color: #c9a67c;">Razón Social:</strong> 
-                                    <span style="color: #d0d0d0;"><?php echo htmlspecialchars($direccion_predeterminada['razon_social_direccion']); ?></span>
                                 </div>
                                 <?php endif; ?>
                             </div>
@@ -2080,6 +3019,22 @@ try {
                             </div>
                             <div style="color: #d0d0d0; font-size: 14px; line-height: 1.8; padding-left: 24px;">
                                 <?php echo htmlspecialchars($direccion_predeterminada['direccion_completa_direccion'] ?? ''); ?>
+                                <?php 
+                                // Mostrar ubigeo completo si existe
+                                $ubigeo_partes = [];
+                                if (!empty($direccion_predeterminada['distrito_direccion'])) {
+                                    $ubigeo_partes[] = $direccion_predeterminada['distrito_direccion'];
+                                }
+                                if (!empty($direccion_predeterminada['provincia_direccion'])) {
+                                    $ubigeo_partes[] = $direccion_predeterminada['provincia_direccion'];
+                                }
+                                if (!empty($direccion_predeterminada['departamento_direccion'])) {
+                                    $ubigeo_partes[] = $direccion_predeterminada['departamento_direccion'];
+                                }
+                                if (!empty($ubigeo_partes)) {
+                                    echo '<br><span style="color: #a0a0a0; font-size: 13px;">' . htmlspecialchars(implode(' - ', $ubigeo_partes)) . '</span>';
+                                }
+                                ?>
                             </div>
                             <?php if(!empty($direccion_predeterminada['referencia_direccion'])): ?>
                             <div style="color: #a0a0a0; font-size: 13px; margin-top: 10px; padding-left: 24px; font-style: italic;">
@@ -2127,8 +3082,8 @@ try {
 
     <!-- Modal para Seleccionar Dirección (Múltiples opciones) -->
     <div id="selectAddressModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" style="z-index: 9999;">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content" style="border-radius: 16px; border: none; background: #1a1a1a; max-height: 90vh; display: flex; flex-direction: column;">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 650px;">
+            <div class="modal-content address-modal-content" style="border-radius: 16px; border: none; max-height: 90vh; display: flex; flex-direction: column;">
                 <div class="modal-header" style="border-bottom: 2px solid rgba(201, 166, 124, 0.2); padding: 20px 28px; border-radius: 16px 16px 0 0; background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%);">
                     <h5 class="modal-title" style="font-weight: 700; color: white; font-size: 18px;">
                         <i class="fa fa-map-marker"></i> Selecciona una Dirección de Envío
@@ -2137,12 +3092,12 @@ try {
                         <span aria-hidden="true" style="font-size: 28px;">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" style="padding: 24px; background: #1a1a1a; overflow-y: auto; flex: 1;">
+                <div class="modal-body address-modal-body" style="padding: 24px; overflow-y: auto; flex: 1;">
                     <?php if(!empty($todas_direcciones)): ?>
                         <div style="display: grid; gap: 16px;">
                             <?php foreach($todas_direcciones as $dir): ?>
                             <div class="address-option" data-address-id="<?php echo $dir['id_direccion']; ?>" 
-                                 style="background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%); border-radius: 12px; padding: 18px; cursor: pointer; border: 2px solid <?php echo $dir['es_principal'] == 1 ? '#c9a67c' : '#3a3a3a'; ?>; transition: all 0.3s ease; position: relative;">
+                                 style="border-radius: 12px; padding: 18px; cursor: pointer; border: 2px solid <?php echo $dir['es_principal'] == 1 ? '#c9a67c' : ''; ?>; transition: all 0.3s ease; position: relative;">
                                 
                                 <?php if($dir['es_principal'] == 1): ?>
                                 <div style="position: absolute; top: 12px; right: 12px; background: #c9a67c; color: #1a1a1a; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;">
@@ -2151,13 +3106,13 @@ try {
                                 <?php endif; ?>
                                 
                                 <div style="margin-right: 120px;">
-                                    <div style="color: #c9a67c; font-weight: 700; font-size: 15px; margin-bottom: 8px;">
+                                    <div class="address-option-name" style="font-weight: 700; font-size: 15px; margin-bottom: 8px;">
                                         <?php echo htmlspecialchars($dir['nombre_cliente_direccion']); ?>
                                     </div>
-                                    <div style="color: #d0d0d0; font-size: 13px; line-height: 1.6;">
+                                    <div class="address-option-details" style="font-size: 13px; line-height: 1.6;">
                                         <div><?php echo htmlspecialchars($dir['direccion_completa_direccion']); ?></div>
                                         <?php if(!empty($dir['telefono_direccion'])): ?>
-                                        <div style="margin-top: 6px; color: #a0a0a0;">
+                                        <div class="address-option-phone" style="margin-top: 6px;">
                                             <i class="fa fa-phone"></i> <?php echo htmlspecialchars($dir['telefono_direccion']); ?>
                                         </div>
                                         <?php endif; ?>
@@ -2166,10 +3121,8 @@ try {
                                 
                                 <!-- Datos ocultos para JavaScript -->
                                 <input type="hidden" class="addr-nombre" value="<?php echo htmlspecialchars($dir['nombre_cliente_direccion']); ?>">
-                                <input type="hidden" class="addr-email" value="<?php echo htmlspecialchars($dir['email_direccion'] ?? ''); ?>">
+                                <input type="hidden" class="addr-email" value="<?php echo htmlspecialchars($usuario_logueado['email_usuario']); ?>">
                                 <input type="hidden" class="addr-telefono" value="<?php echo htmlspecialchars($dir['telefono_direccion']); ?>">
-                                <input type="hidden" class="addr-dni" value="<?php echo htmlspecialchars($dir['dni_ruc_direccion'] ?? ''); ?>">
-                                <input type="hidden" class="addr-razon-social" value="<?php echo htmlspecialchars($dir['razon_social_direccion'] ?? ''); ?>">
                                 <input type="hidden" class="addr-direccion" value="<?php echo htmlspecialchars($dir['direccion_completa_direccion']); ?>">
                                 <input type="hidden" class="addr-departamento" value="<?php echo htmlspecialchars($dir['departamento_direccion']); ?>">
                                 <input type="hidden" class="addr-provincia" value="<?php echo htmlspecialchars($dir['provincia_direccion']); ?>">
@@ -2180,15 +3133,15 @@ try {
                             <?php endforeach; ?>
                         </div>
                     <?php else: ?>
-                        <div style="text-align: center; padding: 40px; color: #888;">
+                        <div class="address-empty-state" style="text-align: center; padding: 40px;">
                             <i class="fa fa-map-marker" style="font-size: 48px; color: #c9a67c; margin-bottom: 16px;"></i>
                             <p>No tienes direcciones guardadas</p>
                         </div>
                     <?php endif; ?>
                 </div>
-                <div class="modal-footer" style="border-top: 2px solid rgba(201, 166, 124, 0.2); padding: 20px 28px; background: #1a1a1a; border-radius: 0 0 16px 16px;">
-                    <button type="button" class="btn" onclick="window.location.href='profile.php#direcciones'" 
-                            style="flex: 1; padding: 12px 24px; border-radius: 10px; font-weight: 600; background: #3a3a3a; border: 1px solid #4a4a4a; font-size: 14px; color: #e0e0e0;">
+                <div class="modal-footer address-modal-footer" style="border-top: 2px solid rgba(201, 166, 124, 0.2); padding: 20px 28px; border-radius: 0 0 16px 16px;">
+                    <button type="button" class="btn btn-add-address" onclick="window.location.href='profile.php#direcciones'" 
+                            style="flex: 1; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 14px;">
                         <i class="fa fa-plus"></i> Agregar nueva dirección
                     </button>
                 </div>
@@ -2221,164 +3174,209 @@ try {
 
     <script>
         // ========================================
-        // DATOS DE UBIGEO DE PERÚ
+        // DATOS DE UBIGEO DE PERÚ (Solo si existen los campos)
         // ========================================
         let ubigeoData = null;
         
-        // Cargar datos de ubigeo
-        fetch('public/assets/data/peru-ubigeo.json')
-            .then(response => response.json())
-            .then(data => {
-                ubigeoData = data;
-                cargarDepartamentos();
-            })
-            .catch(error => {
-                console.error('Error al cargar ubigeo:', error);
-                alert('Error al cargar datos de ubicación. Por favor recarga la página.');
-            });
+        // Verificar si existen los campos de ubigeo antes de cargar
+        const departamentoField = document.getElementById('departamento');
+        const provinciaField = document.getElementById('provincia');
+        const distritoField = document.getElementById('distrito');
         
-        // Cargar departamentos en el select
-        function cargarDepartamentos() {
-            const selectDepartamento = document.getElementById('departamento');
-            selectDepartamento.innerHTML = '<option value="">Seleccionar...</option>';
+        if(departamentoField && provinciaField && distritoField) {
+            // Cargar datos de ubigeo
+            fetch('public/assets/data/peru-ubigeo.json')
+                .then(response => response.json())
+                .then(data => {
+                    ubigeoData = data;
+                    cargarDepartamentos();
+                })
+                .catch(error => {
+                    showNotification('⚠️ Error al cargar datos de ubicación', 'error');
+                });
             
-            ubigeoData.departamentos.forEach(depto => {
-                const option = document.createElement('option');
-                option.value = depto.nombre;
-                option.textContent = depto.nombre;
-                option.dataset.id = depto.id;
-                selectDepartamento.appendChild(option);
+            // Cargar departamentos en el select
+            function cargarDepartamentos() {
+                const selectDepartamento = document.getElementById('departamento');
+                selectDepartamento.innerHTML = '<option value="">Seleccionar...</option>';
+                
+                ubigeoData.departamentos.forEach(depto => {
+                    const option = document.createElement('option');
+                    option.value = depto.nombre;
+                    option.textContent = depto.nombre;
+                    option.dataset.id = depto.id;
+                    selectDepartamento.appendChild(option);
+                });
+            }
+            
+            // Cuando selecciona departamento, cargar provincias
+            departamentoField.addEventListener('change', function() {
+                const selectedDepto = ubigeoData.departamentos.find(d => d.nombre === this.value);
+                const selectProvincia = document.getElementById('provincia');
+                const selectDistrito = document.getElementById('distrito');
+                
+                // Limpiar provincia y distrito
+                selectProvincia.innerHTML = '<option value="">Seleccionar...</option>';
+                selectDistrito.innerHTML = '<option value="">Selecciona provincia primero</option>';
+                selectDistrito.disabled = true;
+                
+                if(selectedDepto) {
+                    selectProvincia.disabled = false;
+                    selectedDepto.provincias.forEach(prov => {
+                        const option = document.createElement('option');
+                        option.value = prov.nombre;
+                        option.textContent = prov.nombre;
+                        option.dataset.id = prov.id;
+                        option.dataset.distritos = JSON.stringify(prov.distritos);
+                        selectProvincia.appendChild(option);
+                    });
+                    } else {
+                    selectProvincia.disabled = true;
+                    }
+            });
+            
+            // Cuando selecciona provincia, cargar distritos
+            provinciaField.addEventListener('change', function() {
+                const selectDistrito = document.getElementById('distrito');
+                selectDistrito.innerHTML = '<option value="">Seleccionar...</option>';
+                
+                if(this.value) {
+                    const selectedOption = this.options[this.selectedIndex];
+                    const distritos = JSON.parse(selectedOption.dataset.distritos || '[]');
+                    
+                    selectDistrito.disabled = false;
+                    distritos.forEach(distrito => {
+                        const option = document.createElement('option');
+                        option.value = distrito;
+                        option.textContent = distrito;
+                        selectDistrito.appendChild(option);
+                    });
+                    } else {
+                    selectDistrito.disabled = true;
+                    }
+            });
+        } else {
+            // Campos de ubigeo no encontrados (usando dirección predeterminada)
+        }
+        
+        // ========================================
+        // DETECCIÓN AUTOMÁTICA DE TIPO DE COMPROBANTE (Solo si existe el campo)
+        // ========================================
+        const dniRucField = document.getElementById('dni_ruc');
+        if(dniRucField) {
+            dniRucField.addEventListener('input', function(e) {
+                // Solo permitir números
+                this.value = this.value.replace(/\D/g, '');
+                
+                const valor = this.value;
+                const tipoComprobanteInput = document.getElementById('tipo_comprobante');
+                const facturaFields = document.getElementById('facturaFields');
+                const razonSocialInput = document.getElementById('razon_social');
+                const comprobanteHint = document.getElementById('comprobante-hint');
+                
+                // Limpiar hints previos
+                comprobanteHint.style.display = 'none';
+                
+                if(valor.length === 8) {
+                    // DNI - Boleta
+                    tipoComprobanteInput.value = 'boleta';
+                    facturaFields.style.display = 'none';
+                    razonSocialInput.required = false;
+                    
+                    comprobanteHint.innerHTML = '<i class="fa fa-check-circle"></i> Se emitirá <strong>Boleta de Venta</strong>';
+                    comprobanteHint.className = 'form-text text-success';
+                    comprobanteHint.style.display = 'block';
+                    
+                } else if(valor.length === 11) {
+                    // RUC - Factura
+                    tipoComprobanteInput.value = 'factura';
+                    facturaFields.style.display = 'block';
+                    razonSocialInput.required = true;
+                    
+                    comprobanteHint.innerHTML = '<i class="fa fa-building-o"></i> Se emitirá <strong>Factura Electrónica</strong> - Completa razón social abajo';
+                    comprobanteHint.className = 'form-text text-warning';
+                    comprobanteHint.style.display = 'block';
+                    
+                } else if(valor.length > 0) {
+                    // Cantidad inválida
+                    tipoComprobanteInput.value = '';
+                    comprobanteHint.innerHTML = '<i class="fa fa-exclamation-triangle"></i> DNI debe tener 8 dígitos o RUC 11 dígitos';
+                    comprobanteHint.className = 'form-text text-danger';
+                    comprobanteHint.style.display = 'block';
+                } else {
+                    // Vacío
+                    tipoComprobanteInput.value = '';
+                    facturaFields.style.display = 'none';
+                }
             });
         }
         
-        // Cuando selecciona departamento, cargar provincias
-        document.getElementById('departamento').addEventListener('change', function() {
-            console.log('🔔 Evento change del departamento ejecutado. Valor:', this.value);
-            
-            const selectedDepto = ubigeoData.departamentos.find(d => d.nombre === this.value);
-            const selectProvincia = document.getElementById('provincia');
-            const selectDistrito = document.getElementById('distrito');
-            
-            console.log('🔍 Departamento encontrado:', selectedDepto ? 'Sí' : 'No');
-            
-            // Limpiar provincia y distrito
-            selectProvincia.innerHTML = '<option value="">Seleccionar...</option>';
-            selectDistrito.innerHTML = '<option value="">Selecciona provincia primero</option>';
-            selectDistrito.disabled = true;
-            
-            if(selectedDepto) {
-                selectProvincia.disabled = false;
-                console.log('📋 Cargando', selectedDepto.provincias.length, 'provincias...');
-                selectedDepto.provincias.forEach(prov => {
-                    const option = document.createElement('option');
-                    option.value = prov.nombre;
-                    option.textContent = prov.nombre;
-                    option.dataset.id = prov.id;
-                    option.dataset.distritos = JSON.stringify(prov.distritos);
-                    selectProvincia.appendChild(option);
-                });
-                console.log('✅ Provincias cargadas. Select habilitado:', !selectProvincia.disabled);
-            } else {
-                selectProvincia.disabled = true;
-                console.log('❌ No se encontró el departamento en los datos');
-            }
-        });
-        
-        // Cuando selecciona provincia, cargar distritos
-        document.getElementById('provincia').addEventListener('change', function() {
-            console.log('🔔 Evento change de provincia ejecutado. Valor:', this.value);
-            
-            const selectDistrito = document.getElementById('distrito');
-            selectDistrito.innerHTML = '<option value="">Seleccionar...</option>';
-            
-            if(this.value) {
-                const selectedOption = this.options[this.selectedIndex];
-                const distritos = JSON.parse(selectedOption.dataset.distritos || '[]');
-                
-                console.log('📋 Cargando', distritos.length, 'distritos...');
-                
-                selectDistrito.disabled = false;
-                distritos.forEach(distrito => {
-                    const option = document.createElement('option');
-                    option.value = distrito;
-                    option.textContent = distrito;
-                    selectDistrito.appendChild(option);
-                });
-                console.log('✅ Distritos cargados. Select habilitado:', !selectDistrito.disabled);
-            } else {
-                selectDistrito.disabled = true;
-                console.log('⚠️ No hay provincia seleccionada');
-            }
-        });
-        
         // ========================================
-        // DETECCIÓN AUTOMÁTICA DE TIPO DE COMPROBANTE
+        // SELECCIÓN DE MÉTODO DE PAGO - NUEVAS CARDS V2.0
         // ========================================
-        document.getElementById('dni_ruc').addEventListener('input', function(e) {
-            // Solo permitir números
-            this.value = this.value.replace(/\D/g, '');
-            
-            const valor = this.value;
-            const tipoComprobanteInput = document.getElementById('tipo_comprobante');
-            const facturaFields = document.getElementById('facturaFields');
-            const razonSocialInput = document.getElementById('razon_social');
-            const comprobanteHint = document.getElementById('comprobante-hint');
-            
-            // Limpiar hints previos
-            comprobanteHint.style.display = 'none';
-            
-            if(valor.length === 8) {
-                // DNI - Boleta
-                tipoComprobanteInput.value = 'boleta';
-                facturaFields.style.display = 'none';
-                razonSocialInput.required = false;
-                
-                comprobanteHint.innerHTML = '<i class="fa fa-check-circle"></i> Se emitirá <strong>Boleta de Venta</strong>';
-                comprobanteHint.className = 'form-text text-success';
-                comprobanteHint.style.display = 'block';
-                
-            } else if(valor.length === 11) {
-                // RUC - Factura
-                tipoComprobanteInput.value = 'factura';
-                facturaFields.style.display = 'block';
-                razonSocialInput.required = true;
-                
-                comprobanteHint.innerHTML = '<i class="fa fa-building-o"></i> Se emitirá <strong>Factura Electrónica</strong> - Completa razón social abajo';
-                comprobanteHint.className = 'form-text text-warning';
-                comprobanteHint.style.display = 'block';
-                
-            } else if(valor.length > 0) {
-                // Cantidad inválida
-                tipoComprobanteInput.value = '';
-                comprobanteHint.innerHTML = '<i class="fa fa-exclamation-triangle"></i> DNI debe tener 8 dígitos o RUC 11 dígitos';
-                comprobanteHint.className = 'form-text text-danger';
-                comprobanteHint.style.display = 'block';
-            } else {
-                // Vacío
-                tipoComprobanteInput.value = '';
-                facturaFields.style.display = 'none';
-            }
-        });
-        
-        // ========================================
-        // SELECCIÓN DE MÉTODO DE PAGO
-        // ========================================
-        document.querySelectorAll('.payment-method-card').forEach(card => {
+        document.querySelectorAll('.payment-method-card, .payment-method-row, .payment-card-new').forEach(card => {
             card.addEventListener('click', function() {
-                // Remover selección de todas las tarjetas
-                document.querySelectorAll('.payment-method-card').forEach(c => c.classList.remove('selected'));
+                // Remover selección de todas las tarjetas/filas/cards
+                document.querySelectorAll('.payment-method-card, .payment-method-row, .payment-card-new').forEach(c => {
+                    c.classList.remove('selected');
+                    // Remover estilos inline para que los CSS del modo tomen control
+                    c.style.border = '';
+                    c.style.background = '';
+                    
+                    // Resetear el check (para el diseño anterior)
+                    const check = c.querySelector('.payment-check');
+                    if(check) {
+                        check.style.background = '';
+                        check.style.border = '';
+                        const checkIcon = check.querySelector('i');
+                        if(checkIcon) checkIcon.style.color = 'transparent';
+                    }
+                });
                 
-                // Agregar selección a la tarjeta clickeada
+                // Agregar selección a la tarjeta/fila/card clickeada
                 this.classList.add('selected');
                 
-                // Guardar el método seleccionado en el campo oculto
-                const metodoPago = this.dataset.paymentMethod;
-                document.getElementById('metodo_pago').value = metodoPago;
+                // Actualizar el check (los estilos CSS manejan el color según el modo)
+                const check = this.querySelector('.payment-check, .payment-method-check');
+                if(check) {
+                    const checkIcon = check.querySelector('i');
+                    if(checkIcon) checkIcon.style.color = 'white';
+                }
                 
-                // Ocultar mensaje de error si existe
-                document.getElementById('payment-method-error').style.display = 'none';
+                // Guardar el método seleccionado en AMBOS campos ocultos (si existen)
+                const metodoPago = this.dataset.paymentMethod;
+                
+                const metodoPagoField = document.getElementById('metodo_pago');
+                if(metodoPagoField) {
+                    metodoPagoField.value = metodoPago;
+                }
+                
+                const metodoPagoFullField = document.getElementById('metodo_pago_full');
+                if(metodoPagoFullField) {
+                    metodoPagoFullField.value = metodoPago;
+                }
+                
+                // Ocultar mensajes de error si existen
+                const errorDiv = document.getElementById('payment-method-error');
+                if(errorDiv) errorDiv.style.display = 'none';
+                
+                const errorDivFull = document.getElementById('payment-method-error-full');
+                if(errorDivFull) errorDivFull.style.display = 'none';
                 
                 console.log('✅ Método de pago seleccionado:', metodoPago);
+            });
+            
+            // Efecto hover (manejado por CSS)
+            card.addEventListener('mouseenter', function() {
+                if(!this.classList.contains('selected')) {
+                    // El CSS ya maneja el hover
+                }
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                if(!this.classList.contains('selected')) {
+                    // El CSS ya maneja el hover
+                }
             });
         });
         
@@ -2396,70 +3394,119 @@ try {
             const btnSubmit = document.getElementById('btnPlaceOrder');
             const tieneDireccionPredeterminada = <?php echo $tiene_direccion_predeterminada ? 'true' : 'false'; ?>;
 
-            // Si se usa dirección predeterminada, no se necesitan validaciones de campos de dirección
-            if (tieneDireccionPredeterminada) {
-                // Validar solo método de pago
-            } else {
-            
-            // Validar tipo de comprobante (automático)
-            const tipoComprobante = document.getElementById('tipo_comprobante').value;
-            if(!tipoComprobante) {
-                alert('Por favor ingresa un DNI (8 dígitos) o RUC (11 dígitos) válido');
-                document.getElementById('dni_ruc').focus();
-                return;
-            }
-            
-            // Validar DNI/RUC
-            const dniRuc = document.getElementById('dni_ruc').value;
-            
-            if(tipoComprobante === 'factura') {
-                if(dniRuc.length !== 11 || !/^\d+$/.test(dniRuc)) {
-                    alert('El RUC debe tener exactamente 11 dígitos numéricos');
-                    document.getElementById('dni_ruc').focus();
+            // =====================================================
+            // VALIDACIONES SOLO PARA FORMULARIO SIN DIRECCIÓN
+            // =====================================================
+            if (!tieneDireccionPredeterminada) {
+                // Validar tipo de comprobante (automático)
+                const tipoComprobante = document.getElementById('tipo_comprobante');
+                if(!tipoComprobante || !tipoComprobante.value) {
+                    showNotification('⚠️ Por favor ingresa un DNI (8 dígitos) o RUC (11 dígitos) válido', 'warning');
+                    const dniField = document.getElementById('dni_ruc');
+                    if(dniField) dniField.focus();
                     return;
                 }
                 
-                const razonSocial = document.getElementById('razon_social').value.trim();
-                if(!razonSocial) {
-                    alert('Por favor completa la Razón Social para emitir factura');
-                    document.getElementById('razon_social').focus();
-                    return;
+                // Validar DNI/RUC
+                const dniRuc = document.getElementById('dni_ruc');
+                if(dniRuc) {
+                    const tipoComprobanteValue = tipoComprobante.value;
+                    
+                    if(tipoComprobanteValue === 'factura') {
+                        if(dniRuc.value.length !== 11 || !/^\d+$/.test(dniRuc.value)) {
+                            showNotification('⚠️ El RUC debe tener exactamente 11 dígitos numéricos', 'warning');
+                            dniRuc.focus();
+                            return;
+                        }
+                        
+                        const razonSocial = document.getElementById('razon_social');
+                        if(razonSocial && !razonSocial.value.trim()) {
+                            showNotification('⚠️ Por favor completa la Razón Social para emitir factura', 'warning');
+                            razonSocial.focus();
+                            return;
+                        }
+                    } else if(tipoComprobanteValue === 'boleta') {
+                        if(dniRuc.value.length !== 8 || !/^\d+$/.test(dniRuc.value)) {
+                            showNotification('⚠️ El DNI debe tener exactamente 8 dígitos numéricos', 'warning');
+                            dniRuc.focus();
+                            return;
+                        }
+                    }
                 }
-            } else if(tipoComprobante === 'boleta') {
-                if(dniRuc.length !== 8 || !/^\d+$/.test(dniRuc)) {
-                    alert('El DNI debe tener exactamente 8 dígitos numéricos');
-                    document.getElementById('dni_ruc').focus();
-                    return;
+                
+                // Validar ubicación (selects)
+                const departamento = document.getElementById('departamento');
+                const provincia = document.getElementById('provincia');
+                const distrito = document.getElementById('distrito');
+                
+                if(departamento && provincia && distrito) {
+                    if(!departamento.value || !provincia.value || !distrito.value) {
+                        showNotification('⚠️ Por favor completa todos los campos de ubicación', 'warning');
+                        return;
+                    }
                 }
+            } else {
+                }
+            
+            // =====================================================
+            // VALIDACIÓN DE MÉTODO DE PAGO (SIEMPRE REQUERIDO)
+            // =====================================================
+            let metodoPago = '';
+            const metodoPagoField = document.getElementById('metodo_pago');
+            const metodoPagoFullField = document.getElementById('metodo_pago_full');
+            
+            if(metodoPagoField) {
+                metodoPago = metodoPagoField.value;
+            } else if(metodoPagoFullField) {
+                metodoPago = metodoPagoFullField.value;
             }
             
-            // Validar ubicación (selects)
-            const departamento = document.getElementById('departamento').value;
-            const provincia = document.getElementById('provincia').value;
-            const distrito = document.getElementById('distrito').value;
-            
-            if(!departamento || !provincia || !distrito) {
-                alert('Por favor completa todos los campos de ubicación (Departamento, Provincia, Distrito)');
-                return;
-            }
-            } // Fin del else para validaciones de formulario completo
-            
-            // Validar método de pago
-            const metodoPago = document.getElementById('metodo_pago').value;
             if(!metodoPago) {
-                // Mostrar mensaje de error
-                document.getElementById('payment-method-error').style.display = 'block';
+                // Mostrar mensaje de error correspondiente
+                const errorDiv = document.getElementById('payment-method-error');
+                const errorDivFull = document.getElementById('payment-method-error-full');
+                
+                if(errorDiv) errorDiv.style.display = 'block';
+                if(errorDivFull) errorDivFull.style.display = 'block';
                 
                 // Scroll hacia la sección de métodos de pago
-                document.querySelector('.payment-methods-grid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const paymentGrid = document.querySelector('.payment-methods-grid');
+                if(paymentGrid) {
+                    paymentGrid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                 
-                alert('Por favor selecciona un método de pago');
+                showNotification('💳 Por favor selecciona un método de pago', 'warning');
                 return;
             }
             
-            // Guardar datos del formulario
+            // =====================================================
+            // PREPARAR Y ENVIAR DATOS
+            // =====================================================
             checkoutFormData = new FormData(form);
-
+            
+            // Si tiene dirección predeterminada, verificar que los campos hidden existan
+            if (tieneDireccionPredeterminada) {
+                // TODOS los campos vienen de hidden inputs (incluyendo DNI y tipo_comprobante)
+                const camposRequeridos = ['nombre', 'email', 'telefono', 'dni', 'tipo_comprobante',
+                                         'direccion', 'departamento', 'provincia', 'distrito'];
+                
+                camposRequeridos.forEach(campo => {
+                    const valor = checkoutFormData.get(campo);
+                    if (!valor || valor.trim() === '') {
+                        // Intentar obtener del DOM directamente
+                        const hiddenInput = form.querySelector(`input[name="${campo}"]`);
+                        if (hiddenInput && hiddenInput.value) {
+                            checkoutFormData.set(campo, hiddenInput.value);
+                        } else {
+                            }
+                    } else {
+                        }
+                });
+                
+                // Verificar razon_social (opcional)
+                const razonSocial = checkoutFormData.get('razon_social');
+            }
+            
             // Si no se usa dirección predeterminada, preguntar si se quiere guardar.
             // Si ya se usa, procesar directamente.
             if (!tieneDireccionPredeterminada) {
@@ -2517,37 +3564,24 @@ try {
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Respuesta del servidor:', data); // Debug
-                
                 if(data.success) {
-                    // Mostrar toast si se guardó la dirección
+                    // Mostrar notificación de éxito
                     if(data.direccion_guardada === true) {
-                        // Mostrar notificación de éxito
-                        if(typeof showToast === 'function') {
-                            showToast('✅ Dirección guardada en tu perfil', 'success');
-                        } else {
-                            console.log('✅ Dirección guardada en tu perfil');
-                        }
-                        
-                        // Esperar 1 segundo para que se vea el toast antes de redirigir
-                        setTimeout(() => {
-                            window.location.href = 'order-confirmation.php';
-                        }, 1000);
-                    } else {
-                        // Redirigir inmediatamente si no se guardó dirección
-                        window.location.href = 'order-confirmation.php';
+                        showNotification('✅ Dirección guardada en tu perfil', 'success');
                     }
+                    
+                    // Mostrar notificación de pedido creado
+                    showNotification('🎉 ¡Pedido creado exitosamente!', 'success');
+                    
+                    // Esperar un momento y redirigir
+                    setTimeout(() => {
+                        window.location.href = 'order-confirmation.php?order=' + data.order_id;
+                    }, 1500);
                     
                 } else {
-                    // Mostrar error más detallado
-                    console.error('Error del servidor:', data);
-                    
+                    // Mostrar error con toast
                     let errorMsg = data.message || 'Error al procesar la información';
-                    if(data.error) {
-                        errorMsg += '\n\nDetalle técnico: ' + data.error;
-                    }
-                    
-                    alert(errorMsg);
+                    showNotification('❌ ' + errorMsg, 'error');
                     
                     // Restaurar botones
                     btnSubmit.disabled = false;
@@ -2560,8 +3594,7 @@ try {
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Error al procesar la información. Por favor intenta nuevamente.');
+                showNotification('❌ Error al procesar la información', 'error');
                 
                 // Restaurar botones
                 btnSubmit.disabled = false;
@@ -2574,10 +3607,13 @@ try {
             });
         }
         
-        // Formatear teléfono (solo permitir números y +)
-        document.getElementById('telefono').addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^0-9+\s]/g, '');
-        });
+        // Formatear teléfono (solo permitir números y +) - Solo si existe el campo
+        const telefonoField = document.getElementById('telefono');
+        if(telefonoField) {
+            telefonoField.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9+\s]/g, '');
+            });
+        }
 
         // Toggle de submenús en offcanvas
         $(document).on('click', '.offcanvas-menu-toggle', function(e) {
@@ -2617,9 +3653,7 @@ try {
         const defaultAddress = {
             nombre: '<?php echo addslashes($direccion_predeterminada["nombre_cliente_direccion"] ?? ""); ?>',
             telefono: '<?php echo addslashes($direccion_predeterminada["telefono_direccion"] ?? ""); ?>',
-            email: '<?php echo addslashes($direccion_predeterminada["email_direccion"] ?? ""); ?>',
-            dni: '<?php echo addslashes($direccion_predeterminada["dni_ruc_direccion"] ?? ""); ?>',
-            razonSocial: '<?php echo addslashes($direccion_predeterminada["razon_social_direccion"] ?? ""); ?>',
+            email: '<?php echo addslashes($usuario_logueado["email_usuario"] ?? ""); ?>',
             direccion: '<?php echo addslashes($direccion_predeterminada["direccion_completa_direccion"] ?? ""); ?>',
             departamento: '<?php echo addslashes($direccion_predeterminada["departamento_direccion"] ?? ""); ?>',
             provincia: '<?php echo addslashes($direccion_predeterminada["provincia_direccion"] ?? ""); ?>',
@@ -2629,8 +3663,6 @@ try {
         };
         
         // Debug: Mostrar datos en consola
-        console.log('Dirección predeterminada:', defaultAddress);
-
         // NO mostrar modal automáticamente - el usuario ya tiene dirección predeterminada activa
         // El modal solo se abrirá cuando haga clic en "Cambiar dirección"
 
@@ -2638,52 +3670,18 @@ try {
         $('#btnUseDefaultAddress').on('click', function() {
             $('#useDefaultAddressModal').modal('hide');
             
-            console.log('🔄 Iniciando auto-rellenado de dirección...');
-            
             // ==========================================
             // 1. RELLENAR INFORMACIÓN DEL CLIENTE
             // ==========================================
             if(defaultAddress.nombre) {
                 $('#nombre').val(defaultAddress.nombre);
-                console.log('✅ Nombre rellenado:', defaultAddress.nombre);
-            }
+                }
             if(defaultAddress.email) {
                 $('#email').val(defaultAddress.email);
-                console.log('✅ Email rellenado:', defaultAddress.email);
-            }
+                }
             if(defaultAddress.telefono) {
                 $('#telefono').val(defaultAddress.telefono);
-                console.log('✅ Teléfono rellenado:', defaultAddress.telefono);
-            }
-            if(defaultAddress.dni) {
-                const dniField = $('#dni_ruc'); // Campo correcto: dni_ruc
-                if(dniField.length > 0) {
-                    dniField.val(defaultAddress.dni);
-                    
-                    // IMPORTANTE: Disparar evento 'input' para activar la validación automática
-                    const dniElement = document.getElementById('dni_ruc');
-                    const inputEvent = new Event('input', { bubbles: true });
-                    dniElement.dispatchEvent(inputEvent);
-                    
-                    console.log('✅ DNI/RUC rellenado:', defaultAddress.dni);
-                    console.log('🔔 Evento input disparado para validación automática');
-                    
-                    // Si hay razón social guardada, rellenarla después de que se active el campo
-                    if(defaultAddress.razonSocial && defaultAddress.dni.length === 11) {
-                        setTimeout(function() {
-                            const razonSocialField = $('#razon_social');
-                            if(razonSocialField.length > 0 && razonSocialField.is(':visible')) {
-                                razonSocialField.val(defaultAddress.razonSocial);
-                                console.log('✅ Razón Social rellenada:', defaultAddress.razonSocial);
-                            }
-                        }, 200); // Esperar a que se muestre el campo de razón social
-                    }
-                } else {
-                    console.error('❌ Campo DNI no encontrado en el DOM');
                 }
-            } else {
-                console.warn('⚠️ No hay DNI guardado');
-            }
             
             // ==========================================
             // 2. RELLENAR DIRECCIÓN DE ENVÍO
@@ -2713,11 +3711,6 @@ try {
             // 3. RELLENAR UBIGEO (Departamento, Provincia, Distrito)
             // ==========================================
             
-            console.log('🗺️ Iniciando auto-rellenado de Ubigeo...');
-            console.log('Departamento:', defaultAddress.departamento);
-            console.log('Provincia:', defaultAddress.provincia);
-            console.log('Distrito:', defaultAddress.distrito);
-            
             // Función auxiliar mejorada para esperar a que un select tenga opciones
             function waitForOptions(selector, expectedValue, callback, maxAttempts = 20) {
                 let attempts = 0;
@@ -2728,17 +3721,13 @@ try {
                     const isEnabled = !selectElement.prop('disabled');
                     
                     attempts++;
-                    console.log(`🔍 Intento ${attempts} - ${selector}: ${options.length} opciones, habilitado: ${isEnabled}`);
-                    
                     if (hasOptions && isEnabled) {
                         clearInterval(checkInterval);
-                        console.log(`✅ Opciones cargadas para ${selector}`);
                         // Pequeña pausa adicional para asegurar que el DOM está listo
                         setTimeout(callback, 50);
                     } else if (attempts >= maxAttempts) {
                         clearInterval(checkInterval);
-                        console.error(`❌ Timeout esperando opciones para ${selector}`);
-                    }
+                        }
                 }, 150); // Revisar cada 150ms
             }
             
@@ -2746,34 +3735,27 @@ try {
             if(defaultAddress.departamento) {
                 const deptSelect = $('#departamento');
                 deptSelect.val(defaultAddress.departamento);
-                console.log('✅ Departamento seleccionado:', defaultAddress.departamento);
-                
                 // Disparar el evento change usando JavaScript nativo (más compatible)
                 const deptElement = document.getElementById('departamento');
                 const changeEvent = new Event('change', { bubbles: true });
                 deptElement.dispatchEvent(changeEvent);
-                console.log('🔄 Evento change disparado para departamento (nativo)');
                 
                 // Esperar a que se carguen las provincias
                 if(defaultAddress.provincia) {
                     waitForOptions('#provincia', defaultAddress.provincia, function() {
                         const provSelect = $('#provincia');
                         provSelect.val(defaultAddress.provincia);
-                        console.log('✅ Provincia seleccionada:', defaultAddress.provincia);
-                        
                         // Disparar el evento change para provincia usando JavaScript nativo
                         const provElement = document.getElementById('provincia');
                         const provChangeEvent = new Event('change', { bubbles: true });
                         provElement.dispatchEvent(provChangeEvent);
-                        console.log('🔄 Evento change disparado para provincia (nativo)');
                         
                         // Esperar a que se carguen los distritos
                         if(defaultAddress.distrito) {
                             waitForOptions('#distrito', defaultAddress.distrito, function() {
                                 const distSelect = $('#distrito');
                                 distSelect.val(defaultAddress.distrito);
-                                console.log('✅ Distrito seleccionado:', defaultAddress.distrito);
-                            });
+                                });
                         }
                     });
                 }
@@ -2817,9 +3799,12 @@ try {
         
         // Botón "Cambiar dirección" - Para abrir modal de selección de direcciones
         $('#btnChangeAddress').on('click', function() {
-            // Mostrar el modal de selección de direcciones (todas las direcciones guardadas)
             $('#selectAddressModal').modal('show');
         });
+
+        // Prevenir que Bootstrap modifique el scrollbar
+        $.fn.modal.Constructor.prototype._setScrollbar = function() {};
+        $.fn.modal.Constructor.prototype._resetScrollbar = function() {};
         
         // Seleccionar una dirección del modal
         $('.address-option').on('click', function() {
@@ -2828,8 +3813,6 @@ try {
                 nombre: $(this).find('.addr-nombre').val(),
                 email: $(this).find('.addr-email').val(),
                 telefono: $(this).find('.addr-telefono').val(),
-                dni: $(this).find('.addr-dni').val(),
-                razon_social: $(this).find('.addr-razon-social').val(),
                 direccion: $(this).find('.addr-direccion').val(),
                 departamento: $(this).find('.addr-departamento').val(),
                 provincia: $(this).find('.addr-provincia').val(),
@@ -2842,8 +3825,6 @@ try {
             $('#nombre_completo').val(addressData.nombre);
             $('#email').val(addressData.email);
             $('#telefono').val(addressData.telefono);
-            $('#dni_ruc').val(addressData.dni);
-            $('#razon_social').val(addressData.razon_social);
             $('#direccion_completa').val(addressData.direccion);
             $('#departamento').val(addressData.departamento);
             $('#provincia').val(addressData.provincia);
@@ -2888,3 +3869,8 @@ try {
     <?php include 'includes/chatbot-widget.php'; ?>
 </body>
 </html>
+
+
+
+
+

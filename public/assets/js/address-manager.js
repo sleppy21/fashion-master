@@ -4,7 +4,6 @@
 (function() {
     'use strict';
 
-    console.log('📍 Iniciando address-manager.js...');
 
     // Variables globales
     let isEditMode = false;
@@ -20,7 +19,6 @@
      * Abrir modal para agregar dirección
      */
     function openAddAddressModal() {
-        console.log('➕ Abriendo modal para agregar dirección');
         isEditMode = false;
         currentAddressId = null;
         
@@ -35,7 +33,6 @@
      * Abrir modal para editar dirección
      */
     async function openEditAddressModal(addressId) {
-        console.log('✏️ Abriendo modal para editar dirección:', addressId);
         isEditMode = true;
         currentAddressId = addressId;
         
@@ -52,12 +49,76 @@
                 // Llenar el formulario
                 $('#address_id').val(dir.id_direccion);
                 $('#address_name').val(dir.nombre_cliente_direccion);
+                $('#address_dni').val(dir.dni_ruc_direccion || '');
                 $('#address_phone').val(dir.telefono_direccion || '');
                 $('#address_full').val(dir.direccion_completa_direccion);
-                $('#address_departamento').val(dir.departamento_direccion);
-                $('#address_provincia').val(dir.provincia_direccion);
-                $('#address_distrito').val(dir.distrito_direccion);
                 $('#address_reference').val(dir.referencia_direccion || '');
+                $('#address_razon_social').val(dir.razon_social_direccion || '');
+                
+                // Si tiene RUC (11 dígitos), mostrar campo de razón social
+                if (dir.dni_ruc_direccion && dir.dni_ruc_direccion.length === 11) {
+                    $('#razon-social-group').show();
+                    $('#address_razon_social').prop('required', true);
+                }
+                
+                // Cargar cascada de ubigeo (departamento → provincia → distrito)
+                console.log('📍 Cargando ubigeo para edición:', dir.departamento_direccion);
+                
+                // Esperar a que ubigeoDataProfile esté cargado
+                const waitForUbigeo = setInterval(function() {
+                    if (typeof ubigeoDataProfile !== 'undefined' && ubigeoDataProfile !== null) {
+                        clearInterval(waitForUbigeo);
+                        
+                        // 1. Cargar departamento
+                        $('#address_departamento').val(dir.departamento_direccion);
+                        
+                        // 2. Cargar provincias del departamento seleccionado
+                        if (dir.departamento_direccion && ubigeoDataProfile) {
+                            const departamento = ubigeoDataProfile.departamentos.find(d => d.nombre === dir.departamento_direccion);
+                            
+                            if (departamento && departamento.provincias) {
+                                const selectProvincia = $('#address_provincia');
+                                selectProvincia.html('<option value="">Seleccionar provincia</option>');
+                                selectProvincia.prop('disabled', false);
+                                
+                                departamento.provincias.forEach(prov => {
+                                    const option = $('<option></option>')
+                                        .val(prov.nombre)
+                                        .text(prov.nombre)
+                                        .data('distritos', prov.distritos);
+                                    selectProvincia.append(option);
+                                });
+                                
+                                // 3. Seleccionar provincia guardada
+                                selectProvincia.val(dir.provincia_direccion);
+                                
+                                // 4. Cargar distritos de la provincia seleccionada
+                                if (dir.provincia_direccion) {
+                                    const provinciaOption = selectProvincia.find('option:selected');
+                                    const distritos = provinciaOption.data('distritos') || [];
+                                    
+                                    if (distritos.length > 0) {
+                                        const selectDistrito = $('#address_distrito');
+                                        selectDistrito.html('<option value="">Seleccionar distrito</option>');
+                                        selectDistrito.prop('disabled', false);
+                                        
+                                        distritos.forEach(distrito => {
+                                            const option = $('<option></option>')
+                                                .val(distrito)
+                                                .text(distrito);
+                                            selectDistrito.append(option);
+                                        });
+                                        
+                                        // 5. Seleccionar distrito guardado
+                                        selectDistrito.val(dir.distrito_direccion);
+                                        
+                                        console.log('✅ Ubigeo cargado:', dir.departamento_direccion, '→', dir.provincia_direccion, '→', dir.distrito_direccion);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }, 100); // Revisar cada 100ms hasta que ubigeoDataProfile esté disponible
                 
                 addressModalTitle.text('Editar Dirección');
                 addressModal.modal('show');
@@ -76,7 +137,6 @@
      * Guardar dirección (crear o actualizar)
      */
     async function saveAddress() {
-        console.log('💾 Guardando dirección...');
         
         // Validar formulario
         if (!addressForm[0].checkValidity()) {
@@ -121,7 +181,6 @@
      * Establecer dirección como predeterminada
      */
     async function setDefaultAddress(addressId) {
-        console.log('⭐ Estableciendo dirección predeterminada:', addressId);
         
         try {
             const formData = new FormData();
@@ -149,38 +208,30 @@
     }
 
     /**
-     * Eliminar dirección con confirmación
+     * Eliminar dirección (sin confirmación)
      */
     async function deleteAddress(addressId) {
-        console.log('🗑️ Solicitando eliminar dirección:', addressId);
         
-        // Mostrar toast de confirmación
-        const confirmDelete = confirm('¿Estás seguro de eliminar esta dirección? Esta acción no se puede deshacer.');
-        
-        if (confirmDelete) {
-            try {
-                const formData = new FormData();
-                formData.append('id_direccion', addressId);
-                
-                const response = await fetch('app/actions/delete_address.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showToast(data.message, 'success');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 800);
-                } else {
-                    showToast(data.error || 'Error al eliminar la dirección', 'error');
-                }
-            } catch (error) {
-                console.error('Error al eliminar dirección:', error);
-                showToast('Error al eliminar la dirección', 'error');
+        try {
+            const formData = new FormData();
+            formData.append('id_direccion', addressId);
+            
+            const response = await fetch('app/actions/delete_address.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Recargar sin mostrar mensaje
+                window.location.reload();
+            } else {
+                showToast(data.error || 'Error al eliminar la dirección', 'error');
             }
+        } catch (error) {
+            console.error('Error al eliminar dirección:', error);
+            showToast('Error al eliminar la dirección', 'error');
         }
     }
 
@@ -201,7 +252,6 @@
      * Event Listeners
      */
     $(document).ready(function() {
-        console.log('✅ DOM Ready - Configurando event listeners para direcciones');
 
         // Botón agregar dirección (header)
         $(document).on('click', '#btn-add-address, #btn-add-first-address', function(e) {
@@ -244,7 +294,6 @@
             currentAddressId = null;
         });
 
-        console.log('✅ Event listeners de direcciones configurados');
     });
 
 })();

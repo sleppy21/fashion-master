@@ -150,6 +150,9 @@ body .shop-modern .modern-sidebar,
     transform: none !important; /* Desactivar transforms de AOS que rompen sticky */
     animation: none !important; /* Desactivar animaciones que rompen sticky */
     will-change: auto !important;
+    /* Scroll suave */
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch !important;
 }
 
 /* Desactivar AOS en el sidebar para que no rompa sticky */

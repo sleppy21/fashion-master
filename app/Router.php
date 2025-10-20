@@ -192,7 +192,10 @@ Router::get('/', function() {
             SELECT p.*, c.nombre_categoria
             FROM producto p
             LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
-            WHERE p.destacado_producto = 1 OR p.id_producto <= 8
+            WHERE (p.destacado_producto = 1 OR p.id_producto <= 8)
+            AND p.status_producto = 1
+            AND p.estado = 'activo'
+            AND p.stock_actual_producto > 0
             ORDER BY p.fecha_agregado_producto DESC
             LIMIT 8
         ");
@@ -202,7 +205,11 @@ Router::get('/', function() {
             SELECT p.*, c.nombre_categoria
             FROM producto p
             LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
-            WHERE p.precio_oferta IS NOT NULL AND p.precio_oferta < p.precio_producto
+            WHERE p.precio_oferta IS NOT NULL 
+            AND p.precio_oferta < p.precio_producto
+            AND p.status_producto = 1
+            AND p.estado = 'activo'
+            AND p.stock_actual_producto > 0
             ORDER BY ((p.precio_producto - p.precio_oferta) / p.precio_producto) DESC
             LIMIT 6
         ");
@@ -213,6 +220,9 @@ Router::get('/', function() {
                 SELECT p.*, c.nombre_categoria
                 FROM producto p
                 LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
+                WHERE p.status_producto = 1
+                AND p.estado = 'activo'
+                AND p.stock_actual_producto > 0
                 ORDER BY RAND()
                 LIMIT 6
             ");

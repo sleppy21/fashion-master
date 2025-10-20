@@ -94,6 +94,9 @@ if($usuario_logueado['rol_usuario'] === 'admin') {
     $rol_color = '#e67e22';
 }
 
+// Detectar si viene de cart.php sin dirección - Auto-abrir modal SOLO si no hay direcciones
+$seccion_activa = isset($_GET['seccion']) ? $_GET['seccion'] : 'personal-info';
+
 // Obtener direcciones guardadas del usuario
 $direcciones_usuario = [];
 try {
@@ -107,6 +110,9 @@ try {
 } catch(Exception $e) {
     error_log("Error al obtener direcciones: " . $e->getMessage());
 }
+
+// Auto-abrir modal SOLO si viene de cart y NO tiene direcciones
+$auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones_usuario));
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -140,35 +146,38 @@ try {
     <?php include 'includes/modern-libraries.php'; ?>
     
     <!-- User Account Modal Styles -->
-    <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/user-account-modal.css?v=2.0" type="text/css">
     
     <!-- Favorites Modal Styles -->
-    <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/favorites-modal.css?v=2.0" type="text/css">
     
     <!-- Dark Mode Styles -->
-    <link rel="stylesheet" href="public/assets/css/dark-mode.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/dark-mode.css?v=2.0" type="text/css">
+    
+    <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
+    <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
     
     <!-- Global Responsive Styles - TODO EL PROYECTO -->
-    <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=2.0" type="text/css">
     
     <!-- Avatar Flight Animation -->
-    <link rel="stylesheet" href="public/assets/css/avatar-flight-animation.css?v=1.0" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/avatar-flight-animation.css?v=2.0" type="text/css">
     
     <!-- Modern Styles -->
-    <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="public/assets/css/notifications-modal.css">
+    <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=2.0">
+    <link rel="stylesheet" href="public/assets/css/notifications-modal.css?v=2.0">
     
     <!-- Profile Styles -->
-    <link rel="stylesheet" href="public/assets/css/profile.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/profile.css?v=2.0" type="text/css">
     
     <!-- Croppie CSS for Avatar Upload -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
     
     <!-- Avatar Crop Modal Styles -->
-    <link rel="stylesheet" href="public/assets/css/avatar-crop-modal.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/avatar-crop-modal.css?v=2.0" type="text/css">
     
     <!-- Header Fix - DEBE IR AL FINAL -->
-    <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=2.0">
     
     <style>
         /* ============================================
@@ -178,9 +187,140 @@ try {
             background-color: #f8f5f2 !important;
         }
         
+        /* ELIMINAR BARRA LATERAL AL ABRIR MODALES (sin romper el diseño) */
+        html {
+            overflow-x: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        body {
+            overflow-x: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        /* Ocultar scrollbar horizontal */
+        *::-webkit-scrollbar:horizontal {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+        
+        /* Evitar que el body se estire cuando se abren modales */
+        body.modal-open {
+            overflow: hidden !important;
+            padding-right: 0 !important;
+        }
+        
         /* Dark mode */
         body.dark-mode {
             background-color: #1a1a1a !important;
+        }
+        
+        /* ============================================
+           ENLACES DE SECCIÓN SUTILES - HOVER EFFECT
+           ============================================ */
+        .quick-section-links a:hover {
+            padding-left: 6px !important;
+        }
+        
+        .quick-section-links a:hover i {
+            opacity: 1 !important;
+        }
+        
+        .quick-section-links a:hover span {
+            border-bottom-color: #c9a67c !important;
+        }
+        
+        /* ============================================
+           MEJORAS PARA SECCIÓN DE DIRECCIONES
+           ============================================ */
+        /* Reducir altura del botón "Agregar Dirección" */
+        #addresses .card-header .btn-edit {
+            padding: 8px 16px !important;
+            font-size: 13px !important;
+            height: auto !important;
+            line-height: 1.4 !important;
+        }
+        
+        /* Hover para botón "Agregar Primera Dirección" */
+        #btn-add-first-address:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4);
+        }
+        
+        /* Ajustar tamaño del modal de direcciones */
+        #addressModal .modal-dialog {
+            max-width: 700px !important;
+            margin: 1.75rem auto !important;
+        }
+        
+        /* Mejorar espacio del modal en móviles */
+        @media (max-width: 768px) {
+            #addressModal .modal-dialog {
+                max-width: calc(100% - 30px) !important;
+                margin: 1rem auto !important;
+            }
+        }
+        
+        /* Ajustar altura máxima del modal */
+        #addressModal .modal-body {
+            max-height: calc(100vh - 220px);
+            overflow-y: auto;
+        }
+        
+        /* Estilos para validación de campos */
+        .form-control.is-invalid {
+            border-color: #dc3545 !important;
+            padding-right: calc(1.5em + .75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(.375em + .1875rem) center;
+            background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+        }
+        
+        .form-control.is-valid {
+            border-color: #28a745 !important;
+            padding-right: calc(1.5em + .75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(.375em + .1875rem) center;
+            background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+        }
+        
+        .form-control.is-valid:focus {
+            border-color: #28a745 !important;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+        
+        .form-control.is-invalid:focus {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        
+        /* Estilos para selects válidos/inválidos */
+        select.form-control.is-valid {
+            background-position: right .75rem center, center right 2.25rem;
+            background-size: 16px 12px, calc(.75em + .375rem) calc(.75em + .375rem);
+        }
+        
+        select.form-control.is-invalid {
+            background-position: right .75rem center, center right 2.25rem;
+            background-size: 16px 12px, calc(.75em + .375rem) calc(.75em + .375rem);
+        }
+        
+        /* Campo readonly con estilo diferenciado */
+        .form-control[readonly] {
+            background-color: #f5f5f5 !important;
+            cursor: not-allowed !important;
+            opacity: 0.8;
+        }
+        
+        body.dark-mode .form-control[readonly] {
+            background-color: #2a2a2a !important;
+            color: #888 !important;
         }
     </style>
 </head>
@@ -194,10 +334,10 @@ try {
     
     <!-- Profile Section -->
     <section class="profile-section">
-        <div class="container">
-            <div class="row">
-                <!-- Sidebar -->
-                <div class="col-lg-4 mb-4">
+        <div class="container" style="max-width: 1400px;">
+            <div class="row g-4">
+                <!-- Sidebar - Balance mejorado -->
+                <div class="col-lg-4 col-xl-3 mb-4">
                     <div class="profile-sidebar">
                         <!-- Avatar Section -->
                         <div class="profile-avatar-section">
@@ -275,7 +415,7 @@ try {
                                     <span class="action-badge"><?php echo $cart_count; ?></span>
                                 <?php endif; ?>
                             </a>
-                            <a href="#" class="action-btn" onclick="document.getElementById('favorites-modal').style.display='block'; return false;">
+                            <a href="#" class="action-btn" id="toggle-favorites-sidebar-btn">
                                 <i class="fa fa-heart"></i>
                                 <span>Mis Favoritos</span>
                                 <?php if($favorites_count > 0): ?>
@@ -289,29 +429,52 @@ try {
                                 </a>
                             <?php endif; ?>
                         </div>
+                        
+                        <!-- Quick Section Links - Sutiles -->
+                        <div style="margin-top: 20px; padding: 15px 20px; border-top: 1px solid rgba(201, 166, 124, 0.1);">
+                            <p style="font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-weight: 600;">Ir a sección</p>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <a href="profile.php?seccion=personal-info" style="font-size: 13px; color: #c9a67c; text-decoration: none; transition: all 0.3s; display: flex; align-items: center; padding: 4px 0;">
+                                    <i class="fa fa-chevron-right" style="font-size: 10px; margin-right: 8px; opacity: 0.5;"></i>
+                                    <span style="border-bottom: 1px solid transparent;">Información Personal</span>
+                                </a>
+                                <a href="profile.php?seccion=seguridad" style="font-size: 13px; color: #c9a67c; text-decoration: none; transition: all 0.3s; display: flex; align-items: center; padding: 4px 0;">
+                                    <i class="fa fa-chevron-right" style="font-size: 10px; margin-right: 8px; opacity: 0.5;"></i>
+                                    <span style="border-bottom: 1px solid transparent;">Seguridad</span>
+                                </a>
+                                <a href="profile.php?seccion=direcciones" style="font-size: 13px; color: #c9a67c; text-decoration: none; transition: all 0.3s; display: flex; align-items: center; padding: 4px 0;">
+                                    <i class="fa fa-chevron-right" style="font-size: 10px; margin-right: 8px; opacity: 0.5;"></i>
+                                    <span style="border-bottom: 1px solid transparent;">Direcciones</span>
+                                </a>
+                                <a href="profile.php?seccion=configuracion" style="font-size: 13px; color: #c9a67c; text-decoration: none; transition: all 0.3s; display: flex; align-items: center; padding: 4px 0;">
+                                    <i class="fa fa-chevron-right" style="font-size: 10px; margin-right: 8px; opacity: 0.5;"></i>
+                                    <span style="border-bottom: 1px solid transparent;">Configuración</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Main Content -->
-                <div class="col-lg-8">
+                <!-- Main Content - Balance mejorado -->
+                <div class="col-lg-8 col-xl-9">
                     <!-- Tabs Navigation -->
                     <div class="profile-tabs">
-                        <button class="tab-btn active" data-tab="personal-info">
+                        <button class="tab-btn <?php echo $seccion_activa === 'personal-info' ? 'active' : ''; ?>" data-tab="personal-info">
                             <i class="fa fa-user"></i> Información Personal
                         </button>
-                        <button class="tab-btn" data-tab="security">
+                        <button class="tab-btn <?php echo $seccion_activa === 'seguridad' ? 'active' : ''; ?>" data-tab="security">
                             <i class="fa fa-lock"></i> Seguridad
                         </button>
-                        <button class="tab-btn" data-tab="addresses">
+                        <button class="tab-btn <?php echo $seccion_activa === 'direcciones' ? 'active' : ''; ?>" data-tab="addresses">
                             <i class="fa fa-map-marker-alt"></i> Direcciones
                         </button>
-                        <button class="tab-btn" data-tab="settings">
+                        <button class="tab-btn <?php echo $seccion_activa === 'configuracion' ? 'active' : ''; ?>" data-tab="settings">
                             <i class="fa fa-cog"></i> Configuración
                         </button>
                     </div>
                     
                     <!-- Tab Content: Personal Info -->
-                    <div class="tab-content active" id="personal-info">
+                    <div class="tab-content <?php echo $seccion_activa === 'personal-info' ? 'active' : ''; ?>" id="personal-info">
                         <div class="profile-card">
                             <div class="card-header">
                                 <h4><i class="fa fa-user-edit"></i> Editar Información Personal</h4>
@@ -323,16 +486,20 @@ try {
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label><i class="fa fa-user"></i> Nombre</label>
+                                            <label><i class="fa fa-user"></i> Nombre *</label>
                                             <input type="text" class="form-control" name="nombre" 
-                                                   value="<?php echo htmlspecialchars($usuario_logueado['nombre_usuario']); ?>" disabled>
+                                                   value="<?php echo htmlspecialchars($usuario_logueado['nombre_usuario']); ?>" 
+                                                   required minlength="2" maxlength="50" disabled>
+                                            <small class="form-text text-muted">Mínimo 2 caracteres</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label><i class="fa fa-user"></i> Apellido</label>
+                                            <label><i class="fa fa-user"></i> Apellido *</label>
                                             <input type="text" class="form-control" name="apellido" 
-                                                   value="<?php echo htmlspecialchars($usuario_logueado['apellido_usuario']); ?>" disabled>
+                                                   value="<?php echo htmlspecialchars($usuario_logueado['apellido_usuario']); ?>" 
+                                                   required minlength="2" maxlength="50" disabled>
+                                            <small class="form-text text-muted">Mínimo 2 caracteres</small>
                                         </div>
                                     </div>
                                 </div>
@@ -342,14 +509,18 @@ try {
                                         <div class="form-group">
                                             <label><i class="fa fa-at"></i> Nombre de Usuario</label>
                                             <input type="text" class="form-control" name="username" 
-                                                   value="<?php echo htmlspecialchars($usuario_logueado['username_usuario']); ?>" disabled>
+                                                   value="<?php echo htmlspecialchars($usuario_logueado['username_usuario']); ?>" 
+                                                   disabled readonly>
+                                            <small class="form-text text-muted">El nombre de usuario no se puede modificar</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label><i class="fa fa-envelope"></i> Email</label>
                                             <input type="email" class="form-control" name="email" 
-                                                   value="<?php echo htmlspecialchars($usuario_logueado['email_usuario']); ?>" disabled>
+                                                   value="<?php echo htmlspecialchars($usuario_logueado['email_usuario']); ?>" 
+                                                   disabled readonly>
+                                            <small class="form-text text-muted">El email no se puede modificar</small>
                                         </div>
                                     </div>
                                 </div>
@@ -359,14 +530,19 @@ try {
                                         <div class="form-group">
                                             <label><i class="fa fa-phone"></i> Teléfono</label>
                                             <input type="tel" class="form-control" name="telefono" 
-                                                   value="<?php echo htmlspecialchars($usuario_logueado['telefono_usuario'] ?? ''); ?>" disabled>
+                                                   value="<?php echo htmlspecialchars($usuario_logueado['telefono_usuario'] ?? ''); ?>" 
+                                                   pattern="[0-9+\-\s\(\)]+" maxlength="15" 
+                                                   placeholder="999 999 999" disabled>
+                                            <small class="form-text text-muted">Solo números y símbolos: + - ( )</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label><i class="fa fa-birthday-cake"></i> Fecha de Nacimiento</label>
                                             <input type="date" class="form-control" name="fecha_nacimiento" 
-                                                   value="<?php echo $usuario_logueado['fecha_nacimiento'] ?? ''; ?>" disabled>
+                                                   value="<?php echo $usuario_logueado['fecha_nacimiento'] ?? ''; ?>" 
+                                                   max="<?php echo date('Y-m-d', strtotime('-18 years')); ?>" disabled>
+                                            <small class="form-text text-muted">Debes ser mayor de 18 años</small>
                                         </div>
                                     </div>
                                 </div>
@@ -393,7 +569,7 @@ try {
                     </div>
                     
                     <!-- Tab Content: Security -->
-                    <div class="tab-content" id="security">
+                    <div class="tab-content <?php echo $seccion_activa === 'seguridad' ? 'active' : ''; ?>" id="security">
                         <div class="profile-card">
                             <div class="card-header">
                                 <h4><i class="fa fa-shield-alt"></i> Seguridad de la Cuenta</h4>
@@ -492,7 +668,7 @@ try {
                     </div>
                     
                     <!-- Tab Content: Addresses -->
-                    <div class="tab-content" id="addresses">
+                    <div class="tab-content <?php echo $seccion_activa === 'direcciones' ? 'active' : ''; ?>" id="addresses">
                         <div class="profile-card">
                             <div class="card-header">
                                 <h4><i class="fa fa-map-marked-alt"></i> Mis Direcciones</h4>
@@ -503,12 +679,16 @@ try {
                             
                             <div class="addresses-list">
                                 <?php if (empty($direcciones_usuario)): ?>
-                                    <div class="empty-state">
-                                        <i class="fa fa-map-marker-alt"></i>
-                                        <h5>No tienes direcciones guardadas</h5>
-                                        <p>Agrega una dirección para agilizar tus compras</p>
-                                        <button type="button" class="btn btn-primary" id="btn-add-first-address">
-                                            <i class="fa fa-plus"></i> Agregar Primera Dirección
+                                    <div class="empty-state" style="padding: 80px 40px; text-align: center; background: linear-gradient(135deg, rgba(201,166,124,0.05) 0%, rgba(201,166,124,0.02) 100%); border-radius: 16px; border: 2px dashed rgba(201,166,124,0.3);">
+                                        <div style="margin-bottom: 24px;">
+                                            <i class="fa fa-map-marker-alt" style="font-size: 72px; color: #c9a67c; opacity: 0.4;"></i>
+                                        </div>
+                                        <h4 style="color: #c9a67c; margin-bottom: 16px; font-size: 24px; font-weight: 600;">¡Agrega tu primera dirección!</h4>
+                                        <p style="color: #777; margin-bottom: 32px; font-size: 15px; line-height: 1.6; max-width: 500px; margin-left: auto; margin-right: auto;">
+                                            Guarda tus direcciones de envío para que tus compras<br>sean más rápidas y fáciles
+                                        </p>
+                                        <button type="button" class="btn btn-primary" id="btn-add-first-address" style="padding: 14px 36px; font-size: 15px; border-radius: 10px; background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%); border: none; font-weight: 600; transition: all 0.3s; box-shadow: 0 4px 15px rgba(201,166,124,0.3);">
+                                            <i class="fa fa-plus-circle" style="margin-right: 8px;"></i> Agregar Primera Dirección
                                         </button>
                                     </div>
                                 <?php else: ?>
@@ -628,7 +808,7 @@ try {
                     </div>
 
                 <!-- Tab Content: Settings -->
-                <div class="tab-content" id="settings">
+                <div class="tab-content <?php echo $seccion_activa === 'configuracion' ? 'active' : ''; ?>" id="settings">
                     <div class="profile-card">
                         <div class="card-header">
                             <h4><i class="fa fa-cog"></i> Configuración de la Aplicación</h4>
@@ -838,7 +1018,7 @@ try {
     
     <!-- Modal para Agregar/Editar Dirección -->
     <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="margin-top: 2rem; margin-bottom: 2rem;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addressModalLabel">
@@ -849,32 +1029,60 @@ try {
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="max-height: calc(100vh - 180px); overflow-y: auto;">
                     <form id="addressForm">
                         <input type="hidden" id="address_id" name="id_direccion">
+                        <!-- Email oculto - se envía automáticamente -->
+                        <input type="hidden" id="address_email" name="email" value="<?php echo htmlspecialchars($usuario_logueado['email_usuario']); ?>">
                         
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="address_name">Nombre de la Dirección *</label>
+                                    <label for="address_name">Nombre del Titular *</label>
                                     <input type="text" class="form-control" id="address_name" name="nombre_direccion" 
-                                           placeholder="Ej: Casa, Trabajo, Casa de mamá" required>
-                                    <small class="form-text text-muted">Un nombre para identificar fácilmente esta dirección</small>
+                                           placeholder="Ej: Juan Pérez García" required minlength="3" maxlength="100"
+                                           pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" 
+                                           title="Solo se permiten letras y espacios">
+                                    <small class="form-text text-muted">Persona que recibirá el pedido</small>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="address_phone">Teléfono</label>
-                                    <input type="tel" class="form-control" id="address_phone" name="telefono" 
-                                           placeholder="999 999 999" maxlength="15">
+                                    <label for="address_dni">DNI/RUC *</label>
+                                    <input type="text" class="form-control" id="address_dni" name="dni" 
+                                           placeholder="DNI (8) o RUC (11)" required
+                                           pattern="[0-9]{8}|[0-9]{11}" 
+                                           maxlength="11"
+                                           title="Ingrese DNI de 8 dígitos o RUC de 11 dígitos">
+                                    <small class="form-text text-muted">DNI: 8 dígitos / RUC: 11 dígitos</small>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="address_phone">Teléfono *</label>
+                                    <input type="tel" class="form-control" id="address_phone" name="telefono" 
+                                           placeholder="999 999 999" required
+                                           pattern="[0-9]{9}" 
+                                           maxlength="9"
+                                           title="Ingrese exactamente 9 dígitos numéricos">
+                                    <small class="form-text text-muted">Exactamente 9 dígitos</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Campo Razón Social - Visible solo cuando es RUC -->
+                        <div class="form-group" id="razon-social-group" style="display: none;">
+                            <label for="address_razon_social">Razón Social *</label>
+                            <input type="text" class="form-control" id="address_razon_social" name="razon_social" 
+                                   placeholder="Nombre de la empresa" minlength="3" maxlength="150">
+                            <small class="form-text text-muted">Nombre completo de la empresa (requerido para RUC)</small>
                         </div>
 
                         <div class="form-group">
                             <label for="address_full">Dirección Completa *</label>
                             <input type="text" class="form-control" id="address_full" name="direccion_completa" 
-                                   placeholder="Calle, número, urbanización" required>
+                                   placeholder="Calle, número, urbanización, piso/dpto" required minlength="10" maxlength="200">
+                            <small class="form-text text-muted">Dirección exacta donde se entregará el pedido</small>
                         </div>
 
                         <div class="row">
@@ -882,44 +1090,35 @@ try {
                                 <div class="form-group">
                                     <label for="address_departamento">Departamento *</label>
                                     <select class="form-control" id="address_departamento" name="departamento" required>
-                                        <option value="">Seleccionar</option>
-                                        <option value="Lima">Lima</option>
-                                        <option value="Arequipa">Arequipa</option>
-                                        <option value="Cusco">Cusco</option>
-                                        <option value="La Libertad">La Libertad</option>
-                                        <option value="Piura">Piura</option>
+                                        <option value="">Seleccionar departamento</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="address_provincia">Provincia *</label>
-                                    <select class="form-control" id="address_provincia" name="provincia" required>
-                                        <option value="">Seleccionar</option>
-                                        <option value="Lima">Lima</option>
-                                        <option value="Callao">Callao</option>
+                                    <select class="form-control" id="address_provincia" name="provincia" required disabled>
+                                        <option value="">Seleccione departamento primero</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="address_distrito">Distrito *</label>
-                                    <select class="form-control" id="address_distrito" name="distrito" required>
-                                        <option value="">Seleccionar</option>
-                                        <option value="Miraflores">Miraflores</option>
-                                        <option value="San Isidro">San Isidro</option>
-                                        <option value="Surco">Surco</option>
-                                        <option value="La Molina">La Molina</option>
-                                        <option value="San Borja">San Borja</option>
+                                    <select class="form-control" id="address_distrito" name="distrito" required disabled>
+                                        <option value="">Seleccione provincia primero</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="address_reference">Referencia</label>
-                            <textarea class="form-control" id="address_reference" name="referencia" 
-                                      rows="2" placeholder="Alguna referencia para encontrar tu dirección más fácil"></textarea>
+                            <label for="address_reference">Referencia (Opcional)</label>
+                            <input type="text" class="form-control" id="address_reference" name="referencia" 
+                                   placeholder="Ej: Casa azul con puerta negra, al costado de la bodega" 
+                                   maxlength="150"
+                                   style="resize: none; overflow: hidden; min-height: 42px;">
+                            <small class="form-text text-muted">Referencias para ubicar tu dirección más fácilmente</small>
                         </div>
                     </form>
                 </div>
@@ -999,8 +1198,304 @@ try {
     <!-- Avatar Color Extractor - Shadow dinámico basado en la imagen -->
     <script src="public/assets/js/avatar-color-extractor.js"></script>
     
+    <!-- Script para cargar UBIGEO del Perú -->
+    <script>
+        // Variable global para almacenar datos de ubigeo
+        let ubigeoDataProfile = null;
+        
+        // Cargar datos de ubigeo al inicio
+        fetch('public/assets/data/peru-ubigeo.json')
+            .then(response => response.json())
+            .then(data => {
+                ubigeoDataProfile = data;
+                console.log('✅ Datos de ubigeo cargados:', ubigeoDataProfile.departamentos.length + ' departamentos');
+                cargarDepartamentos();
+            })
+            .catch(error => {
+                console.error('❌ Error al cargar ubigeo:', error);
+            });
+        
+        // Función para cargar departamentos en el select
+        function cargarDepartamentos() {
+            const selectDepartamento = document.getElementById('address_departamento');
+            if (!selectDepartamento) return;
+            
+            selectDepartamento.innerHTML = '<option value="">Seleccionar departamento</option>';
+            
+            ubigeoDataProfile.departamentos.forEach(depto => {
+                const option = document.createElement('option');
+                option.value = depto.nombre;
+                option.textContent = depto.nombre;
+                option.dataset.id = depto.id;
+                selectDepartamento.appendChild(option);
+            });
+        }
+        
+        // Evento cuando se selecciona un departamento
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectDepartamento = document.getElementById('address_departamento');
+            const selectProvincia = document.getElementById('address_provincia');
+            const selectDistrito = document.getElementById('address_distrito');
+            
+            // Validación en tiempo real para el nombre (solo letras)
+            const addressName = document.getElementById('address_name');
+            if (addressName) {
+                addressName.addEventListener('input', function(e) {
+                    // Remover cualquier caracter que no sea letra o espacio
+                    this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                    
+                    // Validar longitud mínima
+                    if (this.value.length >= 3) {
+                        this.setCustomValidity('');
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                        console.log('✅ Nombre válido:', this.value);
+                    } else if (this.value.length > 0) {
+                        this.setCustomValidity('El nombre debe tener al menos 3 caracteres');
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    } else {
+                        this.classList.remove('is-valid', 'is-invalid');
+                    }
+                });
+            }
+            
+            // Validación en tiempo real para DNI/RUC (solo números, 8 u 11 dígitos)
+            const addressDni = document.getElementById('address_dni');
+            const razonSocialGroup = document.getElementById('razon-social-group');
+            const razonSocialInput = document.getElementById('address_razon_social');
+            
+            if (addressDni) {
+                addressDni.addEventListener('input', function(e) {
+                    // Solo permitir números
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    // Limitar a 11 caracteres máximo
+                    if (this.value.length > 11) {
+                        this.value = this.value.slice(0, 11);
+                    }
+                    
+                    // Validar que sea 8 o 11 dígitos
+                    const length = this.value.length;
+                    
+                    // Mostrar/ocultar Razón Social según el tipo
+                    if (length === 11) {
+                        // Es RUC - Mostrar y hacer obligatorio Razón Social
+                        razonSocialGroup.style.display = 'block';
+                        razonSocialInput.required = true;
+                        console.log('📋 RUC detectado - Razón Social requerida');
+                    } else {
+                        // Es DNI o vacío - Ocultar Razón Social
+                        razonSocialGroup.style.display = 'none';
+                        razonSocialInput.required = false;
+                        razonSocialInput.value = '';
+                        razonSocialInput.classList.remove('is-valid', 'is-invalid');
+                    }
+                    
+                    if (length === 8 || length === 11) {
+                        this.setCustomValidity('');
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else if (length > 0) {
+                        this.setCustomValidity('Debe ser DNI (8 dígitos) o RUC (11 dígitos)');
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    } else {
+                        this.classList.remove('is-valid', 'is-invalid');
+                    }
+                });
+            }
+            
+            // Validación para Razón Social
+            if (razonSocialInput) {
+                razonSocialInput.addEventListener('input', function() {
+                    if (this.required) {
+                        if (this.value.trim().length >= 3) {
+                            this.setCustomValidity('');
+                            this.classList.remove('is-invalid');
+                            this.classList.add('is-valid');
+                            console.log('✅ Razón Social válida:', this.value);
+                        } else if (this.value.length > 0) {
+                            this.setCustomValidity('La razón social debe tener al menos 3 caracteres');
+                            this.classList.remove('is-valid');
+                            this.classList.add('is-invalid');
+                        } else {
+                            this.classList.remove('is-valid', 'is-invalid');
+                        }
+                    }
+                });
+            }
+            
+            // Validación en tiempo real para el teléfono (exactamente 9 dígitos)
+            const addressPhone = document.getElementById('address_phone');
+            if (addressPhone) {
+                addressPhone.addEventListener('input', function(e) {
+                    // Solo permitir números
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    // Limitar a 9 dígitos
+                    if (this.value.length > 9) {
+                        this.value = this.value.slice(0, 9);
+                    }
+                    
+                    // Validar que tenga exactamente 9 dígitos
+                    if (this.value.length === 9) {
+                        this.setCustomValidity('');
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else if (this.value.length > 0) {
+                        this.setCustomValidity('El teléfono debe tener exactamente 9 dígitos');
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    } else {
+                        this.classList.remove('is-valid', 'is-invalid');
+                    }
+                });
+            }
+            
+            // Validación para dirección completa
+            const addressFull = document.getElementById('address_full');
+            if (addressFull) {
+                addressFull.addEventListener('input', function() {
+                    if (this.value.trim().length >= 10) {
+                        this.setCustomValidity('');
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else if (this.value.length > 0) {
+                        this.setCustomValidity('La dirección debe tener al menos 10 caracteres');
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    } else {
+                        this.classList.remove('is-valid', 'is-invalid');
+                    }
+                });
+            }
+            
+            // Validación para selects (departamento, provincia, distrito)
+            // Las variables ya están declaradas al inicio del DOMContentLoaded
+            
+            if (selectDepartamento) {
+                selectDepartamento.addEventListener('change', function() {
+                    if (this.value) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                        console.log('✅ Departamento válido:', this.value);
+                    } else {
+                        this.classList.remove('is-valid', 'is-invalid');
+                    }
+                });
+            }
+            
+            if (selectProvincia) {
+                selectProvincia.addEventListener('change', function() {
+                    if (this.value) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                        console.log('✅ Provincia válida:', this.value);
+                    } else {
+                        this.classList.remove('is-valid', 'is-invalid');
+                    }
+                });
+            }
+            
+            if (selectDistrito) {
+                selectDistrito.addEventListener('change', function() {
+                    if (this.value) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                        console.log('✅ Distrito válido:', this.value);
+                    } else {
+                        this.classList.remove('is-valid', 'is-invalid');
+                    }
+                });
+            }
+            
+            if (selectDepartamento && selectProvincia && selectDistrito) {
+                selectDepartamento.addEventListener('change', function() {
+                    console.log('🔄 Cambio de departamento:', this.value);
+                    
+                    // Limpiar provincia y distrito
+                    selectProvincia.innerHTML = '<option value="">Seleccione departamento primero</option>';
+                    selectDistrito.innerHTML = '<option value="">Seleccione provincia primero</option>';
+                    selectProvincia.disabled = true;
+                    selectDistrito.disabled = true;
+                    // Quitar validación visual al limpiar
+                    selectProvincia.classList.remove('is-valid', 'is-invalid');
+                    selectDistrito.classList.remove('is-valid', 'is-invalid');
+                    
+                    if (this.value && ubigeoDataProfile) {
+                        console.log('🔍 Buscando departamento en ubigeoData...');
+                        const departamento = ubigeoDataProfile.departamentos.find(d => d.nombre === this.value);
+                        
+                        if (departamento && departamento.provincias) {
+                            console.log('✅ Encontrado! Cargando', departamento.provincias.length, 'provincias');
+                            selectProvincia.innerHTML = '<option value="">Seleccionar provincia</option>';
+                            selectProvincia.disabled = false;
+                            
+                            departamento.provincias.forEach(prov => {
+                                const option = document.createElement('option');
+                                option.value = prov.nombre;
+                                option.textContent = prov.nombre;
+                                option.dataset.distritos = JSON.stringify(prov.distritos);
+                                selectProvincia.appendChild(option);
+                            });
+                        } else {
+                            console.error('❌ No se encontró el departamento o no tiene provincias');
+                        }
+                    } else {
+                        if (!ubigeoDataProfile) {
+                            console.error('❌ ubigeoDataProfile no está cargado!');
+                        }
+                    }
+                });
+                
+                selectProvincia.addEventListener('change', function() {
+                    console.log('🔄 Cambio de provincia:', this.value);
+                    
+                    // Limpiar distrito
+                    selectDistrito.innerHTML = '<option value="">Seleccione provincia primero</option>';
+                    selectDistrito.disabled = true;
+                    // Quitar validación visual al limpiar
+                    selectDistrito.classList.remove('is-valid', 'is-invalid');
+                    
+                    if (this.value) {
+                        const selectedOption = this.options[this.selectedIndex];
+                        const distritos = JSON.parse(selectedOption.dataset.distritos || '[]');
+                        
+                        console.log('🔍 Distritos encontrados:', distritos.length);
+                        
+                        if (distritos && distritos.length > 0) {
+                            selectDistrito.innerHTML = '<option value="">Seleccionar distrito</option>';
+                            selectDistrito.disabled = false;
+                            
+                            distritos.forEach(distrito => {
+                                const option = document.createElement('option');
+                                option.value = distrito;
+                                option.textContent = distrito;
+                                selectDistrito.appendChild(option);
+                            });
+                            console.log('✅', distritos.length, 'distritos cargados');
+                        }
+                    }
+                });
+            }
+            
+            // Auto-ajustar altura del textarea de referencia
+            const addressReference = document.getElementById('address_reference');
+            if (addressReference) {
+                addressReference.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = (this.scrollHeight) + 'px';
+                });
+            }
+        });
+    </script>
+    
     <!-- Address Manager Script -->
     <script src="public/assets/js/address-manager.js"></script>
+    
+    <!-- Fix Modal Scrollbar - PREVENIR BARRA LATERAL -->
+    <script src="public/assets/js/fix-modal-scrollbar.js"></script>
     
     <!-- Settings Manager Script -->
     <script src="public/assets/js/settings-manager.js"></script>
@@ -1011,7 +1506,79 @@ try {
     <!-- Offcanvas Menu Global JS -->
     <script src="public/assets/js/offcanvas-menu.js"></script>
     
-    <!-- Chatbot Widget -->
-    <?php include 'includes/chatbot-widget.php'; ?>
+    <!-- Script para conectar botón de favoritos del sidebar con el modal del header -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // ============================================
+            // FIX: ELIMINAR BARRA LATERAL AL ABRIR MODALES
+            // ============================================
+            $('#addressModal').on('show.bs.modal', function() {
+                document.body.style.overflow = 'hidden';
+                document.body.style.paddingRight = '0px';
+                document.documentElement.style.overflow = 'hidden';
+            });
+            
+            $('#addressModal').on('hidden.bs.modal', function() {
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+                document.documentElement.style.overflow = '';
+            });
+            
+            // Auto-abrir modal de agregar dirección si viene de cart.php
+            <?php if($auto_abrir_direccion): ?>
+            setTimeout(function() {
+                const btnAddAddress = document.getElementById('btn-add-address');
+                if(btnAddAddress) {
+                    btnAddAddress.click();
+                    
+                    // Scroll suave a la sección de direcciones
+                    const addressesSection = document.getElementById('addresses');
+                    if(addressesSection) {
+                        addressesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            }, 500);
+            <?php endif; ?>
+            
+            const sidebarFavBtn = document.getElementById('toggle-favorites-sidebar-btn');
+            const headerFavBtn = document.getElementById('favorites-link');
+            
+            if (sidebarFavBtn && headerFavBtn) {
+                sidebarFavBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Crear y despachar un evento de click nativo
+                    const clickEvent = new MouseEvent('click', {
+                        bubbles: true,
+                        cancelable: true,
+                        view: window
+                    });
+                    
+                    headerFavBtn.dispatchEvent(clickEvent);
+                });
+            }
+            
+            // Posicionar el sidebar fijo correctamente centrado
+            function positionFixedSidebar() {
+                const sidebar = document.querySelector('.profile-sidebar');
+                const container = document.querySelector('.profile-section > div');
+                
+                if (sidebar && container && window.innerWidth >= 992) {
+                    const containerRect = container.getBoundingClientRect();
+                    const leftPosition = containerRect.left + 15; // 15px es el padding del col
+                    sidebar.style.left = leftPosition + 'px';
+                } else if (sidebar) {
+                    sidebar.style.left = '';
+                }
+            }
+            
+            // Ejecutar al cargar y al redimensionar
+            positionFixedSidebar();
+            window.addEventListener('resize', positionFixedSidebar);
+            window.addEventListener('scroll', positionFixedSidebar);
+        });
+    </script>
 </body>
 </html>

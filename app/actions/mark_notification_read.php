@@ -21,9 +21,17 @@ if(!$id_usuario) {
     exit;
 }
 
-// Obtener datos del POST
-$input = json_decode(file_get_contents('php://input'), true);
-$id_notificacion = isset($input['id']) ? intval($input['id']) : 0;
+// Obtener datos del POST (soportar tanto FormData como JSON)
+$id_notificacion = 0;
+
+// Intentar obtener desde FormData primero
+if (isset($_POST['id'])) {
+    $id_notificacion = intval($_POST['id']);
+} else {
+    // Intentar obtener desde JSON
+    $input = json_decode(file_get_contents('php://input'), true);
+    $id_notificacion = isset($input['id']) ? intval($input['id']) : 0;
+}
 
 if ($id_notificacion <= 0) {
     echo json_encode(['success' => false, 'message' => 'ID de notificación inválido']);
@@ -42,7 +50,22 @@ try {
     $stmt->execute([$id_notificacion, $id_usuario]);
     
     if ($stmt->rowCount() > 0) {
-        echo json_encode(['success' => true, 'message' => 'Notificación marcada como leída'], JSON_UNESCAPED_UNICODE);
+        // Obtener el nuevo count de notificaciones NO LEÍDAS
+        $count_query = "SELECT COUNT(*) as total 
+                       FROM notificacion 
+                       WHERE id_usuario = ? 
+                       AND leida_notificacion = 0 
+                       AND estado_notificacion = 'activo'";
+        $count_stmt = $conn->prepare($count_query);
+        $count_stmt->execute([$id_usuario]);
+        $count_result = $count_stmt->fetch(PDO::FETCH_ASSOC);
+        $notifications_count = $count_result ? intval($count_result['total']) : 0;
+        
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Notificación marcada como leída',
+            'notifications_count' => $notifications_count
+        ], JSON_UNESCAPED_UNICODE);
     } else {
         echo json_encode(['success' => false, 'message' => 'No se pudo actualizar la notificación'], JSON_UNESCAPED_UNICODE);
     }

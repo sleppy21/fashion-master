@@ -76,7 +76,9 @@ try {
         LEFT JOIN marca m ON p.id_marca = m.id_marca
         LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
         LEFT JOIN resena r ON p.id_producto = r.id_producto AND r.aprobada = 1
-        WHERE p.status_producto = 1 AND p.estado = 'activo'
+        WHERE p.status_producto = 1 
+          AND p.estado = 'activo' 
+          AND p.stock_actual_producto > 0
         GROUP BY p.id_producto
         ORDER BY p.id_producto DESC
         LIMIT 8
@@ -98,6 +100,7 @@ try {
         LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
         WHERE p.status_producto = 1 
         AND p.estado = 'activo'
+        AND p.stock_actual_producto > 0
         AND p.en_oferta_producto = 1
         AND p.descuento_porcentaje_producto > 0
         ORDER BY p.descuento_porcentaje_producto DESC
@@ -117,7 +120,7 @@ $stats = [
 try {
     $stats_result = executeQuery("
         SELECT 
-            (SELECT COUNT(*) FROM producto WHERE status_producto = 1) as total_productos,
+            (SELECT COUNT(*) FROM producto WHERE status_producto = 1 AND estado = 'activo' AND stock_actual_producto > 0) as total_productos,
             (SELECT COUNT(*) FROM categoria WHERE status_categoria = 1) as total_categorias,
             (SELECT COUNT(*) FROM usuario WHERE status_usuario = 1 AND rol_usuario = 'cliente') as clientes_activos
     ");
@@ -164,6 +167,9 @@ try {
     
     <!-- Dark Mode CSS -->
     <link rel="stylesheet" href="public/assets/css/dark-mode.css?v=<?php echo time(); ?>" type="text/css">
+    
+    <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
+    <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
     
     <!-- Global Responsive CSS -->
     <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
@@ -679,6 +685,9 @@ try {
         <script src="public/assets/js/cart-favorites-handler.js"></script>
         <script src="public/assets/js/user-account-modal.js"></script>
         <script src="public/assets/js/image-color-extractor.js"></script>
+        
+        <!-- Fix Modal Scrollbar - PREVENIR BARRA LATERAL -->
+        <script src="public/assets/js/fix-modal-scrollbar.js"></script>
     <?php endif; ?>
     
     <?php include 'includes/dark-mode-assets.php'; ?>

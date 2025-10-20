@@ -17,14 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let searchTimeout = null;
 
-    console.log('🔍 Global Search Inicializado', {
-        modal: !!modal,
-        trigger: !!trigger,
-        input: !!searchInput
-    });
-
     if (!modal || !trigger || !searchInput) {
-        console.error('❌ Elementos no encontrados');
+        console.error('❌ Global Search: Elementos no encontrados');
         return;
     }
 
@@ -32,13 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // ABRIR/CERRAR
     // ========================================
     function abrirBuscador() {
-        console.log('✅ Abriendo buscador');
         modal.classList.add('active');
         setTimeout(() => searchInput.focus(), 100);
     }
 
     function cerrarBuscador() {
-        console.log('🔒 Cerrando buscador');
         modal.classList.remove('active');
         searchInput.value = '';
         limpiarResultados();
@@ -68,48 +60,59 @@ document.addEventListener('DOMContentLoaded', function() {
 
         clearBtn.style.display = 'flex';
 
+        // Si la búsqueda es muy corta, solo mostrar mensaje
+        if (query.length < 3) {
+            limpiarResultados();
+            noResultsState.innerHTML = `
+                <i class="fa fa-keyboard-o"></i>
+                <p>Escribe al menos 3 caracteres para buscar</p>
+            `;
+            noResultsState.style.display = 'block';
+            return;
+        }
+
         // Mostrar loading
         limpiarResultados();
         loadingState.style.display = 'block';
 
+        // Debounce de 600ms para evitar búsquedas en cada letra
         searchTimeout = setTimeout(() => {
-            console.log('🔎 Buscando:', query);
-            console.log('🌐 URL:', `app/actions/global_search.php?q=${encodeURIComponent(query)}`);
-            
             fetch(`app/actions/global_search.php?q=${encodeURIComponent(query)}`)
                 .then(response => {
-                    console.log('📡 Respuesta recibida, status:', response.status);
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}`);
                     }
-                    return response.text();
+                    return response.json();
                 })
-                .then(text => {
-                    console.log('📄 Texto recibido:', text);
-                    const data = JSON.parse(text);
-                    console.log('📦 Datos parseados:', data);
+                .then(data => {
                     loadingState.style.display = 'none';
                     
                     if (data.products && data.products.length > 0) {
                         mostrarProductos(data.products);
                     } else {
-                        console.log('⚠️ No hay productos');
+                        noResultsState.innerHTML = `
+                            <i class="fa fa-search"></i>
+                            <p>No se encontraron resultados para "<strong>${query}</strong>"</p>
+                        `;
                         noResultsState.style.display = 'block';
                     }
                 })
                 .catch(error => {
-                    console.error('❌ Error completo:', error);
+                    console.error('❌ Error:', error);
                     loadingState.style.display = 'none';
+                    noResultsState.innerHTML = `
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <p>Error al buscar. Intenta nuevamente.</p>
+                    `;
                     noResultsState.style.display = 'block';
                 });
-        }, 300);
+        }, 600); // 600ms de espera antes de buscar
     }
 
     // ========================================
     // MOSTRAR PRODUCTOS
     // ========================================
     function mostrarProductos(products) {
-        console.log('📋 Mostrando', products.length, 'productos');
         productsList.innerHTML = '';
         
         products.forEach(product => {
@@ -150,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
     trigger.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('🖱️ Click en trigger');
         
         if (modal.classList.contains('active')) {
             cerrarBuscador();
@@ -162,13 +164,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Input de búsqueda
     searchInput.addEventListener('input', function(e) {
         const query = e.target.value.trim();
-        console.log('⌨️ Input:', query);
         buscarProductos(query);
     });
 
     // Botón limpiar
     clearBtn.addEventListener('click', function() {
-        console.log('🗑️ Limpiar búsqueda');
         searchInput.value = '';
         clearBtn.style.display = 'none';
         limpiarResultados();
@@ -179,7 +179,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
         if (modal.classList.contains('active')) {
             if (!modal.contains(e.target) && e.target !== trigger) {
-                console.log('🔒 Click fuera - cerrando');
                 cerrarBuscador();
             }
         }
@@ -188,10 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cerrar con ESC
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && modal.classList.contains('active')) {
-            console.log('⌨️ ESC - cerrando');
             cerrarBuscador();
         }
     });
-
-    console.log('✅ Global Search listo!');
 });

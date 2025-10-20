@@ -10,6 +10,7 @@ ini_set('display_errors', 1);
 session_start();
 
 require_once 'config/conexion.php';
+require_once 'config/config.php';
 
 // Obtener ID del producto
 $producto_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -48,7 +49,7 @@ $nombre_usuario = null;
 if(isset($_SESSION['user_id'])) {
     try {
         $user_query = "SELECT id_usuario, nombre_usuario, email_usuario, rol_usuario, 
-                             fecha_registro, ultimo_acceso, telefono_usuario
+                             fecha_registro, ultimo_acceso, telefono_usuario, avatar_usuario
                       FROM usuario 
                       WHERE id_usuario = ?";
         $user_result = executeQuery($user_query, [$_SESSION['user_id']]);
@@ -193,6 +194,9 @@ $page_title = $producto['nombre_producto'];
     <!-- Dark Mode CSS - Force reload with timestamp -->
     <link rel="stylesheet" href="public/assets/css/dark-mode.css?v=<?php echo time(); ?>" type="text/css">
     
+    <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
+    <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
+    
     <!-- Header Fix - DEBE IR AL FINAL -->
     <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
 </head>
@@ -228,7 +232,7 @@ $page_title = $producto['nombre_producto'];
     <section class="product-details spad">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-7">
                     <div class="product__details__pic">
                         <div class="product__details__slider__content">
                             <div class="product__details__pic__slider owl-carousel">
@@ -240,7 +244,7 @@ $page_title = $producto['nombre_producto'];
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-5">
                     <div class="product__details__text">
                         <h3><?php echo htmlspecialchars($producto['nombre_producto']); ?> 
                             <?php if(!empty($producto['nombre_marca'])): ?>
@@ -296,19 +300,14 @@ $page_title = $producto['nombre_producto'];
                             <div class="quantity-selector-modern">
                                 <label class="quantity-label">Cantidad:</label>
                                 <div class="quantity-input-group">
-                                    <button type="button" class="qty-btn qty-minus" id="qty-minus">
-                                        <i class="fa fa-minus"></i>
-                                    </button>
-                                    <input type="number" 
-                                           class="qty-input" 
-                                           id="product-quantity" 
-                                           value="1" 
-                                           min="1" 
-                                           max="<?php echo $producto['stock_actual_producto']; ?>"
-                                           readonly>
-                                    <button type="button" class="qty-btn qty-plus" id="qty-plus" data-max="<?php echo $producto['stock_actual_producto']; ?>">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
+                                    <select class="qty-select" id="product-quantity">
+                                        <?php 
+                                        $max_qty = min(30, $producto['stock_actual_producto']);
+                                        for($i = 1; $i <= $max_qty; $i++): 
+                                        ?>
+                                            <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                                        <?php endfor; ?>
+                                    </select>
                                 </div>
                                 <span class="stock-info">
                                     <?php if($producto['stock_actual_producto'] > 0): ?>
@@ -365,148 +364,283 @@ $page_title = $producto['nombre_producto'];
                     </div>
                 </div>
                 <div class="col-lg-12">
-                    <div class="product__details__tab">
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Descripción</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">Especificaciones</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Reseñas</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="tabs-1" role="tabpanel">
-                                <h6>Descripción del Producto</h6>
-                                <div style="background: #f8f8f8; padding: 25px; border-radius: 10px; margin-bottom: 20px;">
-                                    <p style="margin: 0; font-size: 15px; line-height: 1.8;">
-                                        <?php echo nl2br(htmlspecialchars($producto['descripcion_producto'] ?? 'Este es un producto de alta calidad diseñado para satisfacer tus necesidades. Fabricado con los mejores materiales y siguiendo estrictos estándares de calidad.')); ?>
-                                    </p>
+                    <!-- TABS MODERNOS - DISEÑO COMPLETAMENTE NUEVO -->
+                    <div class="product-tabs-modern">
+                        <!-- Navegación de Tabs -->
+                        <div class="tabs-navigation">
+                            <button class="tab-button active" data-tab="descripcion">
+                                <i class="fa fa-align-left"></i>
+                                <span>Descripción</span>
+                            </button>
+                            <button class="tab-button" data-tab="especificaciones">
+                                <i class="fa fa-list-ul"></i>
+                                <span>Especificaciones</span>
+                            </button>
+                            <button class="tab-button" data-tab="reviews">
+                                <i class="fa fa-star"></i>
+                                <span>Reseñas</span>
+                            </button>
+                        </div>
+
+                        <!-- Contenido de Tabs -->
+                        <div class="tabs-content">
+                            <!-- Tab Descripción -->
+                            <div class="tab-panel active" id="tab-descripcion">
+                                <div class="tab-header">
+                                    <h3>Descripción del Producto</h3>
+                                    <p class="tab-subtitle">Conoce todos los detalles de este producto</p>
                                 </div>
-                                
-                                <div class="row mt-4">
-                                    <div class="col-md-4 mb-3">
-                                        <div style="text-align: center; padding: 20px; background: white; border: 1px solid #f0f0f0; border-radius: 10px;">
-                                            <i class="fa fa-shield" style="font-size: 32px; color: #000; margin-bottom: 10px;"></i>
-                                            <h6 style="font-size: 14px; font-weight: 600; margin-bottom: 5px;">Garantía de Calidad</h6>
-                                            <p style="font-size: 13px; color: #666; margin: 0;">Productos verificados</p>
+
+                                <div class="description-content">
+                                    <div class="description-text">
+                                        <?php 
+                                        $descripcion = !empty($producto['descripcion_producto']) 
+                                            ? nl2br(htmlspecialchars($producto['descripcion_producto'])) 
+                                            : 'Este es un producto de alta calidad diseñado para satisfacer tus necesidades. Fabricado con los mejores materiales y siguiendo estrictos estándares de calidad.';
+                                        echo $descripcion;
+                                        ?>
+                                    </div>
+
+                                    <!-- Características destacadas -->
+                                    <div class="features-grid">
+                                        <div class="feature-card">
+                                            <div class="feature-icon">
+                                                <i class="fa fa-shield"></i>
+                                            </div>
+                                            <div class="feature-content">
+                                                <h4>Garantía de Calidad</h4>
+                                                <p>Productos 100% verificados y garantizados</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="feature-card">
+                                            <div class="feature-icon">
+                                                <i class="fa fa-truck"></i>
+                                            </div>
+                                            <div class="feature-content">
+                                                <h4>Envío Rápido</h4>
+                                                <p>Entrega en 2-5 días hábiles</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="feature-card">
+                                            <div class="feature-icon">
+                                                <i class="fa fa-refresh"></i>
+                                            </div>
+                                            <div class="feature-content">
+                                                <h4>Devoluciones Fáciles</h4>
+                                                <p>30 días de garantía de devolución</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="feature-card">
+                                            <div class="feature-icon">
+                                                <i class="fa fa-lock"></i>
+                                            </div>
+                                            <div class="feature-content">
+                                                <h4>Pago Seguro</h4>
+                                                <p>Transacciones 100% protegidas</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div style="text-align: center; padding: 20px; background: white; border: 1px solid #f0f0f0; border-radius: 10px;">
-                                            <i class="fa fa-truck" style="font-size: 32px; color: #000; margin-bottom: 10px;"></i>
-                                            <h6 style="font-size: 14px; font-weight: 600; margin-bottom: 5px;">Envío Rápido</h6>
-                                            <p style="font-size: 13px; color: #666; margin: 0;">Entrega en 2-5 días</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div style="text-align: center; padding: 20px; background: white; border: 1px solid #f0f0f0; border-radius: 10px;">
-                                            <i class="fa fa-refresh" style="font-size: 32px; color: #000; margin-bottom: 10px;"></i>
-                                            <h6 style="font-size: 14px; font-weight: 600; margin-bottom: 5px;">Devoluciones</h6>
-                                            <p style="font-size: 13px; color: #666; margin: 0;">30 días de garantía</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="tabs-2" role="tabpanel">
-                                <h6>Especificaciones Técnicas</h6>
-                                <div style="background: #f8f8f8; padding: 25px; border-radius: 10px;">
-                                    <ul style="list-style: none; padding: 0; margin: 0;">
-                                        <?php if(!empty($producto['nombre_categoria'])): ?>
-                                        <li style="padding: 15px 0; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between;">
-                                            <strong style="color: #000; font-weight: 600;">
-                                                <i class="fa fa-tag" style="margin-right: 10px; color: #666;"></i>Categoría:
-                                            </strong>
-                                            <span style="color: #666;"><?php echo htmlspecialchars($producto['nombre_categoria']); ?></span>
-                                        </li>
-                                        <?php endif; ?>
-                                        <?php if(!empty($producto['nombre_marca'])): ?>
-                                        <li style="padding: 15px 0; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between;">
-                                            <strong style="color: #000; font-weight: 600;">
-                                                <i class="fa fa-certificate" style="margin-right: 10px; color: #666;"></i>Marca:
-                                            </strong>
-                                            <span style="color: #666;"><?php echo htmlspecialchars($producto['nombre_marca']); ?></span>
-                                        </li>
-                                        <?php endif; ?>
-                                        <?php if(!empty($producto['genero_producto'])): ?>
-                                        <li style="padding: 15px 0; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between;">
-                                            <strong style="color: #000; font-weight: 600;">
-                                                <i class="fa fa-user" style="margin-right: 10px; color: #666;"></i>Género:
-                                            </strong>
-                                            <span style="color: #666;"><?php echo ucfirst(htmlspecialchars($producto['genero_producto'])); ?></span>
-                                        </li>
-                                        <?php endif; ?>
-                                        <li style="padding: 15px 0; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between;">
-                                            <strong style="color: #000; font-weight: 600;">
-                                                <i class="fa fa-cubes" style="margin-right: 10px; color: #666;"></i>Stock:
-                                            </strong>
-                                            <span style="color: <?php echo $producto['stock_actual_producto'] > 0 ? '#2ecc71' : '#e74c3c'; ?>; font-weight: 600;">
-                                                <?php echo $producto['stock_actual_producto'] > 0 ? $producto['stock_actual_producto'] . ' unidades disponibles' : 'Agotado'; ?>
-                                            </span>
-                                        </li>
-                                        <?php if(!empty($producto['codigo'])): ?>
-                                        <li style="padding: 15px 0; display: flex; justify-content: space-between;">
-                                            <strong style="color: #000; font-weight: 600;">
-                                                <i class="fa fa-barcode" style="margin-right: 10px; color: #666;"></i>Código:
-                                            </strong>
-                                            <span style="color: #666; font-family: monospace;"><?php echo htmlspecialchars($producto['codigo']); ?></span>
-                                        </li>
-                                        <?php endif; ?>
-                                    </ul>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="tabs-3" role="tabpanel">
-                                <h6>Reseñas</h6>
-                                <?php
-                                // Obtener reseñas del producto
-                                $query_resenas = "SELECT r.*, u.nombre_usuario 
-                                                 FROM resena r 
-                                                 INNER JOIN usuario u ON r.id_usuario = u.id_usuario 
-                                                 WHERE r.id_producto = ? AND r.aprobada = 1 
-                                                 ORDER BY r.fecha_creacion DESC";
-                                $resenas = executeQuery($query_resenas, [$producto_id]);
-                                $total_resenas = count($resenas);
-                                $resenas_mostrar = array_slice($resenas, 0, 3); // Solo primeras 3
-                                
-                                if(!empty($resenas_mostrar)):
-                                    foreach($resenas_mostrar as $resena):
-                                ?>
-                                <div class="review-item mb-4">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <strong><?php echo htmlspecialchars($resena['nombre_usuario']); ?></strong>
-                                        <span class="ml-3">
-                                            <?php for($i = 1; $i <= 5; $i++): ?>
-                                                <i class="fa fa-star<?php echo $i <= $resena['calificacion'] ? '' : '-o'; ?>" style="color: #ffc107;"></i>
-                                            <?php endfor; ?>
-                                        </span>
-                                        <small class="text-muted ml-3"><?php echo date('d/m/Y', strtotime($resena['fecha_creacion'])); ?></small>
+
+                            <!-- Tab Especificaciones -->
+                            <div class="tab-panel" id="tab-especificaciones">
+                                <div class="tab-header">
+                                    <h3>Especificaciones Técnicas</h3>
+                                    <p class="tab-subtitle">Detalles completos del producto</p>
+                                </div>
+
+                                <div class="specifications-grid">
+                                    <?php if(!empty($producto['nombre_categoria'])): ?>
+                                    <div class="spec-item">
+                                        <div class="spec-label">
+                                            <i class="fa fa-tag"></i>
+                                            <span>Categoría</span>
+                                        </div>
+                                        <div class="spec-value">
+                                            <?php echo htmlspecialchars($producto['nombre_categoria']); ?>
+                                        </div>
                                     </div>
-                                    <h6><?php echo htmlspecialchars($resena['titulo']); ?></h6>
-                                    <p><?php echo nl2br(htmlspecialchars($resena['comentario'])); ?></p>
-                                    <?php if($resena['verificada']): ?>
-                                    <small class="text-success"><i class="fa fa-check-circle"></i> Compra verificada</small>
                                     <?php endif; ?>
-                                    <hr>
+
+                                    <?php if(!empty($producto['nombre_marca'])): ?>
+                                    <div class="spec-item">
+                                        <div class="spec-label">
+                                            <i class="fa fa-certificate"></i>
+                                            <span>Marca</span>
+                                        </div>
+                                        <div class="spec-value">
+                                            <?php echo htmlspecialchars($producto['nombre_marca']); ?>
+                                        </div>
+                                    </div>
+                                    <?php endif; ?>
+
+                                    <?php if(!empty($producto['genero_producto'])): ?>
+                                    <div class="spec-item">
+                                        <div class="spec-label">
+                                            <i class="fa fa-user"></i>
+                                            <span>Género</span>
+                                        </div>
+                                        <div class="spec-value">
+                                            <?php echo ucfirst(htmlspecialchars($producto['genero_producto'])); ?>
+                                        </div>
+                                    </div>
+                                    <?php endif; ?>
+
+                                    <div class="spec-item">
+                                        <div class="spec-label">
+                                            <i class="fa fa-cubes"></i>
+                                            <span>Disponibilidad</span>
+                                        </div>
+                                        <div class="spec-value">
+                                            <span class="stock-badge <?php echo $producto['stock_actual_producto'] > 0 ? 'in-stock' : 'out-stock'; ?>">
+                                                <?php 
+                                                if($producto['stock_actual_producto'] > 0) {
+                                                    echo '<i class="fa fa-check-circle"></i> ' . $producto['stock_actual_producto'] . ' unidades';
+                                                } else {
+                                                    echo '<i class="fa fa-times-circle"></i> Agotado';
+                                                }
+                                                ?>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <?php if(!empty($producto['codigo'])): ?>
+                                    <div class="spec-item">
+                                        <div class="spec-label">
+                                            <i class="fa fa-barcode"></i>
+                                            <span>Código SKU</span>
+                                        </div>
+                                        <div class="spec-value code">
+                                            <?php echo htmlspecialchars($producto['codigo']); ?>
+                                        </div>
+                                    </div>
+                                    <?php endif; ?>
+
+                                    <?php if($producto['descuento_porcentaje_producto'] > 0): ?>
+                                    <div class="spec-item">
+                                        <div class="spec-label">
+                                            <i class="fa fa-percent"></i>
+                                            <span>Descuento</span>
+                                        </div>
+                                        <div class="spec-value">
+                                            <span class="discount-badge">
+                                                -<?php echo $producto['descuento_porcentaje_producto']; ?>% OFF
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <?php endif; ?>
                                 </div>
-                                <?php 
-                                    endforeach;
+                            </div>
+
+                            <!-- Tab Reseñas -->
+                            <div class="tab-panel" id="tab-reviews">
+                                <div class="tab-header">
+                                    <h3>Reseñas de Clientes</h3>
+                                    <p class="tab-subtitle">Lo que nuestros clientes dicen sobre este producto</p>
+                                </div>
+
+                                <div class="reviews-container">
+                                    <?php
+                                    // Obtener reseñas del producto
+                                    $query_resenas = "SELECT r.*, u.nombre_usuario 
+                                                     FROM resena r 
+                                                     INNER JOIN usuario u ON r.id_usuario = u.id_usuario 
+                                                     WHERE r.id_producto = ? AND r.aprobada = 1 
+                                                     ORDER BY r.fecha_creacion DESC";
+                                    $resenas = executeQuery($query_resenas, [$producto_id]);
+                                    $total_resenas = count($resenas);
+                                    $resenas_mostrar = array_slice($resenas, 0, 5); // Primeras 5
                                     
-                                    // Mostrar botón "Ver más" si hay más de 3 reseñas
-                                    if($total_resenas > 3):
-                                ?>
-                                <div class="text-center mt-4">
-                                    <a href="reviews.php?producto=<?php echo $producto_id; ?>" class="btn btn-outline-dark">
-                                        Ver todas las reseñas (<?php echo $total_resenas; ?>)
-                                    </a>
+                                    if(!empty($resenas_mostrar)):
+                                        // Calcular promedio de calificación
+                                        $suma_calificaciones = array_sum(array_column($resenas, 'calificacion'));
+                                        $promedio = $suma_calificaciones / $total_resenas;
+                                    ?>
+                                    
+                                    <!-- Resumen de Calificaciones -->
+                                    <div class="reviews-summary">
+                                        <div class="rating-average">
+                                            <div class="rating-number"><?php echo number_format($promedio, 1); ?></div>
+                                            <div class="rating-stars">
+                                                <?php for($i = 1; $i <= 5; $i++): ?>
+                                                    <i class="fa fa-star<?php echo $i <= round($promedio) ? '' : '-o'; ?>"></i>
+                                                <?php endfor; ?>
+                                            </div>
+                                            <div class="rating-count">Basado en <?php echo $total_resenas; ?> reseña<?php echo $total_resenas != 1 ? 's' : ''; ?></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Lista de Reseñas -->
+                                    <div class="reviews-list">
+                                        <?php foreach($resenas_mostrar as $resena): ?>
+                                        <div class="review-card">
+                                            <div class="review-header">
+                                                <div class="reviewer-info">
+                                                    <div class="reviewer-avatar">
+                                                        <?php echo strtoupper(substr($resena['nombre_usuario'], 0, 1)); ?>
+                                                    </div>
+                                                    <div class="reviewer-details">
+                                                        <h4><?php echo htmlspecialchars($resena['nombre_usuario']); ?></h4>
+                                                        <div class="review-meta">
+                                                            <span class="review-date">
+                                                                <i class="fa fa-clock-o"></i>
+                                                                <?php echo date('d M Y', strtotime($resena['fecha_creacion'])); ?>
+                                                            </span>
+                                                            <?php if($resena['verificada']): ?>
+                                                            <span class="verified-badge">
+                                                                <i class="fa fa-check-circle"></i>
+                                                                Compra verificada
+                                                            </span>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="review-rating">
+                                                    <?php for($i = 1; $i <= 5; $i++): ?>
+                                                        <i class="fa fa-star<?php echo $i <= $resena['calificacion'] ? '' : '-o'; ?>"></i>
+                                                    <?php endfor; ?>
+                                                </div>
+                                            </div>
+                                            
+                                            <?php if(!empty($resena['titulo'])): ?>
+                                            <h5 class="review-title"><?php echo htmlspecialchars($resena['titulo']); ?></h5>
+                                            <?php endif; ?>
+                                            
+                                            <p class="review-text"><?php echo nl2br(htmlspecialchars($resena['comentario'])); ?></p>
+                                        </div>
+                                        <?php endforeach; ?>
+                                    </div>
+
+                                    <?php if($total_resenas > 5): ?>
+                                    <div class="reviews-footer">
+                                        <button class="btn-view-more">
+                                            Ver todas las reseñas (<?php echo $total_resenas; ?>)
+                                            <i class="fa fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                    <?php endif; ?>
+
+                                    <?php else: ?>
+                                    <!-- Estado vacío -->
+                                    <div class="reviews-empty">
+                                        <div class="empty-icon">
+                                            <i class="fa fa-star-o"></i>
+                                        </div>
+                                        <h4>Aún no hay reseñas</h4>
+                                        <p>Sé el primero en compartir tu opinión sobre este producto</p>
+                                        <?php if($usuario_logueado): ?>
+                                        <button class="btn-write-review">
+                                            <i class="fa fa-pencil"></i>
+                                            Escribir una reseña
+                                        </button>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php endif; ?>
                                 </div>
-                                <?php 
-                                    endif;
-                                else:
-                                ?>
-                                <p>Aún no hay reseñas para este producto.</p>
-                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -541,6 +675,8 @@ $page_title = $producto['nombre_producto'];
                                  WHERE p.id_categoria = ? 
                                  AND p.id_producto != ? 
                                  AND p.status_producto = 1
+                                 AND p.estado = 'activo'
+                                 AND p.stock_actual_producto > 0
                                  GROUP BY p.id_producto
                                  ORDER BY RAND()
                                  LIMIT 6";
@@ -693,6 +829,786 @@ $page_title = $producto['nombre_producto'];
        ESTILOS ESPECÍFICOS DE PRODUCT-DETAILS
        ============================================ */
     
+    /* ============================================
+       SELECTOR DE CANTIDAD MODERNO (SELECT)
+       ============================================ */
+    .quantity-selector-modern {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+    
+    .quantity-label {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+    
+    .quantity-input-group {
+        display: flex;
+        align-items: center;
+    }
+    
+    .qty-select {
+        width: 120px;
+        height: 50px;
+        padding: 0 15px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 12px;
+        padding-right: 40px;
+    }
+    
+    .qty-select:hover {
+        border-color: #667eea;
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .qty-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+    
+    .stock-info {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        margin-top: 8px;
+    }
+    
+    .stock-info i {
+        font-size: 14px;
+    }
+    
+    .stock-available {
+        color: #28a745;
+        font-weight: 600;
+    }
+    
+    .stock-available i {
+        color: #28a745;
+    }
+    
+    .stock-out {
+        color: #dc3545;
+        font-weight: 600;
+    }
+    
+    .stock-out i {
+        color: #dc3545;
+    }
+    
+    /* Dark mode para el selector */
+    body.dark-mode .qty-select {
+        background: #2a2a2e;
+        color: #fff;
+        border-color: #404040;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    }
+    
+    body.dark-mode .qty-select:hover {
+        border-color: #667eea;
+    }
+    
+    body.dark-mode .quantity-label {
+        color: #fff;
+    }
+    
+    /* ============================================
+       TABS MODERNOS - DISEÑO COMPLETAMENTE NUEVO
+       ============================================ */
+    .product-tabs-modern {
+        margin-top: 60px;
+        margin-bottom: 60px;
+    }
+
+    /* Navegación de Tabs */
+    .tabs-navigation {
+        display: flex;
+        gap: 0;
+        border-bottom: 2px solid #e8e8e8;
+        margin-bottom: 40px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tab-button {
+        flex: 1;
+        min-width: 150px;
+        padding: 18px 30px;
+        background: transparent;
+        border: none;
+        border-bottom: 3px solid transparent;
+        font-size: 15px;
+        font-weight: 600;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        position: relative;
+        outline: none;
+    }
+
+    .tab-button i {
+        font-size: 18px;
+        transition: transform 0.3s ease;
+    }
+
+    .tab-button:hover {
+        color: #333;
+        background: rgba(102, 126, 234, 0.05);
+    }
+
+    .tab-button:hover i {
+        transform: scale(1.1);
+    }
+
+    .tab-button.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+        background: linear-gradient(to bottom, rgba(102, 126, 234, 0.05), transparent);
+    }
+
+    .tab-button.active i {
+        transform: scale(1.15);
+    }
+
+    /* Contenido de Tabs */
+    .tabs-content {
+        position: relative;
+    }
+
+    .tab-panel {
+        display: none;
+        animation: fadeInUp 0.4s ease;
+    }
+
+    .tab-panel.active {
+        display: block;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Header de Tab */
+    .tab-header {
+        margin-bottom: 35px;
+    }
+
+    .tab-header h3 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 8px 0;
+        letter-spacing: -0.5px;
+    }
+
+    .tab-subtitle {
+        font-size: 15px;
+        color: #666;
+        margin: 0;
+    }
+
+    /* ============================================
+       TAB DESCRIPCIÓN
+       ============================================ */
+    .description-content {
+        background: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .description-text {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        padding: 35px;
+        font-size: 15px;
+        line-height: 1.8;
+        color: #444;
+        border-radius: 16px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Grid de Características */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .feature-card {
+        background: #ffffff;
+        border: 2px solid #f0f0f0;
+        border-radius: 16px;
+        padding: 25px;
+        display: flex;
+        align-items: flex-start;
+        gap: 18px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .feature-card:hover {
+        border-color: #667eea;
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(102, 126, 234, 0.15);
+    }
+
+    .feature-card:hover::before {
+        opacity: 1;
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        position: relative;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .feature-icon i {
+        font-size: 26px;
+        color: #ffffff;
+    }
+
+    .feature-content {
+        flex: 1;
+        position: relative;
+    }
+
+    .feature-content h4 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 6px 0;
+    }
+
+    .feature-content p {
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* ============================================
+       TAB ESPECIFICACIONES
+       ============================================ */
+    .specifications-grid {
+        display: grid;
+        gap: 0;
+        background: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .spec-item {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 20px;
+        padding: 22px 30px;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background 0.2s ease;
+    }
+
+    .spec-item:last-child {
+        border-bottom: none;
+    }
+
+    .spec-item:hover {
+        background: rgba(102, 126, 234, 0.03);
+    }
+
+    .spec-label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        color: #333;
+        font-size: 15px;
+    }
+
+    .spec-label i {
+        font-size: 18px;
+        color: #667eea;
+        width: 20px;
+        text-align: center;
+    }
+
+    .spec-value {
+        display: flex;
+        align-items: center;
+        font-size: 15px;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .spec-value.code {
+        font-family: 'Courier New', monospace;
+        background: #f8f9fa;
+        padding: 6px 12px;
+        border-radius: 8px;
+        display: inline-block;
+        font-size: 14px;
+    }
+
+    .stock-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .stock-badge.in-stock {
+        background: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+    }
+
+    .stock-badge.out-stock {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+
+    .discount-badge {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(238, 90, 111, 0.3);
+    }
+
+    /* ============================================
+       TAB RESEÑAS
+       ============================================ */
+    .reviews-container {
+        background: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    /* Resumen de Calificaciones */
+    .reviews-summary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 40px;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.25);
+    }
+
+    .rating-average {
+        color: #ffffff;
+    }
+
+    .rating-number {
+        font-size: 56px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        line-height: 1;
+    }
+
+    .rating-stars {
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+
+    .rating-stars i {
+        color: #ffd700;
+        margin: 0 2px;
+    }
+
+    .rating-count {
+        font-size: 15px;
+        opacity: 0.9;
+    }
+
+    /* Lista de Reseñas */
+    .reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .review-card {
+        background: #ffffff;
+        border: 2px solid #f0f0f0;
+        border-radius: 16px;
+        padding: 28px;
+        transition: all 0.3s ease;
+    }
+
+    .review-card:hover {
+        border-color: #667eea;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.12);
+        transform: translateY(-2px);
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 18px;
+        gap: 20px;
+    }
+
+    .reviewer-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+    }
+
+    .reviewer-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+        flex-shrink: 0;
+    }
+
+    .reviewer-details h4 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 6px 0;
+    }
+
+    .review-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .review-date {
+        font-size: 13px;
+        color: #999;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .verified-badge {
+        font-size: 13px;
+        color: #28a745;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .review-rating {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+    .review-rating i {
+        font-size: 18px;
+        color: #ffc107;
+    }
+
+    .review-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 12px 0;
+    }
+
+    .review-text {
+        font-size: 15px;
+        line-height: 1.7;
+        color: #555;
+        margin: 0;
+    }
+
+    /* Footer de Reseñas */
+    .reviews-footer {
+        text-align: center;
+        margin-top: 35px;
+        padding-top: 30px;
+        border-top: 2px solid #f0f0f0;
+    }
+
+    .btn-view-more {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #ffffff;
+        border: none;
+        padding: 14px 35px;
+        border-radius: 25px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-view-more:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-view-more i {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-view-more:hover i {
+        transform: translateX(5px);
+    }
+
+    /* Estado Vacío de Reseñas */
+    .reviews-empty {
+        text-align: center;
+        padding: 80px 20px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border-radius: 16px;
+    }
+
+    .empty-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+    }
+
+    .empty-icon i {
+        font-size: 48px;
+        color: #667eea;
+    }
+
+    .reviews-empty h4 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 12px 0;
+    }
+
+    .reviews-empty p {
+        font-size: 15px;
+        color: #666;
+        margin: 0 0 25px 0;
+    }
+
+    .btn-write-review {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #ffffff;
+        border: none;
+        padding: 14px 30px;
+        border-radius: 25px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-write-review:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    /* ============================================
+       DARK MODE PARA TABS
+       ============================================ */
+    body.dark-mode .tabs-navigation {
+        border-bottom-color: #404040;
+    }
+
+    body.dark-mode .tab-button {
+        color: #aaa;
+    }
+
+    body.dark-mode .tab-button:hover {
+        color: #fff;
+        background: rgba(102, 126, 234, 0.1);
+    }
+
+    body.dark-mode .tab-button.active {
+        color: #667eea;
+    }
+
+    body.dark-mode .tab-header h3 {
+        color: #ffffff;
+    }
+
+    body.dark-mode .tab-subtitle,
+    body.dark-mode .description-text,
+    body.dark-mode .feature-content p,
+    body.dark-mode .spec-value,
+    body.dark-mode .review-text {
+        color: #bbb;
+    }
+
+    body.dark-mode .description-text {
+        background: #2a2a2e;
+    }
+
+    body.dark-mode .feature-card,
+    body.dark-mode .review-card {
+        background: #1e1e1e;
+        border-color: #404040;
+    }
+
+    body.dark-mode .feature-card:hover,
+    body.dark-mode .review-card:hover {
+        border-color: #667eea;
+    }
+
+    body.dark-mode .feature-content h4,
+    body.dark-mode .spec-label,
+    body.dark-mode .reviewer-details h4,
+    body.dark-mode .review-title {
+        color: #ffffff;
+    }
+
+    body.dark-mode .specifications-grid,
+    body.dark-mode .reviews-container {
+        background: #1e1e1e;
+    }
+
+    body.dark-mode .spec-item {
+        border-bottom-color: #404040;
+    }
+
+    body.dark-mode .spec-item:hover {
+        background: rgba(102, 126, 234, 0.08);
+    }
+
+    body.dark-mode .spec-value.code {
+        background: #2a2a2e;
+        color: #bbb;
+    }
+
+    body.dark-mode .reviews-empty {
+        background: #2a2a2e;
+    }
+
+    body.dark-mode .reviews-empty h4 {
+        color: #ffffff;
+    }
+
+    body.dark-mode .reviews-footer {
+        border-top-color: #404040;
+    }
+
+    /* ============================================
+       RESPONSIVE PARA TABS
+       ============================================ */
+    @media (max-width: 768px) {
+        .tabs-navigation {
+            gap: 0;
+        }
+
+        .tab-button {
+            min-width: 120px;
+            padding: 15px 20px;
+            font-size: 14px;
+        }
+
+        .tab-button span {
+            display: none;
+        }
+
+        .tab-button i {
+            font-size: 20px;
+        }
+
+        .tab-header h3 {
+            font-size: 22px;
+        }
+
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .spec-item {
+            grid-template-columns: 1fr;
+            gap: 10px;
+            padding: 18px 20px;
+        }
+
+        .review-header {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .reviews-summary {
+            padding: 30px 20px;
+        }
+
+        .rating-number {
+            font-size: 42px;
+        }
+    }
+
     /* ============================================
        PRODUCT DETAILS RESPONSIVE
        ============================================ */
@@ -1198,53 +2114,69 @@ $page_title = $producto['nombre_producto'];
         }, 100);
 
         // ============================================
-        // BOTONES DE CANTIDAD MODERNOS
+        // SELECTOR DE CANTIDAD CON ACTUALIZACIÓN EN TIEMPO REAL
         // ============================================
-        const $qtyInput = $('#product-quantity');
-        const $qtyPlus = $('#qty-plus');
-        const $qtyMinus = $('#qty-minus');
-        const maxStock = parseInt($qtyPlus.data('max')) || 999;
-
-        // Botón +
-        $qtyPlus.on('click', function() {
-            let currentVal = parseInt($qtyInput.val()) || 1;
-            if (currentVal < maxStock) {
-                $qtyInput.val(currentVal + 1);
-                $qtyMinus.prop('disabled', false);
-            }
-            if (currentVal + 1 >= maxStock) {
-                $(this).prop('disabled', true);
-            }
-        });
-
-        // Botón -
-        $qtyMinus.on('click', function() {
-            let currentVal = parseInt($qtyInput.val()) || 1;
-            if (currentVal > 1) {
-                $qtyInput.val(currentVal - 1);
-                $qtyPlus.prop('disabled', false);
-            }
-            if (currentVal - 1 <= 1) {
-                $(this).prop('disabled', true);
-            }
-        });
-
-        // Validar input manual
-        $qtyInput.on('change', function() {
-            let val = parseInt($(this).val()) || 1;
-            if (val < 1) val = 1;
-            if (val > maxStock) val = maxStock;
-            $(this).val(val);
+        const $qtySelect = $('#product-quantity');
+        const productoId = <?php echo $producto_id; ?>;
+        const stockDisponible = <?php echo $producto['stock_actual_producto']; ?>;
+        
+        // Actualizar cantidad en el carrito en tiempo real
+        $qtySelect.on('change', function() {
+            const nuevaCantidad = parseInt($(this).val());
             
-            // Actualizar estados de botones
-            $qtyMinus.prop('disabled', val <= 1);
-            $qtyPlus.prop('disabled', val >= maxStock);
+            // Validar que no supere el stock
+            if (nuevaCantidad > stockDisponible) {
+                if (window.showNotification) {
+                    window.showNotification('Stock insuficiente. Solo hay ' + stockDisponible + ' unidades disponibles', 'error');
+                }
+                $(this).val(stockDisponible);
+                return;
+            }
+            
+            // Si el producto está en el carrito, actualizar cantidad
+            if (productoEnCarrito) {
+                actualizarCantidadCarrito(productoId, nuevaCantidad);
+            }
         });
-
-        // Estado inicial
-        $qtyMinus.prop('disabled', true);
-        if (maxStock <= 1) {
-            $qtyPlus.prop('disabled', true);
+        
+        // Función para actualizar cantidad en el carrito
+        function actualizarCantidadCarrito(id, cantidad) {
+            const baseUrl = window.BASE_URL || '';
+            
+            fetch(baseUrl + '/app/actions/update_cart_quantity.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'id_producto=' + id + '&cantidad=' + cantidad
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('✅ Cantidad actualizada en carrito:', cantidad);
+                    
+                    // Actualizar contador del carrito en el header
+                    if (typeof window.updateCartCount === 'function') {
+                        window.updateCartCount();
+                    }
+                    
+                    // Mostrar notificación sutil
+                    if (window.showNotification) {
+                        window.showNotification('Cantidad actualizada en el carrito', 'success');
+                    }
+                } else {
+                    console.error('Error al actualizar cantidad:', data.message);
+                    if (window.showNotification) {
+                        window.showNotification(data.message || 'Error al actualizar cantidad', 'error');
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error en la petición:', error);
+                if (window.showNotification) {
+                    window.showNotification('Error al actualizar cantidad', 'error');
+                }
+            });
         }
 
         // ============================================
@@ -1271,7 +2203,7 @@ $page_title = $producto['nombre_producto'];
 
             const $btn = $(this);
             const productoId = $btn.data('id');
-            const cantidad = parseInt($qtyInput.val()) || 1;
+            const cantidad = parseInt($qtySelect.val()) || 1;
 
             if (!productoId) {
                 console.error('ID de producto no encontrado');

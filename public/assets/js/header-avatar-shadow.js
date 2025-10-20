@@ -7,7 +7,6 @@
 (function() {
     'use strict';
 
-    console.log('🎨 Header Avatar Shadow Manager cargado');
 
     /**
      * Aplicar shadow al avatar del header usando el RGB proporcionado
@@ -40,7 +39,6 @@
         const headerAvatar = document.querySelector('.header-user-avatar .avatar-image');
         
         if (!headerAvatar) {
-            console.log('⚠️ Avatar del header no encontrado');
             return;
         }
 
@@ -53,7 +51,6 @@
             if (rgb.length === 3) {
                 const [r, g, b] = rgb;
                 applyHeaderShadowWithColor(r, g, b);
-                console.log(`✅ Shadow del header restaurado: rgb(${r}, ${g}, ${b})`);
                 return;
             }
         }
@@ -68,12 +65,10 @@
             if (rgb.length === 3) {
                 const [r, g, b] = rgb;
                 applyHeaderShadowWithColor(r, g, b);
-                console.log(`✅ Shadow del header copiado del perfil: rgb(${r}, ${g}, ${b})`);
                 return;
             }
         }
         
-        console.log('ℹ️ No se encontró color guardado');
     }
 
     /**
@@ -82,23 +77,19 @@
     function setupEventListeners() {
         // Cuando se actualiza el shadow del avatar (INMEDIATAMENTE al calcular)
         document.addEventListener('avatarShadowUpdated', function(e) {
-            console.log('🎨 avatarShadowUpdated recibido en header:', e.detail);
             
             const { r, g, b } = e.detail;
             
             if (applyHeaderShadowWithColor(r, g, b)) {
-                console.log(`✨ Shadow del header actualizado INMEDIATAMENTE: rgb(${r}, ${g}, ${b})`);
             }
         });
 
         // Cuando termina la animación de vuelo (CONFIRMACIÓN)
         document.addEventListener('avatarColorUpdated', function(e) {
-            console.log('🎯 avatarColorUpdated recibido en header:', e.detail);
             
             const { r, g, b } = e.detail;
             
             if (applyHeaderShadowWithColor(r, g, b)) {
-                console.log(`✅ Shadow del header CONFIRMADO: rgb(${r}, ${g}, ${b})`);
             }
         });
     }
@@ -107,7 +98,6 @@
      * Inicializar
      */
     function init() {
-        console.log('🚀 Inicializando Header Avatar Shadow Manager...');
         
         // Aplicar shadow guardado al cargar la página
         applyHeaderAvatarShadow();
@@ -115,7 +105,6 @@
         // Configurar listeners de eventos
         setupEventListeners();
         
-        console.log('✅ Header Avatar Shadow Manager inicializado');
     }
 
     // Ejecutar cuando el DOM esté listo

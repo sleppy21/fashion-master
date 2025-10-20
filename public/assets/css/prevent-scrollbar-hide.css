@@ -6,39 +6,16 @@
 /* FORZAR scrollbar visible en HTML y BODY */
 html,
 body {
-    overflow-y: scroll !important;
     overflow-x: auto !important;
 }
 
 /* Evitar que Bootstrap Modal oculte el scrollbar */
 body.modal-open {
-    overflow-y: scroll !important;
     padding-right: 0 !important;
 }
 
-/* Evitar que cualquier clase oculte el overflow del body */
-body.no-scroll,
-body.overflow-hidden,
-body.lock-scroll {
-    overflow-y: scroll !important;
-}
-
-/* Sobrescribir estilos inline que oculten el overflow */
-body[style*="overflow: hidden"],
-body[style*="overflow:hidden"] {
-    overflow-y: scroll !important;
-}
 
 /* Asegurar que los modales de Bootstrap no afecten el scrollbar */
 .modal {
     overflow-y: auto !important;
-}
-
-.modal-backdrop {
-    overflow-y: scroll !important;
-}
-
-/* Prevenir que sidebar móvil oculte scrollbar */
-.show-mobile {
-    overflow-y: scroll !important;
 }

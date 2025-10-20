@@ -50,6 +50,8 @@ try {
         LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
         LEFT JOIN resena r ON p.id_producto = r.id_producto AND r.aprobada = 1
         WHERE p.status_producto = 1
+          AND p.estado = 'activo'
+          AND p.stock_actual_producto > 0
     ";
 
     $params = [];
@@ -157,20 +159,30 @@ try {
     // Obtener favoritos del usuario si está logueado
     $favoritos_ids = [];
     if (isset($_SESSION['user_id'])) {
+        error_log("=== GET_PRODUCTS_FILTERED DEBUG ===");
+        error_log("Usuario logueado ID: " . $_SESSION['user_id']);
+        
         $favoritos = executeQuery("
             SELECT id_producto 
             FROM favorito 
             WHERE id_usuario = ?
         ", [$_SESSION['user_id']]);
         
+        error_log("Favoritos encontrados: " . count($favoritos));
+        
         if ($favoritos && !empty($favoritos)) {
             $favoritos_ids = array_column($favoritos, 'id_producto');
+            error_log("IDs de favoritos: " . implode(', ', $favoritos_ids));
         }
+    } else {
+        error_log("=== GET_PRODUCTS_FILTERED DEBUG ===");
+        error_log("⚠️ Usuario NO logueado - SESSION user_id no existe");
     }
 
     // Agregar favorito flag a cada producto
     foreach($productos as &$producto) {
         $producto['es_favorito'] = in_array($producto['id_producto'], $favoritos_ids);
+        error_log("Producto ID {$producto['id_producto']}: es_favorito = " . ($producto['es_favorito'] ? 'true' : 'false'));
     }
 
     // Retornar JSON con productos

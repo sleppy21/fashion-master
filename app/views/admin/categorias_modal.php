@@ -1,28 +1,12 @@
-<?php
-// Modal para productos - Vista PHP (Mejorado: diseño “Ver Producto” con scroll arreglado, animaciones suaves y corrección de colores)
-// Incluir la conexión para obtener categorías y marcas
+﻿<?php
+// Modal para categorías - Vista PHP
+// Incluir la conexión
 require_once __DIR__ . '/../../../config/conexion.php';
 
-// Obtener categorías para el select
-try {
-    $stmt = $conn->prepare("SELECT id_categoria as id, nombre_categoria as nombre FROM categoria WHERE status_categoria = 1 ORDER BY nombre_categoria");
-    $stmt->execute();
-    $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $categorias = [];
-}
 
-// Obtener marcas para el select  
-try {
-    $stmt = $conn->prepare("SELECT id_marca, nombre_marca FROM marca WHERE status_marca = 1 ORDER BY nombre_marca");
-    $stmt->execute();
-    $marcas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $marcas = [];
-}
 
-// Si es edición o vista, obtener datos del producto
-$producto = null;
+// Si es edición o vista, obtener datos de la categoría
+$categoria = null;
 $action = isset($_GET['action']) ? $_GET['action'] : 'create';
 $isView = $action === 'view' && isset($_GET['id']);
 $isEdit = $action === 'edit' && isset($_GET['id']);
@@ -30,22 +14,22 @@ $isCreate = $action === 'create';
 
 if (($isEdit || $isView) && isset($_GET['id'])) {
     try {
-        $stmt = $conn->prepare("SELECT * FROM producto WHERE id_producto = ?");
+        $stmt = $conn->prepare("SELECT c.*, (SELECT COUNT(*) FROM producto p WHERE p.id_categoria = c.id_categoria AND p.status_producto = 1) as total_productos FROM categoria c WHERE c.id_categoria = ?");
         $stmt->execute([$_GET['id']]);
-        $producto = $stmt->fetch(PDO::FETCH_ASSOC);
+        $categoria = $stmt->fetch(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-        $producto = null;
+        $categoria = null;
     }
 }
 
-$hasData = $producto !== null;
-$modalTitle = $isView ? 'Ver Producto' : ($isEdit ? 'Editar Producto' : 'Nuevo Producto');
+$hasData = $categoria !== null;
+$modalTitle = $isView ? 'Ver Categoría' : ($isEdit ? 'Editar Categoría' : 'Nueva Categoría');
 $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
 ?>
 
 <?php if ($isView && $hasData): ?>
 
-<!-- VIEW: Modal Ver Producto - Diseño Profesional Completo -->
+<!-- VIEW: Modal Ver Categoría - Diseño Profesional Completo -->
 <div class="product-view-modal show">
     <!-- Overlay de fondo - SIN onclick para evitar duplicación (admin.php ya tiene el listener) -->
     <div class="product-view-modal__overlay"></div>
@@ -59,8 +43,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                     <span class="product-view-modal__title-icon">
                         <i class="fas fa-eye"></i>
                     </span>
-                    Ver Producto
-                </h2>
+                    Ver Categoría</h2>
                 
                 <div class="product-view-modal__badge">
                     <i class="fas fa-lock"></i>
@@ -68,7 +51,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                 </div>
             </div>
             
-            <button type="button" class="product-view-modal__close" onclick="closeProductModal()" aria-label="Cerrar">
+            <button type="button" class="product-view-modal__close" onclick="closeCategoriaModal()" aria-label="Cerrar">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -81,16 +64,16 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                     <div class="product-view-modal__image-container">
                         <?php
                         $imagenSrc = '';
-                        if (!empty($producto['url_imagen_producto'])) {
-                            $imagenSrc = $producto['url_imagen_producto'];
-                        } elseif (!empty($producto['imagen_producto'])) {
-                            $imagenSrc = 'public/assets/img/products/' . $producto['imagen_producto'];
+                        if (!empty($categoria['url_imagen_categoria'])) {
+                            $imagenSrc = $categoria['url_imagen_categoria'];
+                        } elseif (!empty($categoria['imagen_categoria'])) {
+                            $imagenSrc = 'public/assets/img/categories/' . $categoria['imagen_categoria'];
                         }
                         ?>
                         
                         <?php if ($imagenSrc): ?>
                             <img src="<?= htmlspecialchars($imagenSrc) ?>" 
-                                 alt="<?= htmlspecialchars($producto['nombre_producto']) ?>" 
+                                 alt="<?= htmlspecialchars($categoria['nombre_categoria']) ?>" 
                                  class="product-view-modal__image"
                                  onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'product-view-modal__image-placeholder\'><i class=\'fas fa-image\'></i><span>Imagen no disponible</span></div>'">
                         <?php else: ?>
@@ -101,7 +84,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                         <?php endif; ?>
                     </div>
                     <div class="product-view-modal__image-name">
-                        <?= htmlspecialchars($producto['nombre_producto']) ?>
+                        <?= htmlspecialchars($categoria['nombre_categoria']) ?>
                     </div>
                 </div>
 
@@ -120,7 +103,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                             <div class="product-view-modal__field">
                                 <label class="product-view-modal__field-label">Nombre</label>
                                 <div class="product-view-modal__field-value">
-                                    <?= htmlspecialchars($producto['nombre_producto']) ?>
+                                    <?= htmlspecialchars($categoria['nombre_categoria']) ?>
                                 </div>
                             </div>
                             
@@ -130,7 +113,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                                     <?php
                                     $categoria_nombre = 'Sin categoría';
                                     foreach ($categorias as $cat) {
-                                        if ($cat['id'] == $producto['id_categoria']) {
+                                        if ($cat['id'] == $categoria['id_categoria']) {
                                             $categoria_nombre = $cat['nombre'];
                                             break;
                                         }
@@ -146,7 +129,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                                     <?php
                                     $marca_nombre = 'Sin marca';
                                     foreach ($marcas as $marca) {
-                                        if ($marca['id_marca'] == $producto['id_marca']) {
+                                        if ($marca['id_marca'] == $categoria['id_marca']) {
                                             $marca_nombre = $marca['nombre_marca'];
                                             break;
                                         }
@@ -159,7 +142,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                             <div class="product-view-modal__field">
                                 <label class="product-view-modal__field-label">Código</label>
                                 <div class="product-view-modal__field-value product-view-modal__field-value--code">
-                                    <?= htmlspecialchars($producto['codigo'] ?: 'N/A') ?>
+                                    <?= htmlspecialchars($categoria['codigo'] ?: 'N/A') ?>
                                 </div>
                             </div>
                             
@@ -173,19 +156,19 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                                         'Unisex' => 'Unisex',
                                         'Kids' => 'Niños'
                                     ];
-                                    $genero_display = isset($genero_labels[$producto['genero_producto']]) 
-                                        ? $genero_labels[$producto['genero_producto']] 
-                                        : ($producto['genero_producto'] ?: 'N/A');
+                                    $genero_display = isset($genero_labels[$categoria['genero_producto']]) 
+                                        ? $genero_labels[$categoria['genero_producto']] 
+                                        : ($categoria['genero_producto'] ?: 'N/A');
                                     echo htmlspecialchars($genero_display);
                                     ?>
                                 </div>
                             </div>
                             
-                            <?php if (!empty($producto['descripcion_producto'])): ?>
+                            <?php if (!empty($categoria['descripcion_categoria'])): ?>
                             <div class="product-view-modal__description">
                                 <label class="product-view-modal__field-label">Descripción</label>
                                 <p class="product-view-modal__description-text">
-                                    <?= nl2br(htmlspecialchars($producto['descripcion_producto'])) ?>
+                                    <?= nl2br(htmlspecialchars($categoria['descripcion_categoria'])) ?>
                                 </p>
                             </div>
                             <?php endif; ?>
@@ -204,17 +187,17 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                         <div class="product-view-modal__grid">
                             <div class="product-view-modal__field">
                                 <label class="product-view-modal__field-label">Precio</label>
-                                <div class="product-view-modal__field-value product-view-modal__field-value--price" data-price="$<?= number_format($producto['precio_producto'], 2) ?>">
-                                    $<?= number_format($producto['precio_producto'], 2) ?>
+                                <div class="product-view-modal__field-value product-view-modal__field-value--price" data-price="$<?= number_format($categoria['precio_producto'], 2) ?>">
+                                    $<?= number_format($categoria['precio_producto'], 2) ?>
                                 </div>
                             </div>
                             
                             <div class="product-view-modal__field">
                                 <label class="product-view-modal__field-label">Estado</label>
                                 <div class="product-view-modal__field-value">
-                                    <span class="product-view-modal__status-badge product-view-modal__status-badge--<?= $producto['estado'] === 'activo' ? 'active' : 'inactive' ?>">
-                                        <i class="fas fa-<?= $producto['estado'] === 'activo' ? 'check-circle' : 'times-circle' ?>"></i>
-                                        <?= ucfirst(htmlspecialchars($producto['estado'])) ?>
+                                    <span class="product-view-modal__status-badge product-view-modal__status-badge--<?= $categoria['estado'] === 'activo' ? 'active' : 'inactive' ?>">
+                                        <i class="fas fa-<?= $categoria['estado'] === 'activo' ? 'check-circle' : 'times-circle' ?>"></i>
+                                        <?= ucfirst(htmlspecialchars($categoria['estado'])) ?>
                                     </span>
                                 </div>
                             </div>
@@ -225,13 +208,13 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                                     <div class="product-view-modal__stock">
                                         <div class="product-view-modal__stock-amount">
                                             <span class="product-view-modal__stock-number">
-                                                <?= htmlspecialchars($producto['stock_actual_producto']) ?>
+                                                <?= htmlspecialchars($categoria['stock_actual_categoria']) ?>
                                             </span>
                                             <span class="product-view-modal__stock-label">unidades</span>
                                         </div>
                                         <div class="product-view-modal__stock-bar">
                                             <?php
-                                            $stock = (int)$producto['stock_actual_producto'];
+                                            $stock = (int)$categoria['stock_actual_categoria'];
                                             $percentage = min(100, ($stock / 100) * 100);
                                             $stockClass = '';
                                             if ($stock == 0) {
@@ -247,14 +230,14 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                                 </div>
                             </div>
                             
-                            <?php if (isset($producto['descuento_porcentaje_producto']) && $producto['descuento_porcentaje_producto'] > 0): ?>
+                            <?php if (isset($categoria['descuento_porcentaje_categoria']) && $categoria['descuento_porcentaje_categoria'] > 0): ?>
                             <div class="product-view-modal__field">
                                 <label class="product-view-modal__field-label">Descuento</label>
                                 <div class="product-view-modal__field-value product-view-modal__field-value--discount" 
-                                     data-discount="<?= $producto['descuento_porcentaje_producto'] ?>">
-                                    <span class="discount-percentage"><?= number_format($producto['descuento_porcentaje_producto'], 0) ?>%</span>
+                                     data-discount="<?= $categoria['descuento_porcentaje_categoria'] ?>">
+                                    <span class="discount-percentage"><?= number_format($categoria['descuento_porcentaje_categoria'], 0) ?>%</span>
                                     <div class="discount-fire-effect"></div>
-                                    <div class="discount-savings">¡Ahorras <?= number_format(($producto['precio_producto'] * $producto['descuento_porcentaje_producto']) / 100, 2) ?>!</div>
+                                    <div class="discount-savings">¡Ahorras <?= number_format(($categoria['precio_producto'] * $categoria['descuento_porcentaje_categoria']) / 100, 2) ?>!</div>
                                 </div>
                             </div>
                             <?php endif; ?>
@@ -266,7 +249,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
 
         <!-- FOOTER -->
         <div class="product-view-modal__footer">
-            <button type="button" class="product-view-modal__btn product-view-modal__btn--secondary" onclick="closeProductModal()">
+            <button type="button" class="product-view-modal__btn product-view-modal__btn--secondary" onclick="closeCategoriaModal()">
                 <i class="fas fa-times"></i>
                 Cerrar
             </button>
@@ -294,7 +277,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         
         // Siempre llamar a la función global
         if (typeof window.closeProductModal === 'function') {
-            window.closeProductModal();
+            window.closeCategoriaModal();
         } else {
             console.error('❌ closeProductModal no está disponible');
         }
@@ -351,7 +334,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
     setTimeout(activateStockAnimations, 1000);
     
         
-    // ✅ SIMPLIFICADO: Los botones usan onclick="closeProductModal()" en el HTML
+    // ✅ SIMPLIFICADO: Los botones usan onclick="closeCategoriaModal()" en el HTML
     // Solo necesitamos configurar el overlay para cerrar al hacer click fuera
     function setupCloseEvents() {
         
@@ -372,7 +355,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                 } catch (err) { }
                 
                 if (typeof window.closeProductModal === 'function') {
-                    window.closeProductModal();
+                    window.closeCategoriaModal();
                 }
             };
             overlay.addEventListener('click', overlay.clickHandler);
@@ -396,7 +379,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                     } catch (err) { }
                     
                     if (typeof window.closeProductModal === 'function') {
-                        window.closeProductModal();
+                        window.closeCategoriaModal();
                     } else {
                         closeViewProductModal();
                     }
@@ -429,15 +412,15 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         </button>
     </div>
     
-    <form id="productForm" method="POST" action="" enctype="multipart/form-data">
+    <form id="categoryForm" method="POST" action="" enctype="multipart/form-data">
         <input type="hidden" name="action" value="<?= $isEdit ? 'update' : 'create' ?>">
         <?php if ($isEdit): ?>
-            <input type="hidden" name="id_producto" value="<?= $producto['id_producto'] ?>">
-            <!-- Mantener status_producto sin modificar al editar -->
-            <input type="hidden" name="status_producto" value="<?= $producto['status_producto'] ?>">
+            <input type="hidden" name="id_categoria" value="<?= $categoria['id_categoria'] ?>">
+            <!-- Mantener status_categoria sin modificar al editar -->
+            <input type="hidden" name="status_categoria" value="<?= $categoria['status_categoria'] ?>">
         <?php else: ?>
-            <!-- Para productos nuevos, establecer status_producto en 1 (activo/no eliminado) -->
-            <input type="hidden" name="status_producto" value="1">
+            <!-- Para categorias nuevos, establecer status_categoria en 1 (activo/no eliminado) -->
+            <input type="hidden" name="status_categoria" value="1">
         <?php endif; ?>
         
         <div class="modal-body">
@@ -450,72 +433,35 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="nombre_producto">
+                        <label for="nombre_categoria">
                             <i class="fas fa-tag"></i>
-                            Nombre del Producto *
+                            Nombre de la Categoría *
                         </label>
                         <input type="text" 
-                               id="nombre_producto" 
-                               name="nombre_producto" 
-                               value="<?= $hasData ? htmlspecialchars($producto['nombre_producto']) : '' ?>"
+                               id="nombre_categoria" 
+                               name="nombre_categoria" 
+                               value="<?= $hasData ? htmlspecialchars($categoria['nombre_categoria']) : '' ?>"
                                required 
                                maxlength="100"
                                <?= $isView ? 'readonly' : '' ?>
-                               placeholder="Ej: Camisa Casual Nike">
+                               placeholder="Ej: Ropa Deportiva">
                     </div>
                     
                     <div class="form-group">
-                        <label for="categoria">
-                            <i class="fas fa-folder"></i>
-                            Categoría *
+                        <label for="codigo_categoria">
+                            <i class="fas fa-barcode"></i>
+                            Código
                         </label>
-                        <select id="categoria" name="id_categoria" required <?= $isView ? 'disabled' : '' ?>>
-                            <option value="">Seleccionar categoría</option>
-                            <?php foreach ($categorias as $categoria): ?>
-                                <option value="<?= $categoria['id'] ?>" 
-                                    <?= ($hasData && $producto['id_categoria'] == $categoria['id']) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($categoria['nombre']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="marca">
-                            <i class="fas fa-certificate"></i>
-                            Marca
-                        </label>
-                        <select id="marca" 
-                                name="id_marca" 
-                                <?= $isView ? 'disabled' : '' ?>>
-                            <option value="">Seleccionar marca</option>
-                            <?php foreach ($marcas as $marca): ?>
-                                <option value="<?= $marca['id_marca'] ?>" 
-                                        <?= ($hasData && $producto['id_marca'] == $marca['id_marca']) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($marca['nombre_marca']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="genero">
-                            <i class="fas fa-venus-mars"></i>
-                            Género *
-                        </label>
-                        <select id="genero" name="genero_producto" required <?= $isView ? 'disabled' : '' ?>>
-                            <option value="">Seleccionar género</option>
-                            <option value="M" <?= ($hasData && $producto['genero_producto'] == 'M') ? 'selected' : '' ?>>Masculino</option>
-                            <option value="F" <?= ($hasData && $producto['genero_producto'] == 'F') ? 'selected' : '' ?>>Femenino</option>
-                            <option value="Unisex" <?= ($hasData && $producto['genero_producto'] == 'Unisex') ? 'selected' : '' ?>>Unisex</option>
-                            <option value="Kids" <?= ($hasData && $producto['genero_producto'] == 'Kids') ? 'selected' : '' ?>>Niños</option>
-                        </select>
+                        <input type="text" 
+                               id="codigo_categoria" 
+                               name="codigo_categoria" 
+                               value="<?= $hasData ? htmlspecialchars($categoria['codigo_categoria']) : '' ?>"
+                               maxlength="50"
+                               <?= $isView ? 'readonly' : '' ?>
+                               placeholder="Ej: CAT-001">
                     </div>
                 </div>
             </div>
-            
-            <!-- Resto del formulario (idéntico al original) -->
-            <!-- ... (mantengo el mismo HTML/JS que ya tenías para crear/editar) -->
             
             <!-- Descripción -->
             <div class="form-section">
@@ -526,125 +472,59 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                 
                 <div class="form-group">
                     <textarea id="descripcion" 
-                              name="descripcion_producto" 
+                              name="descripcion_categoria" 
                               rows="3" 
                               maxlength="500"
                               style="resize: none; overflow-y: hidden;"
-                              placeholder="Describe las características principales del producto..."
+                              placeholder="Describe las características principales de la categoría..."
                               oninput="autoExpandTextarea(this)"
-                              <?= $isView ? 'readonly' : '' ?>><?= $hasData ? htmlspecialchars($producto['descripcion_producto']) : '' ?></textarea>
+                              <?= $isView ? 'readonly' : '' ?>><?= $hasData ? htmlspecialchars($categoria['descripcion_categoria']) : '' ?></textarea>
                     <small class="form-text">Máximo 500 caracteres</small>
                 </div>
             </div>
             
-            <!-- Precios y Stock -->
+            <!-- Estado -->
             <div class="form-section">
                 <h3 class="section-title">
-                    <i class="fas fa-dollar-sign"></i>
-                    Precios y Stock
+                    <i class="fas fa-toggle-on"></i>
+                    Estado
                 </h3>
                 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="precio">
-                            Precio *
-                        </label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input type="number" 
-                                   id="precio" 
-                                   name="precio_producto" 
-                                   value="<?= $hasData ? $producto['precio_producto'] : '' ?>"
-                                   required 
-                                   min="0" 
-                                   step="0.01"
-                                   class="no-spin"
-                                   pattern="[0-9]+(\.[0-9]{1,2})?"
-                                   onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46"
-                                   oninput="validarPrecio(this)"
-                                   <?= $isView ? 'readonly' : '' ?>
-                                   placeholder="0.00">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="stock">
-                            <i class="fas fa-boxes"></i>
-                            Stock *
-                        </label>
-                        <input type="number" 
-                               id="stock" 
-                               name="stock_actual_producto" 
-                               value="<?= $hasData ? $producto['stock_actual_producto'] : '' ?>"
-                               required 
-                               min="0"
-                               max="999"
-                               maxlength="3"
-                               class="no-spin"
-                               oninput="if(this.value.length > 3) this.value = this.value.slice(0, 3); if(parseInt(this.value) > 999) this.value = 999;"
-                               <?= $isView ? 'readonly' : '' ?>
-                               placeholder="0">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="descuento">
-                            <i class="fas fa-percent"></i>
-                            Descuento
-                        </label>
-                        <div class="input-group">
-                            <input type="number" 
-                                   id="descuento" 
-                                   name="precio_descuento_producto" 
-                                   value="<?= $hasData ? $producto['descuento_porcentaje_producto'] : '' ?>"
-                                   min="0" 
-                                   max="100"
-                                   step="0.01"
-                                   class="no-spin"
-                                   pattern="[0-9]+(\.[0-9]{1,2})?"
-                                   onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46"
-                                   oninput="validarDescuento(this)"
-                                   <?= $isView ? 'readonly' : '' ?>
-                                   placeholder="Ej: 15.50">
-                            <span class="input-group-text">%</span>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="estado">
-                            <i class="fas fa-toggle-on"></i>
-                            Estado del Producto
-                        </label>
-                        <select id="estado" 
-                                name="estado" 
-                                class="form-control"
-                                <?= $isView ? 'disabled readonly style="background-color: #f8f9fa !important; cursor: not-allowed !important; pointer-events: none !important;"' : '' ?>>
-                            <option value="activo" <?= ($hasData && $producto['estado'] === 'activo') ? 'selected' : '' ?>>Activo</option>
-                            <option value="inactivo" <?= ($hasData && $producto['estado'] === 'inactivo') ? 'selected' : '' ?>>Inactivo</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="estado">
+                        <i class="fas fa-info-circle"></i>
+                        Estado de la Categoría
+                    </label>
+                    <select id="estado" 
+                            name="estado_categoria" 
+                            class="form-control"
+                            <?= $isView ? 'disabled readonly style="background-color: #f8f9fa !important; cursor: not-allowed !important; pointer-events: none !important;"' : '' ?>>
+                        <option value="activo" <?= ($hasData && $categoria['estado_categoria'] === 'activo') ? 'selected' : '' ?>>Activo</option>
+                        <option value="inactivo" <?= ($hasData && $categoria['estado_categoria'] === 'inactivo') ? 'selected' : '' ?>>Inactivo</option>
+                    </select>
                 </div>
             </div>
 
-            <!-- Imagen del Producto (igual que original) -->
+            <!-- Imagen de la Categoría -->
             <div class="form-section">
                 <h3 class="section-title">
                     <i class="fas fa-image"></i>
-                    Imagen del Producto
+                    Imagen de la Categoría
                 </h3>
                 
                 <div class="file-upload-container">
-                    <?php if ($hasData && (!empty($producto['url_imagen_producto']) || !empty($producto['imagen_producto']))): ?>
+                    <?php if ($hasData && (!empty($categoria['url_imagen_categoria']) || !empty($categoria['imagen_categoria']))): ?>
                         <div class="current-image-section">
                             <div class="current-image-display">
                                 <?php 
                                 $imagenSrc = '';
-                                if (!empty($producto['url_imagen_producto'])) {
-                                    $imagenSrc = $producto['url_imagen_producto'];
-                                } elseif (!empty($producto['imagen_producto'])) {
-                                    $imagenSrc = 'public/assets/img/products/' . $producto['imagen_producto'];
+                                if (!empty($categoria['url_imagen_categoria'])) {
+                                    $imagenSrc = $categoria['url_imagen_categoria'];
+                                } elseif (!empty($categoria['imagen_categoria'])) {
+                                    $imagenSrc = 'public/assets/img/categories/' . $categoria['imagen_categoria'];
                                 }
                                 ?>
-                                <img src="<?= htmlspecialchars($imagenSrc) ?>" alt="Imagen actual del producto" class="current-product-image" onerror="this.src='public/assets/img/default-product.jpg'; this.onerror=null;">
+                                <img src="<?= htmlspecialchars($imagenSrc) ?>" alt="Imagen actual de la categoría" class="current-product-image" onerror="this.src='public/assets/img/default-category.png'; this.onerror=null;">
                             </div>
                             <?php if (!$isView): ?>
                             <div class="change-image-section">
@@ -664,7 +544,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                     </div>
                     <?php endif; ?>
 
-                    <input type="file" id="imagen" name="imagen_producto" accept="image/*" style="display:none;">
+                    <input type="file" id="imagen" name="imagen_categoria" accept="image/*" style="display:none;">
                     <div id="imagePreview" class="image-preview-section" style="display:none;">
                         <div class="preview-image-display"><img id="previewImg" src="" alt="Preview de nueva imagen" class="preview-product-image"></div>
                         <div class="preview-actions-section">
@@ -680,7 +560,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
             <?php if (!$isView): ?>
-            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> <?= $isEdit ? 'Actualizar' : 'Guardar' ?> <span class="btn-text-mobile-hide">Producto</span></button>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> <?= $isEdit ? 'Actualizar' : 'Guardar' ?> <span class="btn-text-mobile-hide">Categoría</span></button>
             <?php endif; ?>
         </div>
     </form>
@@ -872,7 +752,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
     
     // Verificar si se eliminaron campos
     for (let key in originalFormData) {
-      if (!currentFormData.has(key) && key !== 'imagen_producto') {
+      if (!currentFormData.has(key) && key !== 'imagen_categoria') {
         hasChanges = true;
       }
     }
@@ -884,7 +764,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
      Form submit (AJAX) con reemplazo de imagen por preview cropped
      -------------------------- */
   function setupFormSubmitScoped(root = document) {
-    const form = $('#productForm', root);
+    const form = $('#categoryForm', root);
     if (!form) return;
     
     // Capturar datos originales cuando se carga el formulario
@@ -903,17 +783,17 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         
         // ✅ Cerrar modal INMEDIATAMENTE sin actualizar tabla
         if (typeof window.closeProductModal === 'function') {
-          window.closeProductModal();
+          window.closeCategoriaModal();
         } else if (typeof window.parent !== 'undefined' && typeof window.parent.closeProductModal === 'function') {
-          window.parent.closeProductModal();
+          window.parent.closeCategoriaModal();
         }
         
         return; // Detener el envío
       }
       
       const targetUrl = (window.AppConfig && typeof window.AppConfig.getApiUrl === 'function')
-        ? window.AppConfig.getApiUrl('ProductController.php')
-        : '/app/controllers/ProductController.php';
+        ? window.AppConfig.getApiUrl('CategoryController.php')
+        : '/app/controllers/CategoryController.php';
 
       // Botón submit
       const submitBtn = form.querySelector('button[type="submit"]');
@@ -935,11 +815,11 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
           try {
             // quitar entrada anterior (si existe)
             // NOTE: algunos navegadores añaden automáticamente el archivo, FormData.delete debe funcionar
-            fd.delete('imagen_producto');
+            fd.delete('imagen_categoria');
             const blob = dataURLToBlob(fileInput.dataset.cropped);
             // nombre de archivo recomendado
             const filename = (fileInput.files && fileInput.files[0] && fileInput.files[0].name) ? fileInput.files[0].name.replace(/\.[^/.]+$/, '') + '-cropped.jpg' : 'imagen-cropped.jpg';
-            fd.append('imagen_producto', blob, filename);
+            fd.append('imagen_categoria', blob, filename);
           } catch (err) {
           }
         }
@@ -971,47 +851,47 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
           
           // ⭐ GUARDAR TAB ACTIVO EN LOCALSTORAGE (PARENT)
           if (window.parent && window.parent.localStorage) {
-            window.parent.localStorage.setItem('admin_active_tab', 'productos');
-            console.log('💾 Tab "productos" guardado en localStorage');
+            window.parent.localStorage.setItem('admin_active_tab', 'categorias');
+            console.log('💾 Tab "categorias" guardado en localStorage');
           }
           
           // ⭐ MOSTRAR NOTIFICACIÓN DE ÉXITO
-          const isEdit = form.querySelector('input[name="id_producto"]') && form.querySelector('input[name="id_producto"]').value;
+          const isEdit = form.querySelector('input[name="id_categoria"]') && form.querySelector('input[name="id_categoria"]').value;
           if (window.parent && typeof window.parent.showNotification === 'function') {
             window.parent.showNotification(
-              isEdit ? 'Producto actualizado correctamente' : 'Producto creado correctamente',
+              isEdit ? 'Categoría actualizada correctamente' : 'Categoría creada correctamente',
               'success'
             );
           }
           
-          // 🔄 ACTUALIZACIÓN EN TIEMPO REAL con producto completo
-          if (data.product) {
-            console.log('📦 Producto recibido del backend:', data.product);
-            reloadParentProductsTable(data.product);
+          // 🔄 ACTUALIZACIÓN EN TIEMPO REAL con categoría completa
+          if (data.category) {
+            console.log('📦 Categoría recibida del backend:', data.category);
+            reloadParentCategoriesTable(data.category);
             
             // ⏱️ Pequeño delay para asegurar que la actualización se complete
             setTimeout(() => {
               // ✅ CERRAR MODAL después de actualizar
-              if (typeof window.closeProductModal === 'function') {
-                window.closeProductModal();
-              } else if (typeof window.parent !== 'undefined' && typeof window.parent.closeProductModal === 'function') {
-                window.parent.closeProductModal();
+              if (typeof window.closeCategoriaModal === 'function') {
+                window.closeCategoriaModal();
+              } else if (typeof window.parent !== 'undefined' && typeof window.parent.closeCategoriaModal === 'function') {
+                window.parent.closeCategoriaModal();
               } else {
-                console.error('❌ closeProductModal no disponible');
+                console.error('❌ closeCategoriaModal no disponible');
               }
             }, 150); // 150ms para dar tiempo a la animación
           } else {
-            console.warn('⚠️ No se recibió producto actualizado, cerrando sin actualizar');
-            // Si no hay producto, cerrar inmediatamente
-            if (typeof window.closeProductModal === 'function') {
-              window.closeProductModal();
-            } else if (typeof window.parent !== 'undefined' && typeof window.parent.closeProductModal === 'function') {
-              window.parent.closeProductModal();
+            console.warn('⚠️ No se recibió categoría actualizada, cerrando sin actualizar');
+            // Si no hay categoría, cerrar inmediatamente
+            if (typeof window.closeCategoriaModal === 'function') {
+              window.closeCategoriaModal();
+            } else if (typeof window.parent !== 'undefined' && typeof window.parent.closeCategoriaModal === 'function') {
+              window.parent.closeCategoriaModal();
             }
           }
         } else {
           // ⭐ MOSTRAR NOTIFICACIÓN DE ERROR
-          const errorMsg = data.error || data.message || 'Error al guardar producto';
+          const errorMsg = data.error || data.message || 'Error al guardar categoría';
           if (window.parent && typeof window.parent.showNotification === 'function') {
             window.parent.showNotification(errorMsg, 'error');
           } else {
@@ -1021,9 +901,9 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
 
       } catch (error) {
         if (window.parent && typeof window.parent.showNotification === 'function') {
-          window.parent.showNotification('Error de conexión al guardar producto', 'error');
+          window.parent.showNotification('Error de conexión al guardar categoría', 'error');
         } else {
-          alert('Error de conexión al guardar producto: ' + (error && error.message ? error.message : error));
+          alert('Error de conexión al guardar categoría: ' + (error && error.message ? error.message : error));
         }
       } finally {
         if (submitBtn) {
@@ -1038,7 +918,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
   /* --------------------------
      RECARGA AUTOMÁTICA DE TABLA DESPUÉS DE GUARDAR
      -------------------------- */
-  function reloadParentProductsTable(updatedProduct = null) {
+  function reloadParentCategoriesTable(updatedCategory = null) {
     
     // ✨ ACTUALIZACIÓN SUAVE con smooth-table-update
     try {
@@ -1048,59 +928,59 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
       console.log('🔍 Verificando actualización en tiempo real...');
       console.log('   - targetWindow:', targetWindow !== window ? 'parent' : 'self');
       console.log('   - smoothTableUpdater existe:', !!targetWindow.smoothTableUpdater);
-      console.log('   - updatedProduct:', updatedProduct);
+      console.log('   - updatedCategory:', updatedCategory);
       
-      if (targetWindow.smoothTableUpdater && updatedProduct) {
+      if (targetWindow.smoothTableUpdater && updatedCategory) {
         // 🆕 DETECTAR SI ES CREAR O EDITAR
-        const isCreate = !document.getElementById('productForm')?.querySelector('input[name="id_producto"]')?.value;
+        const isCreate = !document.getElementById('categoryForm')?.querySelector('input[name="id_categoria"]')?.value;
         
         console.log('   - Modo:', isCreate ? 'CREAR' : 'EDITAR');
-        console.log('   - ID del producto:', updatedProduct.id_producto);
+        console.log('   - ID de la categoría:', updatedCategory.id_categoria);
         
         if (isCreate) {
-          // ⭐ CREAR NUEVO PRODUCTO EN TABLA
-          console.log('➕ Agregando nuevo producto con smooth-table-update:', updatedProduct);
-          return targetWindow.smoothTableUpdater.addNewProduct(updatedProduct)
+          // ⭐ CREAR nueva categoría EN TABLA
+          console.log('➕ Agregando nueva categoría con smooth-table-update:', updatedCategory);
+          return targetWindow.smoothTableUpdater.addNewProduct(updatedCategory)
             .then(() => {
-              console.log('✅ Producto agregado exitosamente en tiempo real');
+              console.log('✅ Categoría agregada exitosamente en tiempo real');
             })
             .catch(err => {
-              console.error('❌ Error al agregar producto:', err);
+              console.error('❌ Error al agregar categoría:', err);
               fallbackReload(targetWindow);
             });
         } else {
-          // ⭐ ACTUALIZAR PRODUCTO EXISTENTE EN TIEMPO REAL
-          console.log('✏️ Actualizando producto existente con smooth-table-update...');
-          console.log('   - Código anterior vs nuevo:', updatedProduct.codigo);
+          // ⭐ ACTUALIZAR categoría existente EN TIEMPO REAL
+          console.log('✏️ Actualizando categoría existente con smooth-table-update...');
+          console.log('   - Código anterior vs nuevo:', updatedCategory.codigo_categoria);
           
-          return targetWindow.smoothTableUpdater.updateSingleProduct(updatedProduct.id_producto, updatedProduct)
+          return targetWindow.smoothTableUpdater.updateSingleProduct(updatedCategory.id_categoria, updatedCategory)
             .then(() => {
-              console.log('✅ Producto actualizado exitosamente en tiempo real');
-              console.log('   - Código actualizado a:', updatedProduct.codigo);
+              console.log('✅ Categoría actualizada exitosamente en tiempo real');
+              console.log('   - Código actualizado a:', updatedCategory.codigo_categoria);
             })
             .catch(err => {
-              console.error('❌ Error al actualizar producto:', err);
+              console.error('❌ Error al actualizar categoría:', err);
               console.error('   - Detalle:', err.message || err);
               fallbackReload(targetWindow);
             });
         }
       } else {
-        console.warn('⚠️ smoothTableUpdater no disponible o sin producto, usando recarga completa');
+        console.warn('⚠️ smoothTableUpdater no disponible o sin categoría, usando recarga completa');
         if (!targetWindow.smoothTableUpdater) console.warn('   - smoothTableUpdater no existe');
-        if (!updatedProduct) console.warn('   - updatedProduct es null/undefined');
+        if (!updatedCategory) console.warn('   - updatedCategory es null/undefined');
         fallbackReload(targetWindow);
       }
     } catch (err) {
-      console.error('❌ Error en reloadParentProductsTable:', err);
+      console.error('❌ Error en reloadParentCategoriesTable:', err);
       console.error('   - Stack:', err.stack);
     }
   }
   
   function fallbackReload(targetWindow) {
-    if (typeof targetWindow.loadProducts === 'function') {
-      targetWindow.loadProducts();
-    } else if (typeof targetWindow.loadProductos === 'function') {
-      targetWindow.loadProductos();
+    if (typeof targetWindow.loadCategories === 'function') {
+      targetWindow.loadCategories();
+    } else if (typeof targetWindow.loadcategorias === 'function') {
+      targetWindow.loadcategorias();
     }
   }
 
@@ -1172,13 +1052,13 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         
         console.log('🔘 Botón de cerrar modal clickeado');
         
-        // Llamar a closeProductModal() globalmente
+        // Llamar a closeCategoriaModal() globalmente
         if (typeof window.closeProductModal === 'function') {
-          console.log('✅ Llamando a window.closeProductModal()');
-          window.closeProductModal();
+          console.log('✅ Llamando a window.closeCategoriaModal()');
+          window.closeCategoriaModal();
         } else if (typeof window.parent !== 'undefined' && typeof window.parent.closeProductModal === 'function') {
-          console.log('✅ Llamando a window.parent.closeProductModal()');
-          window.parent.closeProductModal();
+          console.log('✅ Llamando a window.parent.closeCategoriaModal()');
+          window.parent.closeCategoriaModal();
         } else {
           console.error('❌ closeProductModal no encontrado');
         }
@@ -1293,11 +1173,11 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
 
   // Guardar borrador automáticamente
   window.saveFormDraft = function() {
-    const form = document.getElementById('productForm');
+    const form = document.getElementById('categoryForm');
     if (!form) return;
     
     // Solo guardar si es modo CREAR (no editar)
-    const isEdit = form.querySelector('input[name="id_producto"]')?.value;
+    const isEdit = form.querySelector('input[name="id_categoria"]')?.value;
     if (isEdit) return;
     
     const formData = new FormData(form);
@@ -1343,14 +1223,14 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
 
   // Restaurar borrador al cargar formulario
   window.restoreFormDraft = function(force = false) {
-    const form = document.getElementById('productForm');
+    const form = document.getElementById('categoryForm');
     if (!form) {
       console.log('⚠️ No se encontró formulario para restaurar');
       return false;
     }
     
     // Solo restaurar si es modo CREAR
-    const isEdit = form.querySelector('input[name="id_producto"]')?.value;
+    const isEdit = form.querySelector('input[name="id_categoria"]')?.value;
     if (isEdit) {
       console.log('ℹ️ Modo EDITAR detectado, no se restaura borrador');
       return false;
@@ -1450,7 +1330,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
       console.log('🗑️ Borrador eliminado');
       
       // Limpiar formulario
-      const form = document.getElementById('productForm');
+      const form = document.getElementById('categoryForm');
       if (form) {
         form.reset();
         
@@ -1571,7 +1451,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
     
     // 🔥 ACTIVAR AUTOGUARDADO en todos los campos del formulario
     try {
-      const form = context.querySelector('#productForm');
+      const form = context.querySelector('#categoryForm');
       if (form) {
         const inputs = form.querySelectorAll('input, textarea, select');
         let inputCount = 0;
@@ -1622,7 +1502,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
           
           // Cerrar modal
           if (typeof window.closeProductModal === 'function') {
-            window.closeProductModal();
+            window.closeCategoriaModal();
           }
         });
         console.log('✅ Listener agregado al botón Cancelar');
@@ -1750,5 +1630,23 @@ input[type="number"].no-spin {
     background-color: #1e3a5f;
 }
 </style>
+
+<script>
+// Función para cerrar el modal de categoría
+function closeCategoriaModal() {
+    console.log('🚪 Cerrando modal de categoría...');
+    const overlay = document.getElementById('categoria-modal-overlay');
+    if (overlay) {
+        overlay.classList.remove('show');
+        setTimeout(() => {
+            overlay.remove();
+            document.body.classList.remove('modal-open');
+        }, 300);
+    }
+}
+
+// Hacer la función global
+window.closeCategoriaModal = closeCategoriaModal;
+</script>
 
 <?php endif; ?>
