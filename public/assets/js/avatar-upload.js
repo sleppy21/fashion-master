@@ -5,85 +5,65 @@
 let croppieInstance = null;
 
 $(document).ready(function() {
-    console.log('🎭 Avatar Upload: Inicializando...');
     
     // Verificar elementos necesarios
     const avatarUploadArea = $('#avatar-upload-area');
     const avatarFileInput = $('#avatar-file-input');
     const cropModal = $('#avatar-crop-modal');
     
-    console.log('📍 Elementos encontrados:', {
-        uploadArea: avatarUploadArea.length,
-        fileInput: avatarFileInput.length,
-        cropModal: cropModal.length
-    });
     
     if (avatarUploadArea.length === 0) {
-        console.error('❌ Error: #avatar-upload-area no encontrado');
+    return;
         return;
     }
     
     if (avatarFileInput.length === 0) {
-        console.error('❌ Error: #avatar-file-input no encontrado');
+    return;
         return;
     }
     
     if (cropModal.length === 0) {
-        console.error('❌ Error: #avatar-crop-modal no encontrado');
+    return;
         return;
     }
-    
-    console.log('✅ Todos los elementos encontrados correctamente');
-    
+        
     // Click en el avatar para seleccionar imagen
     avatarUploadArea.on('click', function(e) {
         e.preventDefault();
-        console.log('🖱️ Click en área de avatar');
         avatarFileInput.click();
     });
 
     // Cuando se selecciona un archivo
     avatarFileInput.on('change', function(e) {
-        console.log('📁 Archivo seleccionado:', e.target.files);
         const file = e.target.files[0];
         
         if (!file) {
-            console.warn('⚠️ No se seleccionó ningún archivo');
+            return;
             return;
         }
         
-        console.log('📄 Archivo:', {
-            name: file.name,
-            type: file.type,
-            size: file.size,
-            sizeMB: (file.size / 1024 / 1024).toFixed(2) + ' MB'
-        });
+    
         
         // Validar tipo de archivo
         const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
         if (!validTypes.includes(file.type)) {
-            console.error('❌ Tipo de archivo inválido:', file.type);
             showNotification('Por favor selecciona una imagen válida (JPG, PNG o GIF)', 'error');
             return;
         }
         
         // Validar tamaño (5MB máximo)
         if (file.size > 5 * 1024 * 1024) {
-            console.error('❌ Archivo muy grande:', file.size);
             showNotification('La imagen debe pesar menos de 5MB', 'error');
             return;
         }
         
-        console.log('✅ Validaciones pasadas, leyendo imagen...');
         
         // Leer la imagen y mostrar el modal
         const reader = new FileReader();
         reader.onload = function(event) {
-            console.log('✅ Imagen leída, mostrando modal de crop');
             showCropModal(event.target.result);
         };
         reader.onerror = function(error) {
-            console.error('❌ Error al leer archivo:', error);
             showNotification('Error al leer la imagen', 'error');
         };
         reader.readAsDataURL(file);
@@ -111,26 +91,21 @@ $(document).ready(function() {
 });
 
 function showCropModal(imageData) {
-    console.log('🎨 Mostrando modal de crop...');
     const modal = $('#avatar-crop-modal');
     
     if (modal.length === 0) {
-        console.error('❌ Modal #avatar-crop-modal no encontrado');
         showNotification('Error: Modal no encontrado', 'error');
         return;
     }
     
     // Mostrar modal
     modal.removeClass('hidden');
-    console.log('✅ Modal mostrado, clase "hidden" removida');
     
     // Esperar a que el modal esté visible antes de inicializar Croppie
     setTimeout(() => {
-        console.log('🔧 Inicializando Croppie...');
         
         // Destruir instancia anterior si existe
         if (croppieInstance) {
-            console.log('🗑️ Destruyendo instancia anterior de Croppie');
             croppieInstance.destroy();
         }
         
@@ -138,12 +113,10 @@ function showCropModal(imageData) {
         const cropElement = document.getElementById('crop-image');
         
         if (!cropElement) {
-            console.error('❌ Elemento #crop-image no encontrado');
             showNotification('Error: Elemento de crop no encontrado', 'error');
             return;
         }
         
-        console.log('✅ Elemento #crop-image encontrado');
         
         try {
             croppieInstance = new Croppie(cropElement, {
@@ -162,16 +135,13 @@ function showCropModal(imageData) {
                 mouseWheelZoom: true
             });
             
-            console.log('✅ Croppie inicializado');
             
             // Cargar la imagen
             croppieInstance.bind({
                 url: imageData
             });
             
-            console.log('✅ Imagen cargada en Croppie');
         } catch (error) {
-            console.error('❌ Error al inicializar Croppie:', error);
             showNotification('Error al inicializar el editor de imagen', 'error');
         }
     }, 100);
@@ -194,10 +164,8 @@ function closeCropModal() {
 }
 
 function uploadCroppedImage() {
-    console.log('📤 Iniciando subida de imagen recortada...');
     
     if (!croppieInstance) {
-        console.error('❌ No hay instancia de Croppie');
         showNotification('Error: No hay imagen para subir', 'error');
         return;
     }
@@ -205,10 +173,8 @@ function uploadCroppedImage() {
     // Deshabilitar botón
     const uploadBtn = $('.btn-upload');
     uploadBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Subiendo...');
-    console.log('🔒 Botón deshabilitado');
     
     // Obtener imagen recortada
-    console.log('✂️ Obteniendo resultado de Croppie...');
     croppieInstance.result({
         type: 'blob',
         size: {
@@ -219,39 +185,29 @@ function uploadCroppedImage() {
         quality: 0.9,
         circle: false
     }).then(function(blob) {
-        console.log('✅ Blob obtenido:', {
-            size: blob.size,
-            type: blob.type,
-            sizeMB: (blob.size / 1024 / 1024).toFixed(2) + ' MB'
-        });
+       
         
         // Crear FormData
         const formData = new FormData();
         formData.append('avatar', blob, 'avatar.jpg');
-        console.log('📦 FormData creado');
         
         // Enviar al servidor
-        console.log('🚀 Enviando a: app/actions/upload_avatar.php');
-        fetch('app/actions/upload_avatar.php', {
+        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
+        fetch(baseUrl + '/app/actions/upload_avatar.php', {
             method: 'POST',
             body: formData
         })
         .then(response => {
-            console.log('📥 Respuesta recibida:', response.status, response.statusText);
             return response.json();
         })
         .then(data => {
-            console.log('📊 Datos procesados:', data);
             
             if (data.success) {
-                console.log('✅ Avatar subido exitosamente');
-                console.log('🖼️ Nueva URL:', data.avatar_url);
                 
                 // Verificar si estamos en la página de perfil Y si existe el header avatar
                 const isProfilePage = window.location.pathname.includes('profile.php');
                 const hasHeaderAvatar = $('.header-user-avatar .avatar-image').length > 0;
                 
-                console.log('📍 Estado:', { isProfilePage, hasHeaderAvatar });
                 
                 if (isProfilePage && hasHeaderAvatar) {
                     // Construir URL completa de la nueva imagen
@@ -270,18 +226,15 @@ function uploadCroppedImage() {
                     // Agregar timestamp único
                     newImageUrl += '?t=' + Date.now();
                     
-                    console.log('🎨 URL final con timestamp:', newImageUrl);
                     
                     const $profileAvatar = $('.profile-sidebar .profile-avatar .avatar-image');
                     const $profileContainer = $('.profile-sidebar .profile-avatar');
                     
                     // ACTUALIZAR INMEDIATAMENTE el avatar del perfil
                     $profileAvatar.attr('src', newImageUrl);
-                    console.log('✅ Avatar del perfil actualizado');
                     
                     // Esperar a que la nueva imagen se cargue completamente
                     $profileAvatar.off('load').one('load', function() {
-                        console.log('🖼️ Imagen cargada en perfil');
                         
                         // CALCULAR Y APLICAR SHADOW AL AVATAR GRANDE
                         const avatarContainer = $profileContainer[0];
@@ -290,7 +243,6 @@ function uploadCroppedImage() {
                             
                             // Esperar un momento para que se aplique el shadow
                             setTimeout(() => {
-                                console.log('✈️ Iniciando animación de vuelo...');
                                 
                                 // AHORA ejecutar la animación (con el shadow ya aplicado)
                                 if (typeof window.flyAvatarToHeaderRealTime === 'function') {
@@ -312,33 +264,26 @@ function uploadCroppedImage() {
                         $profileAvatar.trigger('load');
                     }
                 } else {
-                    console.log('⚠️ No cumple condiciones para animación, actualización normal');
                     // Actualización normal sin animación
                     updateAvatarDisplays(data.avatar_url);
                 }
                 
                 // Cerrar modal
                 closeCropModal();
-                console.log('🚪 Modal cerrado');
                 
                 // Mostrar mensaje de éxito con toast
                 showNotification('✅ Avatar actualizado correctamente', 'success');
             } else {
-                console.error('❌ Error del servidor:', data.message);
                 throw new Error(data.message || 'Error al subir la imagen');
             }
         })
         .catch(error => {
-            console.error('❌ Error en la subida:', error);
-            showNotification(error.message || 'No se pudo actualizar el avatar', 'error');
         })
         .finally(() => {
-            console.log('🔓 Rehabilitando botón');
             // Rehabilitar botón
             uploadBtn.prop('disabled', false).html('<i class="fas fa-upload"></i> Subir Avatar');
         });
     }).catch(function(error) {
-        console.error('❌ Error al procesar imagen con Croppie:', error);
         showNotification('Error al procesar la imagen', 'error');
         uploadBtn.prop('disabled', false).html('<i class="fas fa-upload"></i> Subir Avatar');
     });
@@ -558,7 +503,6 @@ function updateAvatarShadow(avatarElement, img) {
         document.dispatchEvent(event);
         
     } catch (e) {
-        console.error('❌ Error al actualizar shadow:', e);
         // Aplicar shadow por defecto en caso de error
         const defaultShadow = '0 4px 12px rgba(102, 126, 234, 0.4), 0 8px 24px rgba(102, 126, 234, 0.3), 0 0 30px rgba(102, 126, 234, 0.2)';
         avatarElement.style.boxShadow = defaultShadow;
@@ -607,7 +551,6 @@ function getAverageColorFromImage(img) {
         }
         
         if (count === 0) {
-            console.warn('⚠️ No se encontraron píxeles válidos');
             return { r: 102, g: 126, b: 234 }; // Color por defecto
         }
         
@@ -618,7 +561,6 @@ function getAverageColorFromImage(img) {
         
         return { r, g, b };
     } catch (e) {
-        console.warn('⚠️ No se pudo extraer color (posible error CORS):', e.message);
         // Retornar color por defecto (púrpura del gradiente)
         return { r: 102, g: 126, b: 234 }; // #667eea
     }
@@ -725,7 +667,6 @@ function flyAvatarToHeader(avatarUrl, callback) {
     
     
     if (!$profileAvatar.length || !$headerContainer.length) {
-        console.error('❌ FALLO: Elementos no encontrados');
         if (callback) callback();
         return;
     }
@@ -736,27 +677,6 @@ function flyAvatarToHeader(avatarUrl, callback) {
     const sourceOffset = $profileAvatarContainer.offset();
     const headerRect = $headerContainer[0].getBoundingClientRect();
     const headerOffset = $headerContainer.offset();
-    
-    // IMPORTANTE: getBoundingClientRect() es relativo al viewport
-    // position: fixed también es relativo al viewport, así que está correcto
-    console.log('📍 Posición del scroll:', {
-        scrollY: window.scrollY,
-        scrollX: window.scrollX
-    });
-    
-    console.log('📏 Source Rect:', {
-        top: Math.round(sourceRect.top),
-        left: Math.round(sourceRect.left),
-        width: Math.round(sourceRect.width),
-        height: Math.round(sourceRect.height)
-    });
-    
-    console.log('📏 Header Rect:', {
-        top: Math.round(headerRect.top),
-        left: Math.round(headerRect.left),
-        width: Math.round(headerRect.width),
-        height: Math.round(headerRect.height)
-    });
     
     // PASO 3: CREAR MARCADORES VISUALES PARA DEBUG (opcional - comentar después)
     const $debugSource = $('<div>').css({

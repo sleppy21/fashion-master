@@ -8,7 +8,7 @@
 <!-- Offcanvas Menu Begin -->
 <div class="offcanvas-menu-overlay"></div>
 <div class="offcanvas-menu-wrapper">
-    <div class="offcanvas__close">+</div>
+    <div class="offcanvas__close" title="Cerrar">+</div>
     
     <!-- Logo -->
     <div class="offcanvas__logo">
@@ -20,8 +20,34 @@
     <div class="offcanvas__user-compact" id="offcanvas-user-profile">
         <a href="profile.php" class="user-compact-content" style="text-decoration: none; color: inherit;">
             <div class="user-info-header">
+                <?php
+                // Lógica del avatar igual que en header
+                $offcanvas_avatar_path = 'public/assets/img/profiles/default-avatar.png';
+                if (!empty($usuario_logueado['avatar_usuario'])) {
+                    if (strpos($usuario_logueado['avatar_usuario'], 'public/assets/img/profiles/') !== false) {
+                        $offcanvas_avatar_path = $usuario_logueado['avatar_usuario'];
+                    } elseif ($usuario_logueado['avatar_usuario'] !== 'default-avatar.png') {
+                        $offcanvas_avatar_path = 'public/assets/img/profiles/' . $usuario_logueado['avatar_usuario'];
+                    }
+                }
+                
+                $tiene_avatar_custom = !empty($usuario_logueado['avatar_usuario']) && 
+                                      $usuario_logueado['avatar_usuario'] !== 'default-avatar.png' &&
+                                      file_exists($offcanvas_avatar_path);
+                ?>
+                
                 <div class="user-avatar-circle">
-                    <i class="fa fa-user"></i>
+                    <?php if($tiene_avatar_custom): ?>
+                        <img src="<?php echo $offcanvas_avatar_path; ?>" 
+                             alt="Avatar" 
+                             class="avatar-image"
+                             crossorigin="anonymous"
+                             style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: center; display: block;">
+                    <?php else: ?>
+                        <div class="avatar-initial" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">
+                            <?php echo strtoupper(substr($usuario_logueado['nombre_usuario'], 0, 1)); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="user-text">
                     <span class="user-greeting">Hola,</span>
@@ -36,63 +62,24 @@
     <nav class="offcanvas__nav">
         <ul>
             <li><a href="./index.php"><i class="fa fa-home"></i> Inicio</a></li>
-            
-            <!-- Categorías con submenu -->
-            <li class="offcanvas-has-submenu">
-                <a href="#" class="offcanvas-menu-toggle">
-                    <i class="fa fa-list"></i> Categorías
-                    <i class="fa fa-angle-down" style="float: right; margin-top: 2px;"></i>
-                </a>
-                <ul class="offcanvas-submenu" style="display: none;">
-                    <?php if(isset($categorias) && !empty($categorias)): ?>
-                        <?php foreach($categorias as $categoria): ?>
-                        <li><a href="shop.php?categoria=<?php echo urlencode($categoria['id_categoria']); ?>"><?php echo htmlspecialchars($categoria['nombre_categoria']); ?></a></li>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </ul>
-            </li>
-            
-            <!-- Marcas con submenu -->
-            <li class="offcanvas-has-submenu">
-                <a href="#" class="offcanvas-menu-toggle">
-                    <i class="fa fa-tags"></i> Marcas
-                    <i class="fa fa-angle-down" style="float: right; margin-top: 2px;"></i>
-                </a>
-                <ul class="offcanvas-submenu" style="display: none;">
-                    <?php if(isset($marcas) && !empty($marcas)): ?>
-                        <?php foreach($marcas as $marca): ?>
-                        <li><a href="shop.php?marca=<?php echo urlencode($marca['id_marca']); ?>"><?php echo htmlspecialchars($marca['nombre_marca']); ?></a></li>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </ul>
-            </li>
-            
             <li><a href="./shop.php"><i class="fa fa-shopping-bag"></i> Tienda</a></li>
             <li><a href="./contact.php"><i class="fa fa-envelope"></i> Contacto</a></li>
             
             <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
+            <li><a href="cart.php"><i class="fa fa-shopping-cart"></i> Carrito</a></li>
+            <li><a href="./mis-pedidos.php"><i class="fa fa-shopping-bag"></i> Mis Compras</a></li>
             <li><a href="profile.php"><i class="fa fa-user-circle"></i> Mi Perfil</a></li>
-            <li class="offcanvas-has-submenu">
-                <a href="cart.php">
-                    <i class="fa fa-shopping-cart"></i> Carrito
-                </a>
-            </li>
             <?php endif; ?>
             
             <?php if(isset($usuario_logueado) && $usuario_logueado && $usuario_logueado['rol_usuario'] === 'admin'): ?>
-            <li class="offcanvas-has-submenu">
-                <a href="./admin.php">
-                    <i class="fa fa-shield"></i> Vista Administrador
-                </a>
-            </li>
+            <li><a href="./admin.php"><i class="fa fa-shield"></i> Admin</a></li>
             <?php endif; ?>
             
+            <!-- Asistente Virtual -->
+            <li><a href="#" id="open-chatbot-mobile"><i class="fa fa-robot"></i> Asistente Virtual</a></li>
+            
             <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
-            <li class="offcanvas-has-submenu">
-                <a href="logout.php">
-                    <i class="fa fa-sign-out"></i> Cerrar Sesión
-                </a>
-            </li>
+            <li><a href="logout.php"><i class="fa fa-sign-out"></i> Cerrar Sesión</a></li>
             <?php endif; ?>
         </ul>
     </nav>

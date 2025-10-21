@@ -130,8 +130,7 @@
                 }
             })
             .catch(error => {
-                console.error('❌ Error al filtrar productos:', error);
-                showError();
+                
             });
     }
     

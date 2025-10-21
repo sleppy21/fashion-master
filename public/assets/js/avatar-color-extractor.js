@@ -40,7 +40,6 @@
             
             return { r, g, b };
         } catch (e) {
-            console.warn('⚠️ No se pudo extraer color del avatar:', e);
             // Retornar color por defecto (púrpura del gradiente)
             return { r: 102, g: 126, b: 234 }; // #667eea
         }
@@ -146,7 +145,6 @@
             });
             
             avatarImg.addEventListener('error', function() {
-                console.warn('❌ Error al cargar imagen del avatar');
             });
         }
     }

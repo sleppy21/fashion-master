@@ -43,7 +43,6 @@ async function fetchAPI(url, options = {}) {
         // Si no es JSON, devolver texto
         return await response.text();
     } catch (error) {
-        console.error('Fetch API Error:', error);
         throw error;
     }
 }
@@ -52,8 +51,10 @@ async function fetchAPI(url, options = {}) {
  * GET Request usando Fetch
  */
 async function fetchGET(url, params = {}) {
+    // Agregar BASE_URL si la URL es relativa
+    const baseUrl = url.startsWith('http') ? url : (window.BASE_URL || '').replace(/\/+$/, '') + '/' + url.replace(/^\/+/, '');
     const queryString = new URLSearchParams(params).toString();
-    const fullUrl = queryString ? `${url}?${queryString}` : url;
+    const fullUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
     
     return await fetchAPI(fullUrl, { method: 'GET' });
 }
@@ -62,7 +63,9 @@ async function fetchGET(url, params = {}) {
  * POST Request usando Fetch
  */
 async function fetchPOST(url, data = {}) {
-    return await fetchAPI(url, {
+    // Agregar BASE_URL si la URL es relativa
+    const fullUrl = url.startsWith('http') ? url : (window.BASE_URL || '').replace(/\/+$/, '') + '/' + url.replace(/^\/+/, '');
+    return await fetchAPI(fullUrl, {
         method: 'POST',
         body: JSON.stringify(data)
     });
@@ -72,7 +75,9 @@ async function fetchPOST(url, data = {}) {
  * POST con FormData (para archivos)
  */
 async function fetchPOSTFormData(url, formData) {
-    return await fetchAPI(url, {
+    // Agregar BASE_URL si la URL es relativa
+    const fullUrl = url.startsWith('http') ? url : (window.BASE_URL || '').replace(/\/+$/, '') + '/' + url.replace(/^\/+/, '');
+    return await fetchAPI(fullUrl, {
         method: 'POST',
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
@@ -105,7 +110,6 @@ async function updateCartCount() {
             });
         }
     } catch (error) {
-        console.error('Error updating cart count:', error);
     }
 }
 
@@ -130,7 +134,6 @@ async function updateFavoritesCount() {
             });
         }
     } catch (error) {
-        console.error('Error updating favorites count:', error);
     }
 }
 
@@ -208,7 +211,6 @@ async function addToCart(productId, quantity = 1) {
             throw new Error(data.message || 'Error al agregar al carrito');
         }
     } catch (error) {
-        console.error('Error adding to cart:', error);
         
         if (typeof Swal !== 'undefined') {
             Swal.fire({
@@ -272,7 +274,6 @@ async function toggleFavorite(productId) {
             throw new Error(data.message || 'Error al actualizar favoritos');
         }
     } catch (error) {
-        console.error('Error toggling favorite:', error);
         
         if (typeof Toast !== 'undefined') {
             Toast.fire({
@@ -313,7 +314,6 @@ async function updateCartQuantity(cartId, quantity) {
             throw new Error(data.message || 'Error al actualizar cantidad');
         }
     } catch (error) {
-        console.error('Error updating cart quantity:', error);
         
         if (typeof Toast !== 'undefined') {
             Toast.fire({
@@ -331,24 +331,6 @@ async function updateCartQuantity(cartId, quantity) {
  */
 async function removeFromCart(cartId) {
     try {
-        // Confirmar con el usuario
-        if (typeof Swal !== 'undefined') {
-            const result = await Swal.fire({
-                title: '¿Eliminar producto?',
-                text: '¿Estás seguro de eliminar este producto del carrito?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            });
-
-            if (!result.isConfirmed) {
-                return false;
-            }
-        }
-
         const data = await fetchPOST('app/actions/remove_from_cart.php', {
             id_carrito: cartId
         });
@@ -368,12 +350,9 @@ async function removeFromCart(cartId) {
                 updateCartTotals(data.totals);
             }
 
-            // Mostrar notificación
-            if (typeof Toast !== 'undefined') {
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Producto eliminado del carrito'
-                });
+            // Mostrar notificación usando el sistema global (toast abajo derecha)
+            if (typeof window.showNotification === 'function') {
+                window.showNotification('Producto eliminado del carrito', 'success');
             }
 
             // Disparar evento
@@ -386,13 +365,9 @@ async function removeFromCart(cartId) {
             throw new Error(data.message || 'Error al eliminar producto');
         }
     } catch (error) {
-        console.error('Error removing from cart:', error);
         
-        if (typeof Toast !== 'undefined') {
-            Toast.fire({
-                icon: 'error',
-                title: error.message || 'Error al eliminar producto'
-            });
+        if (typeof window.showNotification === 'function') {
+            window.showNotification(error.message || 'Error al eliminar producto', 'error');
         }
         
         return false;
@@ -454,7 +429,6 @@ async function loadFilteredProducts(filters = {}) {
             throw new Error(data.message || 'Error al cargar productos');
         }
     } catch (error) {
-        console.error('Error loading filtered products:', error);
         
         const container = document.getElementById('productosGrid');
         if (container) {
@@ -476,7 +450,6 @@ function searchProducts(query) {
         try {
             await loadFilteredProducts({ q: query });
         } catch (error) {
-            console.error('Error searching products:', error);
         }
     }, 500); // Debounce de 500ms
 }

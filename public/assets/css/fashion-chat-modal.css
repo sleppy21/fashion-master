@@ -148,8 +148,160 @@
     }
 }
 
-/* Responsive para móviles */
-@media (max-width: 768px) {
+/* ========================================
+   MÓVIL - CHAT FULLSCREEN MEJORADO
+   ======================================== */
+@media (max-width: 767px) {
+    /* Ocultar botón flotante (ahora está en el menú) */
+    .fs-chat-widget {
+        display: none !important;
+    }
+    
+    /* Chat fullscreen en móvil */
+    .fs-chat-container {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        transform: translateY(100%) !important;
+        opacity: 1 !important;
+    }
+    
+    .fs-chat-container.fs-visible {
+        transform: translateY(0) !important;
+        opacity: 1 !important;
+    }
+    
+    /* Header más grande para móvil */
+    .fs-chat-header {
+        padding: 16px 20px !important;
+        min-height: 70px !important;
+        border-radius: 0 !important;
+        background: var(--gradient-purple) !important;
+        color: white !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+    }
+    
+    .fs-chat-header .fs-chat-title {
+        color: white !important;
+        font-size: 18px !important;
+        font-weight: 600 !important;
+    }
+    
+    .fs-chat-header .fs-chat-status {
+        color: rgba(255,255,255,0.9) !important;
+        font-size: 13px !important;
+    }
+    
+    /* Botón cerrar más grande */
+    .fs-close-btn {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 24px !important;
+        background: rgba(255,255,255,0.2) !important;
+        color: white !important;
+        border-radius: 50% !important;
+    }
+    
+    .fs-close-btn:hover {
+        background: rgba(255,255,255,0.3) !important;
+    }
+    
+    /* Mensajes con más padding */
+    .fs-chat-messages {
+        padding: 20px 16px !important;
+        flex: 1 !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* Burbujas de mensaje más grandes */
+    .fs-message-content {
+        font-size: 15px !important;
+        padding: 12px 16px !important;
+        max-width: 85% !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* Input más grande y cómodo */
+    .fs-chat-input-container {
+        padding: 16px 20px !important;
+        border-radius: 0 !important;
+        background: var(--fs-bg-primary) !important;
+        border-top: 1px solid var(--fs-border) !important;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05) !important;
+    }
+    
+    .fs-chat-input {
+        font-size: 16px !important;
+        padding: 14px 50px 14px 16px !important;
+        min-height: 52px !important;
+        border-radius: 26px !important;
+    }
+    
+    /* Botón enviar más grande */
+    .fs-send-btn {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 18px !important;
+        right: 8px !important;
+    }
+    
+    /* Sugerencias más grandes */
+    .fs-suggestion-btn {
+        font-size: 14px !important;
+        padding: 10px 16px !important;
+        border-radius: 20px !important;
+        min-height: 40px !important;
+    }
+    
+    /* Avatar del bot */
+    .fs-chat-avatar {
+        width: 42px !important;
+        height: 42px !important;
+    }
+    
+    .fs-chat-avatar svg,
+    .fs-chat-avatar i {
+        font-size: 22px !important;
+    }
+    
+    /* Typing indicator más visible */
+    .fs-typing-indicator {
+        padding: 12px 16px !important;
+    }
+    
+    .fs-typing-dot {
+        width: 10px !important;
+        height: 10px !important;
+    }
+    
+    /* Quick actions más espaciadas */
+    .fs-quick-suggestions {
+        gap: 10px !important;
+        padding: 10px 0 !important;
+    }
+    
+    /* Mejorar contraste en dark mode */
+    body.dark-mode .fs-chat-header {
+        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    }
+    
+    body.dark-mode .fs-chat-input {
+        background: #2d3748 !important;
+        color: white !important;
+        border-color: #4a5568 !important;
+    }
+}
+
+/* Responsive para tablets */
+@media (min-width: 768px) and (max-width: 991px) {
     .fs-chat-widget {
         bottom: 16px;
         right: 16px;

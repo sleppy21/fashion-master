@@ -5,16 +5,14 @@
 
 $(document).ready(function() {
     'use strict';
-
-    // ============================================
-    // TOGGLE OFFCANVAS MENU
-    // ============================================
-    
-    // Abrir offcanvas
-    $('.canvas__open').on('click', function(e) {
+    // Abrir offcanvas usando delegación de eventos
+    $(document).on('click', '.canvas__open', function(e) {
         e.preventDefault();
+        e.stopPropagation();
+        
         $('.offcanvas-menu-wrapper').addClass('active');
         $('.offcanvas-menu-overlay').addClass('active');
+
         // Ocultar footer y footer móvil del carrito
         $('footer, .footer, .mobile-cart-footer__content').hide();
     });
@@ -97,6 +95,69 @@ $(document).ready(function() {
     setInterval(function() {
         if (!$('.offcanvas-menu-wrapper').hasClass('active')) {
             $('footer, .footer, .mobile-cart-footer__content').show();
+        }
+    }, 500);
+});
+
+// ============================================
+// BACKUP EN VANILLA JS - POR SI JQUERY FALLA
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Función para abrir offcanvas
+    function openOffcanvas() {
+        const wrapper = document.querySelector('.offcanvas-menu-wrapper');
+        const overlay = document.querySelector('.offcanvas-menu-overlay');
+        
+        if (wrapper && overlay) {
+            wrapper.classList.add('active');
+            overlay.classList.add('active');
+        } 
+    }
+    
+    // Función para cerrar offcanvas
+    function closeOffcanvas() {
+        const wrapper = document.querySelector('.offcanvas-menu-wrapper');
+        const overlay = document.querySelector('.offcanvas-menu-overlay');
+        
+        if (wrapper && overlay) {
+            wrapper.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+    }
+    
+    // Event listener para botón hamburguesa
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.canvas__open')) {
+            e.preventDefault();
+            e.stopPropagation();
+            openOffcanvas();
+        }
+        
+        // Cerrar con botón X
+        if (e.target.closest('.offcanvas__close')) {
+            e.preventDefault();
+            closeOffcanvas();
+        }
+        
+        // Cerrar con overlay
+        if (e.target.classList.contains('offcanvas-menu-overlay')) {
+            e.preventDefault();
+            closeOffcanvas();
+        }
+    });
+    
+    // Verificar elementos cada 500ms
+    let checkCount = 0;
+    const checkInterval = setInterval(function() {
+        const hamburger = document.querySelector('.canvas__open');
+        const wrapper = document.querySelector('.offcanvas-menu-wrapper');
+        const overlay = document.querySelector('.offcanvas-menu-overlay');
+
+        
+        checkCount++;
+        if (checkCount > 10) {
+            clearInterval(checkInterval);
         }
     }, 500);
 });

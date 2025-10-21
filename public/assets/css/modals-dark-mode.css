@@ -490,6 +490,7 @@ body.dark-mode .user-modal-header {
 
 body.dark-mode .user-avatar-circle {
     background: linear-gradient(135deg, #c9a67c 0%, #d4b896 100%) !important;
+    border: none !important;
     box-shadow: 0 4px 16px rgba(201, 166, 124, 0.5),
                 0 0 0 3px rgba(201, 166, 124, 0.1) !important;
 }

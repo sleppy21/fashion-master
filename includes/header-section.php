@@ -32,6 +32,12 @@
     <link rel="stylesheet" href="public/assets/css/header-bootstrap-layout.css">
     <link rel="stylesheet" href="public/assets/css/badges-override.css">
     <link rel="stylesheet" href="public/assets/css/global-search-modal.css?v=<?php echo time(); ?>">
+    
+    <!-- Header Mobile - Diseño específico para móviles -->
+    <link rel="stylesheet" href="public/assets/css/header-mobile.css?v=<?php echo time(); ?>">
+    
+    <!-- Offcanvas Menu Mobile - Diseño del menú lateral -->
+    <link rel="stylesheet" href="public/assets/css/offcanvas-mobile.css?v=<?php echo time(); ?>">
 
 </head>
 <body>
@@ -44,6 +50,12 @@
 <header class="header">
     <div class="container-fluid px-3">
         <div class="row align-items-center g-2 justify-content-between">
+            
+            <!-- Botón Hamburguesa - Solo visible en móvil -->
+            <div class="canvas__open d-lg-none" role="button" tabindex="0" aria-label="Abrir menú">
+                <i class="fa fa-bars"></i>
+            </div>
+            
             <!-- Logo Section - Oculto en móvil, visible en desktop -->
             <div class="col-auto d-none d-lg-block" style="min-width: 80px;">
                 <div class="header__logo">
@@ -352,14 +364,12 @@
         if (lastModalTrigger && lastModalTrigger.classList) {
             try {
                 lastModalTrigger.classList.remove('modal-trigger-active');
-                console.log('✅ Modal trigger desactivado:', modalId);
                 try { 
                     document.dispatchEvent(new CustomEvent('modalTriggerChanged', { 
                         detail: { action: 'closed', modalId: modalId } 
                     })); 
                 } catch(e) {}
             } catch (e) {
-                console.error('❌ Error al desactivar trigger:', e);
             }
             lastModalTrigger = null;
         }
@@ -394,7 +404,6 @@
     
     // Función para cargar favoritos
     function loadFavorites() {
-        console.log('📦 Cargando favoritos...');
         // Los favoritos ya están cargados en el PHP del modal
     }
     
@@ -453,10 +462,7 @@
     // USUARIO - ULTRA OPTIMIZADO
     function toggleUserModal() {
         const modal = document.getElementById('user-account-modal');
-        if (!modal) {
-            console.error('❌ Modal de usuario no encontrado');
-            return;
-        }
+
         
         const isVisible = modal.classList.contains('modal-open');
         
@@ -476,7 +482,6 @@
             
             // Abrir usuario INSTANTÁNEAMENTE
             openModal('user-account-modal');
-            console.log('✅ Modal de usuario abierto');
         }
     }
     
@@ -578,7 +583,6 @@
                         closeModal('notifications-modal');
                     }
                     openModal('user-account-modal', trigger);
-                    console.log('✅ Modal de usuario abierto');
                 }
             });
         });
@@ -624,7 +628,6 @@
             }
         });
         
-        console.log('✅ Eventos configurados correctamente');
     }
     
     // Inicializar cuando el DOM esté listo
@@ -647,7 +650,6 @@
     window.closeAllModals = closeAllModals;
     window.closeAllModalsInstant = closeAllModalsInstant;
     
-    console.log('🌐 Funciones de modales expuestas globalmente');
 })();
 </script>
 
@@ -660,14 +662,32 @@ include __DIR__ . '/favorites-modal.php';
 include __DIR__ . '/notifications-modal.php';
 include __DIR__ . '/user-account-modal.php';
 include __DIR__ . '/global-search-modal.php';
+include __DIR__ . '/offcanvas-menu.php';
 
 // Script para actualización AJAX de contadores (solo si hay usuario)
 if(isset($usuario_logueado) && $usuario_logueado): 
     // Asegurar que el BASE_URL use el mismo protocolo que la página actual
-    $secure_base_url = rtrim(BASE_URL, '/');
+    // Detectar HTTPS correctamente (incluyendo túneles como ngrok, cloudflare)
+    $is_https = false;
     if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+        $is_https = true;
+    } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+        $is_https = true;
+    } elseif (isset($_SERVER['HTTP_HOST'])) {
+        $host_lower = strtolower($_SERVER['HTTP_HOST']);
+        if (strpos($host_lower, 'ngrok') !== false || 
+            strpos($host_lower, 'serveo.net') !== false ||
+            strpos($host_lower, 'trycloudflare.com') !== false ||
+            strpos($host_lower, 'loca.lt') !== false) {
+            $is_https = true;
+        }
+    }
+    
+    $secure_base_url = rtrim(BASE_URL, '/');
+    if ($is_https) {
         $secure_base_url = str_replace('http://', 'https://', $secure_base_url);
     }
+    
     // DESHABILITADO: ajax-counters.js - real-time-updates.js maneja los contadores
     // echo '<script src="' . $secure_base_url . '/public/assets/js/ajax-counters.js?v=' . time() . '"></script>';
     
@@ -684,3 +704,96 @@ endif;
 
 <!-- Script para búsqueda global (siempre cargado) -->
 <script src="public/assets/js/global-search.js?v=<?php echo time(); ?>"></script>
+
+<!-- Script para offcanvas menu móvil -->
+<script src="public/assets/js/offcanvas-menu.js?v=<?php echo time(); ?>"></script>
+
+<!-- Script inline para forzar funcionamiento del offcanvas -->
+<script>
+(function() {
+    
+    // Función para forzar apertura del offcanvas con LayerManager
+    function forceOpenOffcanvas() {
+        
+        // Usar LayerManager si está disponible
+        if (window.LayerManager) {
+            window.LayerManager.openOffcanvas();
+        } else {
+            // Fallback manual
+            const wrapper = document.querySelector('.offcanvas-menu-wrapper');
+            const overlay = document.querySelector('.offcanvas-menu-overlay');
+            
+            if (wrapper && overlay) {
+                wrapper.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+    }
+    
+    // Función para cerrar el offcanvas
+    function forceCloseOffcanvas() {
+        
+        // Usar LayerManager si está disponible
+        if (window.LayerManager) {
+            window.LayerManager.closeOffcanvas();
+        } else {
+            // Fallback manual
+            const wrapper = document.querySelector('.offcanvas-menu-wrapper');
+            const overlay = document.querySelector('.offcanvas-menu-overlay');
+            
+            if (wrapper && overlay) {
+                wrapper.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+    }
+    
+    // Esperar a que el DOM esté listo
+    function init() {
+        const hamburger = document.querySelector('.canvas__open');
+        
+        if (hamburger) {
+            
+            // Agregar evento click
+            hamburger.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                forceOpenOffcanvas();
+            });
+            
+            // También probar con touchstart en móviles
+            hamburger.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                forceOpenOffcanvas();
+            }, { passive: false });
+            
+        }
+        
+        // Eventos para cerrar
+        const closeBtn = document.querySelector('.offcanvas__close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', forceCloseOffcanvas);
+        }
+        
+        const overlay = document.querySelector('.offcanvas-menu-overlay');
+        if (overlay) {
+            overlay.addEventListener('click', forceCloseOffcanvas);
+        }
+    }
+    
+    // Iniciar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    
+    // También probar inmediatamente
+    setTimeout(init, 100);
+})();
+</script>
+
+<!-- Layer Manager - Sistema de coordinación de capas UI -->
+<script src="public/assets/js/layer-manager.js?v=<?= time() ?>"></script>

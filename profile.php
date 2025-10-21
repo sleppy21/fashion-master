@@ -376,7 +376,8 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                         </div>
                         
                         <!-- Stats Cards -->
-                        <div class="profile-stats">
+                        <!-- Oculto en móvil -->
+                        <div class="profile-stats d-none d-md-flex">
                             <div class="stat-item">
                                 <div class="stat-icon">
                                     <i class="fa fa-shopping-bag"></i>
@@ -407,7 +408,7 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                         </div>
                         
                         <!-- Quick Actions -->
-                        <div class="quick-actions">
+                        <div class="quick-actions d-none d-md-flex">
                             <a href="cart.php" class="action-btn">
                                 <i class="fa fa-shopping-cart"></i>
                                 <span>Mi Carrito</span>
@@ -431,7 +432,8 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                         </div>
                         
                         <!-- Quick Section Links - Sutiles -->
-                        <div style="margin-top: 20px; padding: 15px 20px; border-top: 1px solid rgba(201, 166, 124, 0.1);">
+                        <!-- Oculto en móvil -->
+                        <div class="quick-section-links d-none d-md-block" style="margin-top: 20px; padding: 15px 20px; border-top: 1px solid rgba(201, 166, 124, 0.1);">
                             <p style="font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-weight: 600;">Ir a sección</p>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <a href="profile.php?seccion=personal-info" style="font-size: 13px; color: #c9a67c; text-decoration: none; transition: all 0.3s; display: flex; align-items: center; padding: 4px 0;">
@@ -1157,8 +1159,12 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                 baseUrlFromPHP = window.location.origin + basePath;
             }
             
+            // CRÍTICO: Si la página está en HTTPS, forzar BASE_URL a HTTPS
+            if (window.location.protocol === 'https:' && baseUrlFromPHP.startsWith('http://')) {
+                baseUrlFromPHP = baseUrlFromPHP.replace('http://', 'https://');
+            }
+            
             window.BASE_URL = baseUrlFromPHP;
-            console.log('🌐 BASE_URL configurado:', window.BASE_URL);
         })();
     </script>
     <script src="public/assets/js/jquery-3.3.1.min.js"></script>
@@ -1208,11 +1214,9 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
             .then(response => response.json())
             .then(data => {
                 ubigeoDataProfile = data;
-                console.log('✅ Datos de ubigeo cargados:', ubigeoDataProfile.departamentos.length + ' departamentos');
                 cargarDepartamentos();
             })
             .catch(error => {
-                console.error('❌ Error al cargar ubigeo:', error);
             });
         
         // Función para cargar departamentos en el select
@@ -1249,7 +1253,6 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                         this.setCustomValidity('');
                         this.classList.remove('is-invalid');
                         this.classList.add('is-valid');
-                        console.log('✅ Nombre válido:', this.value);
                     } else if (this.value.length > 0) {
                         this.setCustomValidity('El nombre debe tener al menos 3 caracteres');
                         this.classList.remove('is-valid');
@@ -1283,7 +1286,6 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                         // Es RUC - Mostrar y hacer obligatorio Razón Social
                         razonSocialGroup.style.display = 'block';
                         razonSocialInput.required = true;
-                        console.log('📋 RUC detectado - Razón Social requerida');
                     } else {
                         // Es DNI o vacío - Ocultar Razón Social
                         razonSocialGroup.style.display = 'none';
@@ -1314,7 +1316,6 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                             this.setCustomValidity('');
                             this.classList.remove('is-invalid');
                             this.classList.add('is-valid');
-                            console.log('✅ Razón Social válida:', this.value);
                         } else if (this.value.length > 0) {
                             this.setCustomValidity('La razón social debe tener al menos 3 caracteres');
                             this.classList.remove('is-valid');
@@ -1379,7 +1380,6 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                     if (this.value) {
                         this.classList.remove('is-invalid');
                         this.classList.add('is-valid');
-                        console.log('✅ Departamento válido:', this.value);
                     } else {
                         this.classList.remove('is-valid', 'is-invalid');
                     }
@@ -1391,7 +1391,6 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                     if (this.value) {
                         this.classList.remove('is-invalid');
                         this.classList.add('is-valid');
-                        console.log('✅ Provincia válida:', this.value);
                     } else {
                         this.classList.remove('is-valid', 'is-invalid');
                     }
@@ -1403,7 +1402,6 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                     if (this.value) {
                         this.classList.remove('is-invalid');
                         this.classList.add('is-valid');
-                        console.log('✅ Distrito válido:', this.value);
                     } else {
                         this.classList.remove('is-valid', 'is-invalid');
                     }
@@ -1412,7 +1410,6 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
             
             if (selectDepartamento && selectProvincia && selectDistrito) {
                 selectDepartamento.addEventListener('change', function() {
-                    console.log('🔄 Cambio de departamento:', this.value);
                     
                     // Limpiar provincia y distrito
                     selectProvincia.innerHTML = '<option value="">Seleccione departamento primero</option>';
@@ -1424,11 +1421,9 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                     selectDistrito.classList.remove('is-valid', 'is-invalid');
                     
                     if (this.value && ubigeoDataProfile) {
-                        console.log('🔍 Buscando departamento en ubigeoData...');
                         const departamento = ubigeoDataProfile.departamentos.find(d => d.nombre === this.value);
                         
                         if (departamento && departamento.provincias) {
-                            console.log('✅ Encontrado! Cargando', departamento.provincias.length, 'provincias');
                             selectProvincia.innerHTML = '<option value="">Seleccionar provincia</option>';
                             selectProvincia.disabled = false;
                             
@@ -1439,18 +1434,12 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                                 option.dataset.distritos = JSON.stringify(prov.distritos);
                                 selectProvincia.appendChild(option);
                             });
-                        } else {
-                            console.error('❌ No se encontró el departamento o no tiene provincias');
-                        }
-                    } else {
-                        if (!ubigeoDataProfile) {
-                            console.error('❌ ubigeoDataProfile no está cargado!');
-                        }
-                    }
+                        } 
+                    } 
+                      
                 });
                 
                 selectProvincia.addEventListener('change', function() {
-                    console.log('🔄 Cambio de provincia:', this.value);
                     
                     // Limpiar distrito
                     selectDistrito.innerHTML = '<option value="">Seleccione provincia primero</option>';
@@ -1461,9 +1450,7 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                     if (this.value) {
                         const selectedOption = this.options[this.selectedIndex];
                         const distritos = JSON.parse(selectedOption.dataset.distritos || '[]');
-                        
-                        console.log('🔍 Distritos encontrados:', distritos.length);
-                        
+                                                
                         if (distritos && distritos.length > 0) {
                             selectDistrito.innerHTML = '<option value="">Seleccionar distrito</option>';
                             selectDistrito.disabled = false;
@@ -1474,7 +1461,6 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                                 option.textContent = distrito;
                                 selectDistrito.appendChild(option);
                             });
-                            console.log('✅', distritos.length, 'distritos cargados');
                         }
                     }
                 });

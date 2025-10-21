@@ -41,7 +41,6 @@
             
             return { r, g, b };
         } catch (e) {
-            console.warn('⚠️ No se pudo extraer color de la imagen:', e.message);
             // Retornar color por defecto (púrpura)
             return { r: 102, g: 126, b: 234 };
         }
@@ -169,7 +168,6 @@
             }, { once: true });
             
             img.addEventListener('error', function() {
-                console.warn('❌ Error al cargar imagen para shadow dinámico');
             }, { once: true });
         }
     }

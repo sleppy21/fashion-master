@@ -217,6 +217,27 @@
 </button>
 
 <script>
+// ============ CARGAR SCRIPT ESPECÍFICO DE PRODUCTOS ============
+(function() {
+    // Solo cargar si no está ya cargado
+    if (!document.querySelector('script[src*="smooth-table-update.js"]')) {
+        const script = document.createElement('script');
+        script.src = 'public/assets/js/smooth-table-update.js';
+        script.onload = function() {
+            // Disparar evento personalizado cuando el script se cargue
+            window.dispatchEvent(new Event('smoothTableUpdaterLoaded'));
+        };
+        script.onerror = function() {
+        };
+        document.head.appendChild(script);
+    } else {
+        // Si ya está cargado, disparar el evento inmediatamente
+        setTimeout(() => {
+            window.dispatchEvent(new Event('smoothTableUpdaterLoaded'));
+        }, 100);
+    }
+})();
+
 // ============ CONFIGURACIÓN ============
 
 // Esperar a que AppConfig esté disponible y luego inicializar CONFIG
@@ -265,17 +286,8 @@ function toggleMobileFilterButton() {
     const btn = document.getElementById('btnMobileFilters');
     const isMobile = window.innerWidth <= 768;
     
-    console.log('📱 toggleMobileFilterButton:', {
-        btnExists: !!btn,
-        isMobile: isMobile,
-        width: window.innerWidth
-    });
-    
     if (btn) {
         btn.style.display = isMobile ? 'flex' : 'none';
-        console.log('✅ Botón flotante ' + (isMobile ? 'MOSTRADO' : 'OCULTO'));
-    } else {
-        console.error('❌ Botón btnMobileFilters NO encontrado en DOM');
     }
 }
 
@@ -283,22 +295,15 @@ function toggleMobileFilterButton() {
 function initMobileFiltersSidebar() {
     const btnMobileFilters = document.getElementById('btnMobileFilters');
     const sidebar = document.querySelector('.modern-sidebar');
-    
-    console.log('🎯 initMobileFiltersSidebar:', {
-        btnExists: !!btnMobileFilters,
-        sidebarExists: !!sidebar,
-        sidebarClasses: sidebar ? sidebar.className : 'N/A'
-    });
+
     
     if (btnMobileFilters && sidebar) {
-        console.log('✅ Sidebar móvil inicializado correctamente');
         
         // Toggle sidebar al hacer click en el botón
         btnMobileFilters.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             
-            console.log('🔵 Click en botón flotante');
             
             if (sidebar.classList.contains('show-mobile')) {
                 // Cerrar sidebar
@@ -310,7 +315,6 @@ function initMobileFiltersSidebar() {
                     btnMobileFilters.classList.remove('hidden');
                 }, 300);
                 
-                console.log('🔒 Sidebar CERRADO');
             } else {
                 // Abrir sidebar
                 sidebar.classList.add('show-mobile');
@@ -319,7 +323,6 @@ function initMobileFiltersSidebar() {
                 // Ocultar botón con animación
                 btnMobileFilters.classList.add('hidden');
                 
-                console.log('🔓 Sidebar ABIERTO');
             }
         });
         
@@ -336,13 +339,7 @@ function initMobileFiltersSidebar() {
                     btnMobileFilters.classList.remove('hidden');
                 }, 300);
                 
-                console.log('🔒 Sidebar cerrado por click fuera');
             }
-        });
-    } else {
-        console.error('❌ No se pudo inicializar sidebar móvil:', {
-            btnMissing: !btnMobileFilters,
-            sidebarMissing: !sidebar
         });
     }
 }
@@ -350,10 +347,7 @@ function initMobileFiltersSidebar() {
 // Actualizar contador de filtros activos
 function updateFilterCount() {
     const filterCount = document.getElementById('filterCount');
-    if (!filterCount) {
-        console.warn('⚠️ filterCount badge no encontrado');
-        return;
-    }
+
     
     let count = 0;
     
@@ -376,7 +370,6 @@ function updateFilterCount() {
     filterCount.textContent = count;
     filterCount.style.display = count > 0 ? 'flex' : 'none';
     
-    console.log('🔢 Contador de filtros actualizado:', count);
 }
 
 // ============ FUNCIONES LEGACY (mantener compatibilidad) ============
@@ -414,7 +407,6 @@ window.filterProductsFromModal = filterProductsFromModal;
 
 // Limpiar todos los filtros desde el modal
 function clearModalFilters() {
-    console.log('🧹 Limpiando filtros del modal');
     
     // Limpiar búsqueda
     const modalSearch = document.getElementById('modal-search-productos');
@@ -479,7 +471,6 @@ function clearModalFilters() {
     // Recargar productos sin filtros
     clearAllProductFilters();
     
-    console.log('✅ Filtros limpiados');
 }
 window.clearModalFilters = clearModalFilters;
 
@@ -709,8 +700,7 @@ window.loadProductos = loadProducts;
 
 // 🎯 Función para cargar productos con SMOOTH UPDATE (sin recargar tabla)
 async function loadProductsSmooth() {
-    if (!window.smoothTableUpdater) {
-        console.warn('⚠️ smoothTableUpdater no disponible, usando carga normal');
+    if (!window.productosTableUpdater) {
         return loadProducts();
     }
     
@@ -748,9 +738,7 @@ async function loadProductsSmooth() {
         }
         
         const finalUrl = `${CONFIG.apiUrl}?${params}`;
-        
-        console.log('🎯 Cargando productos con smooth update:', finalUrl);
-        
+                
         const response = await fetch(finalUrl);
         const data = await response.json();
         
@@ -758,7 +746,7 @@ async function loadProductsSmooth() {
             // Verificar si hay productos
             if (data.data && data.data.length > 0) {
                 // 🎨 SMOOTH UPDATE: Actualizar productos uno por uno sin recargar la tabla
-                await window.smoothTableUpdater.updateMultipleProducts(data.data);
+                await window.productosTableUpdater.updateMultipleProducts(data.data);
                 
                 // Actualizar estadísticas y paginación
                 updateStats(data.pagination);
@@ -770,7 +758,6 @@ async function loadProductsSmooth() {
                     loadProductDates(data.data);
                 }
                 
-                console.log('✅ Productos actualizados con smooth update');
             } else {
                 // No hay productos, mostrar mensaje
                 const tbody = document.getElementById('productos-table-body');
@@ -792,13 +779,11 @@ async function loadProductsSmooth() {
                 updateStats({ total: 0 });
                 updatePaginationInfo({ total: 0, page: 1, totalPages: 0 });
                 
-                console.log('ℹ️ No se encontraron productos con los filtros actuales');
             }
         } else {
             throw new Error(data.message || 'Error al cargar productos');
         }
     } catch (error) {
-        console.error('❌ Error en loadProductsSmooth:', error);
         // Fallback a carga normal
         loadProducts();
     }
@@ -824,7 +809,6 @@ window.loadProductsSmooth = loadProductsSmooth;
  * DESC: N°1 (ID:7), N°2 (ID:3), N°3 (ID:1)  ← Orden invertido
  */
 function sortTableLocally(column, type) {
-    console.log(`🔄 Ordenando por ${column} (${type}) - Orden: ${currentSortOrder}`);
     
     // Obtener todas las filas de la tabla
     const tbody = document.getElementById('productos-table-body');
@@ -833,7 +817,6 @@ function sortTableLocally(column, type) {
     const rows = Array.from(tbody.querySelectorAll('tr:not(.loading-row):not(.empty-row)'));
     
     if (rows.length === 0) {
-        console.log('⚠️ No hay filas para ordenar');
         return;
     }
     
@@ -852,7 +835,6 @@ function sortTableLocally(column, type) {
     
     const columnIndex = columnIndexMap[column];
     if (columnIndex === undefined) {
-        console.error('❌ Columna no válida:', column);
         return;
     }
     
@@ -893,7 +875,6 @@ function sortTableLocally(column, type) {
             }, index * 20);
         });
         
-        console.log(`✅ Tabla ordenada por N° (${currentSortOrder === 'asc' ? 'Orden original 1→N' : 'Orden invertido N→1'})`);
         return; // Salir de la función
     }
     
@@ -988,7 +969,6 @@ function sortTableLocally(column, type) {
         }, index * 20); // Escalonar animación
     });
     
-    console.log(`✅ Tabla ordenada por ${column} (${currentSortOrder})`);
 }
 
 /**
@@ -1071,7 +1051,6 @@ function initializeSortingEvents() {
         });
     });
     
-    console.log('✅ Eventos de ordenamiento inicializados en', newHeaders.length, 'columnas');
 }
 
 window.initializeSortingEvents = initializeSortingEvents;
@@ -1103,7 +1082,6 @@ async function loadCategories() {
         try {
             data = JSON.parse(responseText);
         } catch (jsonError) {
-            console.error('❌ Error al parsear JSON de categorías:', jsonError);
             throw new Error('Respuesta del servidor no es JSON válido');
         }
         
@@ -1123,7 +1101,6 @@ async function loadCategories() {
             }
         }
     } catch (error) {
-        console.error('❌ Error cargando categorías:', error);
     }
 }
 
@@ -1153,7 +1130,6 @@ async function loadMarcas() {
         try {
             data = JSON.parse(responseText);
         } catch (jsonError) {
-            console.error('❌ Error al parsear JSON de marcas:', jsonError);
             throw new Error('Respuesta del servidor no es JSON válido');
         }
         
@@ -1173,7 +1149,6 @@ async function loadMarcas() {
             }
         }
     } catch (error) {
-        console.error('❌ Error cargando marcas:', error);
     }
 }
 
@@ -1200,16 +1175,7 @@ function loadProductDates(products) {
         
         // Guardar fechas en variable global para Flatpickr
         window.productsDatesArray = fechasUnicas;
-        // console.log('📅 Fechas de productos guardadas:', window.productsDatesArray); // Comentado para reducir spam
-        
-        // ⚡ NO REDIBUJAR - Solo actualizar datos internos (invisible al usuario)
-        // El redibujado solo se hará cuando el usuario abra el calendario
-        // Esto elimina el parpadeo visual durante los filtros
-        
-        // ✅ Flatpickr se actualiza automáticamente cuando se abre gracias a onDayCreate
-        // console.log('✅ Fechas actualizadas silenciosamente sin redibujar');
-        
-        
+     
         // Guardar opción seleccionada actual
         const valorActual = fechaSelect.value;
         
@@ -1234,7 +1200,6 @@ function loadProductDates(products) {
             }
         }
     } catch (error) {
-        console.error('❌ Error cargando fechas:', error);
     }
 }
 
@@ -1244,7 +1209,6 @@ function displayProducts(products, forceCacheBust = false, preserveState = null)
     const isMobile = window.innerWidth <= 768;
     
     if (isMobile) {
-        console.log('📱 Móvil detectado en displayProducts, usando grid');
         displayProductsGrid(products);
         return;
     }
@@ -1339,8 +1303,28 @@ function displayProducts(products, forceCacheBust = false, preserveState = null)
 // Función para obtener clase de stock
 // NOTA: Función getStockClass eliminada - usar calcularEstadoStock() centralizada en smooth-table-update.js
 function getStockClass(producto) {
-    // ✅ Usar función centralizada
-    return calcularEstadoStock(producto).clase;
+    // ✅ Calcular directamente si calcularEstadoStock no está disponible
+    if (typeof calcularEstadoStock === 'function') {
+        const resultado = calcularEstadoStock(producto);
+        return resultado.clase;
+    }
+    
+    // Fallback: calcular inline
+    const stockActual = parseInt(producto.stock_actual_producto) || 0;
+    const stockMinimo = producto.stock_minimo_producto ? parseInt(producto.stock_minimo_producto) : null;
+    
+    // Prioridad 1: Stock en 0 = Agotado (ROJO)
+    if (stockActual === 0) {
+        return 'stock-agotado';
+    }
+    
+    // Prioridad 2: Stock <= stock_minimo = Stock Bajo (NARANJA)
+    if (stockMinimo !== null && stockMinimo > 0 && stockActual <= stockMinimo) {
+        return 'stock-bajo';
+    }
+    
+    // Prioridad 3: Stock > stock_minimo = Normal (VERDE)
+    return 'stock-normal';
 }
 
 // Funciones para género
@@ -1431,11 +1415,9 @@ function filterProducts() {
     currentPage = 1;
     
     // 🎯 SMOOTH UPDATE: Recargar productos con transición suave
-    if (typeof loadProductsSmooth === 'function' && window.smoothTableUpdater) {
-        console.log('✨ Usando smooth update para filtros');
+    if (typeof loadProductsSmooth === 'function' && window.productosTableUpdater) {
         loadProductsSmooth();
     } else {
-        console.warn('⚠️ Smooth update no disponible, usando carga normal');
         loadProducts();
     }
 }
@@ -1461,11 +1443,9 @@ function filterProductsVanilla() {
     currentPage = 1;
     
     // 🎯 SMOOTH UPDATE: Recargar productos con transición suave
-    if (typeof loadProductsSmooth === 'function' && window.smoothTableUpdater) {
-        console.log('✨ Usando smooth update para filtros (vanilla)');
+    if (typeof loadProductsSmooth === 'function' && window.productosTableUpdater) {
         loadProductsSmooth();
     } else {
-        console.warn('⚠️ Smooth update no disponible, usando carga normal (vanilla)');
         loadProducts();
     }
 }
@@ -1511,27 +1491,22 @@ function handleSearchInput() {
 
 // Función para cambiar vista (tabla/grid)
 function toggleView(viewType, skipAnimation = false) {
-    console.log('🔄 Cambiando vista a:', viewType);
     
     // BLOQUEAR cambio a tabla en móvil
     const isMobile = window.innerWidth <= 768;
     if (isMobile && viewType === 'table') {
-        console.warn('⛔ Vista tabla bloqueada en móvil');
         return; // No permitir cambio
     }
     
     // 💾 GUARDAR vista en localStorage
     try {
         localStorage.setItem('products_view_preference', viewType);
-        console.log('💾 Vista guardada en localStorage:', viewType);
     } catch (e) {
-        console.warn('⚠️ No se pudo guardar vista en localStorage:', e);
     }
     
     // LIMPIAR CACHE del smooth updater al cambiar vista
-    if (window.smoothTableUpdater) {
-        window.smoothTableUpdater.clearCache();
-        console.log('🧹 Cache del updater limpiado al cambiar vista');
+    if (window.productosTableUpdater) {
+        window.productosTableUpdater.clearCache();
     }
     
     // CERRAR BURBUJA DE STOCK si está abierta (evita que quede con coordenadas incorrectas)
@@ -1652,8 +1627,21 @@ function displayProductsGrid(products) {
     gridContainer.innerHTML = products.map(producto => {
         const stock = parseInt(producto.stock_actual_producto) || 0;
         
-        // ✅ Usar función centralizada para calcular estado del stock
-        const estadoStock = calcularEstadoStock(producto);
+        // ✅ Usar función centralizada para calcular estado del stock con fallback
+        let estadoStock;
+        if (typeof calcularEstadoStock === 'function') {
+            estadoStock = calcularEstadoStock(producto);
+        } else {
+            // Fallback: calcular inline
+            const stockMinimo = producto.stock_minimo_producto ? parseInt(producto.stock_minimo_producto) : null;
+            if (stock === 0) {
+                estadoStock = { clase: 'stock-agotado', texto: 'Agotado' };
+            } else if (stockMinimo !== null && stockMinimo > 0 && stock <= stockMinimo) {
+                estadoStock = { clase: 'stock-bajo', texto: 'Bajo' };
+            } else {
+                estadoStock = { clase: 'stock-normal', texto: 'Normal' };
+            }
+        }
         
         // Generar HTML de imagen SIEMPRE usando la misma función que la tabla
         const imageUrl = getProductImageUrl(producto);
@@ -1816,7 +1804,6 @@ let productos_cancelableTimeouts = []; // Array para almacenar timeouts cancelab
 function showActionMenu(productId, productName, stock, estado, event) {
     // Si está cerrando suavemente, permitir cancelación y apertura rápida
     if (productos_isClosing) {
-        console.log('Cancelando cierre suave para abrir nuevo menú...');
         cancelSoftClose();
         // Reducir debounce para apertura más rápida después de cancelar
         productos_lastClickTime = Date.now() - productos_clickDebounceDelay + 50;
@@ -1824,18 +1811,9 @@ function showActionMenu(productId, productName, stock, estado, event) {
     
     // Debounce: prevenir clicks muy rápidos
     const currentTime = Date.now();
-    if (currentTime - productos_lastClickTime < productos_clickDebounceDelay) {
-        console.log('Click muy rápido, ignorando...');
-        return;
-    }
+
     productos_lastClickTime = currentTime;
-    
-    // Si está abriendo, no permitir
-    if (productos_isAnimating && !productos_isClosing) {
-        console.log('Ya hay una animación de apertura en curso...');
-        return;
-    }
-    
+
     // CERRAR BURBUJA DE STOCK SI ESTÁ ABIERTA
     const existingBubbles = document.querySelectorAll('.stock-update-bubble');
     existingBubbles.forEach(bubble => {
@@ -1908,14 +1886,12 @@ function openNewMenu(productId, productName, stock, estado, event) {
     }
     
     if (!triggerButton) {
-        console.warn('No se encontró el botón trigger para el producto', productId);
         productos_isAnimating = false;
         return;
     }
     
     // Verificar que el botón aún existe en el DOM
     if (!document.contains(triggerButton)) {
-        console.warn('El botón trigger ya no está en el DOM');
         productos_isAnimating = false;
         return;
     }
@@ -1936,7 +1912,6 @@ function cleanupOrphanedContainers() {
                 container.remove();
             }
         } catch (e) {
-            console.warn('Error eliminando contenedor huérfano:', e);
         }
     });
     
@@ -1948,7 +1923,6 @@ function cleanupOrphanedContainers() {
                 button.remove();
             }
         } catch (e) {
-            console.warn('Error eliminando botón huérfano:', e);
         }
     });
 }
@@ -2195,7 +2169,6 @@ function createAnimatedButton(action, index, angle, radius) {
             try {
                 action.actionFn();
             } catch (err) {
-                console.error('Error ejecutando acción flotante:', err);
             }
         }, 200);
     });
@@ -2580,7 +2553,6 @@ function closeFloatingActionsAnimatedFast() {
                     button.style.opacity = '0';
                     button.style.filter = 'blur(3px)';
                 } catch (e) {
-                    console.warn('Error animando botón:', e);
                 }
             }, index * 30); // 30ms de delay entre cada botón
             
@@ -2608,7 +2580,6 @@ function closeFloatingActionsAnimatedFast() {
                     }
                 }, 150);
             } catch (e) {
-                console.warn('Error animando botón central:', e);
             }
         }, buttonsToClose.length * 30 + 50);
         
@@ -2628,7 +2599,6 @@ function closeFloatingActionsAnimatedFast() {
                 containerToClose.remove();
             }
         } catch (e) {
-            console.warn('Error removiendo contenedor:', e);
         }
         
         productos_activeFloatingContainer = null;
@@ -2652,9 +2622,7 @@ function closeFloatingActionsAnimated() {
 }
 
 // Función para cancelar cierre suave y restaurar botones
-function cancelSoftClose() {
-    console.log('🔄 Cancelando cierre suave...');
-    
+function cancelSoftClose() {    
     // Cancelar todos los timeouts pendientes
     productos_cancelableTimeouts.forEach(timeout => {
         if (timeout) clearTimeout(timeout);
@@ -2683,7 +2651,6 @@ function cancelSoftClose() {
                         button.style.opacity = '1';
                     }, index * 30);
                 } catch (e) {
-                    console.warn('Error restaurando botón:', e);
                 }
             }
         });
@@ -2698,14 +2665,12 @@ function cancelSoftClose() {
                 productos_centerButton.style.opacity = '1';
             }, productos_floatingButtons.length * 30);
         } catch (e) {
-            console.warn('Error restaurando botón central:', e);
         }
     }
     
     // Resetear flag de animación después de restaurar
     setTimeout(() => {
         productos_isAnimating = false;
-        console.log('✅ Restauración completada, listo para nueva acción');
     }, productos_floatingButtons.length * 30 + 300);
 }
 
@@ -2754,7 +2719,6 @@ function forceCloseFloatingActions() {
             try {
                 container.remove();
             } catch (e) {
-                console.warn('Error eliminando contenedor huérfano:', e);
             }
         });
     }, 320); // Retraso de 150ms antes del cierre forzado
@@ -2858,7 +2822,6 @@ async function exportProducts() {
         showNotification(`Excel exportado: ${productos.length} productos`, 'success');
         
     } catch (error) {
-        console.error('Error al exportar:', error);
         showNotification('Error al exportar productos', 'error');
     }
 }
@@ -3054,7 +3017,6 @@ function showStockReport() {
         showNotification(mensaje, 'success');
         
     } catch (error) {
-        console.error('Error al generar reporte:', error);
         showNotification('Error al generar reporte de stock', 'error');
     }
 }
@@ -3150,12 +3112,6 @@ function clearAllProductFilters() {
         header.classList.remove('sorted');
         header.removeAttribute('data-sort-direction');
     });
-    
-    console.log('✅ Estado de ordenamiento limpiado');
-    
-    // Mostrar notificación
-    // showNotification('Filtros limpiados', 'info');
-    
     filterProducts();
 }
 
@@ -3225,39 +3181,27 @@ function toggleSelectAllProducts(checkbox) {
 
 // Función para ver producto (wrapper que llama al parent)
 function viewProduct(id) {
-    console.log('👁️ viewProduct() llamado con ID:', id);
     
     // CERRAR BURBUJA DE STOCK si está abierta
     closeStockBubble();
     
     // Verificar si el ID es válido
     if (!id || id === 'undefined' || id === 'null') {
-        console.error('❌ ID inválido para ver:', id);
         if (typeof showNotification === 'function') {
             // showNotification('Error: ID de producto inválido', 'error');
         }
         return;
     }
-    
-    // Debug: Verificar disponibilidad de funciones
-    console.log('🔍 Buscando showViewProductModal en:', {
-        'window': typeof window.showViewProductModal,
-        'parent': typeof parent?.showViewProductModal,
-        'top': typeof top?.showViewProductModal
-    });
+
     
     // Como NO estamos en iframe, parent === window
     // Buscar directamente en window
     if (typeof window.showViewProductModal === 'function') {
-        console.log('✅ Llamando a window.showViewProductModal');
         window.showViewProductModal(id);
     } else if (typeof window.viewProduct !== viewProduct && typeof window.viewProduct === 'function') {
         // Evitar recursión infinita
-        console.log('✅ Llamando a window.viewProduct (función diferente)');
         window.viewProduct(id);
     } else {
-        console.error('❌ showViewProductModal NO disponible. Funciones disponibles:', Object.keys(window).filter(k => k.includes('Product')));
-        console.warn('⚠️ Usando fallback: abrir en nueva ventana');
         // Fallback: abrir en nueva ventana
         const url = AppConfig ? AppConfig.getViewUrl(`admin/product_modal.php?action=view&id=${id}`) : `/fashion-master/app/views/admin/product_modal.php?action=view&id=${id}`;
         window.open(url, 'ProductView', 'width=900,height=700');
@@ -3294,45 +3238,31 @@ function closeStockBubble() {
             }
         }, 400);
     });
-    
-    console.log('🗑️ Burbujas de stock cerradas');
-}
+    }
 
 // Función para editar producto
 async function editProduct(id) {
-    console.log('🔧 editProduct() llamado con ID:', id);
     
     // CERRAR BURBUJA DE STOCK si está abierta
     closeStockBubble();
     
     // Verificar si el ID es válido
     if (!id || id === 'undefined' || id === 'null') {
-        console.error('❌ ID inválido para editar:', id);
         if (typeof showNotification === 'function') {
             // showNotification('Error: ID de producto inválido', 'error');
         }
         return;
     }
-    
-    // Debug: Verificar disponibilidad de funciones
-    console.log('🔍 Buscando showEditProductModal en:', {
-        'window': typeof window.showEditProductModal,
-        'parent': typeof parent?.showEditProductModal,
-        'top': typeof top?.showEditProductModal
-    });
+
     
     // Como NO estamos en iframe, parent === window
     // Buscar directamente en window
     if (typeof window.showEditProductModal === 'function') {
-        console.log('✅ Llamando a window.showEditProductModal');
         window.showEditProductModal(id);
     } else if (typeof window.editProduct !== editProduct && typeof window.editProduct === 'function') {
         // Evitar recursión infinita
-        console.log('✅ Llamando a window.editProduct (función diferente)');
         window.editProduct(id);
     } else {
-        console.error('❌ showEditProductModal NO disponible. Funciones disponibles:', Object.keys(window).filter(k => k.includes('Product')));
-        console.warn('⚠️ Usando fallback: abrir en nueva ventana');
         // Fallback: abrir en nueva ventana
         const url = AppConfig ? AppConfig.getViewUrl(`admin/product_modal.php?action=edit&id=${id}`) : `/fashion-master/app/views/admin/product_modal.php?action=edit&id=${id}`;
         window.open(url, 'ProductEdit', 'width=900,height=700');
@@ -3344,7 +3274,6 @@ function updateStock(id, currentStock, event) {
     // VERIFICAR SI YA EXISTE UNA BURBUJA ABIERTA PARA ESTE PRODUCTO (TOGGLE)
     const existingBubble = document.querySelector(`.stock-update-bubble[data-product-id="${id}"]`);
     if (existingBubble) {
-        console.log('🔄 Burbuja ya existe para este producto, cerrando (TOGGLE)...');
         closeStockBubble();
         return; // SALIR - No abrir de nuevo
     }
@@ -3418,23 +3347,19 @@ function updateStock(id, currentStock, event) {
         // Verificar si es un botón de la vista grid
         if (triggerButton && triggerButton.classList.contains('product-card-btn')) {
             isGridView = true;
-            console.log('✅ Detectado: Vista Grid desde botón');
         }
         // Si es un botón flotante, ignorar y buscar el botón real
         else if (triggerButton && triggerButton.classList.contains('animated-floating-button')) {
             triggerButton = null; // Resetear para buscar el botón correcto
-            console.log('⚠️ Evento desde botón flotante, buscando botón real...');
         }
         // Si es el btn-menu de la tabla
         else if (triggerButton && triggerButton.classList.contains('btn-menu')) {
             isGridView = false;
-            console.log('✅ Detectado: Vista Tabla desde btn-menu');
         }
     }
     
     // Si aún no tenemos el botón, buscarlo en el DOM por el ID del producto
     if (!triggerButton) {
-        console.log('🔍 Buscando botón en DOM para producto ID:', id);
         
         // Determinar qué vista está visible actualmente
         const tableContainer = document.querySelector('.data-table-wrapper');
@@ -3442,7 +3367,6 @@ function updateStock(id, currentStock, event) {
         const isTableVisible = tableContainer && tableContainer.style.display !== 'none';
         const isGridVisible = gridContainer && gridContainer.style.display !== 'none';
         
-        console.log('📊 Vistas visibles - Tabla:', isTableVisible, 'Grid:', isGridVisible);
         
         // Buscar en la vista VISIBLE primero
         if (isGridVisible) {
@@ -3452,7 +3376,6 @@ function updateStock(id, currentStock, event) {
                 triggerButton = productCard.querySelector('.btn-stock');
                 if (triggerButton) {
                     isGridView = true;
-                    console.log('✅ Encontrado en Grid:', triggerButton);
                 }
             }
         }
@@ -3464,7 +3387,6 @@ function updateStock(id, currentStock, event) {
                 triggerButton = productRow.querySelector('.btn-menu');
                 if (triggerButton) {
                     isGridView = false;
-                    console.log('✅ Encontrado en Tabla:', triggerButton);
                 }
             }
         }
@@ -3475,26 +3397,17 @@ function updateStock(id, currentStock, event) {
         triggerButton = document.querySelector(`[onclick*="showActionMenu(${id}"]`);
         if (triggerButton) {
             isGridView = false;
-            console.log('✅ Encontrado por onclick:', triggerButton);
         }
     }
-    
-    if (!triggerButton) {
-        console.error('❌ No se encontró el botón para el producto', id);
-        return;
-    }
+
     
     // VALIDAR QUE EL BOTÓN ESTÉ VISIBLE (no en una vista oculta)
     const rect = triggerButton.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) {
-        console.error('❌ El botón encontrado está oculto (width/height = 0)');
-        console.error('   Botón:', triggerButton);
-        console.error('   Rect:', rect);
         closeStockBubble(); // Cerrar cualquier burbuja residual
         return;
     }
     
-    console.log('✅ Botón final encontrado:', triggerButton, 'Vista Grid:', isGridView);
     
     // USAR POSICIÓN FIXED (viewport) como los botones flotantes
     const triggerRect = triggerButton.getBoundingClientRect();
@@ -3519,30 +3432,7 @@ function updateStock(id, currentStock, event) {
     // Calcular posición con POSITION FIXED (coordenadas del viewport)
     const bubbleX = centerX + (Math.cos(angle) * radius) - (bubbleSize / 2);
     const bubbleY = centerY + (Math.sin(angle) * radius) - (bubbleSize / 2);
-    
-    // DEBUG: Mostrar valores calculados
-    console.log('📍 Cálculo con POSITION FIXED:', {
-        'Trigger (botón viewport)': { 
-            top: triggerRect.top.toFixed(2), 
-            left: triggerRect.left.toFixed(2),
-            width: triggerRect.width,
-            height: triggerRect.height
-        },
-        'Centro (viewport)': { 
-            centerX: centerX.toFixed(2), 
-            centerY: centerY.toFixed(2) 
-        },
-        'Fórmula': {
-            'cos(π) * 65': (Math.cos(angle) * radius).toFixed(2),
-            'sin(π) * 65': (Math.sin(angle) * radius).toFixed(2),
-            'bubbleSize/2': (bubbleSize / 2)
-        },
-        '🎯 POSICIÓN FINAL (fixed)': { 
-            bubbleX: bubbleX.toFixed(2), 
-            bubbleY: bubbleY.toFixed(2) 
-        }
-    });
-    
+
     // Aplicar estilos - POSICIÓN FIXED (viewport) como botones flotantes - Se expande según dígitos
     stockBubble.style.cssText = `
         position: fixed !important;
@@ -3801,17 +3691,9 @@ function updateStock(id, currentStock, event) {
     
     // Función para guardar
     function saveStock() {
-        if (!stockBubble) {
-            console.error('❌ stockBubble no existe');
-            return;
-        }
-        
+
         const input = stockBubble.querySelector('#stockInput');
-        if (!input) {
-            console.error('❌ input no existe');
-            return;
-        }
-        
+
         const newStock = parseInt(input.value);
         
         if (isNaN(newStock) || newStock < 0 || newStock > 999) {
@@ -3856,11 +3738,9 @@ function updateStock(id, currentStock, event) {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('📦 Respuesta del servidor (update_stock):', data);
             
             if (data.success) {
-                console.log('✅ Stock actualizado exitosamente en BD');
-                console.log('📊 Producto recibido:', data.product);
+             
                 
                 // Mostrar notificación de éxito
                 if (typeof showNotification === 'function') {
@@ -3868,25 +3748,17 @@ function updateStock(id, currentStock, event) {
                 }
                 
                 // Usar actualización SUAVE sin recargar toda la tabla
-                if (window.smoothTableUpdater && data.product) {
-                    console.log('🎯 Usando SmoothTableUpdater para actualizar solo el stock del producto:', id);
-                    console.log('� Verificando smoothTableUpdater:', typeof window.smoothTableUpdater);
-                    
+                if (window.productosTableUpdater && data.product) {
+ 
                     try {
                         // Actualizar solo este producto especificando que cambió el campo 'stock'
                         // Parámetros: (productId, updatedData, changedFields)
-                        window.smoothTableUpdater.updateSingleProduct(data.product.id_producto, data.product, ['stock']);
-                        console.log('✅ Actualización suave completada - solo campo stock');
+                        window.productosTableUpdater.updateSingleProduct(data.product.id_producto, data.product, ['stock']);
                     } catch (error) {
-                        console.error('❌ Error en smoothTableUpdater:', error);
-                        console.log('🔄 Fallback: recargando tabla completa...');
                         loadProducts(true);
                     }
                 } else {
-                    console.warn('⚠️ SmoothTableUpdater no disponible o producto no retornado');
-                    console.warn('   - smoothTableUpdater existe:', !!window.smoothTableUpdater);
-                    console.warn('   - producto recibido:', !!data.product);
-                    console.log('🔄 Fallback: recargando tabla completa...');
+
                     loadProducts(true);
                 }
                 
@@ -3896,7 +3768,6 @@ function updateStock(id, currentStock, event) {
                     if (stockBubble && stockBubble.parentNode) stockBubble.remove();
                 }, 400);
             } else {
-                console.error('❌ Error del servidor:', data.error || 'Error desconocido');
                 if (typeof showNotification === 'function') {
                     showNotification('❌ Error al actualizar stock: ' + (data.error || 'Error desconocido'), 'error');
                 }
@@ -3942,11 +3813,7 @@ function updateStock(id, currentStock, event) {
     
     // Eventos del input
     const input = stockBubble.querySelector('#stockInput');
-    
-    if (!input) {
-        console.error('❌ No se encontró el input de stock');
-        return;
-    }
+
     
     // Guardar con Enter
     input.addEventListener('keydown', function(e) {
@@ -4031,14 +3898,12 @@ async function changeProductEstado(id) {
         const result = await response.json();
         
         if (!response.ok || !result.success) {
-            console.error('Error al obtener datos del producto');
             return;
         }
         
         const currentEstado = result.product.estado;
         const newEstado = currentEstado === 'activo' ? 'inactivo' : 'activo';
         
-        console.log(`Cambiando estado de ${currentEstado} a ${newEstado} para producto ${id}`);
         
         // Cambiar estado directamente sin confirmación
         const updateResponse = await fetch(`${CONFIG.apiUrl}?action=change_estado`, {
@@ -4052,23 +3917,17 @@ async function changeProductEstado(id) {
         const updateResult = await updateResponse.json();
         
         if (updateResponse.ok && updateResult.success) {
-            console.log('Estado cambiado exitosamente');
             
             // Usar actualización suave si está disponible
-            if (window.smoothTableUpdater && updateResult.product) {
-                console.log('🎯 Usando actualización suave para cambiar estado del producto:', id);
-                window.smoothTableUpdater.updateSingleProduct(updateResult.product);
+            if (window.productosTableUpdater && updateResult.product) {
+                window.productosTableUpdater.updateSingleProduct(updateResult.product);
             } else {
-                console.log('⚠️ SmoothTableUpdater no disponible o producto no retornado - usando recarga tradicional');
                 // Recargar lista sin notificaciones
                 loadProducts();
             }
-        } else {
-            console.error('Error al cambiar estado:', updateResult.error);
-        }
+        } 
         
     } catch (error) {
-        console.error('Error en changeProductEstado:', error.message);
     }
 }
 
@@ -4169,17 +4028,12 @@ function initializeProductsModule() {
     let savedView = null;
     try {
         savedView = localStorage.getItem('products_view_preference');
-        if (savedView) {
-            console.log('💾 Vista guardada encontrada:', savedView);
-        }
     } catch (e) {
-        console.warn('⚠️ No se pudo leer localStorage:', e);
     }
     
     // Detectar si es móvil y preparar vista grid ANTES de cargar
     const isMobile = window.innerWidth <= 768;
     if (isMobile) {
-        console.log('📱 Dispositivo móvil detectado, preparando vista grid');
         
         // Actualizar variable global de vista
         window.products_currentView = 'grid';
@@ -4229,7 +4083,6 @@ function initializeProductsModule() {
             }
         });
         
-        console.log('🔒 Botones de vista bloqueados en móvil (solo grid)');
     } else {
         // En desktop, asegurar que los botones estén desbloqueados
         const viewButtons = document.querySelectorAll('.view-btn');
@@ -4246,7 +4099,6 @@ function initializeProductsModule() {
     loadMarcas();
     
     // Inicializar modal de filtros móvil
-    console.log('🔧 Inicializando modal de filtros móvil...');
     toggleMobileFilterButton();
     window.addEventListener('resize', toggleMobileFilterButton);
     
@@ -4256,13 +4108,11 @@ function initializeProductsModule() {
     // En móvil, cargar productos y luego forzar vista grid INSTANTÁNEAMENTE
     if (isMobile) {
         loadProducts().then(() => {
-            console.log('🎯 Productos cargados, ejecutando toggleView(grid) automáticamente');
             toggleView('grid', true); // skipAnimation = true para móvil
         });
     } else {
         // En desktop, restaurar vista guardada o usar tabla por defecto
         if (savedView && (savedView === 'grid' || savedView === 'table')) {
-            console.log('🔄 Restaurando vista guardada:', savedView);
             loadProducts().then(() => {
                 // Usar skipAnimation para carga inicial (más rápido)
                 toggleView(savedView, true);
@@ -4283,7 +4133,6 @@ function initializeProductsModule() {
     const filterFechaText = document.getElementById('filter-fecha-text');
     
     if (filterFecha && typeof flatpickr !== 'undefined') {
-        console.log('📅 Inicializando Flatpickr en botón de fecha');
         
         // Crear input invisible para Flatpickr
         const hiddenInput = document.createElement('input');
@@ -4360,7 +4209,6 @@ function initializeProductsModule() {
             },
             // NO filtrar HASTA que se complete el rango (2 fechas)
             onChange: function(selectedDates, dateStr, instance) {
-                console.log('📅 Fechas seleccionadas:', selectedDates.length, dateStr);
                 
                 // Actualizar hidden input
                 if (filterFechaValue) filterFechaValue.value = dateStr;
@@ -4379,7 +4227,6 @@ function initializeProductsModule() {
                 
                 // FILTRAR SOLO cuando se seleccionen 2 fechas (rango completo)
                 if (selectedDates.length === 2) {
-                    console.log('✅ Rango completo seleccionado, filtrando...');
                     filterProducts();
                 }
             },
@@ -4391,7 +4238,6 @@ function initializeProductsModule() {
                 setTimeout(() => startObserving(), 150);
             },
             onOpen: function() {
-                console.log('📅 Calendario abierto - LIMPIANDO filtros automáticamente');
                 isCalendarOpen = true;
                 filterFecha.classList.add('calendar-open');
                 
@@ -4415,7 +4261,6 @@ function initializeProductsModule() {
                 setTimeout(() => startObserving(), 150);
             },
             onClose: function() {
-                console.log('📅 Calendario cerrado');
                 isCalendarOpen = false;
                 filterFecha.classList.remove('calendar-open');
                 calendarObserver.disconnect();
@@ -4553,7 +4398,6 @@ function initializeProductsModule() {
             }
         });
         
-        console.log('✅ Flatpickr inicializado en botón');
     }
     
     // 2. Flatpickr para filtro de fecha en modal móvil - BOTÓN que abre calendario
@@ -4562,7 +4406,6 @@ function initializeProductsModule() {
     const filterFechaModalText = document.getElementById('modal-filter-fecha-text');
     
     if (filterFechaModal && typeof flatpickr !== 'undefined') {
-        console.log('📅 Inicializando Flatpickr en botón de fecha modal');
         
         // Crear input invisible para Flatpickr
         const hiddenInputModal = document.createElement('input');
@@ -4639,7 +4482,6 @@ function initializeProductsModule() {
             },
             // NO filtrar HASTA que se complete el rango (2 fechas)
             onChange: function(selectedDates, dateStr, instance) {
-                console.log('📅 Fechas modal seleccionadas:', selectedDates.length, dateStr);
                 
                 // Actualizar hidden input
                 if (filterFechaModalValue) filterFechaModalValue.value = dateStr;
@@ -4669,7 +4511,6 @@ function initializeProductsModule() {
                 
                 // FILTRAR SOLO cuando se seleccionen 2 fechas (rango completo)
                 if (selectedDates.length === 2) {
-                    console.log('✅ Rango completo seleccionado en modal, filtrando...');
                     filterProducts();
                 }
             },
@@ -4681,8 +4522,6 @@ function initializeProductsModule() {
                 setTimeout(() => startObservingModal(), 250);
             },
             onOpen: function() {
-                console.log('📅 Calendario modal abierto - LIMPIANDO filtros automáticamente');
-                isModalCalendarOpen = true;
                 filterFechaModal.classList.add('calendar-open');
                 
                 // ⚡ REDIBUJAR SILENCIOSAMENTE para actualizar marcas (solo cuando se abre)
@@ -4709,7 +4548,6 @@ function initializeProductsModule() {
                 setTimeout(() => startObservingModal(), 250);
             },
             onClose: function() {
-                console.log('📅 Calendario modal cerrado');
                 isModalCalendarOpen = false;
                 filterFechaModal.classList.remove('calendar-open');
                 calendarObserverModal.disconnect();
@@ -4748,7 +4586,6 @@ function initializeProductsModule() {
             }
         });
         
-        console.log('✅ Flatpickr modal inicializado en botón');
     }
     
     // 3. Agregar animaciones AOS a elementos
@@ -4769,7 +4606,6 @@ function initializeProductsModule() {
         }
     }
     
-    console.log('✅ Librerías modernas inicializadas en Productos');
     
     // ========================================
     // LISTENER PARA CAMBIOS DE TAMAÑO (Mobile ↔ Desktop)
@@ -4784,7 +4620,6 @@ function initializeProductsModule() {
             
             if (isMobileNow) {
                 // Si cambió a móvil, forzar grid y bloquear botones
-                console.log('📱 Cambio a móvil detectado');
                 window.products_currentView = 'grid';
                 
                 viewButtons.forEach(btn => {
@@ -4800,7 +4635,6 @@ function initializeProductsModule() {
                 toggleView('grid');
             } else {
                 // Si cambió a desktop, desbloquear botones
-                console.log('💻 Cambio a desktop detectado');
                 
                 viewButtons.forEach(btn => {
                     btn.disabled = false;
@@ -4831,9 +4665,30 @@ function initializeProductsModule() {
     setTimeout(() => {
         if (typeof initializeSortingEvents === 'function') {
             initializeSortingEvents();
-            console.log('✅ Eventos de ordenamiento inicializados en módulo');
         }
     }, 200);
+    
+    
+    const initSmoothUpdater = () => {
+        // 🔥 SIEMPRE destruir instancia anterior antes de crear nueva
+        if (window.productosTableUpdater) {
+            if (typeof window.productosTableUpdater.destroy === 'function') {
+                window.productosTableUpdater.destroy();
+            }
+            window.productosTableUpdater = null;
+        }
+        
+        // ✅ Crear NUEVA instancia SOLO si la clase está disponible
+        if (typeof ProductosTableUpdater !== 'undefined') {
+            window.productosTableUpdater = new ProductosTableUpdater();
+        }
+    };
+    
+    // Escuchar el evento de carga del script
+    window.addEventListener('smoothTableUpdaterLoaded', initSmoothUpdater, { once: true });
+    
+    // Fallback: intentar inicializar inmediatamente si ya está disponible
+    setTimeout(initSmoothUpdater, 300);
     
     // Función de debugging para verificar funciones disponibles
     window.debugProductsFunctions = function() {
@@ -4983,19 +4838,16 @@ window.currentPage = currentPage;
 
 // Función para mostrar burbuja de confirmación de eliminación
 function showDeleteConfirmation(productId, productName) {
-    console.log('🗑️ showDeleteConfirmation llamada:', productId, productName);
     
     // Verificar si ya existe un modal
     const existingOverlay = document.querySelector('.delete-confirmation-overlay');
     if (existingOverlay) {
-        console.log('❌ Modal ya existe, eliminándolo primero');
         existingOverlay.remove();
     }
     
     // Crear overlay con estilos profesionales
     const overlay = document.createElement('div');
     overlay.className = 'delete-confirmation-overlay';
-    console.log('✅ Overlay creado');
     
     overlay.innerHTML = `
         <div class="delete-confirmation-modal">
@@ -5190,11 +5042,9 @@ function showDeleteConfirmation(productId, productName) {
     `;
     document.head.appendChild(style);
     
-    console.log('📝 Estilos agregados');
     
     // Agregar al DOM
     document.body.appendChild(overlay);
-    console.log('🎯 Modal agregado al DOM');
     
     // Forzar reflow para que las animaciones funcionen
     overlay.offsetHeight;
@@ -5209,7 +5059,6 @@ function showDeleteConfirmation(productId, productName) {
             deleteModal.classList.add('show');
         }
         
-        console.log('✨ Clase "show" agregada - animación iniciada');
     });
     
     // Focus en el input después de la animación
@@ -5217,7 +5066,6 @@ function showDeleteConfirmation(productId, productName) {
         const input = document.getElementById('deleteConfirmInput');
         if (input) {
             input.focus();
-            console.log('⌨️ Focus en input');
         }
     }, 350);
     
@@ -5245,7 +5093,6 @@ function showDeleteConfirmation(productId, productName) {
     overlay.addEventListener('click', function(e) {
         // Solo cerrar si se hace click directamente en el overlay, no en el modal
         if (e.target === overlay) {
-            console.log('👆 Click en overlay detectado - cerrando modal');
             closeDeleteConfirmation();
         }
     });
@@ -5261,7 +5108,6 @@ function showDeleteConfirmation(productId, productName) {
 
 // Función para cerrar la confirmación con animación
 function closeDeleteConfirmation() {
-    console.log('🔴 Cerrando modal de eliminación con animación');
     const overlay = document.querySelector('.delete-confirmation-overlay');
     if (overlay) {
         // Agregar clases de salida para animación
@@ -5276,7 +5122,6 @@ function closeDeleteConfirmation() {
         // Remover del DOM después de que termine la animación
         setTimeout(() => {
             overlay.remove();
-            console.log('✅ Modal eliminado del DOM');
         }, 250); // Duración de la animación fadeOut actualizada
     }
 }
@@ -5324,36 +5169,48 @@ function confirmDelete(productId, productName) {
     .then(data => {
         closeDeleteConfirmation();
         
+        
         if (data.success) {
             // Mostrar notificación de éxito
-            if (typeof showNotification === 'function') {
-                // showNotification(`Producto "${productName}" eliminado exitosamente`, 'success');
-            }
+            showNotification(`Producto "${productName}" eliminado exitosamente`, 'success');
             
             // Usar actualización suave si está disponible
-            if (window.smoothTableUpdater) {
-                console.log('🎯 Usando actualización suave para eliminar producto:', productId);
-                window.smoothTableUpdater.removeProduct(productId);
+            if (window.productosTableUpdater && typeof window.productosTableUpdater.removeProduct === 'function') {
+                
+                // Asegurar que se ejecute después de que se cierre el modal
+                setTimeout(() => {
+                    window.productosTableUpdater.removeProduct(productId).then(() => {
+                        
+                        // Actualizar contadores y stats después de eliminar
+                        if (typeof updateStats === 'function') {
+                            // Restar 1 del total
+                            const totalElement = document.getElementById('total-products');
+                            if (totalElement) {
+                                const currentTotal = parseInt(totalElement.textContent) || 0;
+                                totalElement.textContent = Math.max(0, currentTotal - 1);
+                            }
+                            
+                            const showingEndElement = document.getElementById('showing-end-products');
+                            if (showingEndElement) {
+                                const currentShowing = parseInt(showingEndElement.textContent) || 0;
+                                showingEndElement.textContent = Math.max(0, currentShowing - 1);
+                            }
+                        }
+                    }).catch(err => {
+                        loadProducts(true); // Fallback: recargar
+                    });
+                }, 100);
             } else {
-                console.log('⚠️ SmoothTableUpdater no disponible - usando recarga tradicional');
                 // Actualizar lista inmediatamente sin reload
                 loadProducts(true);
             }
         } else {
-            if (typeof showNotification === 'function') {
-                // showNotification('Error al eliminar producto: ' + (data.error || 'Error desconocido'), 'error');
-            } else {
-                // alert('Error al eliminar producto: ' + (data.error || 'Error desconocido'));
-            }
+            showNotification('Error al eliminar producto: ' + (data.error || 'Error desconocido'), 'error');
         }
     })
     .catch(error => {
         closeDeleteConfirmation();
-        if (typeof showNotification === 'function') {
-            // showNotification('Error de conexión al eliminar producto', 'error');
-        } else {
-            // alert('Error de conexión al eliminar producto');
-        }
+        showNotification('Error de conexión al eliminar producto', 'error');
     });
 }
 
@@ -5374,11 +5231,9 @@ function toggleProductStatus(productId, currentStatus) {
     .then(data => {
         if (data.success) {
             // Usar actualización suave si está disponible
-            if (window.smoothTableUpdater && data.product) {
-                console.log('🎯 Usando actualización suave para cambiar estado del producto:', productId);
-                window.smoothTableUpdater.updateSingleProduct(data.product);
+            if (window.productosTableUpdater && data.product) {
+                window.productosTableUpdater.updateSingleProduct(data.product);
             } else {
-                console.log('⚠️ SmoothTableUpdater no disponible o producto no retornado - usando recarga tradicional');
                 // Actualizar lista inmediatamente sin reload
                 loadProducts(true);
             }
@@ -5401,14 +5256,12 @@ function toggleProductStatus(productId, currentStatus) {
 
 // Función wrapper para eliminar producto
 function deleteProduct(productId, productName) {
-    console.log('🚀 deleteProduct wrapper llamada:', productId, productName);
     showDeleteConfirmation(productId, productName || 'Producto');
 }
 
 // ============ FUNCIÓN PARA MOSTRAR IMAGEN EN TAMAÑO REAL ============
 
 function showImageFullSize(imageUrl, productName) {
-    console.log('🖼️ Mostrando imagen en tamaño real:', imageUrl);
     
     // Crear overlay con fondo transparente
     const overlay = document.createElement('div');
@@ -5503,7 +5356,6 @@ setInterval(() => {
             try {
                 container.remove();
             } catch (e) {
-                console.warn('Error limpiando contenedor huérfano:', e);
             }
         });
         // Resetear variables globales
@@ -5722,9 +5574,16 @@ function initializeDragScroll() {
 
 // ===== FUNCIÓN DE DESTRUCCIÓN DEL MÓDULO DE PRODUCTOS =====
 window.destroyProductosModule = function() {
-    console.log('🗑️ Destruyendo módulo de productos...');
     
     try {
+        // 🔥 0. DESTRUIR UPDATER DE PRODUCTOS PRIMERO
+        if (window.productosTableUpdater) {
+            if (typeof window.productosTableUpdater.destroy === 'function') {
+                window.productosTableUpdater.destroy();
+            }
+            window.productosTableUpdater = null;
+        }
+        
         // 1. Limpiar variable de estado de carga
         if (typeof isLoading !== 'undefined') {
             isLoading = false;
@@ -5805,7 +5664,6 @@ window.destroyProductosModule = function() {
         }
         
         // 9. RESETEAR VISTA A TABLA (estado inicial)
-        console.log('🔄 Reseteando vista a tabla (estado inicial)...');
         
         // Remover vista grid si existe
         const gridContainer = document.querySelector('.products-grid');
@@ -5833,17 +5691,14 @@ window.destroyProductosModule = function() {
             localStorage.removeItem('productos_view_mode');
         } catch (e) {}
         
-        console.log('✅ Vista reseteada a tabla');
         
         // 10. Remover clases de body que puedan interferir
         document.body.classList.remove('modal-open');
         document.body.style.overflow = '';
         document.body.style.paddingRight = '';
         
-        console.log('✅ Módulo de productos destruido correctamente');
         
     } catch (error) {
-        console.error('❌ Error al destruir módulo de productos:', error);
     }
 };
 
@@ -6806,4 +6661,5 @@ tbody tr.sorting {
     text-align: center;
 }
 </style>
+
 

@@ -42,7 +42,6 @@
             }
             
         } catch (error) {
-            console.error('❌ Error al actualizar contadores:', error);
         }
     }
     

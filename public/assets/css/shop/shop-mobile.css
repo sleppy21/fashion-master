@@ -1,0 +1,336 @@
+/* ========================================
+   SHOP MOBILE OPTIMIZATION
+   Optimización específica para vista móvil
+   2 productos por fila, diseño compacto
+   ======================================== */
+
+/* Solo aplicar en móviles */
+@media only screen and (max-width: 767px) {
+    
+    /* ==========================================
+       FORZAR 2 COLUMNAS - MÁXIMA PRIORIDAD
+       ========================================== */
+    
+    /* Resetear y forzar grid de 2 columnas */
+    .shop-page .products-grid-modern .row,
+    .products-grid-modern .row,
+    .row.products-row {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        margin: 0 -8px !important;
+    }
+    
+    /* Forzar 50% de ancho en TODAS las tarjetas */
+    .shop-page .col-6,
+    .products-grid-modern .col-6,
+    .products-grid-modern .row > div[class*="col"],
+    .row > .col-6,
+    .col-6,
+    div.col-6 {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+        width: 50% !important;
+        padding: 0 8px !important;
+        margin-bottom: 16px !important;
+    }
+    
+    /* Override de cualquier otra clase de columna */
+    .col-lg-4,
+    .col-md-6,
+    .col-sm-6,
+    [class*="col-lg"],
+    [class*="col-md"],
+    [class*="col-sm"] {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+        width: 50% !important;
+    }
+    
+    /* ==========================================
+       GRID DE PRODUCTOS - 2 COLUMNAS
+       ========================================== */
+    .products-grid-modern .row {
+        margin: 0 -8px !important;
+    }
+    
+    .products-grid-modern .row > [class*='col-'] {
+        padding: 0 8px !important;
+        margin-bottom: 16px !important;
+    }
+    
+    /* ==========================================
+       TARJETA DE PRODUCTO - COMPACTA
+       ========================================== */
+    .product-card-modern {
+        border-radius: 12px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+    }
+    
+    .product-card-modern:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12) !important;
+    }
+    
+    /* ==========================================
+       IMAGEN - MÁS COMPACTA
+       ========================================== */
+    .product-image-wrapper {
+        padding-top: 130% !important; /* Ratio más alto para móvil */
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    .product-image {
+        object-fit: cover !important;
+    }
+    
+    /* ==========================================
+       BADGES - MÁS PEQUEÑOS
+       ========================================== */
+    .product-badges {
+        top: 8px !important;
+        left: 8px !important;
+        gap: 4px !important;
+    }
+    
+    .badge-modern {
+        font-size: 9px !important;
+        padding: 4px 8px !important;
+        border-radius: 4px !important;
+        letter-spacing: 0.3px !important;
+    }
+    
+    .badge-sale {
+        font-size: 10px !important;
+        font-weight: 800 !important;
+    }
+    
+    /* ==========================================
+       BOTONES HOVER - SIEMPRE VISIBLES EN MÓVIL
+       ========================================== */
+    .product-card-modern .product__hover {
+        bottom: 15px !important;
+    }
+    
+    .product-card-modern .product__hover li {
+        margin-right: 6px !important;
+        /* Hacer visibles sin hover en móvil */
+        top: 0 !important;
+        opacity: 1 !important;
+        transition: none !important;
+    }
+    
+    .product-card-modern .product__hover li a {
+        width: 36px !important;
+        height: 36px !important;
+        line-height: 36px !important;
+        font-size: 14px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+    }
+    
+    .product-card-modern .product__hover li a:active {
+        transform: scale(0.9) !important;
+    }
+    
+    /* ==========================================
+       INFORMACIÓN DEL PRODUCTO - COMPACTA
+       ========================================== */
+    .product-info {
+        padding: 10px 12px 12px !important;
+        gap: 2px !important;
+    }
+    
+    /* Categoría más pequeña */
+    .product-category {
+        font-size: 9px !important;
+        letter-spacing: 0.5px !important;
+        margin-bottom: 2px !important;
+    }
+    
+    /* Nombre del producto */
+    .product-name {
+        font-size: 13px !important;
+        line-height: 1.3 !important;
+        min-height: 34px !important;
+        margin-bottom: 4px !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+    }
+    
+    /* ==========================================
+       RATING - MÁS COMPACTO
+       ========================================== */
+    .product-rating {
+        margin: 2px 0 !important;
+        gap: 4px !important;
+    }
+    
+    .stars {
+        gap: 0 !important;
+    }
+    
+    .star {
+        font-size: 11px !important;
+    }
+    
+    .rating-count {
+        font-size: 10px !important;
+    }
+    
+    /* ==========================================
+       PRECIO - OPTIMIZADO PARA MÓVIL
+       ========================================== */
+    .product-price {
+        gap: 6px !important;
+        margin-top: 4px !important;
+        padding: 4px 0 !important;
+        flex-wrap: nowrap !important;
+        align-items: baseline !important;
+    }
+    
+    .price-current {
+        font-size: 18px !important;
+        font-weight: 800 !important;
+        color: #1a1a1a !important;
+        line-height: 1 !important;
+    }
+    
+    .price-original {
+        font-size: 13px !important;
+        font-weight: 500 !important;
+    }
+    
+    /* ==========================================
+       STOCK WARNING - COMPACTO
+       ========================================== */
+    .stock-warning {
+        padding: 5px 8px !important;
+        font-size: 9px !important;
+        border-left-width: 2px !important;
+        border-radius: 4px !important;
+        gap: 4px !important;
+        margin-top: 6px !important;
+    }
+    
+    .stock-warning i {
+        font-size: 10px !important;
+    }
+    
+    /* ==========================================
+       DARK MODE EN MÓVIL
+       ========================================== */
+    body.dark-mode .price-current {
+        color: #f5f5f5 !important;
+        font-weight: 900 !important;
+    }
+    
+    body.dark-mode .product-name {
+        color: #e5e7eb !important;
+    }
+    
+    /* ==========================================
+       OPTIMIZACIONES DE PERFORMANCE
+       ========================================== */
+    .product-card-modern {
+        -webkit-overflow-scrolling: touch !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+    }
+    
+    .product-image {
+        will-change: transform !important;
+    }
+    
+    /* Desactivar animaciones pesadas en móvil */
+    .product-card-modern:hover .product-image {
+        transform: scale(1.03) !important; /* Menos zoom */
+    }
+    
+    /* ==========================================
+       AJUSTES PARA MÓVILES MUY PEQUEÑOS
+       ========================================== */
+    @media only screen and (max-width: 380px) {
+        .products-grid-modern .row {
+            margin: 0 -6px !important;
+        }
+        
+        .products-grid-modern .row > [class*='col-'] {
+            padding: 0 6px !important;
+            margin-bottom: 12px !important;
+        }
+        
+        .product-name {
+            font-size: 12px !important;
+            min-height: 32px !important;
+        }
+        
+        .price-current {
+            font-size: 16px !important;
+        }
+        
+        .price-original {
+            font-size: 12px !important;
+        }
+        
+        .product-info {
+            padding: 8px 10px 10px !important;
+        }
+        
+        .product-card-modern .product__hover li a {
+            width: 32px !important;
+            height: 32px !important;
+            line-height: 32px !important;
+            font-size: 13px !important;
+        }
+        
+        .product-card-modern .product__hover li {
+            margin-right: 4px !important;
+        }
+    }
+    
+    /* ==========================================
+       GRID ESPECÍFICO PARA 2 COLUMNAS - FORZADO
+       ========================================== */
+    
+    /* Forzar 2 columnas en el grid de productos */
+    .products-grid-modern .row > .col-6,
+    .products-grid-modern .row > [class*="col-6"],
+    .row > .col-6,
+    [class*="col-6"] {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+        width: 50% !important;
+    }
+    
+    /* Asegurar que las tarjetas ocupen todo el espacio */
+    .product-card-modern {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    /* Forzar flexbox en el row */
+    .products-grid-modern .row,
+    .row {
+        display: flex !important;
+        flex-wrap: wrap !important;
+    }
+}
+
+/* ==========================================
+   LANDSCAPE MODE EN MÓVIL
+   ========================================== */
+@media only screen and (max-width: 767px) and (orientation: landscape) {
+    .product-image-wrapper {
+        padding-top: 110% !important; /* Menos altura en landscape */
+    }
+    
+    .product-name {
+        font-size: 12px !important;
+        min-height: 30px !important;
+    }
+    
+    .price-current {
+        font-size: 16px !important;
+    }
+}

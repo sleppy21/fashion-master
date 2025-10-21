@@ -281,17 +281,24 @@ body:not(.user-is-admin) .header__menu ul li.admin-menu-item {
     }
 }
 
-/* MÓVILES GRANDES (576px - 767px) */
+/* MÓVILES GRANDES (576px - 767px) - ULTRA COMPACTO */
 @media (max-width: 767px) and (min-width: 576px) {
+    .header {
+        padding: 4px 0 !important;
+    }
+    
     .header .row {
         flex-wrap: wrap;
+        gap: 4px !important;
+        min-height: 40px !important;
     }
     
     /* Logo ocupa menos espacio */
     .header .col-xl-3,
     .header .col-lg-2 {
-        flex: 0 0 80px;
-        max-width: 80px;
+        flex: 0 0 60px;
+        max-width: 60px;
+        display: none !important; /* Ocultar logo en móvil para ganar espacio */
     }
     
     /* Header right se ajusta */
@@ -301,7 +308,7 @@ body:not(.user-is-admin) .header__menu ul li.admin-menu-item {
         max-width: 100%;
     }
     
-    /* Menú se mueve a segunda fila pero sigue visible */
+    /* Menú se mueve a segunda fila pero más compacto */
     .header .col-xl-6,
     .header .col-lg-7 {
         flex: 1 1 100%;
@@ -309,32 +316,44 @@ body:not(.user-is-admin) .header__menu ul li.admin-menu-item {
     }
     
     .header__menu {
-        padding: 8px 0;
+        padding: 4px 0 !important;
     }
     
     .header__menu ul {
-        gap: clamp(8px, 2vw, 15px);
+        gap: 8px !important;
         justify-content: center;
         flex-wrap: wrap;
     }
     
+    .header__menu ul li {
+        height: 32px !important;
+    }
+    
     .header__menu ul li a {
-        font-size: 12px;
-        padding: 4px 8px;
+        font-size: 11px !important;
+        padding: 0 8px !important;
+        height: 32px !important;
+        line-height: 32px !important;
     }
     
     .header__right {
-        padding: 8px 0;
-        gap: 6px;
+        padding: 4px 0 !important;
+        gap: 6px !important;
     }
     
     .header__right__widget {
-        gap: 6px;
+        gap: 6px !important;
+    }
+    
+    .header__right__widget li {
+        height: 32px !important;
     }
     
     .header__right__widget li a,
     .header__right__widget li span {
-        font-size: 16px;
+        font-size: 16px !important;
+        width: 32px !important;
+        height: 32px !important;
     }
     
     .canvas__open {
@@ -342,13 +361,39 @@ body:not(.user-is-admin) .header__menu ul li.admin-menu-item {
     }
     
     .header-user-avatar {
-        width: 32px;
-        height: 32px;
+        width: 32px !important;
+        height: 32px !important;
+    }
+    
+    .header-user-avatar .avatar-image,
+    .header-user-avatar .avatar-initial {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 14px !important;
+    }
+    
+    /* Badges más pequeños */
+    .header__right__widget li a .tip {
+        font-size: 10px !important;
+        min-width: 18px !important;
+        height: 18px !important;
+        padding: 0 4px !important;
+        top: -4px !important;
+        right: -4px !important;
     }
 }
 
-/* MÓVILES PEQUEÑOS (menos de 576px) - USAR HAMBURGUESA */
+/* MÓVILES PEQUEÑOS (menos de 576px) - USAR HAMBURGUESA - ULTRA COMPACTO */
 @media (max-width: 575px) {
+    .header {
+        padding: 4px 0 !important;
+    }
+    
+    .header .row {
+        min-height: 40px !important;
+        gap: 4px !important;
+    }
+    
     /* Ocultar menú principal y mostrar hamburguesa */
     .header .col-xl-6,
     .header .col-lg-7 {
@@ -357,11 +402,19 @@ body:not(.user-is-admin) .header__menu ul li.admin-menu-item {
     
     .canvas__open {
         display: block !important;
+        width: 32px !important;
+        height: 32px !important;
+        line-height: 32px !important;
+        font-size: 18px !important;
+        top: 4px !important;
+        right: 4px !important;
+        border-radius: 6px !important;
     }
     
     .header .col-xl-3,
     .header .col-lg-2 {
-        flex: 0 0 60px;
+        flex: 0 0 40px;
+        display: none !important; /* Ocultar logo en móvil */
     }
     
     .header .col-lg-3 {
@@ -369,35 +422,72 @@ body:not(.user-is-admin) .header__menu ul li.admin-menu-item {
     }
     
     .header__right {
-        gap: 4px;
-        padding: 8px 0;
+        gap: 4px !important;
+        padding: 4px 0 !important;
     }
     
     .header__right__widget {
-        gap: 4px;
+        gap: 4px !important;
+    }
+    
+    .header__right__widget li {
+        height: 32px !important;
     }
     
     .header__right__widget li a,
     .header__right__widget li span {
-        font-size: 14px;
+        font-size: 15px !important;
+        width: 32px !important;
+        height: 32px !important;
+    }
+    
+    .header__right__widget li a i,
+    .header__right__widget li span i {
+        font-size: 15px !important;
     }
     
     .header-user-avatar {
-        width: 28px;
-        height: 28px;
+        width: 32px !important;
+        height: 32px !important;
     }
     
-    /* Reducir algunos iconos en móvil pequeño */
+    .header-user-avatar .avatar-image,
+    .header-user-avatar .avatar-initial {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 14px !important;
+    }
+    
+    /* Badges más pequeños */
     .header__right__widget li:not(.user-avatar-btn-container) a .tip {
-        font-size: 12px !important;
-        min-width: 22px !important;
-        height: 22px !important;
-        line-height: 1 !important;
+        font-size: 9px !important;
+        min-width: 16px !important;
+        height: 16px !important;
+        line-height: 16px !important;
+        padding: 0 4px !important;
         background: #ca1515 !important;
         color: white !important;
         font-weight: 700 !important;
-        border-radius: 11px !important;
-        box-shadow: 0 2px 4px rgba(202, 21, 21, 0.4) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 4px rgba(202, 21, 21, 0.3) !important;
+        top: -4px !important;
+        right: -4px !important;
+    }
+    
+    /* Botón de login más pequeño */
+    .btn-login-header {
+        font-size: 10px !important;
+        padding: 4px 8px !important;
+        height: 28px !important;
+        line-height: 20px !important;
+    }
+    
+    /* Avatar status dot más pequeño */
+    .avatar-status-dot {
+        width: 8px !important;
+        height: 8px !important;
+        bottom: 0 !important;
+        right: 0 !important;
     }
 }
 

@@ -5,10 +5,6 @@
  */
 
 window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
-    console.log('═══════════════════════════════════════════════');
-    console.log('🚀 ANIMACIÓN CON TRACKING EN TIEMPO REAL');
-    console.log('═══════════════════════════════════════════════');
-    console.log('📸 URL recibida:', avatarUrl);
     
     // ENCONTRAR ELEMENTOS
     const $profileContainer = $('.profile-sidebar .profile-avatar').first();
@@ -16,7 +12,6 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
     const $headerContainer = $('.header-user-avatar').first();
     
     if (!$profileContainer.length || !$headerContainer.length) {
-        console.error('❌ Elementos no encontrados');
         if (callback) callback();
         return;
     }
@@ -49,20 +44,16 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
     // POSICIONES INICIALES
     const initialPos = getRealTimePositions();
     
-    console.log('📍 Posición ORIGEN:', initialPos.source);
-    console.log('📍 Posición DESTINO:', initialPos.dest);
     
     // USAR LA URL QUE SE PASÓ COMO PARÁMETRO (no leer del DOM)
     let currentImageUrl = avatarUrl;
     
-    console.log('🖼️ URL de imagen a usar:', currentImageUrl);
     
     // Pre-cargar la imagen para asegurar que esté lista
     const preloadImg = new Image();
     preloadImg.crossOrigin = 'anonymous';
     preloadImg.src = currentImageUrl;
     
-    console.log('⏳ Verificando si la imagen está lista...');
     
     // Variable para guardar el color dominante
     let imageShadow = '0 0 15px rgba(0,0,0,0.25), 0 0 30px rgba(0,0,0,0.15)'; // Shadow circular muy sutil
@@ -70,7 +61,6 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
     
     // Esperar a que la imagen se cargue antes de crear el clon
     preloadImg.onload = function() {
-        console.log('✅ Imagen confirmada lista para animación');
         
         // EXTRAER COLOR DOMINANTE DE LA IMAGEN
         try {
@@ -108,18 +98,14 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
             // Crear shadow con el color extraído (CIRCULAR con blur-radius) - MUY SUTIL
             imageShadow = `0 0 15px rgba(${r}, ${g}, ${b}, 0.25), 0 0 30px rgba(${r}, ${g}, ${b}, 0.15)`;
             
-            console.log(`🎨 Color extraído: rgb(${r}, ${g}, ${b})`);
-            console.log(`✨ Shadow circular aplicado: ${imageShadow}`);
             
         } catch (e) {
-            console.warn('⚠️ No se pudo extraer color, usando shadow por defecto');
         }
         
         createAndAnimateClone();
     };
     
     preloadImg.onerror = function() {
-        console.warn('⚠️ Error al verificar imagen, continuando de todos modos');
         createAndAnimateClone();
     };
     
@@ -157,7 +143,6 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
     
     $flyingAvatar.append($img);
     $('body').append($flyingAvatar);
-    console.log('✅ Avatar volador creado con IMG real:', currentImageUrl);
     
     // NO CREAR OVERLAY OSCURO - Se eliminó para que el fondo no cambie
     
@@ -177,7 +162,6 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
     );
     const duration = Math.min(1200, Math.max(800, distance * 0.8)); // Más rápida (reducido de 1.2)
     
-    console.log(`✈️ Distancia: ${Math.round(distance)}px | Duración: ${duration}ms`);
     
     // ANIMACIÓN CON REQUEST ANIMATION FRAME
     let startTime = null;
@@ -228,7 +212,6 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
     
     // FUNCIÓN DE FINALIZACIÓN
     function finalizarAnimacion() {
-        console.log('🎯 ATERRIZAJE COMPLETADO');
         
         // Primero hacer que el clon se fusione visualmente
         $flyingAvatar.css({
@@ -249,8 +232,6 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
             const $headerAvatar = $headerContainer.find('.avatar-image');
             const newImageUrl = avatarUrl + '?t=' + Date.now();
             
-            $headerAvatar.off('load').one('load', function() {
-                console.log('✅ Nueva imagen cargada en header');
                 
                 // NO aplicar shadow aquí - ya se aplicó desde avatarShadowUpdated
                 // Solo asegurarnos de que tenga el data-shadow-color
@@ -262,13 +243,11 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
                     this.dataset.shadowColor = `${r}, ${g}, ${b}`;
                     this.dataset.shadowApplied = 'true';
                     
-                    console.log(`📝 data-shadow-color guardado en header: rgb(${r}, ${g}, ${b})`);
                 }
                 
                 // ACTUALIZAR TAMBIÉN EL AVATAR DEL MODAL CON SU SHADOW
                 const $modalAvatar = $('#user-account-modal .modal-avatar-img');
                 if ($modalAvatar.length > 0) {
-                    console.log('🔄 Actualizando avatar en modal...');
                     $modalAvatar.attr('src', newImageUrl);
                     
                     // Aplicar shadow al modal también
@@ -282,7 +261,6 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
                             'box-shadow': `0 8px 24px rgba(${r}, ${g}, ${b}, 0.35)`
                         });
                         
-                        console.log(`✨ Shadow aplicado al modal: rgba(${r}, ${g}, ${b}, 0.35)`);
                     }
                 }
                 
@@ -311,7 +289,6 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
                     });
                 }, 400);
                 
-                console.log('✨ ANIMACIÓN COMPLETADA CON ÉXITO');
                 
                 if (callback) callback();
             });
@@ -330,7 +307,6 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
     
     // INICIAR ANIMACIÓN
     setTimeout(() => {
-        console.log('🎬 ¡INICIANDO VUELO CON TRACKING EN TIEMPO REAL!');
         
         animationId = requestAnimationFrame(animateFrame);
     }, 100); // Delay inicial reducido para inicio más rápido
@@ -354,4 +330,3 @@ if (!$('#avatar-realtime-flight-css').length) {
     `);
 }
 
-console.log('✅ Avatar Flight Animation (Real-Time) cargado');

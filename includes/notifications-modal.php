@@ -144,7 +144,7 @@ if($usuario_logueado):
     
     // Marcar todas las notificaciones no leídas
     function markAllUnreadAsRead() {
-        const baseUrl = window.BASE_URL || '';
+        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
         
         // Obtener todas las notificaciones no leídas
         const unreadItems = document.querySelectorAll('.notification-item[style*="border-left: 3px solid"]');
@@ -172,7 +172,6 @@ if($usuario_logueado):
                 }
             }
         })
-        .catch(error => console.error('Error:', error));
     }
     
     // Event listeners para botones de notificaciones
@@ -190,7 +189,7 @@ if($usuario_logueado):
 
     // Eliminar notificación con toast y animación - SIN CONFIRMACIÓN
     function deleteNotification(id, item) {
-        const baseUrl = window.BASE_URL || '';
+        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
         
         // Animación de salida inmediata
         if (item) {
@@ -260,7 +259,6 @@ if($usuario_logueado):
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             if (item) {
                 item.style.opacity = '1';
                 item.style.transform = 'translateX(0)';

@@ -690,22 +690,36 @@
 
 @media (max-width: 768px) {
     .modern-topbar {
-        flex-direction: column;
-        gap: 16px;
+        flex-direction: row;
+        gap: 12px;
+        justify-content: space-between;
+        align-items: center;
     }
     
-    .topbar-right {
+    /* Ocultar título y contador en móvil */
+    .topbar-left-mobile {
+        display: none !important;
+    }
+    
+    .topbar-right-mobile {
         width: 100%;
-        flex-direction: column;
+        flex-direction: row;
+        gap: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
     
     .search-box-modern {
-        width: 100%;
+        flex: 1;
+        min-width: 0;
     }
     
     .btn-sort {
-        width: 100%;
+        width: auto;
+        min-width: 120px;
         justify-content: center;
+        flex-shrink: 0;
     }
     
     .sort-menu {

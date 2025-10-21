@@ -541,6 +541,34 @@ $metodos_pago = [
     <?php include 'includes/favorites-modal.php'; ?>
 
     <!-- Js Plugins -->
+    <script>
+        // BASE URL para peticiones AJAX - Compatible con ngrok y cualquier dominio
+        (function() {
+            var baseUrlFromPHP = '<?php echo defined("BASE_URL") ? BASE_URL : ""; ?>';
+            
+            // Si no hay BASE_URL definida en PHP, calcularla desde JavaScript
+            if (!baseUrlFromPHP || baseUrlFromPHP === '') {
+                var path = window.location.pathname;
+                var pathParts = path.split('/').filter(function(p) { return p !== ''; });
+                
+                // Buscar 'fashion-master' en el path
+                var basePath = '';
+                if (pathParts.includes('fashion-master')) {
+                    var index = pathParts.indexOf('fashion-master');
+                    basePath = '/' + pathParts.slice(0, index + 1).join('/');
+                }
+                
+                baseUrlFromPHP = window.location.origin + basePath;
+            }
+            
+            // CRÍTICO: Si la página está en HTTPS, forzar BASE_URL a HTTPS
+            if (window.location.protocol === 'https:' && baseUrlFromPHP.startsWith('http://')) {
+                baseUrlFromPHP = baseUrlFromPHP.replace('http://', 'https://');
+            }
+            
+            window.BASE_URL = baseUrlFromPHP;
+        })();
+    </script>
     <script src="public/assets/js/jquery-3.3.1.min.js"></script>
     <script src="public/assets/js/bootstrap.min.js"></script>
     <script src="public/assets/js/jquery.magnific-popup.min.js"></script>
@@ -554,6 +582,9 @@ $metodos_pago = [
 
     <script>
         function verDetalles(idPedido) {
+            if (window.LayerManager) {
+                window.LayerManager.openModal('orderDetailsModal');
+            }
             $('#orderDetailsModal').modal('show');
             
             // Cargar detalles vía AJAX

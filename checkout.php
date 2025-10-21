@@ -195,6 +195,7 @@ try {
     <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/dark-mode.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/modals-dark-mode.css" type="text/css">
     
     <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
     <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
@@ -1699,36 +1700,81 @@ try {
         }
         
         body.dark-mode .payment-card-new {
-            background: white !important; /* Mantener fondo blanco en modo oscuro */
+            background: linear-gradient(135deg, #2a2a2a 0%, #252525 100%) !important;
             border-color: #3a3a3a !important;
         }
         
         body.dark-mode .payment-card-new:hover {
             border-color: #c9a67c !important;
+            background: linear-gradient(135deg, #333333 0%, #2d2d2d 100%) !important;
             box-shadow: 0 4px 16px rgba(201, 166, 124, 0.3) !important;
         }
         
         body.dark-mode .payment-card-new.selected {
             border-color: #c9a67c !important;
-            background: white !important; /* Mantener fondo blanco cuando está seleccionado */
-            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4) !important;
+            background: linear-gradient(135deg, #2a2a2a 0%, #252525 100%) !important;
+            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.5), 
+                        inset 0 0 30px rgba(201, 166, 124, 0.1) !important;
         }
         
         body.dark-mode .payment-card-new h6 {
-            color: #2c3e50 !important; /* Texto oscuro para contraste con fondo blanco */
+            color: #e0e0e0 !important;
         }
         
         body.dark-mode .payment-card-new p {
-            color: #666 !important; /* Texto oscuro para contraste con fondo blanco */
+            color: #a0a0a0 !important;
         }
         
-        /* Fondo blanco de la sección de pagos en modo oscuro */
+        /* Radio button en dark mode */
+        body.dark-mode .payment-card-new div[style*="border: 3px solid"] {
+            border-color: #3a3a3a !important;
+        }
+        
+        body.dark-mode .payment-card-new.selected div[style*="border: 3px solid"] {
+            border-color: #c9a67c !important;
+        }
+        
+        /* Sección de pagos en modo oscuro */
         body.dark-mode .payment-methods-section {
-            background: white !important;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%) !important;
+            border: 2px solid #3a3a3a !important;
         }
         
+        /* Texto de seguridad en dark mode */
         body.dark-mode .payment-security-text {
-            color: #888 !important;
+            color: #a0a0a0 !important;
+        }
+        
+        /* Título de la sección en dark mode */
+        body.dark-mode .payment-methods-section h5 {
+            color: #c9a67c !important;
+        }
+        
+        /* Iconos dentro de las payment cards en dark mode */
+        body.dark-mode .payment-card-new svg rect,
+        body.dark-mode .payment-card-new svg circle {
+            opacity: 0.9;
+        }
+        
+        /* Bordes de los contenedores de iconos en dark mode */
+        body.dark-mode .payment-card-new > div[style*="border: 2px solid"] {
+            border-color: #4a4a4a !important;
+            background: #1a1a1a !important;
+        }
+        
+        /* Badge de Yape en dark mode */
+        body.dark-mode .yape-badge {
+            border-color: #3a3a3a !important;
+        }
+        
+        /* Mensaje de error en dark mode */
+        body.dark-mode #payment-method-error {
+            background: linear-gradient(135deg, #3a2f1f 0%, #2a2419 100%) !important;
+            border-left-color: #c9a67c !important;
+        }
+        
+        body.dark-mode #payment-method-error p {
+            color: #f0d9b5 !important;
         }
         
         /* Radio button en las cards - Actualizado para estructura horizontal */
@@ -1741,6 +1787,13 @@ try {
             border-color: #c9a67c !important;
             background: #f9f9f9 !important;
             box-shadow: 0 6px 20px rgba(201, 166, 124, 0.3) !important;
+        }
+        
+        /* Card seleccionada en dark mode - sobrescribir fondo claro */
+        body.dark-mode .payment-card-new.selected {
+            background: linear-gradient(135deg, #2d2d2d 0%, #282828 100%) !important;
+            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.5), 
+                        inset 0 0 30px rgba(201, 166, 124, 0.15) !important;
         }
         
         /* Radio button seleccionado (buscar el div con el círculo) */
@@ -1789,6 +1842,94 @@ try {
             
             body.dark-mode {
                 padding-left: 10px;
+            }
+            
+            /* Ocultar sección de productos en móviles (ya se muestra en el preview superior) */
+            .checkout-products-section {
+                display: none !important;
+            }
+            
+            /* ========================================
+               MEJORAR SECCIÓN DE DIRECCIÓN EN MÓVILES
+            ======================================== */
+            .checkout-address-section {
+                padding: 14px !important;
+                margin-bottom: 18px !important;
+            }
+            
+            /* Header de la dirección (título + botón al costado como icono) */
+            .address-header-section {
+                flex-direction: row !important;
+                gap: 8px;
+                align-items: center !important;
+                justify-content: space-between !important;
+            }
+            
+            .checkout-address-section h5 {
+                font-size: 15px !important;
+                flex: 1;
+            }
+            
+            /* Botón cambiar dirección - pequeño icono al costado */
+            .btn-change-address {
+                width: auto !important;
+                padding: 8px 12px !important;
+                font-size: 13px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 6px;
+                white-space: nowrap;
+            }
+            
+            /* Card de preview de dirección - más compacto */
+            .address-preview-card {
+                padding: 12px !important;
+                border-radius: 8px !important;
+            }
+            
+            /* Grid de campos - dos columnas compactas */
+            .address-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px 8px !important;
+                font-size: 13px !important;
+            }
+            
+            /* Cada campo de dirección - sin bordes para compactar */
+            .address-field {
+                padding: 0;
+            }
+            
+            /* Campos que ocupan ancho completo */
+            .address-field-full {
+                grid-column: 1 / -1 !important;
+            }
+            
+            /* Labels de los campos - más pequeños */
+            .address-label {
+                font-size: 10px !important;
+                color: #c9a67c !important;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-weight: 600 !important;
+                margin-bottom: 3px !important;
+                display: block;
+            }
+            
+            /* Valores de los campos - compactos */
+            .address-value,
+            .address-value-ref {
+                font-size: 13px !important;
+                display: block;
+                line-height: 1.4;
+                color: #333333;
+                font-weight: 500;
+            }
+            
+            /* Dark mode para valores */
+            body.dark-mode .address-value,
+            body.dark-mode .address-value-ref {
+                color: #e0e0e0;
             }
         }
 
@@ -2175,7 +2316,7 @@ try {
                         <?php if($tiene_direccion_predeterminada): ?>
                         <!-- VISTA SIMPLIFICADA CON DIRECCIÓN PREDETERMINADA -->
                         <div class="form-section checkout-address-section" style="border-radius: 12px; padding: 24px; margin-bottom: 25px;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div class="address-header-section" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
                                 <h5 style="color: #c9a67c; margin: 0; font-size: 18px; font-weight: 700;">
                                     <i class="fa fa-map-marker" style="margin-right: 8px;"></i> Dirección de Envío
                                 </h5>
@@ -2186,26 +2327,20 @@ try {
                             </div>
                             
                             <div class="address-preview-card" style="border-radius: 8px; padding: 16px; border-left: 4px solid #c9a67c;">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 14px;">
-                                    <div>
-                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">
-                                            <?php 
-                                            // Mostrar nombre completo del usuario logueado
-                                            $nombre_titular = trim(($usuario_logueado['nombre_usuario'] ?? '') . ' ' . ($usuario_logueado['apellido_usuario'] ?? ''));
-                                            echo htmlspecialchars($nombre_titular ?: $usuario_logueado['username']); 
-                                            ?>
-                                        </strong>
+                                <div class="address-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 14px;">
+                                    <div class="address-field">
+                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">Nombre</strong>
                                         <span class="address-value" id="preview_nombre"><?php echo htmlspecialchars($direccion_predeterminada['nombre_cliente_direccion']); ?></span>
                                     </div>
-                                    <div>
+                                    <div class="address-field">
                                         <strong class="address-label" style="display: block; margin-bottom: 4px;">Teléfono</strong>
                                         <span class="address-value" id="preview_telefono"><?php echo htmlspecialchars($direccion_predeterminada['telefono_direccion']); ?></span>
                                     </div>
-                                    <div>
+                                    <div class="address-field">
                                         <strong class="address-label" style="display: block; margin-bottom: 4px;">DNI/RUC</strong>
                                         <span class="address-value" id="preview_dni"><?php echo htmlspecialchars($direccion_predeterminada['dni_ruc_direccion'] ?? 'No especificado'); ?></span>
                                     </div>
-                                    <div>
+                                    <div class="address-field">
                                         <strong class="address-label" style="display: block; margin-bottom: 4px;">Tipo</strong>
                                         <span class="address-value" id="preview_tipo">
                                             <?php 
@@ -2214,12 +2349,12 @@ try {
                                             ?>
                                         </span>
                                     </div>
-                                    <div style="grid-column: 1 / -1;">
+                                    <div class="address-field address-field-full" style="grid-column: 1 / -1;">
                                         <strong class="address-label" style="display: block; margin-bottom: 4px;">Dirección</strong>
                                         <span class="address-value" id="preview_direccion"><?php echo htmlspecialchars($direccion_predeterminada['direccion_completa_direccion']); ?></span>
                                     </div>
                                     <?php if(!empty($direccion_predeterminada['referencia_direccion'])): ?>
-                                    <div style="grid-column: 1 / -1;">
+                                    <div class="address-field address-field-full" style="grid-column: 1 / -1;">
                                         <strong class="address-label" style="display: block; margin-bottom: 4px;">Referencia</strong>
                                         <span class="address-value-ref" id="preview_referencia"><?php echo htmlspecialchars($direccion_predeterminada['referencia_direccion']); ?></span>
                                     </div>
@@ -3154,6 +3289,34 @@ try {
     <?php include 'includes/footer.php'; ?>
 
     <!-- Js Plugins -->
+    <script>
+        // BASE URL para peticiones AJAX - Compatible con ngrok y cualquier dominio
+        (function() {
+            var baseUrlFromPHP = '<?php echo defined("BASE_URL") ? BASE_URL : ""; ?>';
+            
+            // Si no hay BASE_URL definida en PHP, calcularla desde JavaScript
+            if (!baseUrlFromPHP || baseUrlFromPHP === '') {
+                var path = window.location.pathname;
+                var pathParts = path.split('/').filter(function(p) { return p !== ''; });
+                
+                // Buscar 'fashion-master' en el path
+                var basePath = '';
+                if (pathParts.includes('fashion-master')) {
+                    var index = pathParts.indexOf('fashion-master');
+                    basePath = '/' + pathParts.slice(0, index + 1).join('/');
+                }
+                
+                baseUrlFromPHP = window.location.origin + basePath;
+            }
+            
+            // CRÍTICO: Si la página está en HTTPS, forzar BASE_URL a HTTPS
+            if (window.location.protocol === 'https:' && baseUrlFromPHP.startsWith('http://')) {
+                baseUrlFromPHP = baseUrlFromPHP.replace('http://', 'https://');
+            }
+            
+            window.BASE_URL = baseUrlFromPHP;
+        })();
+    </script>
     <script src="public/assets/js/jquery-3.3.1.min.js"></script>
     <script src="public/assets/js/bootstrap.min.js"></script>
     <script src="public/assets/js/jquery.slicknav.js"></script>
@@ -3363,7 +3526,6 @@ try {
                 const errorDivFull = document.getElementById('payment-method-error-full');
                 if(errorDivFull) errorDivFull.style.display = 'none';
                 
-                console.log('✅ Método de pago seleccionado:', metodoPago);
             });
             
             // Efecto hover (manejado por CSS)
@@ -3510,6 +3672,9 @@ try {
             // Si no se usa dirección predeterminada, preguntar si se quiere guardar.
             // Si ya se usa, procesar directamente.
             if (!tieneDireccionPredeterminada) {
+                if (window.LayerManager) {
+                    window.LayerManager.openModal('saveAddressModal');
+                }
                 $('#saveAddressModal').modal('show');
             } else {
                 // Procesar directamente el pedido
@@ -3558,7 +3723,8 @@ try {
             }
             
             // Enviar con AJAX
-            fetch('app/actions/process_checkout.php', {
+            const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
+            fetch(baseUrl + '/app/actions/process_checkout.php', {
                 method: 'POST',
                 body: formData
             })
@@ -3640,6 +3806,9 @@ try {
             
             // Abrir modal de usuario después de cerrar offcanvas
             setTimeout(function() {
+                if (window.LayerManager) {
+                    window.LayerManager.openModal('userAccountModal');
+                }
                 $('#userAccountModal').modal('show');
             }, 300);
         });
@@ -3799,6 +3968,9 @@ try {
         
         // Botón "Cambiar dirección" - Para abrir modal de selección de direcciones
         $('#btnChangeAddress').on('click', function() {
+            if (window.LayerManager) {
+                window.LayerManager.openModal('selectAddressModal');
+            }
             $('#selectAddressModal').modal('show');
         });
 

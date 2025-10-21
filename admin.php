@@ -155,9 +155,6 @@ try {
     <!-- 5. Font Awesome - Íconos modernos (actualizado a 6.5.0) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    <!-- 6. SweetAlert2 - Alertas y confirmaciones elegantes -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <!-- ========================================== -->
     <!-- FIN LIBRERÍAS MODERNAS -->
     <!-- ========================================== -->
@@ -168,9 +165,9 @@ try {
     <!-- Configuración global de rutas -->
     <script src="public/assets/js/config.js"></script>
     
-    <!-- Sistema de actualización suave de tabla -->
-    <script src="public/assets/js/smooth-table-update.js"></script>
-    <script src="public/assets/js/smooth-table-update-categories.js"></script>
+    <!-- ⚠️ SCRIPTS CARGADOS ESPECÍFICAMENTE POR CADA MÓDULO (NO AQUÍ) -->
+    <!-- smooth-table-update.js se carga SOLO en admin_productos.php -->
+    <!-- smooth-table-update-categories.js se carga SOLO en admin_categorias.php -->
     
     <!-- Sistema de modales de productos -->
     <script src="public/assets/js/product-modals.js"></script>
@@ -418,7 +415,6 @@ try {
                     window.destroyProductosModule();
                 }
             } catch (e) {
-                console.warn('⚠️ Error al destruir Productos:', e);
             }
             
             try {
@@ -426,7 +422,6 @@ try {
                     window.destroyCategoriasModule();
                 }
             } catch (e) {
-                console.warn('⚠️ Error al destruir Categorías:', e);
             }
             
             try {
@@ -434,7 +429,6 @@ try {
                     window.destroyMarcasModule();
                 }
             } catch (e) {
-                console.warn('⚠️ Error al destruir Marcas:', e);
             }
             
             try {
@@ -442,7 +436,6 @@ try {
                     window.destroyUsuariosModule();
                 }
             } catch (e) {
-                console.warn('⚠️ Error al destruir Usuarios:', e);
             }
             
             // 2. Cerrar todos los modales abiertos
@@ -455,7 +448,6 @@ try {
                 });
                 document.body.classList.remove('modal-open');
             } catch (e) {
-                console.warn('⚠️ Error al limpiar modales:', e);
             }
             
             // 3. Limpiar event listeners de búsqueda global
@@ -465,12 +457,10 @@ try {
                 input.parentNode.replaceChild(newInput, input);
             });
             
-            console.log('✅ Destrucción de módulo completada');
         };
         
         // Hacer switchTab disponible globalmente (REDEFINICIÓN COMPLETA)
         window.switchTab = function(tabId) {
-            console.log('🔄 Cambiando a tab:', tabId);
             
             // 1. DESTRUIR MÓDULO ANTERIOR ANTES DE CAMBIAR
             try {
@@ -478,7 +468,6 @@ try {
                     window.destroyCurrentModule();
                 }
             } catch (e) {
-                console.warn('⚠️ Error durante destrucción:', e);
             }
             
             // 2. Cerrar cualquier modal abierto antes de cambiar de sección
@@ -487,7 +476,6 @@ try {
                     forceCloseModal();
                 }
             } catch (e) {
-                console.warn('⚠️ Error al cerrar modal:', e);
             }
             
             // 3. Remover clase active de todos los tabs
@@ -509,9 +497,7 @@ try {
                 // 5. GUARDAR en localStorage para persistir después de refresh
                 try {
                     localStorage.setItem('admin_active_tab', tabId);
-                    console.log('💾 Tab guardado en localStorage:', tabId);
                 } catch (e) {
-                    console.warn('⚠️ No se pudo guardar en localStorage:', e);
                 }
                 
                 // 6. Cargar contenido específico del tab INMEDIATAMENTE
@@ -520,9 +506,7 @@ try {
                     loadTabContent(tabId);
                 }
                 
-                console.log('✅ Tab cambiado exitosamente a:', tabId);
             } else {
-                console.error('❌ No se encontró tab o pane para:', tabId);
             }
         };
         
@@ -531,34 +515,28 @@ try {
         
         // Ejecutar tab pendiente si existe
         if (window.pendingSwitchTab) {
-            console.log('🎯 Ejecutando tab pendiente:', window.pendingSwitchTab);
             const pendingTab = window.pendingSwitchTab;
             delete window.pendingSwitchTab;
             // Ejecutar en el próximo tick para asegurar que todo esté listo
             setTimeout(() => window.switchTab(pendingTab), 0);
         }
         
-        console.log('✅ switchTab completamente cargado y listo');
         
         // Función para resetear el tab guardado (útil para debugging)
         window.resetActiveTab = function() {
             try {
                 localStorage.removeItem('admin_active_tab');
-                console.log('🗑️ Tab guardado eliminado. Refresca la página para volver a Dashboard.');
             } catch (e) {
-                console.error('❌ Error al eliminar tab guardado:', e);
             }
         };
         
         // Función de prueba para verificar que todo funciona
         window.testNavigation = function() {
-            console.log('🧪 Probando navegación...');
             switchTab('productos');
         };
         
         // Función para probar directamente
         window.testProductos = function() {
-            console.log('🧪 Probando productos directamente...');
             window.switchTab('productos');
         };
         
@@ -599,12 +577,10 @@ try {
 
         function showModalOverlayCreate() {
             try {
-                console.log('🚀 showModalOverlayCreate iniciado');
                 document.body.classList.add('modal-open');
                 
                 let overlay = document.getElementById('product-modal-overlay');
                 if (overlay) {
-                    console.log('🗑️ Eliminando overlay existente');
                     overlay.remove();
                 }
                 
@@ -624,47 +600,38 @@ try {
                 // Agregar evento de clic fuera del modal para cerrarlo
                 overlay.addEventListener('click', function(e) {
                     if (e.target === overlay) {
-                        console.log('🖱️ Clic fuera del modal detectado, cerrando...');
                         closeProductModal();
                     }
                 });
                 
                 document.body.appendChild(overlay);
-                console.log('✅ Overlay agregado al DOM');
                 
                 // Activar overlay con delay para animación - USAR .show
                 requestAnimationFrame(() => {
                     overlay.classList.add('show');
-                    console.log('✅ Clase show agregada al overlay');
                 });
                 
                 const fetchUrl = 'app/views/admin/product_modal.php?action=create';
-                console.log('🆕 URL para CREAR:', fetchUrl);
                 
                 fetch(fetchUrl)
                 .then(response => {
-                    console.log('📡 Respuesta recibida:', response.status);
                     if (!response.ok) {
                         throw new Error(`Error HTTP: ${response.status}`);
                     }
                     return response.text();
                 })
                 .then(html => {
-                    console.log('📄 HTML recibido, longitud:', html.length);
                     // CAMBIO: Usar outerHTML para reemplazar completamente el wrapper temporal
                     const wrapper = overlay.querySelector('#modal-content-wrapper');
                     if (wrapper) {
                         wrapper.outerHTML = html;
-                        console.log('✅ Modal content reemplazado completamente (sin duplicados)');
                         
                         const scripts = overlay.querySelectorAll('script');
-                        console.log('📜 Scripts encontrados:', scripts.length);
                         scripts.forEach((script, index) => {
                             if (script.textContent && script.textContent.trim()) {
                                 try {
                                     eval(script.textContent);
                                 } catch (scriptError) {
-                                    console.error(`❌ Error en script ${index + 1}:`, scriptError);
                                 }
                             }
                         });
@@ -677,7 +644,6 @@ try {
                     }
                 })
                 .catch(error => {
-                    console.error('❌ Error cargando modal crear:', error);
                     const wrapper = overlay.querySelector('#modal-content-wrapper');
                     if (wrapper) {
                         wrapper.innerHTML = `
@@ -690,7 +656,6 @@ try {
                     }
                 });
             } catch (mainError) {
-                console.error('❌ Error general en showModalOverlayCreate:', mainError);
                 
                 document.body.classList.remove('modal-open');
                 const existingOverlay = document.getElementById('product-modal-overlay');
@@ -702,12 +667,10 @@ try {
 
         function showModalOverlayEdit(productId) {
             try {
-                console.log('✏️ showModalOverlayEdit iniciado con ID:', productId);
                 document.body.classList.add('modal-open');
                 
                 let overlay = document.getElementById('product-modal-overlay');
                 if (overlay) {
-                    console.log('🗑️ Eliminando overlay existente');
                     overlay.remove();
                 }
                 
@@ -727,38 +690,32 @@ try {
                 // Agregar evento de clic fuera del modal para cerrarlo
                 overlay.addEventListener('click', function(e) {
                     if (e.target === overlay) {
-                        console.log('🖱️ Clic fuera del modal detectado, cerrando...');
+                        log('🖱️ Clic fuera del modal detectado, cerrando...');
                         closeProductModal();
                     }
                 });
                 
                 document.body.appendChild(overlay);
-                console.log('✅ Overlay agregado al DOM');
                 
                 // Activar overlay con delay para animación - USAR .show
                 requestAnimationFrame(() => {
                     overlay.classList.add('show');
-                    console.log('✅ Clase show agregada al overlay');
                 });
                 
                 const fetchUrl = `app/views/admin/product_modal.php?action=edit&id=${productId}`;
-                console.log('✏️ URL para EDITAR:', fetchUrl);
                 
                 fetch(fetchUrl)
                 .then(response => {
-                    console.log('📡 Respuesta recibida:', response.status);
                     if (!response.ok) {
                         throw new Error(`Error HTTP: ${response.status}`);
                     }
                     return response.text();
                 })
                 .then(html => {
-                    console.log('📄 HTML recibido, longitud:', html.length);
                     // CAMBIO: Usar outerHTML para reemplazar completamente el wrapper temporal
                     const wrapper = overlay.querySelector('#modal-content-wrapper');
                     if (wrapper) {
                         wrapper.outerHTML = html;
-                        console.log('✅ Modal content reemplazado completamente (sin duplicados)');
                         
                         const scripts = overlay.querySelectorAll('script');
                         scripts.forEach((script, index) => {
@@ -766,7 +723,6 @@ try {
                                 try {
                                     eval(script.textContent);
                                 } catch (scriptError) {
-                                    console.error(`❌ Error en script ${index + 1}:`, scriptError);
                                 }
                             }
                         });
@@ -779,7 +735,6 @@ try {
                     }
                 })
                 .catch(error => {
-                    console.error('❌ Error cargando modal editar:', error);
                     const wrapper = overlay.querySelector('#modal-content-wrapper');
                     if (wrapper) {
                         wrapper.innerHTML = `
@@ -792,7 +747,6 @@ try {
                     }
                 });
             } catch (mainError) {
-                console.error('❌ Error general en showModalOverlayEdit:', mainError);
                 
                 document.body.classList.remove('modal-open');
                 const existingOverlay = document.getElementById('product-modal-overlay');
@@ -804,12 +758,10 @@ try {
 
         function showModalOverlayView(productId) {
             try {
-                console.log('👁️ showModalOverlayView iniciado con ID:', productId);
                 document.body.classList.add('modal-open');
                 
                 // Verificar y cargar CSS del modal Ver Producto si no está cargado
                 if (!document.querySelector('link[href*="product-view-modal.css"]')) {
-                    console.log('📎 Cargando CSS del modal Ver Producto...');
                     const cssLink = document.createElement('link');
                     cssLink.rel = 'stylesheet';
                     cssLink.href = 'public/assets/css/product-view-modal.css';
@@ -818,7 +770,6 @@ try {
                 
                 let existingModal = document.querySelector('.product-view-modal');
                 if (existingModal) {
-                    console.log('🗑️ Eliminando modal existente');
                     existingModal.remove();
                 }
                 
@@ -828,18 +779,15 @@ try {
                 document.body.appendChild(tempContainer);
                 
                 const fetchUrl = `app/views/admin/product_modal.php?action=view&id=${productId}`;
-                console.log('👁️ URL para VER:', fetchUrl);
                 
                 fetch(fetchUrl)
                 .then(response => {
-                    console.log('📡 Respuesta recibida:', response.status);
                     if (!response.ok) {
                         throw new Error(`Error HTTP: ${response.status}`);
                     }
                     return response.text();
                 })
                 .then(html => {
-                    console.log('📄 HTML recibido, longitud:', html.length);
                     
                     // Insertar HTML en contenedor temporal
                     tempContainer.innerHTML = html;
@@ -847,15 +795,15 @@ try {
                     // Buscar el modal Ver Producto en el HTML cargado
                     const productModal = tempContainer.querySelector('.product-view-modal');
                     if (productModal) {
-                        console.log('✅ Modal Ver Producto encontrado en HTML');
+                        log('✅ Modal Ver Producto encontrado en HTML');
                         
                         // Agregar el modal directamente al body
                         document.body.appendChild(productModal);
-                        console.log('✅ Modal Ver Producto agregado al DOM');
+                        log('✅ Modal Ver Producto agregado al DOM');
                         
                         // Debug: verificar estilos aplicados
                         const computedStyles = window.getComputedStyle(productModal);
-                        console.log('🔍 Estilos iniciales del modal:', {
+                        log('🔍 Estilos iniciales del modal:', {
                             display: computedStyles.display,
                             opacity: computedStyles.opacity,
                             visibility: computedStyles.visibility,
@@ -866,12 +814,12 @@ try {
                         // Activar modal con animación
                         requestAnimationFrame(() => {
                             productModal.classList.add('show');
-                            console.log('✅ Clase show agregada al modal Ver Producto');
+                            log('✅ Clase show agregada al modal Ver Producto');
                             
                             // Debug: verificar estilos después de agregar .show
                             setTimeout(() => {
                                 const computedStylesAfter = window.getComputedStyle(productModal);
-                                console.log('🔍 Estilos después de .show:', {
+                                log('🔍 Estilos después de .show:', {
                                     display: computedStylesAfter.display,
                                     opacity: computedStylesAfter.opacity,
                                     visibility: computedStylesAfter.visibility,
@@ -882,32 +830,10 @@ try {
                                 if (typeof window.debugModal === 'function') {
                                     window.debugModal();
                                 }
-                                
-                                // Debug adicional: verificar elementos por encima del modal
-                                const elementsAtCenter = document.elementsFromPoint(window.innerWidth/2, window.innerHeight/2);
-                                console.log('🔍 Elementos en centro de pantalla:', elementsAtCenter.map(el => ({
-                                    tag: el.tagName,
-                                    class: el.className,
-                                    id: el.id,
-                                    zIndex: window.getComputedStyle(el).zIndex
-                                })));
-                                
-                                // Verificar si el modal está realmente visible
-                                const modalRect = productModal.getBoundingClientRect();
-                                console.log('🔍 Posición del modal:', {
-                                    top: modalRect.top,
-                                    left: modalRect.left,
-                                    width: modalRect.width,
-                                    height: modalRect.height,
-                                    visible: modalRect.width > 0 && modalRect.height > 0
-                                });
-                                
-                                console.log('✅ Modal configurado correctamente, usando estilos CSS');
+ 
+                              
                             }, 50);
                         });
-                    } else {
-                        console.error('❌ No se encontró .product-view-modal en el HTML');
-                        console.log('🔍 Contenido del tempContainer:', tempContainer.innerHTML.substring(0, 500));
                     }
                     
                     // Limpiar contenedor temporal
@@ -920,13 +846,11 @@ try {
                             try {
                                 eval(script.textContent);
                             } catch (scriptError) {
-                                console.error(`❌ Error en script ${index + 1}:`, scriptError);
                             }
                         }
                     });
                 })
                 .catch(error => {
-                    console.error('❌ Error cargando modal ver:', error);
                     // Crear un modal de error simple
                     const errorModal = document.createElement('div');
                     errorModal.className = 'product-view-modal show';
@@ -954,7 +878,6 @@ try {
                     if (tempContainer) tempContainer.remove();
                 });
             } catch (mainError) {
-                console.error('❌ Error general en showModalOverlayView:', mainError);
                 
                 document.body.classList.remove('modal-open');
                 const existingModal = document.querySelector('.product-view-modal');
@@ -1011,12 +934,10 @@ try {
 
         function showModalOverlayCreateCategoria() {
             try {
-                console.log('🚀 showModalOverlayCreateCategoria iniciado');
                 document.body.classList.add('modal-open');
                 
                 let overlay = document.getElementById('categoria-modal-overlay');
                 if (overlay) {
-                    console.log('🗑️ Eliminando overlay existente');
                     overlay.remove();
                 }
                 
@@ -1034,52 +955,42 @@ try {
                 
                 overlay.addEventListener('click', function(e) {
                     if (e.target === overlay) {
-                        console.log('🖱️ Clic fuera del modal detectado, cerrando...');
                         closeCategoriaModal();
                     }
                 });
                 
                 document.body.appendChild(overlay);
-                console.log('✅ Overlay agregado al DOM');
                 
                 requestAnimationFrame(() => {
                     overlay.classList.add('show');
-                    console.log('✅ Clase show agregada al overlay');
                 });
                 
                 const fetchUrl = 'app/views/admin/categorias_modal.php?action=create';
-                console.log('🆕 URL para CREAR categoría:', fetchUrl);
                 
                 fetch(fetchUrl)
                 .then(response => {
-                    console.log('📡 Respuesta recibida:', response.status);
                     if (!response.ok) {
                         throw new Error(`Error HTTP: ${response.status}`);
                     }
                     return response.text();
                 })
                 .then(html => {
-                    console.log('📄 HTML recibido, longitud:', html.length);
                     const wrapper = overlay.querySelector('#modal-content-wrapper');
                     if (wrapper) {
                         wrapper.outerHTML = html;
-                        console.log('✅ Modal content reemplazado completamente');
                         
                         const scripts = overlay.querySelectorAll('script');
-                        console.log('📜 Scripts encontrados:', scripts.length);
                         scripts.forEach((script, index) => {
                             if (script.textContent && script.textContent.trim()) {
                                 try {
                                     eval(script.textContent);
                                 } catch (scriptError) {
-                                    console.error(`❌ Error en script ${index + 1}:`, scriptError);
                                 }
                             }
                         });
                     }
                 })
                 .catch(error => {
-                    console.error('❌ Error cargando modal crear categoría:', error);
                     const wrapper = overlay.querySelector('#modal-content-wrapper');
                     if (wrapper) {
                         wrapper.innerHTML = `
@@ -1092,7 +1003,6 @@ try {
                     }
                 });
             } catch (mainError) {
-                console.error('❌ Error general en showModalOverlayCreateCategoria:', mainError);
                 document.body.classList.remove('modal-open');
                 const existingOverlay = document.getElementById('categoria-modal-overlay');
                 if (existingOverlay) {
@@ -1103,12 +1013,10 @@ try {
 
         function showModalOverlayEditCategoria(categoriaId) {
             try {
-                console.log('✏️ showModalOverlayEditCategoria iniciado con ID:', categoriaId);
                 document.body.classList.add('modal-open');
                 
                 let overlay = document.getElementById('categoria-modal-overlay');
                 if (overlay) {
-                    console.log('🗑️ Eliminando overlay existente');
                     overlay.remove();
                 }
                 
@@ -1126,36 +1034,29 @@ try {
                 
                 overlay.addEventListener('click', function(e) {
                     if (e.target === overlay) {
-                        console.log('🖱️ Clic fuera del modal detectado, cerrando...');
                         closeCategoriaModal();
                     }
                 });
                 
                 document.body.appendChild(overlay);
-                console.log('✅ Overlay agregado al DOM');
                 
                 requestAnimationFrame(() => {
                     overlay.classList.add('show');
-                    console.log('✅ Clase show agregada al overlay');
                 });
                 
                 const fetchUrl = `app/views/admin/categorias_modal.php?action=edit&id=${categoriaId}`;
-                console.log('✏️ URL para EDITAR categoría:', fetchUrl);
                 
                 fetch(fetchUrl)
                 .then(response => {
-                    console.log('📡 Respuesta recibida:', response.status);
                     if (!response.ok) {
                         throw new Error(`Error HTTP: ${response.status}`);
                     }
                     return response.text();
                 })
                 .then(html => {
-                    console.log('📄 HTML recibido, longitud:', html.length);
                     const wrapper = overlay.querySelector('#modal-content-wrapper');
                     if (wrapper) {
                         wrapper.outerHTML = html;
-                        console.log('✅ Modal content reemplazado completamente');
                         
                         const scripts = overlay.querySelectorAll('script');
                         scripts.forEach((script, index) => {
@@ -1163,14 +1064,12 @@ try {
                                 try {
                                     eval(script.textContent);
                                 } catch (scriptError) {
-                                    console.error(`❌ Error en script ${index + 1}:`, scriptError);
                                 }
                             }
                         });
                     }
                 })
                 .catch(error => {
-                    console.error('❌ Error cargando modal editar categoría:', error);
                     const wrapper = overlay.querySelector('#modal-content-wrapper');
                     if (wrapper) {
                         wrapper.innerHTML = `
@@ -1183,7 +1082,6 @@ try {
                     }
                 });
             } catch (mainError) {
-                console.error('❌ Error general en showModalOverlayEditCategoria:', mainError);
                 document.body.classList.remove('modal-open');
                 const existingOverlay = document.getElementById('categoria-modal-overlay');
                 if (existingOverlay) {
@@ -1194,12 +1092,10 @@ try {
 
         function showModalOverlayViewCategoria(categoriaId) {
             try {
-                console.log('👁️ showModalOverlayViewCategoria iniciado con ID:', categoriaId);
                 document.body.classList.add('modal-open');
                 
                 let overlay = document.getElementById('categoria-modal-overlay');
                 if (overlay) {
-                    console.log('🗑️ Eliminando overlay existente');
                     overlay.remove();
                 }
                 
@@ -1217,36 +1113,29 @@ try {
                 
                 overlay.addEventListener('click', function(e) {
                     if (e.target === overlay) {
-                        console.log('🖱️ Clic fuera del modal detectado, cerrando...');
                         closeCategoriaModal();
                     }
                 });
                 
                 document.body.appendChild(overlay);
-                console.log('✅ Overlay agregado al DOM');
                 
                 requestAnimationFrame(() => {
                     overlay.classList.add('show');
-                    console.log('✅ Clase show agregada al overlay');
                 });
                 
                 const fetchUrl = `app/views/admin/categorias_modal.php?action=view&id=${categoriaId}`;
-                console.log('👁️ URL para VER categoría:', fetchUrl);
                 
                 fetch(fetchUrl)
                 .then(response => {
-                    console.log('📡 Respuesta recibida:', response.status);
                     if (!response.ok) {
                         throw new Error(`Error HTTP: ${response.status}`);
                     }
                     return response.text();
                 })
                 .then(html => {
-                    console.log('📄 HTML recibido, longitud:', html.length);
                     const wrapper = overlay.querySelector('#modal-content-wrapper');
                     if (wrapper) {
                         wrapper.outerHTML = html;
-                        console.log('✅ Modal content reemplazado completamente');
                         
                         const scripts = overlay.querySelectorAll('script');
                         scripts.forEach((script, index) => {
@@ -1254,14 +1143,12 @@ try {
                                 try {
                                     eval(script.textContent);
                                 } catch (scriptError) {
-                                    console.error(`❌ Error en script ${index + 1}:`, scriptError);
                                 }
                             }
                         });
                     }
                 })
                 .catch(error => {
-                    console.error('❌ Error cargando modal ver categoría:', error);
                     const wrapper = overlay.querySelector('#modal-content-wrapper');
                     if (wrapper) {
                         wrapper.innerHTML = `
@@ -1274,7 +1161,6 @@ try {
                     }
                 });
             } catch (mainError) {
-                console.error('❌ Error general en showModalOverlayViewCategoria:', mainError);
                 document.body.classList.remove('modal-open');
                 const existingOverlay = document.getElementById('categoria-modal-overlay');
                 if (existingOverlay) {
@@ -1284,7 +1170,6 @@ try {
         }
 
         function closeCategoriaModal() {
-            console.log('❌ Cerrando modal de categoría');
             
             const overlay = document.getElementById('categoria-modal-overlay');
             if (overlay) {
@@ -1322,20 +1207,17 @@ try {
         
         // ===== FUNCIÓN PARA NUEVA CATEGORÍA =====
         window.openNewCategoryModal = function() {
-            console.log('🏷️ Abriendo modal de nueva categoría directamente');
             
             // Si ya estamos en la tab de categorías, abrir directo
             const categoriaTab = document.getElementById('categorias');
             const isInCategoriaTab = categoriaTab && categoriaTab.classList.contains('active');
             
             if (isInCategoriaTab && typeof window.showCreateCategoriaModal === 'function') {
-                console.log('✅ Ya en tab de categorías, abriendo modal directo');
                 window.showCreateCategoriaModal();
                 return;
             }
             
             // Si no estamos en la tab, cambiar primero
-            console.log('📍 Cambiando a tab de categorías...');
             switchTab('categorias');
             
             // Esperar a que el contenido de categorías se cargue y abrir modal
@@ -1346,31 +1228,15 @@ try {
                 attempts++;
                 
                 if (typeof window.showCreateCategoriaModal === 'function') {
-                    console.log('✅ Función encontrada, abriendo modal');
                     clearInterval(checkAndOpen);
                     window.showCreateCategoriaModal();
                 } else if (attempts >= maxAttempts) {
-                    console.error('❌ Timeout: no se pudo encontrar la función del modal');
                     clearInterval(checkAndOpen);
                     showNotification('Error al abrir el modal de categoría. Por favor intente de nuevo.', 'error');
                 }
             }, 100); // Revisar cada 100ms
         };
-        
-        console.log('✅ Funciones de modal expuestas globalmente:', {
-            showCreateProductModal: typeof window.showCreateProductModal,
-            showEditProductModal: typeof window.showEditProductModal,
-            showViewProductModal: typeof window.showViewProductModal,
-            editProduct: typeof window.editProduct,
-            viewProduct: typeof window.viewProduct,
-            closeProductModal: typeof window.closeProductModal
-        });
-        
-        // ===== FIN FUNCIONES DEL MODAL =====
-        
-        // ===== SISTEMA DE CARGA ÚNICO POR SECCIÓN =====
-        // Cada sección tiene su propia función de carga completamente independiente
-        // Limpiar elementos de filtros/modales residuales entre cambios de sección
+       
         window.cleanupFilters = function() {
             try {
                 // Remove elements that are modals or mobile filter buttons by class
@@ -1388,12 +1254,10 @@ try {
                 document.body.style.overflow = '';
                 document.body.classList.remove('modal-open');
             } catch (e) {
-                console.warn('⚠️ cleanupFilters error:', e);
             }
         };
 
         function loadTabContent(tabId) {
-            console.log('🔄 loadTabContent llamado para:', tabId);
             // Limpiar posibles modales/filtros del módulo anterior
             if (typeof window.cleanupFilters === 'function') {
                 window.cleanupFilters();
@@ -1413,46 +1277,35 @@ try {
                     loadUsuariosSection();
                     break;
                 default:
-                    console.log('📊 Tab por defecto:', tabId);
             }
         }
         
         // ===== FUNCIÓN ÚNICA PARA PRODUCTOS =====
         function loadProductosSection() {
-            console.log('📦 [PRODUCTOS] Iniciando carga de sección...');
             
             const containerId = 'productos-content';
             const targetContainer = document.getElementById(containerId);
-            
-            if (!targetContainer) {
-                console.error('❌ [PRODUCTOS] Contenedor no encontrado');
-                return;
-            }
+
             
             // Limpiar completamente el contenedor
             targetContainer.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Cargando productos...</div>';
             
-            console.log('📂 [PRODUCTOS] Iniciando fetch...');
             fetch('app/views/admin/admin_productos.php?_=' + Date.now()) // Cache busting
                 .then(response => {
-                    console.log('📡 [PRODUCTOS] Respuesta recibida:', response.status);
                     if (!response.ok) {
                         throw new Error(`Error HTTP: ${response.status}`);
                     }
                     return response.text();
                 })
                 .then(html => {
-                    console.log('📄 [PRODUCTOS] HTML recibido, longitud:', html.length);
                     
                     // RESETEAR completamente el contenedor
                     targetContainer.innerHTML = '';
                     targetContainer.innerHTML = html;
                     
-                    console.log('✅ [PRODUCTOS] HTML insertado');
                     
                     // Ejecutar scripts de forma segura (evitar redeclaración de variables)
                     const scripts = targetContainer.querySelectorAll('script');
-                    console.log('🔧 [PRODUCTOS] Scripts encontrados:', scripts.length);
                     
                     scripts.forEach((script, index) => {
                         try {
@@ -1460,20 +1313,16 @@ try {
                                 // Ejecutar con eval en lugar de appendChild para evitar conflictos
                                 // de redeclaración de variables globales (let/const)
                                 eval(script.textContent);
-                                console.log(`✅ [PRODUCTOS] Script ${index} ejecutado`);
                             }
                         } catch (error) {
-                            console.error(`❌ [PRODUCTOS] Error ejecutando script ${index}:`, error);
                         }
                     });
                     
                     // NOTA: initializeProductsModule() se auto-ejecuta dentro del script evaluado
                     // No es necesario llamarlo aquí
                     
-                    console.log('✅ [PRODUCTOS] Sección cargada completamente');
                 })
                 .catch(error => {
-                    console.error('❌ [PRODUCTOS] Error en carga:', error);
                     targetContainer.innerHTML = `
                         <div class="error-message">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -1495,11 +1344,9 @@ try {
         
         // Función para cambiar vista (tabla/grid) - GLOBAL
         window.toggleCategoriaView = function(viewType) {
-            console.log('🔄 Cambiando vista de categorías a:', viewType);
             
             const isMobile = window.innerWidth <= 768;
             if (isMobile && viewType === 'table') {
-                console.warn('⚠️ Vista tabla bloqueada en móvil');
                 return;
             }
             
@@ -1534,12 +1381,10 @@ try {
                 }
             });
             
-            console.log('✅ Vista cambiada a:', viewType);
         };
         
         // Función para mostrar menú de acciones - GLOBAL
         window.showCategoriaActionMenu = function(button, categoriaId, categoriaNombre) {
-            console.log('📋 Mostrando menú de acciones para categoría:', categoriaId);
             
             // Si ya hay un menú abierto, cerrarlo primero
             if (window.categorias_activeFloatingContainer) {
@@ -1568,44 +1413,33 @@ try {
             }
         };
         
-        console.log('✅ Funciones globales de categorías cargadas');
         
         // ===== FUNCIÓN ÚNICA PARA CATEGORÍAS =====
         function loadCategoriasSection() {
-            console.log('🏷️ [CATEGORIAS] Iniciando carga de sección...');
             
             const containerId = 'categorias-content';
             const targetContainer = document.getElementById(containerId);
-            
-            if (!targetContainer) {
-                console.error('❌ [CATEGORIAS] Contenedor no encontrado');
-                return;
-            }
+        
             
             // Limpiar completamente el contenedor
             targetContainer.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Cargando categorías...</div>';
             
-            console.log('📂 [CATEGORIAS] Iniciando fetch...');
             fetch('app/views/admin/admin_categorias.php?_=' + Date.now())
                 .then(response => {
-                    console.log('📡 [CATEGORIAS] Respuesta recibida:', response.status);
                     if (!response.ok) {
                         throw new Error(`Error HTTP: ${response.status}`);
                     }
                     return response.text();
                 })
                 .then(html => {
-                    console.log('📄 [CATEGORIAS] HTML recibido, longitud:', html.length);
                     
                     // RESETEAR completamente el contenedor
                     targetContainer.innerHTML = '';
                     targetContainer.innerHTML = html;
                     
-                    console.log('✅ [CATEGORIAS] HTML insertado');
                     
                     // Ejecutar scripts de forma segura (evitar redeclaración)
                     const scripts = targetContainer.querySelectorAll('script');
-                    console.log('🔧 [CATEGORIAS] Scripts encontrados:', scripts.length);
                     
                     scripts.forEach((script, index) => {
                         try {
@@ -1625,34 +1459,25 @@ try {
                                 try {
                                     const fn = new Function(cleanContent);
                                     fn();
-                                    console.log(`✅ [CATEGORIAS] Script ${index} ejecutado`);
                                 } catch (innerError) {
                                     // Si falla, intentar con eval como fallback
-                                    console.warn(`⚠️ [CATEGORIAS] Function falló, usando eval para script ${index}`);
                                     window.eval(cleanContent);
-                                    console.log(`✅ [CATEGORIAS] Script ${index} ejecutado con eval`);
                                 }
                             }
                         } catch (error) {
-                            console.error(`❌ [CATEGORIAS] Error ejecutando script ${index}:`, error);
-                            console.error('Script content preview:', script.textContent.substring(0, 200));
+                            
                         }
                     });
                     
-                    console.log('✅ [CATEGORIAS] Sección cargada completamente');
                     
                     // Intentar cargar datos después de un breve delay
                     setTimeout(() => {
                         if (typeof window.loadCategoriasData === 'function') {
-                            console.log('📊 Cargando datos de categorías...');
                             window.loadCategoriasData();
-                        } else {
-                            console.warn('⚠️ loadCategoriasData no está disponible');
-                        }
+                        } 
                     }, 100);
                 })
                 .catch(error => {
-                    console.error('❌ [CATEGORIAS] Error en carga:', error);
                     targetContainer.innerHTML = `
                         <div class="error-message">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -1668,59 +1493,46 @@ try {
         
         // ===== FUNCIÓN ÚNICA PARA MARCAS =====
         function loadMarcasSection() {
-            console.log('©️ [MARCAS] Iniciando carga de sección...');
             
             const containerId = 'marcas-content';
             const targetContainer = document.getElementById(containerId);
             
             if (!targetContainer) {
-                console.error('❌ [MARCAS] Contenedor no encontrado');
                 return;
             }
             
             // Limpiar completamente el contenedor
             targetContainer.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Cargando marcas...</div>';
             
-            console.log('📂 [MARCAS] Iniciando fetch...');
             fetch('app/views/admin/admin_marcas.php?_=' + Date.now())
                 .then(response => {
-                    console.log('📡 [MARCAS] Respuesta recibida:', response.status);
                     if (!response.ok) {
                         throw new Error(`Error HTTP: ${response.status}`);
                     }
                     return response.text();
                 })
                 .then(html => {
-                    console.log('📄 [MARCAS] HTML recibido, longitud:', html.length);
                     
                     // RESETEAR completamente el contenedor
                     targetContainer.innerHTML = '';
                     targetContainer.innerHTML = html;
                     
-                    console.log('✅ [MARCAS] HTML insertado');
                     
                     // Ejecutar scripts de forma segura (evitar redeclaración)
                     const scripts = targetContainer.querySelectorAll('script');
-                    console.log('🔧 [MARCAS] Scripts encontrados:', scripts.length);
                     
                     scripts.forEach((script, index) => {
                         try {
                             if (script.textContent && script.textContent.trim()) {
                                 eval(script.textContent);
-                                console.log(`✅ [MARCAS] Script ${index} ejecutado`);
                             }
                         } catch (error) {
-                            console.error(`❌ [MARCAS] Error ejecutando script ${index}:`, error);
                         }
                     });
                     
-                    // NOTA: initializeMarcasModule() se auto-ejecuta dentro del script evaluado
-                    // No es necesario llamarlo aquí
-                    
-                    console.log('✅ [MARCAS] Sección cargada completamente');
+
                 })
                 .catch(error => {
-                    console.error('❌ [MARCAS] Error en carga:', error);
                     targetContainer.innerHTML = `
                         <div class="error-message">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -1736,15 +1548,10 @@ try {
         
         // ===== FUNCIÓN PARA USUARIOS (Mantener compatibilidad) =====
         function loadUsuariosSection() {
-            console.log('👥 [USUARIOS] Iniciando carga de sección...');
             
             const containerId = 'usuarios-content';
             const targetContainer = document.getElementById(containerId);
-            
-            if (!targetContainer) {
-                console.error('❌ [USUARIOS] Contenedor no encontrado');
-                return;
-            }
+
             
             targetContainer.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Cargando usuarios...</div>';
             
@@ -1761,7 +1568,6 @@ try {
                                 document.head.appendChild(newScript);
                                 document.head.removeChild(newScript);
                             } catch (e) {
-                                console.error('[USUARIOS] Error script:', e);
                             }
                         }
                     });
@@ -1824,7 +1630,6 @@ try {
 
         // Función global para remover preview
         function removeImagePreview() {
-            console.log('Removiendo preview (ADMIN BACKUP)');
             
             const fileInput = document.getElementById('imagen');
             const preview = document.getElementById('imagePreview');
@@ -1840,7 +1645,6 @@ try {
             // RESTAURAR IMAGEN ORIGINAL si existe
             if (currentImageDisplay) {
                 currentImageDisplay.style.display = 'block';
-                console.log('👁️ Imagen original restaurada');
             }
             
             if (container) {
@@ -1855,7 +1659,6 @@ try {
 
         // Función global para confirmar nueva imagen
         function confirmNewImage() {
-            console.log('Confirmando nueva imagen (ADMIN BACKUP)');
             
             const preview = document.getElementById('imagePreview');
             const container = document.querySelector('.file-upload-container');
@@ -1866,17 +1669,13 @@ try {
                 preview.classList.remove('replacing-current');
             }
             
-            // La imagen original permanece oculta hasta que se guarde
-            if (currentImageDisplay) {
-                console.log('📝 Imagen original permanece oculta hasta guardar');
-            }
+
             
             if (container) {
                 container.classList.add('confirmed');
             }
             
             // Mostrar notificación simple
-            console.log('Nueva imagen confirmada. Se actualizará al guardar.');
             
             // Podrías mostrar un indicador visual de que hay una imagen pendiente
             const imageSection = document.querySelector('[data-section="imagen"]');
@@ -1885,73 +1684,16 @@ try {
             }
         }
 
-        // ===== FIN FUNCIONES BACKUP =====
-        console.log('✅ Funciones backup del modal cargadas');
-
-        // FUNCIÓN DE TEST GLOBAL
-        window.testFileInput = function() {
-            console.log('🧪 === TEST FILE INPUT (GLOBAL) ===');
-            const input = document.getElementById('imagen');
-            console.log('Input element:', input);
-            
-            if (input) {
-                console.log('✅ Input encontrado');
-                
-                // REMOVER TODOS LOS EVENT LISTENERS EXISTENTES
-                const newInput = input.cloneNode(true);
-                input.parentNode.replaceChild(newInput, input);
-                console.log('🔄 Input clonado para eliminar event listeners');
-                
-                // Agregar event listener súper simple
-                newInput.addEventListener('change', function(e) {
-                    console.log('🎉 ¡¡¡EVENT CHANGE FUNCIONANDO!!!');
-                    console.log('📁 Files:', e.target.files);
-                    
-                    if (e.target.files && e.target.files[0]) {
-                        const file = e.target.files[0];
-                        console.log('📄 Archivo seleccionado:', {
-                            name: file.name,
-                            type: file.type,
-                            size: file.size
-                        });
-                        
-                        // Test simple de preview
-                        const preview = document.getElementById('imagePreview');
-                        const previewImg = document.getElementById('previewImg');
-                        
-                        if (preview && previewImg) {
-                            console.log('🖼️ Elementos de preview encontrados, mostrando...');
-                            const url = URL.createObjectURL(file);
-                            previewImg.src = url;
-                            preview.style.display = 'block';
-                            console.log('✅ Preview mostrado!');
-                        } else {
-                            console.log('❌ No se encontraron elementos de preview');
-                        }
-                    }
-                });
-                
-                console.log('🖱️ Forzando click...');
-                newInput.click();
-                
-            } else {
-                console.error('❌ Input no encontrado');
-            }
-        };
-
         function openProductModal(action, productId = null) {
-            console.log('🔄 openProductModal llamada:', action, productId);
             
             // Pasar los parámetros a showModalOverlay
             try {
                 showModalOverlay(action, productId);
             } catch (error) {
-                console.error('❌ Error en openProductModal:', error);
             }
         }
 
         function showModalOverlay(action = 'create', productId = null) {
-            console.log('🎯 showModalOverlay() ejecutada - iniciando carga del modal:', action, productId);
             
             // Bloquear scroll del body
             document.body.classList.add('modal-open');
@@ -1982,7 +1724,6 @@ try {
             // Agregar evento para cerrar al hacer clic fuera del modal (SIN DUPLICAR)
             overlay.addEventListener('click', function(e) {
                 if (e.target === overlay) {
-                    console.log('🖱️ Click en overlay detectado');
                     closeProductModal();
                 }
             }, { once: true }); // once:true previene ejecuciones múltiples
@@ -1990,7 +1731,6 @@ try {
             // Mostrar overlay con animación DESPUÉS de configurar eventos
             setTimeout(() => {
                 overlay.classList.add('show');
-                console.log('✨ Clase "show" agregada al overlay:', overlay.className);
             }, 10);
             
             // Construir URL con parámetros según la acción
@@ -2001,27 +1741,22 @@ try {
                 modalUrl += `?view=1&id=${productId}`;
             }
             
-            console.log('🌐 Iniciando fetch del modal PHP con URL:', modalUrl);
             fetch(modalUrl)
                 .then(response => {
-                    console.log('📡 Respuesta recibida:', response.status, response.statusText);
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     return response.text();
                 })
                 .then(html => {
-                    console.log('📄 HTML recibido, longitud:', html.length);
                     
                     // Reemplazar el contenido de carga con el modal real
                     const modalContent = overlay.querySelector('#modal-content');
                     if (modalContent) {
                         modalContent.outerHTML = html;
-                        console.log('✅ Contenido del modal reemplazado');
                         
                         // Configurar el sistema de archivos después de cargar
                         setTimeout(() => {
-                            console.log('⚙️ Configurando sistema de archivos...');
                             
                             // Ejecutar todos los scripts del modal cargado
                             const scripts = overlay.querySelectorAll('script');
@@ -2030,9 +1765,7 @@ try {
                                     try {
                                         // Ejecutar el script en el contexto global
                                         eval(script.innerHTML);
-                                        console.log('✅ Script del modal ejecutado');
                                     } catch (error) {
-                                        console.error('❌ Error ejecutando script:', error);
                                     }
                                 }
                             });
@@ -2040,17 +1773,12 @@ try {
                             // Intentar ejecutar setupFileUpload si está disponible
                             if (typeof setupFileUpload === 'function') {
                                 setupFileUpload();
-                                console.log('✅ setupFileUpload ejecutado');
-                            } else {
-                                console.warn('⚠️ setupFileUpload no está disponible, pero los scripts ya se ejecutaron');
-                            }
+                            } 
                         }, 200);
                     }
                     
-                    console.log('🎉 Modal cargado exitosamente');
                 })
                 .catch(error => {
-                    console.error('❌ Error cargando modal:', error);
                     const modalContent = overlay.querySelector('#modal-content');
                     if (modalContent) {
                         modalContent.innerHTML = `
@@ -2065,22 +1793,18 @@ try {
         }
 
         function closeProductModal() {
-            console.log('🚪 closeProductModal() PRINCIPAL iniciado');
             
             // 💾 GUARDAR BORRADOR INMEDIATAMENTE ANTES DE CERRAR
             try {
                 if (typeof window.saveFormDraft === 'function') {
                     window.saveFormDraft();
-                    console.log('💾 Borrador guardado desde closeProductModal (admin.php)');
                 }
             } catch (e) {
-                console.warn('⚠️ Error al guardar borrador en close:', e);
             }
             
             // Manejar modal Ver Producto (principal)
             const viewModal = document.querySelector('.product-view-modal');
             if (viewModal) {
-                console.log('✅ Modal Ver Producto encontrado, cerrando con animación...');
                 
                 // Quitar clase show y agregar clase closing
                 viewModal.classList.remove('show');
@@ -2090,7 +1814,6 @@ try {
                 setTimeout(() => {
                     if (viewModal.parentNode) {
                         viewModal.remove();
-                        console.log('✅ Modal Ver Producto eliminado del DOM');
                     }
                     document.body.classList.remove('modal-open');
                 }, 400); // 400ms para coincidir con la duración de la animación
@@ -2100,7 +1823,6 @@ try {
             // Fallback: manejar otros tipos de modal
             const modal = document.getElementById('product-modal-overlay');
             if (modal) {
-                console.log('✅ Modal overlay encontrado, cerrando...');
                 modal.classList.remove('show');
                 modal.classList.add('closing');
                 
@@ -2114,7 +1836,6 @@ try {
             }
             
             // Si no hay modal, solo limpiar
-            console.log('⚠️ No se encontró modal para cerrar, solo limpiando estado');
             document.body.classList.remove('modal-open');
         }
         
@@ -2125,7 +1846,6 @@ try {
                 if (activeModal) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('⌨️ ESC presionada en admin.php - cerrando modal');
                     closeProductModal();
                 }
             }
@@ -2147,25 +1867,6 @@ try {
             }
         }
 
-        // Función de depuración para verificar el modal
-        function debugModal() {
-            const overlay = document.getElementById('product-modal-overlay');
-            if (overlay) {
-                console.log('🔍 Estado del modal:');
-                console.log('Display:', overlay.style.display);
-                console.log('Position:', overlay.style.position);
-                console.log('Z-index:', overlay.style.zIndex);
-                console.log('Classes:', overlay.className);
-                console.log('Overlay element:', overlay);
-                
-                // Forzar estilos de depuración
-                overlay.style.border = '3px solid red';
-                overlay.style.background = 'rgba(255, 0, 0, 0.2)';
-                console.log('✅ Estilos de depuración aplicados');
-            } else {
-                console.log('❌ No se encontró el modal overlay');
-            }
-        }
 
         // Función para limpiar modales residuales al cargar la página
         function cleanupModals() {
@@ -2186,17 +1887,12 @@ try {
             });
         }
 
-        // ===== INICIALIZAR ProductModalManager desde product-modals.js =====
-        console.log('🔧 Verificando disponibilidad de ProductModalManager...');
         
         // Verificar que la clase ProductModalManager esté disponible
         if (typeof ProductModalManager !== 'undefined') {
             // Crear instancia REAL de ProductModalManager
-            console.log('✅ ProductModalManager encontrado - creando instancia...');
             window.productModalManager = new ProductModalManager();
-            console.log('✅ ProductModalManager inicializado correctamente');
         } else {
-            console.error('❌ ProductModalManager no está definido - verificar carga de product-modals.js');
             // Fallback: crear objeto básico de compatibilidad
             window.productModalManager = {
                 showCreateProductModal: showCreateProductModal,
@@ -2207,66 +1903,22 @@ try {
             };
         }
 
-        // ===== INICIALIZAR SmoothTableUpdater desde smooth-table-update.js =====
-        console.log('🔧 Verificando disponibilidad de SmoothTableUpdater...');
-        console.log('SmoothTableUpdater type:', typeof SmoothTableUpdater);
         
         if (typeof SmoothTableUpdater !== 'undefined') {
-            console.log('✅ SmoothTableUpdater encontrado - creando instancia...');
             window.smoothTableUpdater = new SmoothTableUpdater();
-            console.log('✅ SmoothTableUpdater inicializado correctamente');
-            console.log('📋 Métodos disponibles:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.smoothTableUpdater)));
         } else {
-            console.error('❌ SmoothTableUpdater no está definido - verificar carga de smooth-table-update.js');
             window.smoothTableUpdater = null;
         }
 
 
         // Función global de emergencia para limpiar modales (accesible desde consola)
         window.emergencyCleanModal = function() {
-            console.log('🧹 Ejecutando limpieza de emergencia de modales...');
             // Desbloquear scroll del body
             document.body.classList.remove('modal-open');
             forceCloseModal();
             cleanupModals();
-            console.log('✅ Limpieza completada');
         };
 
-        // Función de test para modal
-        window.testModal = function() {
-            console.log('🧪 === TEST MODAL ===');
-            console.log('Verificando funciones...');
-            
-            if (typeof showCreateProductModal === 'function') {
-                console.log('✅ showCreateProductModal existe');
-                try {
-                    showCreateProductModal();
-                    console.log('✅ showCreateProductModal ejecutada');
-                } catch (error) {
-                    console.error('❌ Error ejecutando showCreateProductModal:', error);
-                }
-            } else {
-                console.error('❌ showCreateProductModal no está definida');
-            }
-        };
-
-        // Función de test para cerrar modal
-        window.testCloseModal = function() {
-            console.log('🧪 === TEST CLOSE MODAL ===');
-            console.log('Verificando función de cierre...');
-            
-            if (typeof window.closeProductModal === 'function') {
-                console.log('✅ closeProductModal existe globalmente');
-                try {
-                    window.closeProductModal();
-                    console.log('✅ closeProductModal ejecutada');
-                } catch (error) {
-                    console.error('❌ Error ejecutando closeProductModal:', error);
-                }
-            } else {
-                console.error('❌ closeProductModal no está definida globalmente');
-            }
-        };
 
         // Configuración inicial al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
@@ -2275,73 +1927,22 @@ try {
             // RESTAURAR TAB ACTIVO desde localStorage
             try {
                 const savedTab = localStorage.getItem('admin_active_tab');
-                console.log('📂 Tab guardado encontrado en localStorage:', savedTab);
                 
                 if (savedTab && savedTab !== 'dashboard') {
                     // Solo cambiar si es diferente de dashboard (que ya está activo por defecto)
                     const tabExists = document.querySelector(`[data-tab="${savedTab}"]`);
                     if (tabExists) {
-                        console.log('🔄 Restaurando tab:', savedTab);
                         switchTab(savedTab);
-                    } else {
-                        console.warn('⚠️ Tab guardado no existe, manteniendo dashboard');
-                    }
+                    } 
                 } else {
-                    console.log('📊 Dashboard activo (tab por defecto)');
                     // Guardar dashboard como tab activo si no hay nada guardado
                     if (!savedTab) {
                         localStorage.setItem('admin_active_tab', 'dashboard');
                     }
                 }
             } catch (e) {
-                console.warn('⚠️ Error al restaurar tab desde localStorage:', e);
             }
             
-            // Verificar funciones de navegación primero
-            console.log('🔍 Verificando funciones de navegación:', {
-                switchTab: typeof window.switchTab,
-                loadTabContent: typeof loadTabContent,
-                loadProductos: typeof loadProductos
-            });
-            
-            // Inicializar sistema de modales
-            cleanupModals();
-            console.log('📱 Sistema de modales inicializado');
-            
-            // Verificar que las funciones críticas existan
-            console.log('🔍 Verificando funciones del modal:', {
-                showCreateProductModal: typeof showCreateProductModal,
-                openProductModal: typeof openProductModal,
-                showModalOverlay: typeof showModalOverlay,
-                closeProductModal: typeof closeProductModal
-            });
-            
-            // Verificar botones después de un momento
-            setTimeout(function() {
-                console.log('🔍 === VERIFICACIÓN DE BOTONES ===');
-                
-                const createBtn = document.querySelector('.action-btn.add-product');
-                const editBtns = document.querySelectorAll('.edit-product-btn');
-                
-                console.log('Botón Nuevo Producto encontrado:', !!createBtn);
-                console.log('Cantidad de edit-product-btn:', editBtns.length);
-                
-                if (createBtn) {
-                    console.log('createBtn existe:', createBtn);
-                    console.log('createBtn onclick:', createBtn.onclick);
-                } else {
-                    console.warn('⚠️ Botón Nuevo Producto no encontrado');
-                }
-                
-                // También verificar si hay elementos de modal
-                const modalOverlay = document.getElementById('productModalOverlay');
-                const productModal = document.getElementById('productModal');
-                console.log('productModalOverlay encontrado:', !!modalOverlay);
-                console.log('productModal encontrado:', !!productModal);
-                
-                console.log('🧪 Ejecuta testModal() en la consola para probar el modal');
-            }, 1000);
-        });
 
         // También limpiar cuando se recarga la página
         window.addEventListener('load', function() {
@@ -2353,86 +1954,13 @@ try {
             forceCloseModal();
         });
         
-        // ===== FUNCIÓN DE DIAGNÓSTICO DEL SISTEMA =====
-        window.diagnosticoSistema = function() {
-            console.log('');
-            console.log('═══════════════════════════════════════════════════════');
-            console.log('🔍 DIAGNÓSTICO DEL SISTEMA SPA');
-            console.log('═══════════════════════════════════════════════════════');
-            console.log('');
-            
-            // 1. Verificar funciones de navegación
-            console.log('📍 FUNCIONES DE NAVEGACIÓN:');
-            console.log('  ✓ switchTab:', typeof window.switchTab === 'function' ? '✅' : '❌');
-            console.log('  ✓ loadTabContent:', typeof loadTabContent === 'function' ? '✅' : '❌');
-            console.log('  ✓ destroyCurrentModule:', typeof window.destroyCurrentModule === 'function' ? '✅' : '❌');
-            console.log('');
-            
-            // 2. Verificar funciones de carga específicas
-            console.log('📦 FUNCIONES DE CARGA ÚNICAS:');
-            console.log('  ✓ loadProductosSection:', typeof loadProductosSection === 'function' ? '✅' : '❌');
-            console.log('  ✓ loadCategoriasSection:', typeof loadCategoriasSection === 'function' ? '✅' : '❌');
-            console.log('  ✓ loadMarcasSection:', typeof loadMarcasSection === 'function' ? '✅' : '❌');
-            console.log('  ✓ loadUsuariosSection:', typeof loadUsuariosSection === 'function' ? '✅' : '❌');
-            console.log('');
-            
-            // 3. Verificar funciones de destrucción
-            console.log('🗑️ FUNCIONES DE DESTRUCCIÓN:');
-            console.log('  ✓ destroyProductosModule:', typeof window.destroyProductosModule === 'function' ? '✅ (cargado)' : '⏳ (se cargará con el módulo)');
-            console.log('  ✓ destroyCategoriasModule:', typeof window.destroyCategoriasModule === 'function' ? '✅ (cargado)' : '⏳ (se cargará con el módulo)');
-            console.log('  ✓ destroyMarcasModule:', typeof window.destroyMarcasModule === 'function' ? '✅ (cargado)' : '⏳ (se cargará con el módulo)');
-            console.log('');
-            
-            // 4. Verificar estado actual
-            console.log('📊 ESTADO ACTUAL:');
-            const activeTab = localStorage.getItem('admin_active_tab') || 'dashboard';
-            console.log('  • Tab activo:', activeTab);
-            console.log('  • Modales abiertos:', document.querySelectorAll('.modal-overlay, .product-view-modal').length);
-            console.log('  • Body bloqueado:', document.body.classList.contains('modal-open') ? '⚠️ SÍ' : '✅ NO');
-            console.log('');
-            
-            // 5. Verificar localStorage de vistas
-            console.log('👁️ ESTADO DE VISTAS (tabla/grid):');
-            console.log('  • Productos:', localStorage.getItem('productos_view_mode') || 'table (default)');
-            console.log('  • Categorías:', localStorage.getItem('categorias_view_mode') || 'table (default)');
-            console.log('  • Marcas:', localStorage.getItem('marcas_view_mode') || 'table (default)');
-            console.log('');
-            
-            // 6. Verificar funciones de modal
-            console.log('🎭 FUNCIONES DE MODAL:');
-            console.log('  ✓ showCreateProductModal:', typeof window.showCreateProductModal === 'function' ? '✅' : '❌');
-            console.log('  ✓ showEditProductModal:', typeof window.showEditProductModal === 'function' ? '✅' : '❌');
-            console.log('  ✓ closeProductModal:', typeof window.closeProductModal === 'function' ? '✅' : '❌');
-            console.log('');
-            
-            console.log('═══════════════════════════════════════════════════════');
-            console.log('💡 COMANDOS ÚTILES:');
-            console.log('  • diagnosticoSistema() - Ver este diagnóstico');
-            console.log('  • resetActiveTab() - Resetear tab activo');
-            console.log('  • testNavigation() - Probar navegación');
-            console.log('  • switchTab("productos") - Cambiar a productos');
-            console.log('  • window.destroyCurrentModule() - Limpiar módulo actual');
-            console.log('═══════════════════════════════════════════════════════');
-            console.log('');
-            
-            return 'Diagnóstico completado ✅';
-        };
         
-        // Ejecutar diagnóstico al cargar
-        console.log('🚀 Sistema SPA cargado. Ejecuta diagnosticoSistema() para verificar.');
     </script>
-    
-    <!-- ⭐ SISTEMA DE NOTIFICACIONES CON SWEETALERT2 ⭐ -->
+
+
     <script>
-    // ========================================
-    // 🍭 SISTEMA DE NOTIFICACIONES MODERNAS
-    // ========================================
-    
-    /**
-     * Notificación Toast - Aparece en la esquina superior derecha
-     * Más elegante y llamativa con animaciones
-     */
-    window.showNotification = function(message, type = 'info') {
+    function toggleUserMenu(event) {
+        event.stopPropagation();
         const icons = {
             'success': 'success',
             'error': 'error',
@@ -2744,12 +2272,10 @@ try {
                 anchorPlacement: 'top-bottom'
             });
             
-            console.log('✅ AOS.js inicializado con configuración mejorada');
             
             // Refrescar AOS cada vez que cambie el contenido
             window.refreshAOS = function() {
                 AOS.refresh();
-                console.log('🔄 AOS refrescado');
             };
             
             // Agregar animación a elementos que se carguen dinámicamente
@@ -2762,9 +2288,7 @@ try {
                 subtree: true
             });
             
-        } else {
-            console.error('❌ AOS.js no está cargado');
-        }
+        } 
     });
 
     // 2. Inicializar Chart.js - Todos los Gráficos
@@ -2815,7 +2339,6 @@ try {
                     }
                 }
             });
-            console.log('✅ Chart.js - Gráfico de Stock inicializado');
         }
 
         // Gráfico 2: Productos por Categoría
@@ -2878,11 +2401,9 @@ try {
                                 }
                             }
                         });
-                        console.log('✅ Chart.js - Gráfico de Categorías inicializado');
                     }
                 })
                 .catch(error => {
-                    console.error('❌ Error cargando datos de categorías:', error);
                 });
         }
 
@@ -2940,11 +2461,9 @@ try {
                                 }
                             }
                         });
-                        console.log('✅ Chart.js - Gráfico de Género inicializado');
                     }
                 })
                 .catch(error => {
-                    console.error('❌ Error cargando distribución por género:', error);
                 });
         }
 
@@ -3065,11 +2584,9 @@ try {
                                 }
                             }
                         });
-                        console.log('✅ Chart.js - Gráfico de Ventas inicializado');
                     }
                 })
                 .catch(error => {
-                    console.error('❌ Error cargando datos de ventas:', error);
                 });
         }
 
@@ -3079,11 +2596,7 @@ try {
         }, 1000);
     });
 
-    // 3. SweetAlert2 ya está listo para usar globalmente
-    console.log('✅ SweetAlert2 listo para usar');
 
-    // 4. Fetch API ya está disponible nativamente
-    console.log('✅ Fetch API disponible nativamente');
 
     // ========================================
     // 🔄 SISTEMA DE ACTUALIZACIÓN EN TIEMPO REAL
@@ -3101,7 +2614,6 @@ try {
     
     window.updateDashboardStats = async function() {
         try {
-            console.log('🔄 Actualizando estadísticas del dashboard...');
             
             // Mostrar indicador de carga en el badge
             const realtimeIndicator = document.getElementById('realtime-indicator');
@@ -3200,7 +2712,6 @@ try {
                     realtimeIndicator.innerHTML = '<i class="fas fa-sync-alt" style="margin-right: 5px;"></i>Actualización automática';
                 }
                 
-                console.log('✅ Estadísticas actualizadas correctamente');
                 
                 // Mostrar notificación sutil solo la primera vez
                 if (!window.dashboardFirstUpdate) {
@@ -3210,7 +2721,6 @@ try {
             }
             
         } catch (error) {
-            console.error('❌ Error actualizando dashboard:', error);
             
             // Mostrar error en el indicador
             const realtimeIndicator = document.getElementById('realtime-indicator');
@@ -3264,7 +2774,6 @@ try {
             }
             
         } catch (error) {
-            console.error('❌ Error cargando datos adicionales:', error);
         }
     };
     
@@ -3440,7 +2949,6 @@ try {
      * Se actualiza cada 30 segundos
      */
     window.startDashboardAutoUpdate = function(intervalSeconds = 30) {
-        console.log(`🔄 Iniciando actualización automática cada ${intervalSeconds} segundos`);
         
         // Limpiar intervalo existente
         if (dashboardUpdateInterval) {
@@ -3457,7 +2965,6 @@ try {
             }
         }, intervalSeconds * 1000);
         
-        console.log('✅ Actualización automática configurada');
     };
     
     /**
@@ -3467,7 +2974,6 @@ try {
         if (dashboardUpdateInterval) {
             clearInterval(dashboardUpdateInterval);
             dashboardUpdateInterval = null;
-            console.log('⏸️ Actualización automática detenida');
         }
     };
     
@@ -3506,26 +3012,6 @@ try {
         });
     };
 
-    // Ejemplo de uso de SweetAlert2 para confirmaciones
-    window.confirmAction = function(message, callback) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: message,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, continuar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed && callback) {
-                callback();
-            }
-        });
-    };
-
-    console.log('✅ Todas las librerías modernas inicializadas correctamente');
-    console.log('✅ Sistema de actualización en tiempo real configurado');
     </script>
 
 </body>

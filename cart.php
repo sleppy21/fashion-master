@@ -6,6 +6,7 @@
 
 session_start();
 require_once 'config/conexion.php';
+require_once 'app/views/components/product-card.php';
 
 $page_title = "Carrito de Compras";
 
@@ -164,6 +165,9 @@ try {
     <!-- Header Fix - DEBE IR AL FINAL -->
     <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
     
+    <!-- Product Cards Modern CSS -->
+    <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0">
+    
     <!-- Global Responsive Styles - TODO EL PROYECTO -->
     
     <style>
@@ -229,18 +233,23 @@ try {
         .shop__cart__table thead th:first-child {
             border-radius: 8px 0 0 8px;
             padding-left: 12px;
-            width: 35%;
+            width: 40px;
+            text-align: center;
         }
         
         .shop__cart__table thead th:nth-child(2) {
-            width: 16%;
+            width: 32%;
         }
         
         .shop__cart__table thead th:nth-child(3) {
-            width: 24%;
+            width: 16%;
         }
         
         .shop__cart__table thead th:nth-child(4) {
+            width: 20%;
+        }
+        
+        .shop__cart__table thead th:nth-child(5) {
             width: 16%;
         }
         
@@ -761,6 +770,27 @@ try {
             }
         }
         
+        /* Animaciones para toast de notificaciones */
+        @keyframes slideInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes progressBar {
+            from {
+                transform: scaleX(1);
+            }
+            to {
+                transform: scaleX(0);
+            }
+        }
+        
         #coupon-message.success {
             background: #d4edda;
             color: #155724;
@@ -1004,6 +1034,33 @@ try {
         .payment-icons img:hover {
             transform: scale(1.15);
             filter: brightness(1.1);
+        }
+        
+        .payment-icons i {
+            transition: all 0.3s ease;
+            opacity: 0.9;
+        }
+        
+        .payment-icons i:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        
+        /* Dark mode para iconos de pago */
+        body.dark-mode .payment-icons i.fa-cc-visa {
+            color: #5b7fff !important;
+        }
+        
+        body.dark-mode .payment-icons i.fa-cc-mastercard {
+            color: #ff5757 !important;
+        }
+        
+        body.dark-mode .payment-icons i.fa-cc-amex {
+            color: #4da6ff !important;
+        }
+        
+        body.dark-mode .payment-icons i.fa-credit-card {
+            color: #999 !important;
         }
 
         /* ========================================
@@ -1363,11 +1420,19 @@ try {
 
             .cart-mobile-item__header {
                 display: flex;
-                gap: 12px;
+                gap: 10px;
                 margin-bottom: 12px;
                 padding-bottom: 12px;
                 border-bottom: 1px solid #f0f0f0;
                 position: relative;
+                align-items: center; /* Centra verticalmente */
+            }
+
+            .cart-mobile-item__checkbox {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
             }
 
             .cart-mobile-item__image {
@@ -1752,6 +1817,172 @@ try {
                 margin-top: 30px;
             }
         }
+        
+        /* ============================================
+           ESTILOS PARA SELECT DE CANTIDAD
+           ============================================ */
+        .qty-select-cart {
+            width: 100px !important;
+            height: 40px !important;
+            padding: 0 32px 0 12px !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            color: #333 !important;
+            background: #ffffff !important;
+            border: 2px solid #e0e0e0 !important;
+            border-radius: 8px !important;
+            cursor: pointer !important;
+            outline: none !important;
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 12px center !important;
+            background-size: 10px !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+        }
+        
+        .qty-select-cart:hover {
+            border-color: #667eea !important;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15) !important;
+            transform: translateY(-1px);
+        }
+        
+        .qty-select-cart:focus {
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+            outline: none !important;
+        }
+        
+        .qty-select-cart:disabled {
+            opacity: 0.6;
+            cursor: not-allowed !important;
+            background-color: #f5f5f5 !important;
+        }
+        
+        .qty-select-cart option {
+            background: #ffffff !important;
+            color: #333 !important;
+            padding: 8px !important;
+        }
+        
+        /* Dark mode para select */
+        body.dark-mode .qty-select-cart {
+            background-color: #2a2a2e !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 12px center !important;
+            background-size: 10px !important;
+            color: #fff !important;
+            border-color: #404040 !important;
+        }
+        
+        body.dark-mode .qty-select-cart:hover {
+            border-color: #667eea !important;
+            background-color: #2a2a2e !important;
+        }
+        
+        body.dark-mode .qty-select-cart:focus {
+            border-color: #667eea !important;
+            background-color: #2a2a2e !important;
+        }
+        
+        body.dark-mode .qty-select-cart option {
+            background: #2a2a2e !important;
+            color: #fff !important;
+        }
+        
+        /* ============================================
+           ESTILOS PARA CHECKBOXES DE SELECCIÓN
+           ============================================ */
+        /* Ocultar checkbox nativo */
+        .item-checkbox,
+        .item-checkbox-mobile,
+        #select-all-items {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 2.5px solid #333;
+            border-radius: 50%; /* ⭕ CIRCULAR */
+            cursor: pointer;
+            position: relative;
+            background: white;
+            transition: all 0.3s ease;
+            margin: 0;
+            flex-shrink: 0;
+        }
+        
+        /* MÓVIL: Checkbox más pequeño y circular */
+        @media (max-width: 991px) {
+            .item-checkbox-mobile {
+                width: 20px !important;
+                height: 20px !important;
+                border-width: 2px !important;
+                border-radius: 50% !important; /* CIRCULAR en móvil */
+                min-width: 20px;
+            }
+            
+            .item-checkbox-mobile:checked::after {
+                font-size: 12px !important;
+            }
+        }
+        
+        /* Checkbox cuando está marcado */
+        .item-checkbox:checked,
+        .item-checkbox-mobile:checked,
+        #select-all-items:checked {
+            background: #667eea; /* Color más moderno */
+            border-color: #667eea;
+        }
+        
+        /* Check blanco dentro del cuadrado */
+        .item-checkbox:checked::after,
+        .item-checkbox-mobile:checked::after,
+        #select-all-items:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        /* Hover effect */
+        .item-checkbox:hover,
+        .item-checkbox-mobile:hover,
+        #select-all-items:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        }
+        
+        /* Dark mode para checkboxes */
+        body.dark-mode .item-checkbox,
+        body.dark-mode .item-checkbox-mobile,
+        body.dark-mode #select-all-items {
+            border-color: #fff;
+            background: #2a2a2e;
+        }
+        
+        body.dark-mode .item-checkbox:checked,
+        body.dark-mode .item-checkbox-mobile:checked,
+        body.dark-mode #select-all-items:checked {
+            background: #fff;
+            border-color: #fff;
+        }
+        
+        body.dark-mode .item-checkbox:checked::after,
+        body.dark-mode .item-checkbox-mobile:checked::after,
+        body.dark-mode #select-all-items:checked::after {
+            color: #000;
+        }
+    
     
     </style>
 </head>
@@ -1767,15 +1998,18 @@ try {
 
     <!-- Shop Cart Section Begin -->
     <section class="shop-cart spad">
-        <div class="container" style="max-width: 1400px;">
+        <div class="container-fluid px-lg-5" style="max-width: 1600px;">
             <?php if(!empty($cart_items)): ?>
             <div class="row">
                 <!-- Lista de Productos (Izquierda) -->
-                <div class="col-lg-9">
+                <div class="col-lg-8">
                     <div class="shop__cart__table">
                         <table>
                             <thead>
                                 <tr>
+                                    <th style="width: 40px; text-align: center;">
+                                        <input type="checkbox" id="select-all-items">
+                                    </th>
                                     <th>Producto</th>
                                     <th>Precio</th>
                                     <th>Cantidad</th>
@@ -1794,7 +2028,16 @@ try {
                                     $subtotal = $precio_final * $item['cantidad_carrito'];
                                     $imagen_url = !empty($item['url_imagen_producto']) ? $item['url_imagen_producto'] : 'public/assets/img/default-product.jpg';
                                 ?>
-                                <tr data-cart-id="<?php echo $item['id_carrito']; ?>">
+                                <tr data-cart-id="<?php echo $item['id_carrito']; ?>" 
+                                    data-price="<?php echo $precio_final; ?>" 
+                                    data-quantity="<?php echo $item['cantidad_carrito']; ?>"
+                                    data-subtotal="<?php echo $subtotal; ?>">
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <input type="checkbox" 
+                                               class="item-checkbox" 
+                                               data-cart-id="<?php echo $item['id_carrito']; ?>"
+                                               checked>
+                                    </td>
                                     <td class="cart__product__item">
                                         <img src="<?php echo htmlspecialchars($imagen_url); ?>" alt="<?php echo htmlspecialchars($item['nombre_producto']); ?>" style="width: 90px; height: 90px; object-fit: cover; border-radius: 8px;">
                                         <div class="cart__product__item__title">
@@ -1815,15 +2058,18 @@ try {
                                         <?php endif; ?>
                                     </td>
                                     <td class="cart__quantity">
-                                        <div class="pro-qty" style="display: flex; align-items: center; gap: 5px;">
-                                            <button class="qty-btn qty-minus" data-id="<?php echo $item['id_carrito']; ?>" style="width: 30px; height: 30px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 4px; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                            <input type="text" value="<?php echo $item['cantidad_carrito']; ?>" data-id="<?php echo $item['id_carrito']; ?>" data-max="<?php echo $item['stock_actual_producto']; ?>" class="quantity-input" readonly style="width: 50px; text-align: center; border: 1px solid #ddd; border-radius: 4px; height: 30px;">
-                                            <button class="qty-btn qty-plus" data-id="<?php echo $item['id_carrito']; ?>" data-max="<?php echo $item['stock_actual_producto']; ?>" style="width: 30px; height: 30px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 4px; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
+                                        <select class="qty-select-cart" 
+                                                data-id="<?php echo $item['id_carrito']; ?>" 
+                                                data-max="<?php echo $item['stock_actual_producto']; ?>">
+                                            <?php 
+                                            $max_qty = min(30, $item['stock_actual_producto']);
+                                            for($i = 1; $i <= $max_qty; $i++): 
+                                            ?>
+                                                <option value="<?php echo $i; ?>" <?php echo ($i == $item['cantidad_carrito']) ? 'selected' : ''; ?>>
+                                                    <?php echo $i; ?>
+                                                </option>
+                                            <?php endfor; ?>
+                                        </select>
                                     </td>
                                     <td class="cart__total">$<?php echo number_format($subtotal, 2); ?></td>
                                     <td class="cart__close" style="text-align: center;">
@@ -1849,11 +2095,24 @@ try {
                             $subtotal = $precio_final * $item['cantidad_carrito'];
                             $imagen_url = !empty($item['url_imagen_producto']) ? $item['url_imagen_producto'] : 'public/assets/img/default-product.jpg';
                         ?>
-                        <div class="cart-mobile-item" data-cart-id="<?php echo $item['id_carrito']; ?>">
+                        <div class="cart-mobile-item" 
+                             data-cart-id="<?php echo $item['id_carrito']; ?>"
+                             data-price="<?php echo $precio_final; ?>" 
+                             data-quantity="<?php echo $item['cantidad_carrito']; ?>"
+                             data-subtotal="<?php echo $subtotal; ?>">
                             <div class="cart-mobile-item__header">
+                                <!-- Checkbox a la izquierda -->
+                                <div class="cart-mobile-item__checkbox">
+                                    <input type="checkbox" 
+                                           class="item-checkbox-mobile" 
+                                           data-cart-id="<?php echo $item['id_carrito']; ?>"
+                                           checked>
+                                </div>
+                                <!-- Imagen del producto -->
                                 <div class="cart-mobile-item__image">
                                     <img src="<?php echo htmlspecialchars($imagen_url); ?>" alt="<?php echo htmlspecialchars($item['nombre_producto']); ?>">
                                 </div>
+                                <!-- Info del producto -->
                                 <div class="cart-mobile-item__info">
                                     <div class="cart-mobile-item__title">
                                         <?php echo htmlspecialchars($item['nombre_producto']); ?>
@@ -1878,20 +2137,18 @@ try {
                             <div class="cart-mobile-item__body">
                                 <div class="cart-mobile-item__quantity">
                                     <span class="cart-mobile-item__quantity-label">Cantidad</span>
-                                    <div class="quantity-controls" style="display: flex; align-items: center; gap: 5px;">
-                                        <button class="qty-btn qty-minus" data-id="<?php echo $item['id_carrito']; ?>" style="width: 30px; height: 30px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 4px; font-size: 16px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fa fa-minus"></i>
-                                        </button>
-                                        <input type="number" 
-                                               class="quantity-input" 
-                                               data-id="<?php echo $item['id_carrito']; ?>" 
-                                               value="<?php echo $item['cantidad_carrito']; ?>" 
-                                               readonly
-                                               style="width: 50px; height: 30px; text-align: center; border: 1px solid #ddd; border-radius: 4px; font-weight: 600;">
-                                        <button class="qty-btn qty-plus" data-id="<?php echo $item['id_carrito']; ?>" data-max="<?php echo $item['stock_actual_producto']; ?>" style="width: 30px; height: 30px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 4px; font-size: 16px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
+                                    <select class="qty-select-cart" 
+                                            data-id="<?php echo $item['id_carrito']; ?>" 
+                                            data-max="<?php echo $item['stock_actual_producto']; ?>">
+                                        <?php 
+                                        $max_qty = min(30, $item['stock_actual_producto']);
+                                        for($i = 1; $i <= $max_qty; $i++): 
+                                        ?>
+                                            <option value="<?php echo $i; ?>" <?php echo ($i == $item['cantidad_carrito']) ? 'selected' : ''; ?>>
+                                                <?php echo $i; ?>
+                                            </option>
+                                        <?php endfor; ?>
+                                    </select>
                                 </div>
                                 <div class="cart-mobile-item__total">
                                     <div class="cart-mobile-item__total-label">Total</div>
@@ -1903,10 +2160,129 @@ try {
                         </div>
                         <?php endforeach; ?>
                     </div>
+                    
+                    <!-- Productos Relacionados Dentro de la Columna Izquierda -->
+                    <?php
+                    // Obtener IDs de productos en el carrito y sus categorías
+                    $product_ids_in_cart = array_column($cart_items, 'id_producto');
+                    $category_ids = [];
+                    
+                    foreach($cart_items as $item) {
+                        $cat_result = executeQuery("SELECT id_categoria FROM producto WHERE id_producto = ?", [$item['id_producto']]);
+                        if($cat_result && !empty($cat_result)) {
+                            $category_ids[] = $cat_result[0]['id_categoria'];
+                        }
+                    }
+                    
+                    $category_ids = array_unique($category_ids);
+                    
+                    // Buscar productos relacionados con datos completos para el componente
+                    $related_products = [];
+                    if(!empty($category_ids)) {
+                        $placeholders = implode(',', array_fill(0, count($category_ids), '?'));
+                        $exclude_placeholders = implode(',', array_fill(0, count($product_ids_in_cart), '?'));
+                        
+                        $params = array_merge($category_ids, $product_ids_in_cart);
+                        
+                        $related_query = "
+                            SELECT DISTINCT
+                                p.id_producto,
+                                p.nombre_producto,
+                                p.precio_producto,
+                                p.descuento_porcentaje_producto,
+                                p.stock_actual_producto,
+                                p.url_imagen_producto,
+                                m.nombre_marca,
+                                c.nombre_categoria,
+                                COALESCE(AVG(r.calificacion), 0) as calificacion_promedio,
+                                COALESCE(COUNT(DISTINCT r.id_resena), 0) as total_resenas
+                            FROM producto p
+                            LEFT JOIN marca m ON p.id_marca = m.id_marca
+                            LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
+                            LEFT JOIN resena r ON p.id_producto = r.id_producto AND r.aprobada = 1
+                            WHERE p.id_categoria IN ($placeholders)
+                            AND p.id_producto NOT IN ($exclude_placeholders)
+                            AND p.status_producto = 1
+                            AND p.stock_actual_producto > 0
+                            GROUP BY p.id_producto
+                            ORDER BY RAND()
+                            LIMIT 9
+                        ";
+                        
+                        $related_products = executeQuery($related_query, $params);
+                    }
+                    
+                    // Si no hay productos relacionados, mostrar productos aleatorios de la tienda
+                    if(empty($related_products) && !empty($product_ids_in_cart)) {
+                        $exclude_placeholders = implode(',', array_fill(0, count($product_ids_in_cart), '?'));
+                        
+                        $random_query = "
+                            SELECT DISTINCT
+                                p.id_producto,
+                                p.nombre_producto,
+                                p.precio_producto,
+                                p.descuento_porcentaje_producto,
+                                p.stock_actual_producto,
+                                p.url_imagen_producto,
+                                m.nombre_marca,
+                                c.nombre_categoria,
+                                COALESCE(AVG(r.calificacion), 0) as calificacion_promedio,
+                                COALESCE(COUNT(DISTINCT r.id_resena), 0) as total_resenas
+                            FROM producto p
+                            LEFT JOIN marca m ON p.id_marca = m.id_marca
+                            LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
+                            LEFT JOIN resena r ON p.id_producto = r.id_producto AND r.aprobada = 1
+                            WHERE p.id_producto NOT IN ($exclude_placeholders)
+                            AND p.status_producto = 1
+                            AND p.stock_actual_producto > 0
+                            GROUP BY p.id_producto
+                            ORDER BY RAND()
+                            LIMIT 12
+                        ";
+                        
+                        $related_products = executeQuery($random_query, $product_ids_in_cart);
+                    }
+                    
+                    if(!empty($related_products)):
+                    ?>
+                    
+                    <div style="margin-top: 60px;">
+                        <div class="section-title">
+                            <h4>Productos que tal vez quieras agregar</h4>
+                        </div>
+                        
+                        <div class="row">
+                            <?php 
+                            // Obtener favoritos del usuario si está logueado
+                            $favoritos = [];
+                            $productos_en_carrito = [];
+                            
+                            if($usuario_logueado) {
+                                $fav_result = executeQuery("SELECT id_producto FROM favorito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
+                                if($fav_result) {
+                                    $favoritos = array_column($fav_result, 'id_producto');
+                                }
+                                
+                                $cart_result = executeQuery("SELECT id_producto FROM carrito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
+                                if($cart_result) {
+                                    $productos_en_carrito = array_column($cart_result, 'id_producto');
+                                }
+                            }
+                            
+                            foreach($related_products as $product): 
+                                $is_favorite = in_array($product['id_producto'], $favoritos);
+                                $in_cart = in_array($product['id_producto'], $productos_en_carrito);
+                                renderProductCard($product, $is_favorite, true, $in_cart);
+                            endforeach; 
+                            ?>
+                        </div>
+                    </div>
+                    
+                    <?php endif; ?>
                 </div>
 
                 <!-- Resumen del Carrito (Derecha) -->
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <div class="cart-summary-sidebar">
                         
                         <!-- Código de descuento -->
@@ -2013,11 +2389,11 @@ try {
                                 <p style="font-size: 11px; color: rgba(0, 0, 0, 0.6); text-align: center; margin: 15px 0 8px;">
                                     <i class="fa fa-lock"></i> Métodos de pago seguros
                                 </p>
-                                <div class="payment-icons">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" style="height: 25px; object-fit: contain;" title="Visa">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" alt="Mastercard" style="height: 25px; object-fit: contain;" title="Mastercard">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/601px-American_Express_logo_%282018%29.svg.png" alt="American Express" style="height: 25px; object-fit: contain;" title="American Express">
-                                    <img src="https://seeklogo.com/images/M/maestro-logo-9C54F0C006-seeklogo.com.png" alt="Maestro" style="height: 25px; object-fit: contain;" title="Maestro">
+                                <div class="payment-icons" style="display: flex; justify-content: center; gap: 12px; align-items: center; flex-wrap: wrap;">
+                                    <i class="fa fa-cc-visa" style="font-size: 32px; color: #1a1f71;" title="Visa"></i>
+                                    <i class="fa fa-cc-mastercard" style="font-size: 32px; color: #eb001b;" title="Mastercard"></i>
+                                    <i class="fa fa-cc-amex" style="font-size: 32px; color: #006fcf;" title="American Express"></i>
+                                    <i class="fa fa-credit-card" style="font-size: 28px; color: #333;" title="Otras tarjetas"></i>
                                 </div>
                             </div>
                         </div>
@@ -2038,139 +2414,6 @@ try {
                 </div>
             </div>
             <?php endif; ?>
-
-            <!-- Productos Relacionados -->
-            <?php if(!empty($cart_items)): 
-                // Obtener IDs de productos en el carrito y sus categorías
-                $product_ids_in_cart = array_column($cart_items, 'id_producto');
-                $category_ids = [];
-                
-                foreach($cart_items as $item) {
-                    $cat_result = executeQuery("SELECT id_categoria FROM producto WHERE id_producto = ?", [$item['id_producto']]);
-                    if($cat_result && !empty($cat_result)) {
-                        $category_ids[] = $cat_result[0]['id_categoria'];
-                    }
-                }
-                
-                $category_ids = array_unique($category_ids);
-                
-                // Buscar productos relacionados (misma categoría, no en carrito, con stock)
-                $related_products = [];
-                if(!empty($category_ids)) {
-                    $placeholders = implode(',', array_fill(0, count($category_ids), '?'));
-                    $exclude_placeholders = implode(',', array_fill(0, count($product_ids_in_cart), '?'));
-                    
-                    $params = array_merge($category_ids, $product_ids_in_cart);
-                    
-                    $related_query = "
-                        SELECT DISTINCT
-                            p.id_producto,
-                            p.nombre_producto,
-                            p.precio_producto,
-                            p.descuento_porcentaje_producto,
-                            p.stock_actual_producto,
-                            p.url_imagen_producto,
-                            m.nombre_marca,
-                            c.nombre_categoria,
-                            COALESCE(AVG(r.calificacion), 0) as rating,
-                            COALESCE(COUNT(DISTINCT r.id_resena), 0) as total_reviews
-                        FROM producto p
-                        LEFT JOIN marca m ON p.id_marca = m.id_marca
-                        LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
-                        LEFT JOIN resena r ON p.id_producto = r.id_producto AND r.aprobada = 1
-                        WHERE p.id_categoria IN ($placeholders)
-                        AND p.id_producto NOT IN ($exclude_placeholders)
-                        AND p.status_producto = 1
-                        AND p.stock_actual_producto > 0
-                        GROUP BY p.id_producto
-                        ORDER BY RAND()
-                        LIMIT 8
-                    ";
-                    
-                    $related_products = executeQuery($related_query, $params);
-                }
-            ?>
-            
-            <?php if(!empty($related_products)): ?>
-            <div class="row" style="margin-top: 60px;">
-                <div class="col-lg-12">
-                    <div class="section-title">
-                        <h4>Productos que tal vez quieras agregar</h4>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="row">
-                <?php foreach($related_products as $product): 
-                    $precio_original = $product['precio_producto'];
-                    $tiene_descuento = $product['descuento_porcentaje_producto'] > 0;
-                    $precio_final = $precio_original;
-                    $precio_anterior = null;
-                    
-                    if($tiene_descuento) {
-                        $precio_anterior = $precio_original;
-                        $precio_final = $precio_original * (1 - ($product['descuento_porcentaje_producto'] / 100));
-                    }
-                    
-                    $imagen_url = !empty($product['url_imagen_producto']) ? $product['url_imagen_producto'] : 'public/assets/img/default-product.jpg';
-                    $rating = round($product['rating'], 1);
-                    $total_reviews = $product['total_reviews'];
-                ?>
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="product__item">
-                        <?php if($tiene_descuento): ?>
-                        <div class="product__item__pic set-bg" data-setbg="<?php echo htmlspecialchars($imagen_url); ?>" style="background-image: url('<?php echo htmlspecialchars($imagen_url); ?>');">
-                            <div class="label sale">-<?php echo round($product['descuento_porcentaje_producto']); ?>%</div>
-                            <ul class="product__hover">
-                                <li><a href="<?php echo htmlspecialchars($imagen_url); ?>" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                <li><a href="#" class="add-to-favorites" data-id="<?php echo $product['id_producto']; ?>"><span class="icon_heart_alt"></span></a></li>
-                                <li><a href="product-details.php?id=<?php echo $product['id_producto']; ?>"><span class="icon_bag_alt"></span></a></li>
-                            </ul>
-                        </div>
-                        <?php else: ?>
-                        <div class="product__item__pic set-bg" data-setbg="<?php echo htmlspecialchars($imagen_url); ?>" style="background-image: url('<?php echo htmlspecialchars($imagen_url); ?>');">
-                            <ul class="product__hover">
-                                <li><a href="<?php echo htmlspecialchars($imagen_url); ?>" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                <li><a href="#" class="add-to-favorites" data-id="<?php echo $product['id_producto']; ?>"><span class="icon_heart_alt"></span></a></li>
-                                <li><a href="product-details.php?id=<?php echo $product['id_producto']; ?>"><span class="icon_bag_alt"></span></a></li>
-                            </ul>
-                        </div>
-                        <?php endif; ?>
-                        <div class="product__item__text">
-                            <h6><a href="product-details.php?id=<?php echo $product['id_producto']; ?>"><?php echo htmlspecialchars($product['nombre_producto']); ?></a></h6>
-                            <div class="rating">
-                                <?php 
-                                $full_stars = floor($rating);
-                                $has_half = ($rating - $full_stars) >= 0.5;
-                                
-                                for($i = 0; $i < $full_stars; $i++): ?>
-                                    <i class="fa fa-star"></i>
-                                <?php endfor; ?>
-                                
-                                <?php if($has_half): ?>
-                                    <i class="fa fa-star-half-o"></i>
-                                <?php endif; ?>
-                                
-                                <?php for($i = 0; $i < (5 - $full_stars - ($has_half ? 1 : 0)); $i++): ?>
-                                    <i class="fa fa-star-o"></i>
-                                <?php endfor; ?>
-                                
-                                <span>(<?php echo $total_reviews; ?>)</span>
-                            </div>
-                            <div class="product__price">
-                                $<?php echo number_format($precio_final, 2); ?>
-                                <?php if($tiene_descuento): ?>
-                                <span>$<?php echo number_format($precio_anterior, 2); ?></span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
-            <?php endif; ?>
-            <!-- Productos Relacionados End -->
         </div>
     </section>
     <!-- Shop Cart Section End -->
@@ -2239,8 +2482,12 @@ try {
                 baseUrlFromPHP = window.location.origin + basePath;
             }
             
+            // CRÍTICO: Si la página está en HTTPS, forzar BASE_URL a HTTPS
+            if (window.location.protocol === 'https:' && baseUrlFromPHP.startsWith('http://')) {
+                baseUrlFromPHP = baseUrlFromPHP.replace('http://', 'https://');
+            }
+            
             window.BASE_URL = baseUrlFromPHP;
-            console.log('🌐 BASE_URL configurado:', window.BASE_URL);
         })();
     </script>
     <script src="public/assets/js/jquery-3.3.1.min.js"></script>
@@ -2285,10 +2532,21 @@ try {
         // Determinar qué vista usar (desktop o móvil)
         const isMobile = window.innerWidth <= 576;
         const itemsSelector = isMobile ? '.cart-mobile-item[data-cart-id]' : 'tr[data-cart-id]';
+
+        let productosSeleccionados = 0;
         
-        // Calcular subtotal y descuentos de productos
+        // Calcular subtotal y descuentos solo de productos SELECCIONADOS
         $(itemsSelector).each(function() {
             const item = $(this);
+            
+            // Verificar si el checkbox está marcado
+            const checkbox = isMobile ? 
+                item.find('.item-checkbox-mobile') : 
+                item.find('.item-checkbox');
+            
+
+            
+            productosSeleccionados++;
             
             if(isMobile) {
                 // Vista móvil
@@ -2298,7 +2556,8 @@ try {
                 const priceOriginalText = item.find('.cart-mobile-item__price-original').text().trim().replace('$', '').replace(/,/g, '');
                 const precioOriginal = priceOriginalText ? parseFloat(priceOriginalText) : precioFinal;
                 
-                const cantidad = parseInt(item.find('.quantity-input').val());
+                const cantidad = parseInt(item.find('.qty-select-cart').val()); // 🔧 CORREGIDO
+                
                 
                 subtotalSinDescuento += precioOriginal * cantidad;
                 if(precioOriginal > precioFinal) {
@@ -2314,7 +2573,7 @@ try {
                 const priceTachado = priceCell.find('small').text().replace('$', '').replace(/,/g, '').trim();
                 const precioConDescuento = priceTachado ? parseFloat(precioOriginalText) : precioOriginal;
                 
-                const cantidad = parseInt(item.find('.quantity-input').val());
+                const cantidad = parseInt(item.find('.qty-select-cart').val());
                 
                 if(priceTachado) {
                     const precioOriginalReal = parseFloat(priceTachado);
@@ -2330,7 +2589,7 @@ try {
         const descuentoCupon = subtotalSinDescuento * (discountPercentage / 100);
         const descuentoTotal = descuentoProductos + descuentoCupon;
         const total = subtotalSinDescuento - descuentoTotal;
-        
+
         // Actualizar los valores en el DOM
         $('#cart-subtotal').text('$' + subtotalSinDescuento.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         
@@ -2366,49 +2625,31 @@ try {
         }
     }
 
-    // Botones +/- para cantidad
-    $(document).on('click', '.qty-plus', function() {
-        const button = $(this);
-        const cartId = button.data('id');
-        const maxStock = button.data('max');
-        const input = $('input[data-id="' + cartId + '"]');
-        let currentQty = parseInt(input.val());
+    // Select de cantidad - Evento change
+    $(document).on('change', '.qty-select-cart', function() {
+        const select = $(this);
+        const cartId = select.data('id');
+        const maxStock = select.data('max');
+        const newQty = parseInt(select.val());
+        const prevQty = parseInt(select.data('prev-value') || select.val());
         
-        if(currentQty < maxStock) {
-            currentQty++;
-            input.val(currentQty);
-            updateCartQuantityAjax(cartId, currentQty);
-        } else {
+        // Guardar el valor anterior
+        select.data('prev-value', prevQty);
+        
+        // Validar stock
+        if(newQty > maxStock) {
             alert('Stock máximo alcanzado: ' + maxStock);
+            select.val(Math.min(prevQty, maxStock));
+            return;
         }
-    });
-    
-    $(document).on('click', '.qty-minus', function() {
-        const button = $(this);
-        const cartId = button.data('id');
-        const input = $('input[data-id="' + cartId + '"]');
-        let currentQty = parseInt(input.val());
         
-        if(currentQty > 1) {
-            currentQty--;
-            input.val(currentQty);
-            updateCartQuantityAjax(cartId, currentQty);
+        if(newQty >= 1) {
+            // Deshabilitar el select mientras se actualiza
+            select.prop('disabled', true);
+            updateCartQuantityAjax(cartId, newQty, select);
+        } else {
+            select.val(prevQty);
         }
-    });
-    
-    // Hover effects para botones
-    $(document).on('mouseenter', '.qty-btn', function() {
-        $(this).css({
-            'background': '#f0f0f0',
-            'border-color': '#999'
-        });
-    });
-    
-    $(document).on('mouseleave', '.qty-btn', function() {
-        $(this).css({
-            'background': 'white',
-            'border-color': '#ddd'
-        });
     });
     
     // Hover para botón eliminar
@@ -2429,12 +2670,22 @@ try {
     });
     
     // Actualizar cantidad del carrito CON AJAX (solo actualiza totales)
-    function updateCartQuantityAjax(cartId, quantity) {
+    function updateCartQuantityAjax(cartId, quantity, selectElement) {
         $.post('app/actions/update_cart_quantity.php', {
             id_carrito: cartId,
             cantidad: quantity
         }, function(response) {
+            // Re-habilitar el select
+            if(selectElement) {
+                selectElement.prop('disabled', false);
+            }
+            
             if(response.success) {
+                // Actualizar valor previo
+                if(selectElement) {
+                    selectElement.data('prev-value', quantity);
+                }
+                
                 // Actualizar el precio total de la fila en tabla desktop
                 const row = $('tr[data-cart-id="' + cartId + '"]');
                 const priceCell = row.find('.cart__price');
@@ -2455,29 +2706,43 @@ try {
                     const mobileItem = $('.cart-mobile-item[data-cart-id="' + cartId + '"]');
                     mobileItem.find('.cart-mobile-item__total-amount').text('$' + newTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
                     
-                    // Actualizar input de cantidad en vista móvil
-                    mobileItem.find('.quantity-input').val(quantity);
+                    // Actualizar select de cantidad en vista móvil si existe
+                    mobileItem.find('.qty-select-cart').val(quantity);
                     
                     // Actualizar los totales del sidebar
                     updateCartTotals();
                 } else {
-                    console.error('Error al calcular precio:', priceText);
                     location.reload();
                 }
             } else {
                 alert(response.message);
                 // Revertir cantidad si hay error
-                location.reload();
+                if(selectElement) {
+                    const prevQty = parseInt(selectElement.data('prev-value') || 1);
+                    selectElement.val(prevQty);
+                }
             }
         }, 'json').fail(function() {
+            // Re-habilitar el select en caso de error
+            if(selectElement) {
+                selectElement.prop('disabled', false);
+                const prevQty = parseInt(selectElement.data('prev-value') || 1);
+                selectElement.val(prevQty);
+            }
             alert('Error al actualizar el carrito');
-            location.reload();
         });
     }
     
     // Eliminar item del carrito (usando Fetch API handler moderno)
-    $(document).on('click', '.remove-cart-item', function() {
+    $(document).on('click', '.remove-cart-item', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
         const cartId = $(this).data('id');
+        
+        if (!cartId) {
+            return;
+        }
 
         // Preferir la función global removeFromCart si está disponible
         if (typeof window.removeFromCart === 'function') {
@@ -2487,7 +2752,6 @@ try {
                     // Aquí dejamos que removeFromCart muestre notificación cuando falle
                 }
             }).catch(err => {
-                console.error('Error calling removeFromCart:', err);
             });
         } else {
             // Fallback al método antiguo por compatibilidad
@@ -2495,6 +2759,11 @@ try {
                 id_carrito: cartId
             }, function(response) {
                 if(response.success) {
+                    // Mostrar notificación
+                    if (typeof window.showNotification === 'function') {
+                        window.showNotification('Producto eliminado del carrito', 'success');
+                    }
+                    
                     // Eliminar fila de la tabla desktop con animación
                     $('tr[data-cart-id="' + cartId + '"]').fadeOut(400, function() {
                         $(this).remove();
@@ -2514,11 +2783,23 @@ try {
                             location.reload();
                         }
                     });
+                    
+                    // Actualizar contador
+                    if(response.cart_count !== undefined) {
+                        $('.cart-count, .header-cart-count').text(response.cart_count);
+                        if(response.cart_count === 0) {
+                            $('.cart-count, .header-cart-count').hide();
+                        }
+                    }
                 } else {
-                    alert(response.message);
+                    if (typeof window.showNotification === 'function') {
+                        window.showNotification(response.message || 'Error al eliminar', 'error');
+                    }
                 }
             }, 'json').fail(function() {
-                alert('Error al eliminar el producto');
+                if (typeof window.showNotification === 'function') {
+                    window.showNotification('Error al eliminar el producto', 'error');
+                }
             });
         }
     });
@@ -2643,6 +2924,203 @@ try {
 
         // El manejo del offcanvas ahora está en offcanvas-menu.js
     });
+
+    // ======== MANEJO DE CHECKBOXES DE SELECCIÓN ========
+    
+    // Checkbox individual - Desktop
+    $(document).on('change', '.item-checkbox', function() {
+        updateCartTotals();
+        updateSelectAllCheckbox();
+    });
+    
+    // Checkbox individual - Mobile
+    $(document).on('change', '.item-checkbox-mobile', function() {
+        updateCartTotals();
+        updateSelectAllCheckbox();
+    });
+    
+    // Checkbox "Seleccionar todo"
+    $(document).on('change', '#select-all-items', function() {
+        const isChecked = $(this).is(':checked');
+        $('.item-checkbox').prop('checked', isChecked);
+        $('.item-checkbox-mobile').prop('checked', isChecked);
+        updateCartTotals();
+    });
+    
+    // Función para actualizar el estado del checkbox "Seleccionar todo"
+    function updateSelectAllCheckbox() {
+        const isMobile = window.innerWidth <= 576;
+        const checkboxes = isMobile ? $('.item-checkbox-mobile') : $('.item-checkbox');
+        const totalCheckboxes = checkboxes.length;
+        const checkedCheckboxes = checkboxes.filter(':checked').length;
+        
+        const selectAllCheckbox = $('#select-all-items');
+        
+        if (checkedCheckboxes === 0) {
+            selectAllCheckbox.prop('checked', false);
+            selectAllCheckbox.prop('indeterminate', false);
+        } else if (checkedCheckboxes === totalCheckboxes) {
+            selectAllCheckbox.prop('checked', true);
+            selectAllCheckbox.prop('indeterminate', false);
+        } else {
+            selectAllCheckbox.prop('checked', false);
+            selectAllCheckbox.prop('indeterminate', true);
+        }
+    }
+    
+    // Inicializar al cargar la página
+    $(document).ready(function() {
+        updateSelectAllCheckbox();
+        updateCartTotals();
+    });
+    
+    // ======== AGREGAR AL CARRITO DESDE PRODUCTOS RELACIONADOS ========
+    
+    $(document).on('click', '.add-to-cart', function(e) {
+        e.preventDefault();
+        
+        const btn = $(this);
+        const productId = btn.data('id');
+        const isDisabled = btn.data('disabled');
+        const isInCart = btn.data('in-cart') === 'true';
+        
+        // No hacer nada si está deshabilitado (sin stock)
+        if (isDisabled) {
+            return;
+        }
+        
+        // Si ya está en carrito, removerlo
+        if (isInCart) {
+            removeProductFromCart(productId, btn);
+            return;
+        }
+        
+        // Agregar al carrito
+        addToCartRelated(productId, btn);
+    });
+    
+    function addToCartRelated(productId, btn) {
+        // Deshabilitar botón temporalmente
+        btn.prop('disabled', true).css('opacity', '0.6');
+        
+        $.ajax({
+            url: 'app/actions/add_to_cart.php',
+            type: 'POST',
+            data: { 
+                id_producto: productId,
+                cantidad: 1
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // Actualizar ícono del botón
+                    btn.find('span').removeClass('icon_bag_alt').addClass('icon_check');
+                    btn.data('in-cart', 'true');
+                    btn.attr('title', 'Quitar del carrito');
+                    
+                    // Actualizar contador del header
+                    if (response.cart_count !== undefined) {
+                        $('.cart-count, .header-cart-count').text(response.cart_count);
+                        if (response.cart_count > 0) {
+                            $('.cart-count, .header-cart-count').show();
+                        }
+                    }
+                    
+                    // Mostrar notificación usando el sistema global
+                    if (typeof window.showNotification === 'function') {
+                        window.showNotification('Producto agregado al carrito', 'success');
+                    }
+                    
+                    // Recargar página después de 1 segundo para actualizar la lista
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    if (typeof window.showNotification === 'function') {
+                        window.showNotification(response.message || 'Error al agregar al carrito', 'error');
+                    }
+                }
+            },
+            error: function(xhr) {
+                let errorMsg = 'Error al agregar al carrito';
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    errorMsg = response.message || errorMsg;
+                } catch(e) {}
+                if (typeof window.showNotification === 'function') {
+                    window.showNotification(errorMsg, 'error');
+                }
+            },
+            complete: function() {
+                btn.prop('disabled', false).css('opacity', '1');
+            }
+        });
+    }
+    
+    function removeProductFromCart(productId, btn) {
+        // Deshabilitar botón temporalmente
+        btn.prop('disabled', true).css('opacity', '0.6');
+        
+        // Buscar el id_carrito del producto
+        $.ajax({
+            url: 'app/actions/remove_from_cart.php',
+            type: 'POST',
+            data: { 
+                id_producto: productId
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // Actualizar ícono del botón
+                    btn.find('span').removeClass('icon_check').addClass('icon_bag_alt');
+                    btn.data('in-cart', 'false');
+                    btn.attr('title', 'Agregar al carrito');
+                    
+                    // Actualizar contador del header
+                    if (response.cart_count !== undefined) {
+                        $('.cart-count, .header-cart-count').text(response.cart_count);
+                        if (response.cart_count === 0) {
+                            $('.cart-count, .header-cart-count').hide();
+                        }
+                    }
+                    
+                    // Mostrar notificación usando el sistema global
+                    if (typeof window.showNotification === 'function') {
+                        window.showNotification('Producto removido del carrito', 'info');
+                    }
+                    
+                    // Recargar página después de 1 segundo
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    if (typeof window.showNotification === 'function') {
+                        window.showNotification(response.message || 'Error al remover del carrito', 'error');
+                    }
+                }
+            },
+            error: function() {
+                if (typeof window.showNotification === 'function') {
+                    window.showNotification('Error al remover del carrito', 'error');
+                }
+            },
+            complete: function() {
+                btn.prop('disabled', false).css('opacity', '1');
+            }
+        });
+    }
+    
+    // Debug: Verificar que showNotification está disponible
+    $(document).ready(function() {
+        
+        // Test automático después de 1 segundo (solo para debug, puedes comentarlo después)
+        // setTimeout(function() {
+        //     if (typeof window.showNotification === 'function') {
+        //         window.showNotification('Sistema de notificaciones cargado correctamente', 'success');
+        //     }
+        // }, 1000);
+    });
+    
     </script>
     
     <!-- Chatbot Widget -->

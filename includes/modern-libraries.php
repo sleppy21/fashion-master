@@ -123,14 +123,12 @@ document.addEventListener('DOMContentLoaded', function() {
             observerOnce: true
         });
         
-        console.log('✨ AOS initialized successfully');
     }
 
     // Reiniciar AOS cuando se actualice contenido dinámico
     document.addEventListener('contentUpdated', function() {
         if (typeof AOS !== 'undefined') {
             AOS.refresh();
-            console.log('🔄 AOS refreshed after content update');
         }
     });
     
@@ -139,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (typeof AOS !== 'undefined') {
             setTimeout(function() {
                 AOS.refresh();
-                console.log('🛍️ AOS refreshed after products update');
             }, 100);
         }
     });

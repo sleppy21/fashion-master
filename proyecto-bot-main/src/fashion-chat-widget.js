@@ -90,6 +90,9 @@ class FashionStoreChatWidget {
      * Crear solo el botón flotante (sin el chat aún)
      */
     createFloatingButton() {
+        // BOTÓN OCULTO - El chatbot no está activo actualmente
+        return;
+        
         // Verificar que el CSS esté cargado
         this.ensureCSSLoaded();
         

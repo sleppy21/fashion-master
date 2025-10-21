@@ -286,17 +286,13 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         try {
             if (typeof window.saveFormDraft === 'function') {
                 window.saveFormDraft();
-                console.log('💾 Borrador guardado antes de cerrar modal');
             }
         } catch (e) {
-            console.warn('⚠️ Error al guardar borrador antes de cerrar:', e);
         }
         
         // Siempre llamar a la función global
         if (typeof window.closeProductModal === 'function') {
             window.closeProductModal();
-        } else {
-            console.error('❌ closeProductModal no está disponible');
         }
     }
     
@@ -362,9 +358,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
             overlay.clickHandler = function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('🔘 Click en overlay');
                 
-                // 💾 GUARDAR BORRADOR ANTES DE CERRAR
                 try {
                     if (typeof window.saveFormDraft === 'function') {
                         window.saveFormDraft();
@@ -966,13 +960,11 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
           // 🗑️ LIMPIAR BORRADOR AL GUARDAR EXITOSAMENTE
           try {
             localStorage.removeItem('product_form_draft');
-            console.log('🗑️ Borrador limpiado tras guardar');
           } catch (e) { }
           
           // ⭐ GUARDAR TAB ACTIVO EN LOCALSTORAGE (PARENT)
           if (window.parent && window.parent.localStorage) {
             window.parent.localStorage.setItem('admin_active_tab', 'productos');
-            console.log('💾 Tab "productos" guardado en localStorage');
           }
           
           // ⭐ MOSTRAR NOTIFICACIÓN DE ÉXITO
@@ -986,7 +978,6 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
           
           // 🔄 ACTUALIZACIÓN EN TIEMPO REAL con producto completo
           if (data.product) {
-            console.log('📦 Producto recibido del backend:', data.product);
             reloadParentProductsTable(data.product);
             
             // ⏱️ Pequeño delay para asegurar que la actualización se complete
@@ -996,12 +987,9 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
                 window.closeProductModal();
               } else if (typeof window.parent !== 'undefined' && typeof window.parent.closeProductModal === 'function') {
                 window.parent.closeProductModal();
-              } else {
-                console.error('❌ closeProductModal no disponible');
-              }
+              } 
             }, 150); // 150ms para dar tiempo a la animación
           } else {
-            console.warn('⚠️ No se recibió producto actualizado, cerrando sin actualizar');
             // Si no hay producto, cerrar inmediatamente
             if (typeof window.closeProductModal === 'function') {
               window.closeProductModal();
@@ -1044,55 +1032,33 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
     try {
       // Acceder a window.parent o window dependiendo del contexto
       const targetWindow = (window.parent && window.parent !== window) ? window.parent : window;
-      
-      console.log('🔍 Verificando actualización en tiempo real...');
-      console.log('   - targetWindow:', targetWindow !== window ? 'parent' : 'self');
-      console.log('   - smoothTableUpdater existe:', !!targetWindow.smoothTableUpdater);
-      console.log('   - updatedProduct:', updatedProduct);
+    
       
       if (targetWindow.smoothTableUpdater && updatedProduct) {
         // 🆕 DETECTAR SI ES CREAR O EDITAR
         const isCreate = !document.getElementById('productForm')?.querySelector('input[name="id_producto"]')?.value;
         
-        console.log('   - Modo:', isCreate ? 'CREAR' : 'EDITAR');
-        console.log('   - ID del producto:', updatedProduct.id_producto);
         
         if (isCreate) {
           // ⭐ CREAR NUEVO PRODUCTO EN TABLA
-          console.log('➕ Agregando nuevo producto con smooth-table-update:', updatedProduct);
           return targetWindow.smoothTableUpdater.addNewProduct(updatedProduct)
             .then(() => {
-              console.log('✅ Producto agregado exitosamente en tiempo real');
             })
             .catch(err => {
-              console.error('❌ Error al agregar producto:', err);
               fallbackReload(targetWindow);
             });
         } else {
-          // ⭐ ACTUALIZAR PRODUCTO EXISTENTE EN TIEMPO REAL
-          console.log('✏️ Actualizando producto existente con smooth-table-update...');
-          console.log('   - Código anterior vs nuevo:', updatedProduct.codigo);
-          
+
           return targetWindow.smoothTableUpdater.updateSingleProduct(updatedProduct.id_producto, updatedProduct)
-            .then(() => {
-              console.log('✅ Producto actualizado exitosamente en tiempo real');
-              console.log('   - Código actualizado a:', updatedProduct.codigo);
-            })
+
             .catch(err => {
-              console.error('❌ Error al actualizar producto:', err);
-              console.error('   - Detalle:', err.message || err);
               fallbackReload(targetWindow);
             });
         }
       } else {
-        console.warn('⚠️ smoothTableUpdater no disponible o sin producto, usando recarga completa');
-        if (!targetWindow.smoothTableUpdater) console.warn('   - smoothTableUpdater no existe');
-        if (!updatedProduct) console.warn('   - updatedProduct es null/undefined');
         fallbackReload(targetWindow);
       }
     } catch (err) {
-      console.error('❌ Error en reloadParentProductsTable:', err);
-      console.error('   - Stack:', err.stack);
     }
   }
   
@@ -1170,17 +1136,12 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         ev.preventDefault();
         ev.stopPropagation(); // Prevenir burbujeo de eventos
         
-        console.log('🔘 Botón de cerrar modal clickeado');
         
         // Llamar a closeProductModal() globalmente
         if (typeof window.closeProductModal === 'function') {
-          console.log('✅ Llamando a window.closeProductModal()');
           window.closeProductModal();
         } else if (typeof window.parent !== 'undefined' && typeof window.parent.closeProductModal === 'function') {
-          console.log('✅ Llamando a window.parent.closeProductModal()');
           window.parent.closeProductModal();
-        } else {
-          console.error('❌ closeProductModal no encontrado');
         }
       }, { once: true }); // once:true previene clicks múltiples
     });
@@ -1190,7 +1151,6 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
     if (modalContent) {
       modalContent.addEventListener('click', (e) => {
         e.stopPropagation(); // Prevenir que el clic se propague al overlay
-        console.log('🖱️ Clic dentro del modal-content, previniendo cierre');
       });
     }
   }
@@ -1316,26 +1276,20 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
       if (fileInput && fileInput.dataset.cropped) {
         // Guardar la imagen procesada (base64)
         draft._imagePreview = fileInput.dataset.cropped;
-        console.log('🖼️ Imagen guardada en borrador');
       }
     } catch (e) {
-      console.warn('⚠️ Error al guardar imagen:', e);
     }
     
     // Guardar en localStorage
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-      console.log('💾 Borrador guardado automáticamente');
     } catch (e) {
-      console.warn('⚠️ No se pudo guardar el borrador:', e);
       // Si falla por tamaño, intentar sin imagen
       if (e.name === 'QuotaExceededError' && draft._imagePreview) {
         delete draft._imagePreview;
         try {
           localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-          console.log('💾 Borrador guardado sin imagen (límite de espacio)');
         } catch (e2) {
-          console.error('❌ No se pudo guardar incluso sin imagen');
         }
       }
     }
@@ -1345,25 +1299,21 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
   window.restoreFormDraft = function(force = false) {
     const form = document.getElementById('productForm');
     if (!form) {
-      console.log('⚠️ No se encontró formulario para restaurar');
       return false;
     }
     
     // Solo restaurar si es modo CREAR
     const isEdit = form.querySelector('input[name="id_producto"]')?.value;
     if (isEdit) {
-      console.log('ℹ️ Modo EDITAR detectado, no se restaura borrador');
       return false;
     }
     
     try {
       const draftJSON = localStorage.getItem(DRAFT_KEY);
       if (!draftJSON) {
-        console.log('ℹ️ No hay borrador guardado en localStorage');
         return false;
       }
       
-      console.log('🔍 Borrador encontrado en localStorage:', draftJSON.substring(0, 100) + '...');
       
       const draft = JSON.parse(draftJSON);
       let hasData = false;
@@ -1423,22 +1373,17 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
             
             hasData = true;
             restoredCount++;
-            console.log('🖼️ Imagen restaurada desde borrador');
           }
         } catch (e) {
-          console.warn('⚠️ Error al restaurar imagen:', e);
         }
       }
       
       if (hasData) {
-        console.log(`📂 Borrador restaurado (${restoredCount} campos)`);
         return true;
       } else {
-        console.log('ℹ️ No se encontraron campos para restaurar');
         return false;
       }
     } catch (e) {
-      console.warn('⚠️ No se pudo restaurar el borrador:', e);
       return false;
     }
   };
@@ -1447,7 +1392,6 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
   window.clearFormDraft = function() {
     try {
       localStorage.removeItem(DRAFT_KEY);
-      console.log('🗑️ Borrador eliminado');
       
       // Limpiar formulario
       const form = document.getElementById('productForm');
@@ -1472,7 +1416,6 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         window.parent.showNotification('Borrador limpiado', 'success');
       }
     } catch (e) {
-      console.warn('⚠️ Error al limpiar borrador:', e);
     }
   };
 
@@ -1566,7 +1509,6 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         }
       }, 500);
     } catch (e) {
-      console.warn('⚠️ Error en restauración de borrador:', e);
     }
     
     // 🔥 ACTIVAR AUTOGUARDADO en todos los campos del formulario
@@ -1587,7 +1529,6 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
               input.addEventListener('change', function() {
                 if (window.saveFormDraft) {
                   window.saveFormDraft();
-                  console.log('💾 Guardado inmediato desde', input.name);
                 }
               });
             } else {
@@ -1597,10 +1538,8 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
             inputCount++;
           }
         });
-        console.log('✅ Autoguardado activado en', inputCount, 'campos');
       }
     } catch (e) {
-      console.warn('⚠️ Error al activar autoguardado:', e);
     }
     
     // 🔥 GUARDAR BORRADOR AL HACER CLIC EN CANCELAR
@@ -1608,16 +1547,13 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
       const cancelBtn = context.querySelector('.modal-footer .btn-secondary');
       if (cancelBtn) {
         cancelBtn.addEventListener('click', function() {
-          console.log('🔘 Botón Cancelar clickeado');
           
           // 💾 GUARDAR BORRADOR ANTES DE CERRAR
           try {
             if (typeof window.saveFormDraft === 'function') {
               window.saveFormDraft();
-              console.log('💾 Borrador guardado desde botón Cancelar');
             }
           } catch (err) {
-            console.warn('⚠️ Error al guardar desde Cancelar:', err);
           }
           
           // Cerrar modal
@@ -1625,10 +1561,8 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
             window.closeProductModal();
           }
         });
-        console.log('✅ Listener agregado al botón Cancelar');
       }
     } catch (e) {
-      console.warn('⚠️ Error al configurar botón Cancelar:', e);
     }
     
     // Inicializar auto-expand del textarea de descripción

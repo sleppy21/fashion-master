@@ -1124,13 +1124,13 @@ body.dark-mode .total-row.discount-row {
 body.dark-mode .btn-proceed-checkout,
 body.dark-mode .mobile-checkout-btn {
     /* Mantener el gradiente rojo original - no aplicar modo oscuro */
-    background: #c9a67c !important;
+    background: linear-gradient(135deg, #ca1515 0%, #a01010 100%);
     color: white !important;
 }
 
 body.dark-mode .btn-proceed-checkout:hover,
 body.dark-mode .mobile-checkout-btn:hover {
-    background: #c9a67c !important;
+    background: linear-gradient(135deg, #ca1515 0%, #a01010 100%);
     color: white !important;
 }
 
@@ -1583,7 +1583,7 @@ body.dark-mode .offcanvas__user-compact:hover {
 
 body.dark-mode .user-avatar-circle {
     background: linear-gradient(135deg, #dc143c 0%, #b01030 100%) !important;
-    border: 2px solid rgba(220, 20, 60, 0.3) !important;
+    border: none !important;
 }
 
 body.dark-mode .user-avatar-circle i {

@@ -95,8 +95,6 @@
         // Si se encontró el ID, navegar
         if(productId) {
             window.location.href = `product-details.php?id=${productId}`;
-        } else {
-            console.warn('⚠️ Could not find product ID for navigation');
         }
     }
 

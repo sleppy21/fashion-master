@@ -8,7 +8,6 @@
     // Función para verificar si una función/plugin existe
     function checkPlugin(name, fn) {
         if (typeof fn === 'undefined') {
-            console.warn('Plugin "' + name + '" no está disponible');
             return false;
         }
         return true;
@@ -19,7 +18,6 @@
         try {
             callback();
         } catch (error) {
-            console.warn('Error en ' + name + ':', error.message);
         }
     }
     

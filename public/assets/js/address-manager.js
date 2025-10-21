@@ -62,7 +62,6 @@
                 }
                 
                 // Cargar cascada de ubigeo (departamento → provincia → distrito)
-                console.log('📍 Cargando ubigeo para edición:', dir.departamento_direccion);
                 
                 // Esperar a que ubigeoDataProfile esté cargado
                 const waitForUbigeo = setInterval(function() {
@@ -112,7 +111,6 @@
                                         // 5. Seleccionar distrito guardado
                                         selectDistrito.val(dir.distrito_direccion);
                                         
-                                        console.log('✅ Ubigeo cargado:', dir.departamento_direccion, '→', dir.provincia_direccion, '→', dir.distrito_direccion);
                                     }
                                 }
                             }
@@ -126,7 +124,6 @@
                 showToast(data.error || 'No se pudo cargar la dirección', 'error');
             }
         } catch (error) {
-            console.error('Error al cargar dirección:', error);
             showToast('Error al cargar la dirección', 'error');
         } finally {
             saveAddressBtn.prop('disabled', false).html('<i class="fa fa-save"></i> Guardar Dirección');
@@ -171,7 +168,6 @@
                 saveAddressBtn.prop('disabled', false).html('<i class="fa fa-save"></i> Guardar Dirección');
             }
         } catch (error) {
-            console.error('Error al guardar dirección:', error);
             showToast('Error al guardar la dirección', 'error');
             saveAddressBtn.prop('disabled', false).html('<i class="fa fa-save"></i> Guardar Dirección');
         }
@@ -183,10 +179,11 @@
     async function setDefaultAddress(addressId) {
         
         try {
+            const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
             const formData = new FormData();
             formData.append('id_direccion', addressId);
             
-            const response = await fetch('app/actions/set_default_address.php', {
+            const response = await fetch(baseUrl + '/app/actions/set_default_address.php', {
                 method: 'POST',
                 body: formData
             });
@@ -202,7 +199,6 @@
                 showToast(data.error || 'Error al establecer dirección predeterminada', 'error');
             }
         } catch (error) {
-            console.error('Error al establecer dirección predeterminada:', error);
             showToast('Error al establecer dirección predeterminada', 'error');
         }
     }
@@ -213,10 +209,11 @@
     async function deleteAddress(addressId) {
         
         try {
+            const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
             const formData = new FormData();
             formData.append('id_direccion', addressId);
             
-            const response = await fetch('app/actions/delete_address.php', {
+            const response = await fetch(baseUrl + '/app/actions/delete_address.php', {
                 method: 'POST',
                 body: formData
             });
@@ -230,7 +227,6 @@
                 showToast(data.error || 'Error al eliminar la dirección', 'error');
             }
         } catch (error) {
-            console.error('Error al eliminar dirección:', error);
             showToast('Error al eliminar la dirección', 'error');
         }
     }

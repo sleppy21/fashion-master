@@ -37,9 +37,10 @@ body {
 	font-family: "Montserrat", sans-serif;
 	-webkit-font-smoothing: antialiased;
 	background-color: #f8f5f2; /* Color por defecto para todas las páginas */
-	/* Scrollbar solo cuando sea necesario */
-	overflow-y: auto !important;
+	/* Scrollbar siempre visible */
+	overflow-y: scroll !important;
 	overflow-x: hidden !important;
+	scrollbar-gutter: stable;
 }
 
 h1,
@@ -3813,4 +3814,304 @@ body.dark-mode #user-account-link:hover {
 
 body.dark-mode .header__right__auth a {
 	color: #fff;
+}
+
+/* ============================================
+   SCROLLBAR GLOBAL - SIEMPRE VISIBLE
+   ============================================ */
+
+/* Forzar que el scrollbar siempre esté visible */
+html {
+	overflow-y: scroll !important;
+	overflow-x: hidden !important;
+}
+
+body {
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
+}
+
+/* Estilos del scrollbar para Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+	width: 12px;
+	height: 12px;
+}
+
+::-webkit-scrollbar-track {
+	background: #e0e0e0;
+	border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #888;
+	border-radius: 6px;
+	border: 2px solid #e0e0e0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #666;
+}
+
+::-webkit-scrollbar-thumb:active {
+	background: #555;
+}
+
+/* Dark mode para scrollbar */
+body.dark-mode ::-webkit-scrollbar-track {
+	background: #2a2a2a;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+	background: #666;
+	border-color: #2a2a2a;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+	background: #888;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:active {
+	background: #999;
+}
+
+/* Firefox scrollbar */
+* {
+	scrollbar-width: auto;
+	scrollbar-color: #888 #e0e0e0;
+}
+
+body.dark-mode * {
+	scrollbar-color: #666 #2a2a2a;
+}
+
+/* Asegurar que el scrollbar nunca desaparezca */
+html,
+body,
+.container,
+.container-fluid,
+main,
+section {
+	scrollbar-gutter: stable;
+}
+
+/* ============================================
+   ANIMACIONES PARA TOAST DE NOTIFICACIONES
+   ============================================ */
+@keyframes slideInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes progressBar {
+	from {
+		transform: scaleX(1);
+	}
+	to {
+		transform: scaleX(0);
+	}
+}
+
+/* ========================================
+   HEADER MOBILE OPTIMIZATION - ULTRA COMPACT v2.0
+   ======================================== */
+
+/* Móviles (hasta 767px) - Header ultra compacto */
+@media only screen and (max-width: 767px) {
+	/* Header principal - reducir altura drásticamente */
+	.header {
+		padding: 4px 0 !important;
+		min-height: 40px !important;
+		max-height: 90px !important;
+	}
+	
+	.header .container-fluid {
+		padding: 0 8px !important;
+	}
+	
+	.header .row {
+		margin: 0 !important;
+		gap: 4px !important;
+		min-height: 40px !important;
+	}
+	
+	/* Ocultar logo en móvil para ganar espacio */
+	.header .col-auto.d-none.d-lg-block {
+		display: none !important;
+	}
+	
+	/* Menú de navegación - más compacto */
+	.header__menu {
+		padding: 4px 0 !important;
+	}
+	
+	.header__menu ul {
+		gap: 8px !important;
+		flex-wrap: wrap !important;
+		justify-content: center !important;
+	}
+	
+	.header__menu ul li {
+		margin: 0 !important;
+		height: 32px !important;
+	}
+	
+	.header__menu ul li a {
+		font-size: 11px !important;
+		height: 32px !important;
+		line-height: 32px !important;
+		padding: 0 8px !important;
+	}
+	
+	/* Sección derecha - iconos más compactos */
+	.header__right {
+		padding: 4px 0 !important;
+	}
+	
+	.header__right__widget {
+		gap: 4px !important;
+	}
+	
+	.header__right__widget li {
+		margin: 0 !important;
+		height: 32px !important;
+	}
+	
+	/* Iconos más pequeños */
+	.header__right__widget li a,
+	.header__right__widget li span {
+		font-size: 15px !important;
+		width: 32px !important;
+		height: 32px !important;
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+	}
+	
+	.header__right__widget li a i,
+	.header__right__widget li span i {
+		font-size: 15px !important;
+	}
+	
+	/* Avatar más pequeño */
+	.header-user-avatar {
+		width: 32px !important;
+		height: 32px !important;
+	}
+	
+	.header-user-avatar .avatar-image,
+	.header-user-avatar .avatar-initial {
+		width: 32px !important;
+		height: 32px !important;
+		font-size: 14px !important;
+		line-height: 32px !important;
+	}
+	
+	.avatar-status-dot {
+		width: 8px !important;
+		height: 8px !important;
+		bottom: -1px !important;
+		right: -1px !important;
+	}
+	
+	/* Badges de contadores más pequeños */
+	.header__right__widget .tip {
+		min-width: 16px !important;
+		height: 16px !important;
+		font-size: 9px !important;
+		line-height: 16px !important;
+		padding: 0 4px !important;
+		top: -4px !important;
+		right: -4px !important;
+	}
+	
+	/* Botón de login más compacto */
+	.btn-login-header {
+		font-size: 10px !important;
+		padding: 4px 8px !important;
+		height: 28px !important;
+		line-height: 20px !important;
+	}
+	
+	/* Offcanvas button más pequeño */
+	.canvas__open {
+		width: 32px !important;
+		height: 32px !important;
+		line-height: 32px !important;
+		font-size: 18px !important;
+		top: 4px !important;
+		right: 4px !important;
+		padding: 0 !important;
+		border-radius: 6px !important;
+	}
+}
+
+/* Móviles muy pequeños (menos de 400px) */
+@media only screen and (max-width: 399px) {
+	.header {
+		padding: 2px 0 !important;
+	}
+	
+	.header .container-fluid {
+		padding: 0 4px !important;
+	}
+	
+	.header__right__widget {
+		gap: 2px !important;
+	}
+	
+	.header__right__widget li a,
+	.header__right__widget li span {
+		font-size: 14px !important;
+		width: 28px !important;
+		height: 28px !important;
+	}
+	
+	.header-user-avatar {
+		width: 28px !important;
+		height: 28px !important;
+	}
+	
+	.header-user-avatar .avatar-image,
+	.header-user-avatar .avatar-initial {
+		width: 28px !important;
+		height: 28px !important;
+		font-size: 12px !important;
+		line-height: 28px !important;
+	}
+	
+	.header__menu ul li a {
+		font-size: 10px !important;
+		padding: 0 6px !important;
+	}
+}
+
+/* Tablets pequeños (576px - 767px) - Header semi-compacto */
+@media only screen and (min-width: 576px) and (max-width: 767px) {
+	.header__menu ul li a {
+		font-size: 14px !important;
+	}
+	
+	.header__right__widget li a,
+	.header__right__widget li span {
+		font-size: 18px !important;
+		width: 36px !important;
+		height: 36px !important;
+	}
+	
+	.header-user-avatar {
+		width: 36px !important;
+		height: 36px !important;
+	}
+	
+	.header-user-avatar .avatar-image,
+	.header-user-avatar .avatar-initial {
+		width: 36px !important;
+		height: 36px !important;
+	}
 }

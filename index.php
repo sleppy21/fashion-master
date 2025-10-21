@@ -642,8 +642,12 @@ try {
                 baseUrlFromPHP = window.location.origin + basePath;
             }
             
+            // CRÍTICO: Si la página está en HTTPS, forzar BASE_URL a HTTPS
+            if (window.location.protocol === 'https:' && baseUrlFromPHP.startsWith('http://')) {
+                baseUrlFromPHP = baseUrlFromPHP.replace('http://', 'https://');
+            }
+            
             window.BASE_URL = baseUrlFromPHP;
-            console.log('🌐 BASE_URL configurado:', window.BASE_URL);
         })();
     </script>
     <script src="public/assets/js/jquery-3.3.1.min.js"></script>

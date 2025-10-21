@@ -24,7 +24,6 @@
                 };
                 
                 const hexColor = `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-                console.log(`🎨 Color dominante extraído del avatar: ${hexColor} (RGB: ${r}, ${g}, ${b})`);
                 return hexColor;
             }
         }
@@ -43,7 +42,6 @@
                 };
                 
                 const hexColor = `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-                console.log(`🎨 Color dominante extraído del contenedor: ${hexColor} (RGB: ${r}, ${g}, ${b})`);
                 return hexColor;
             }
         }
@@ -68,12 +66,10 @@
                 };
                 
                 const hexColor = `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-                console.log(`🎨 Color extraído del box-shadow: ${hexColor}`);
                 return hexColor;
             }
         }
         
-        console.log('⚠️ No se pudo extraer color del avatar, usando color por defecto');
         return '#c9a67c'; // Color dorado por defecto
     }
 
@@ -235,7 +231,6 @@
     // Guardar un setting individual
     function saveSetting(key, value) {
         localStorage.setItem(key, value);
-        console.log(`⚙️ Configuración guardada: ${key} = ${value}`);
     }
 
     // Restaurar configuración predeterminada
@@ -322,7 +317,6 @@
             const currentTheme = localStorage.getItem('theme_mode');
             
             if (currentTheme === 'auto') {
-                console.log('🎨 avatarShadowUpdated recibido:', e.detail);
                 
                 // Actualizar modo dinámico con el nuevo color
                 const { r, g, b } = e.detail;
@@ -332,7 +326,6 @@
                 };
                 const hexColor = `#${toHex(r)}${toHex(g)}${toHex(b)}`;
                 
-                console.log('✨ Aplicando nuevo color dinámico:', hexColor);
                 applyDynamicColor(hexColor);
                 localStorage.setItem('dynamic_color', hexColor);
             }
@@ -343,7 +336,6 @@
             const currentTheme = localStorage.getItem('theme_mode');
             
             if (currentTheme === 'auto') {
-                console.log('🎨 avatarColorUpdated recibido:', e.detail);
                 
                 // Actualizar modo dinámico con el nuevo color
                 const { r, g, b } = e.detail;
@@ -353,7 +345,6 @@
                 };
                 const hexColor = `#${toHex(r)}${toHex(g)}${toHex(b)}`;
                 
-                console.log('✨ Aplicando color del header:', hexColor);
                 applyDynamicColor(hexColor);
                 localStorage.setItem('dynamic_color', hexColor);
             }

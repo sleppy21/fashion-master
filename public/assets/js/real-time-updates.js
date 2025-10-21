@@ -7,7 +7,7 @@
 const RealTimeUpdates = (function() {
     'use strict';
 
-    const baseUrl = window.BASE_URL || '';
+    const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
 
     // ============================================
     // NOTIFICACIONES - ELIMINAR/MARCAR SIN CONFIRMACIÓN
@@ -56,7 +56,6 @@ const RealTimeUpdates = (function() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             if (element) {
                 element.style.opacity = '1';
                 element.style.transform = 'translateX(0)';
@@ -159,7 +158,6 @@ const RealTimeUpdates = (function() {
     // ============================================
     
     function addToFavorites(productId, button) {
-        console.log('🎯 addToFavorites llamado con productId:', productId);
         
         // Animación inmediata del botón
         if (button) {
@@ -176,11 +174,6 @@ const RealTimeUpdates = (function() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('📦 Respuesta del servidor:', data);
-            console.log('✅ Success:', data.success);
-            console.log('🎬 Action:', data.action);
-            console.log('💬 Message:', data.message);
-            
             if (data.success) {
                 // Actualizar TODOS los botones de este producto en la página
                 updateFavoriteButtons(productId, data.action === 'added');
@@ -207,7 +200,6 @@ const RealTimeUpdates = (function() {
             }
         })
         .catch(error => {
-            console.error('❌ Error:', error);
             showToast('Error al procesar favorito', 'error');
         })
         .finally(() => {
@@ -229,11 +221,13 @@ const RealTimeUpdates = (function() {
         buttons.forEach(btn => {
             const icon = btn.querySelector('span') || btn.querySelector('i');
             
-            // Agregar efecto pulse
-            btn.style.animation = 'pulse 0.3s ease';
-            setTimeout(() => {
-                btn.style.animation = '';
-            }, 300);
+            // Agregar efecto heartBeat al ícono
+            if (icon) {
+                icon.style.animation = 'heartBeat 0.6s ease';
+                setTimeout(() => {
+                    icon.style.animation = '';
+                }, 600);
+            }
             
             if (isActive) {
                 // Activar
@@ -350,7 +344,6 @@ const RealTimeUpdates = (function() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             if (listItem) {
                 listItem.style.opacity = '1';
                 listItem.style.transform = 'translateX(0)';
@@ -454,10 +447,7 @@ const RealTimeUpdates = (function() {
 
     function refreshFavoritesModal() {
         const container = document.querySelector('#favorites-list');
-        if (!container) {
-            console.warn('⚠️ Contenedor #favorites-list no encontrado');
-            return;
-        }
+
 
 
         fetch(baseUrl + '/app/actions/get_favorites.php')
@@ -484,12 +474,10 @@ const RealTimeUpdates = (function() {
                     }
                     
                 } else {
-                    console.error('❌ Error en la respuesta:', data.message);
                     showToast('Error al actualizar favoritos', 'error');
                 }
             })
             .catch(error => {
-                console.error('❌ Error al cargar favoritos:', error);
                 showToast('Error al actualizar favoritos', 'error');
             });
     }
@@ -528,7 +516,6 @@ const RealTimeUpdates = (function() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             showToast('Error al agregar al carrito', 'error');
         })
         .finally(() => {
@@ -568,7 +555,6 @@ const RealTimeUpdates = (function() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             showToast('Error al quitar del carrito', 'error');
         })
         .finally(() => {
@@ -707,11 +693,20 @@ const RealTimeUpdates = (function() {
     // ============================================
     
     function showToast(message, type = 'info') {
+
+        
         // Usar la función showNotification de cart-favorites-handler.js
         if (typeof window.showNotification === 'function') {
             window.showNotification(message, type);
         } else {
-            // Fallback si no está disponible
+            // Reintentar después de un pequeño delay
+            setTimeout(function() {
+                if (typeof window.showNotification === 'function') {
+                    window.showNotification(message, type);
+                } else {
+                    alert(message);
+                }
+            }, 100);
         }
     }
 

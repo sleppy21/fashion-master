@@ -9,17 +9,40 @@
   // Detectar el base path automáticamente
   function getBasePath() {
     const path = window.location.pathname || '/';
-    // Si estamos en localhost o hosting con /fashion-master/
+    
+    // 1. Si estamos en localhost con /fashion-master/
     if (path.includes('/fashion-master/')) {
       return '/fashion-master';
     }
-    // Si el proyecto está en la raíz del dominio (hosting)
+    
+    // 2. Si estamos en túnel (ngrok, cloudflare, etc.) y el path tiene /app/
+    // Ejemplo: https://xxx.trycloudflare.com/app/controllers/index.php
+    if (path.includes('/app/')) {
+      // Extraer todo lo que está ANTES de /app/
+      const match = path.match(/^(.*?)\/app\//);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    
+    // 3. Si estamos en admin.php o index.php directamente
+    if (path.includes('/admin.php') || path.includes('/index.php')) {
+      // Extraer el directorio base
+      const match = path.match(/^(.*?)\/(admin|index)\.php/);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    
+    // 4. Si el proyecto está en la raíz del dominio
     return '';
   }
 
   // Configuración global
+  const detectedBasePath = getBasePath();
+  
   window.AppConfig = {
-    basePath: getBasePath(),
+    basePath: detectedBasePath,
 
     // URLs de API
     getApiUrl: function (endpoint) {

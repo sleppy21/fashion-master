@@ -74,7 +74,7 @@
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            // Eliminado log de error
             showNotification('Error al agregar al carrito', 'error');
         });
     }
@@ -164,7 +164,6 @@
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             showNotification('Error al procesar favoritos', 'error');
         });
     }
@@ -173,7 +172,6 @@
     function reloadFavoritesModal() {
         const modalBody = document.querySelector('#favorites-list');
         if (!modalBody) {
-            console.warn('⚠️ Modal de favoritos no encontrado');
             return;
         }
 
@@ -202,11 +200,9 @@
                     }
                     
                 } else {
-                    console.error('❌ Error al cargar favoritos:', data.message);
                 }
             })
             .catch(error => {
-                console.error('❌ Error:', error);
             });
     }
 
@@ -217,25 +213,30 @@
             return;
         }
         
-        // Fallback legacy
-        const favLink = document.querySelector('.header__right__widget a[href*="favorites"], .header__right__widget #favorites-link');
-        if (favLink) {
-            let tip = favLink.querySelector('.tip');
-            
-            if (count > 0) {
-                if (!tip) {
-                    tip = document.createElement('div');
-                    tip.className = 'tip';
-                    favLink.appendChild(tip);
-                }
-                tip.textContent = count;
-                tip.style.display = 'block';
-            } else {
-                if (tip) {
-                    tip.style.display = 'none';
-                }
-            }
+        // Fallback legacy (CORREGIDO)
+const favLink = document.querySelector('.header__right__widget a[href*="favorites"], .header__right__widget #favorites-link');
+if (favLink) {
+    // 1. Intentar encontrar el 'tip' existente
+    let tip = favLink.querySelector('.tip');
+    
+    if (count > 0) {
+        // 2. Si no existe y el conteo es > 0, crearlo e insertarlo
+        if (!tip) {
+            tip = document.createElement('span');
+            tip.className = 'tip';
+            favLink.appendChild(tip);
         }
+        
+        // 3. Actualizar el contenido y mostrar
+        tip.textContent = count;
+        tip.style.display = 'flex'; // Usar 'flex' ya que el bloque global usa 'flex'
+    } else {
+        // 4. Ocultar si el conteo es 0
+        if (tip) {
+            tip.style.display = 'none';
+        }
+    }
+}
         
         // Actualizar contador en el modal con formato correcto
         const favCount = document.querySelector('.favorites-count');
@@ -267,7 +268,6 @@
             return;
         }
         
-        console.warn('⚠️ header-section.php no cargado, usando funcionalidad limitada de favoritos');
         
         // CÓDIGO LEGACY (solo si header-section.php no está cargado)
         const favLink = document.getElementById('favorites-link');
@@ -418,7 +418,6 @@
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             showNotification('Error al agregar al carrito', 'error');
         });
     }
@@ -450,7 +449,6 @@
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             showNotification('Error al quitar del carrito', 'error');
         });
     }
@@ -524,21 +522,24 @@
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             showNotification('Error al procesar favoritos', 'error');
         });
     }
 
     // ===== NOTIFICACIONES ESTILO TOAST MODERNO =====
     function showNotification(message, type = 'info') {
+    // Eliminado log de inicio de notificación
+        
         // Eliminar notificaciones anteriores
         const existingNotif = document.querySelector('.modern-toast');
         if (existingNotif) {
+            // Eliminado log de remoción de toast
             existingNotif.remove();
         }
 
         // Detectar si está en modo oscuro
         const isDarkMode = document.body.classList.contains('dark-mode');
+    // Eliminado log de modo oscuro
 
         // Iconos según tipo
         const icons = {
@@ -573,9 +574,9 @@
 
         // Estilos inline adaptados al modo oscuro
         toast.style.cssText = `
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
+            position: fixed !important;
+            bottom: 30px !important;
+            right: 30px !important;
             min-width: 300px;
             max-width: 400px;
             background: ${isDarkMode ? '#1f2937' : 'white'};
@@ -584,17 +585,19 @@
                 ? '0 10px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1)' 
                 : '0 10px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05)'
             };
-            z-index: 999999;
+            z-index: 999999 !important;
             animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 16px;
+            padding-bottom: 20px;
             overflow: hidden;
         `;
 
-        // Agregar barra de progreso
+        // Agregar barra de progreso con animación
         const progressBar = document.createElement('div');
+        progressBar.className = 'toast-progress-bar';
         progressBar.style.cssText = `
             position: absolute;
             bottom: 0;
@@ -602,12 +605,15 @@
             height: 4px;
             background: ${color.bg};
             width: 100%;
-            animation: progressBar 3s linear;
+            animation: progressBar 3s linear forwards !important;
             border-radius: 0 0 12px 12px;
+            transform-origin: left;
         `;
         toast.appendChild(progressBar);
 
         document.body.appendChild(toast);
+        
+        // Debug: Verificar estilos computados
 
         // Agregar estilos a los elementos internos
         const icon = toast.querySelector('.toast-icon');
@@ -738,7 +744,6 @@
                     e.stopPropagation();
                     window.location.href = url;
                 } else {
-                    console.error('❌ No se encontró data-product-url');
                 }
             }
         }, true); // Usar captura
@@ -770,11 +775,13 @@
             }
         }
         @keyframes progressBar {
-            from {
+            0% {
                 width: 100%;
+                opacity: 1;
             }
-            to {
+            100% {
                 width: 0%;
+                opacity: 0.8;
             }
         }
         @keyframes pulse {
@@ -795,6 +802,18 @@
         /* Estilos del Toast */
         .modern-toast {
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Barra de progreso del toast */
+        .toast-progress-bar {
+            position: absolute !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            height: 4px !important;
+            border-radius: 0 0 12px 12px !important;
+            pointer-events: none;
         }
         
         /* Adaptación al modo oscuro */
@@ -874,7 +893,6 @@
                         window.updateFavoritesCount(parseInt(data.count) || 0);
                     }
                 })
-                .catch(error => console.error('Error al obtener contador de favoritos:', error));
             return;
         }
         
@@ -983,7 +1001,6 @@
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             showNotification('Error al actualizar favoritos', 'error');
         });
     };
@@ -1015,7 +1032,6 @@
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             showNotification('Error al agregar al carrito', 'error');
         });
     };

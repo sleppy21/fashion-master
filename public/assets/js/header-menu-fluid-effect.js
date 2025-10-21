@@ -9,10 +9,10 @@
     document.addEventListener('DOMContentLoaded', function() {
 
         const menuItems = document.querySelectorAll('.header__menu li');
-        if (!menuItems.length) return console.error('❌ [FLUID MENU] No hay items');
+        if (!menuItems.length) return;
 
         const menuList = document.querySelector('.header__menu > ul');
-        if (!menuList) return console.error('❌ [FLUID MENU] No hay UL');
+        if (!menuList) return ;
 
 
         // Crear indicador simple
@@ -270,13 +270,7 @@
                     menuLinks.forEach((link, i) => {
                         const afterStyles = window.getComputedStyle(link, '::after');
                         if (afterStyles.content !== 'none' && afterStyles.display !== 'none') {
-                            console.warn('⚠️ [FLUID MENU] Link', i, 'tiene ::after VISIBLE:', {
-                                content: afterStyles.content,
-                                display: afterStyles.display,
-                                opacity: afterStyles.opacity,
-                                zIndex: afterStyles.zIndex,
-                                position: afterStyles.position
-                            });
+                        
                         }
                     });
                 }

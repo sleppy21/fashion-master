@@ -96,14 +96,22 @@
     });
 
     // Event listener para el botón de toggle (verificar que existe)
-    const toggleBtn = document.getElementById('dark-mode-toggle');
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            toggleDarkMode();
-        });
+    // IMPORTANTE: Esperar a que el DOM esté completamente cargado
+    const initToggleButton = () => {
+        const toggleBtn = document.getElementById('dark-mode-toggle');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleDarkMode();
+            });
+        }
+    };
+    
+    // Inicializar botón cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initToggleButton);
     } else {
-        console.warn('⚠️ Dark mode toggle button not found');
+        initToggleButton();
     }
 
     // Limpiar inline styles cuando la página carga
@@ -113,7 +121,8 @@
 
     // También limpiar cuando se abren los modales
     document.addEventListener('click', function(e) {
-        if (e.target.closest('#favorites-link') || e.target.closest('#user-account-link')) {
+        const target = e.target;
+        if (target && (target.closest('#favorites-link') || target.closest('#user-account-link'))) {
             setTimeout(cleanModalInlineStyles, 100);
         }
     });
@@ -165,7 +174,6 @@
             detail: { isDark: isDark } 
         }));
         
-        console.log('🌓 Tema cambiado a:', isDark ? 'Oscuro' : 'Claro', '- Se aplicará en todas las páginas');
     }
 
     // 🔄 Escuchar cambios de tema desde otras pestañas/ventanas
@@ -173,7 +181,6 @@
         if (e.key === 'theme') {
             const newIsDark = e.newValue === 'dark';
             applyTheme(newIsDark);
-            console.log('🔄 Tema sincronizado desde otra pestaña:', newIsDark ? 'Oscuro' : 'Claro');
         }
     });
 

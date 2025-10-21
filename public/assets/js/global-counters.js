@@ -137,11 +137,11 @@
      */
     function refreshAllCounters() {
         
-        // Obtener BASE_URL y asegurar que termine con /
-        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '') + '/';
+        // Obtener BASE_URL sin trailing slash
+        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
         
         // Carrito
-        fetch(baseUrl + 'app/actions/get_cart_count.php')
+        fetch(baseUrl + '/app/actions/get_cart_count.php')
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -151,7 +151,7 @@
             .catch(error => console.error('Error fetching cart count:', error));
         
         // Favoritos
-        fetch(baseUrl + 'app/actions/get_favorites_count.php')
+        fetch(baseUrl + '/app/actions/get_favorites_count.php')
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -161,7 +161,7 @@
             .catch(error => console.error('Error fetching favorites count:', error));
         
         // Notificaciones
-        fetch(baseUrl + 'app/actions/get_notifications_count.php')
+        fetch(baseUrl + '/app/actions/get_notifications_count.php')
             .then(response => response.json())
             .then(data => {
                 if (data.success) {

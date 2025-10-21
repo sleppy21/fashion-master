@@ -589,7 +589,6 @@ function editCategory(categoryId) {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             showError('Error de conexión');
         });
 }
@@ -650,7 +649,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
                 showError('Error de conexión con el servidor');
             })
             .finally(() => {

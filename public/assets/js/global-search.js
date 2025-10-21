@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let searchTimeout = null;
 
     if (!modal || !trigger || !searchInput) {
-        console.error('❌ Global Search: Elementos no encontrados');
+    return;
         return;
     }
 
@@ -98,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 })
                 .catch(error => {
-                    console.error('❌ Error:', error);
                     loadingState.style.display = 'none';
                     noResultsState.innerHTML = `
                         <i class="fa fa-exclamation-triangle"></i>

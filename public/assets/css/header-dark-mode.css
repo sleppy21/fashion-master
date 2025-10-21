@@ -247,7 +247,7 @@ body.dark-mode .offcanvas__user-compact:hover {
 
 body.dark-mode .user-avatar-circle {
     background: linear-gradient(135deg, var(--dark-accent) 0%, #b01030 100%) !important;
-    border: 2px solid rgba(220, 20, 60, 0.3) !important;
+    border: none !important;
     box-shadow: 0 0 15px rgba(220, 20, 60, 0.4) !important;
 }
 

@@ -9,7 +9,7 @@
 // AUTO-DETECCIÓN DE BASE_URL (Compatible con localhost, ngrok, hosting)
 // ===============================================
 if (!defined('BASE_URL')) {
-    // Detectar protocolo (HTTP o HTTPS) - Mejorado para ngrok
+    // Detectar protocolo (HTTP o HTTPS) - Mejorado para túneles
     $protocol = 'http'; // Default
     
     // Método 1: HTTPS directo
@@ -17,14 +17,20 @@ if (!defined('BASE_URL')) {
         $protocol = 'https';
     }
     
-    // Método 2: X-Forwarded-Proto (usado por proxies como ngrok)
+    // Método 2: X-Forwarded-Proto (usado por proxies como ngrok, serveo)
     if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
         $protocol = 'https';
     }
     
-    // Método 3: Detectar ngrok por el host
-    if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'ngrok') !== false) {
-        $protocol = 'https';
+    // Método 3: Detectar túneles por el host (ngrok, serveo, trycloudflare, etc.)
+    if (isset($_SERVER['HTTP_HOST'])) {
+        $host_lower = strtolower($_SERVER['HTTP_HOST']);
+        if (strpos($host_lower, 'ngrok') !== false || 
+            strpos($host_lower, 'serveo.net') !== false ||
+            strpos($host_lower, 'trycloudflare.com') !== false ||
+            strpos($host_lower, 'loca.lt') !== false) {
+            $protocol = 'https';
+        }
     }
     
     // Método 4: Puerto 443
@@ -35,11 +41,22 @@ if (!defined('BASE_URL')) {
     // Detectar host
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
     
+    // Detectar si estamos en un túnel (serveo, ngrok, cloudflare, localhost.run, etc.)
+    $isTunnel = false;
+    if (isset($_SERVER['HTTP_HOST'])) {
+        $host_lower = strtolower($_SERVER['HTTP_HOST']);
+        $isTunnel = (strpos($host_lower, 'serveo.net') !== false ||
+                     strpos($host_lower, 'ngrok') !== false ||
+                     strpos($host_lower, 'trycloudflare.com') !== false ||
+                     strpos($host_lower, 'loca.lt') !== false ||
+                     strpos($host_lower, 'localhost.run') !== false);
+    }
+    
     // Detectar path automáticamente
     $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
     $scriptDir = dirname($scriptName);
     
-    // Si estamos en la raíz, no agregar path
+    // Si estamos en la raíz
     if ($scriptDir === '/' || $scriptDir === '\\') {
         $path = '';
     } else {
@@ -59,6 +76,20 @@ if (!defined('BASE_URL')) {
     }
     
     define('BASE_URL', $protocol . '://' . $host . $path);
+    
+    // DEBUG: Log para verificar detección (solo desarrollo)
+    if (!defined('APP_ENV') || (defined('APP_ENV') && APP_ENV === 'development')) {
+        $port = $_SERVER['SERVER_PORT'] ?? '80';
+        error_log("🔍 DEBUG BASE_URL:");
+        error_log("  - Host: " . $host);
+        error_log("  - Port: " . $port);
+        error_log("  - Protocol: " . $protocol);
+        error_log("  - Path: " . $path);
+        error_log("  - isTunnel: " . ($isTunnel ? 'YES' : 'NO'));
+        error_log("  - HTTPS header: " . (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : 'not set'));
+        error_log("  - X-Forwarded-Proto: " . (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) ? $_SERVER['HTTP_X_FORWARDED_PROTO'] : 'not set'));
+        error_log("  - BASE_URL final: " . BASE_URL);
+    }
 }
 
 // PROJECT_PATH ya no es necesario porque BASE_URL lo incluye

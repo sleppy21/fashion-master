@@ -2101,16 +2101,11 @@ async function refreshDashboard() {
         lastUpdate.innerHTML = '<i class="fas fa-clock"></i> Actualizado ahora';
     }
     
-    console.log('✅ Dashboard actualizado');
 }
 
 // ===== INICIALIZAR GRÁFICAS CON CHART.JS =====
 function initDashboardCharts() {
-    // Verificar si Chart.js está cargado
-    if (typeof Chart === 'undefined') {
-        console.error('❌ Chart.js no está cargado');
-        return;
-    }
+
     
     // Configuración global de Chart.js
     Chart.defaults.color = '#94a3b8';
@@ -2310,7 +2305,6 @@ function initDashboardCharts() {
         });
     }
     
-    console.log('✅ Gráficas del dashboard inicializadas');
 }
 
 // ===== CARGAR ACTIVIDAD RECIENTE (DATOS REALES) =====
@@ -2357,7 +2351,6 @@ async function loadRecentActivity() {
         container.innerHTML = `<div style="display: flex; flex-direction: column; gap: 12px;">${html}</div>`;
         
     } catch (error) {
-        console.error('❌ Error al cargar actividad:', error);
         container.innerHTML = `
             <div style="text-align: center; padding: 30px; color: #ef4444;">
                 <i class="fas fa-exclamation-circle" style="font-size: 40px; margin-bottom: 12px;"></i>
@@ -2413,7 +2406,6 @@ async function loadTopProducts() {
             `;
         }
     } catch (error) {
-        console.error('Error cargando top productos:', error);
         container.innerHTML = `
             <div style="text-align: center; padding: 20px; color: #ef4444;">
                 <i class="fas fa-exclamation-triangle" style="font-size: 32px; margin-bottom: 10px; display: block;"></i>
@@ -2427,7 +2419,6 @@ async function loadTopProducts() {
 // Nota: dashboardUpdateInterval ya está declarado en admin.php (línea 3094)
 
 async function refreshDashboard() {
-    console.log('🔄 Actualizando dashboard...');
     
     try {
         // Mostrar indicador de carga
@@ -2444,7 +2435,6 @@ async function refreshDashboard() {
         }
         
         const data = await response.json();
-        console.log('📊 Datos recibidos:', data);
         
         // Actualizar estadísticas principales
         updateMainStats(data);
@@ -2476,10 +2466,8 @@ async function refreshDashboard() {
             refreshBtn.classList.remove('fa-spin');
         }
         
-        console.log('✅ Dashboard actualizado correctamente');
         
     } catch (error) {
-        console.error('❌ Error al actualizar dashboard:', error);
         
         // Quitar indicador de carga
         const refreshBtn = document.querySelector('.refresh-btn i');
@@ -2690,7 +2678,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Esperar un poco para asegurar que todo está cargado
     setTimeout(() => {
         if (document.getElementById('dashboard')?.classList.contains('active')) {
-            console.log('🎨 Inicializando Dashboard Moderno...');
             initDashboardCharts();
             loadRecentActivity();
             loadTopProducts();

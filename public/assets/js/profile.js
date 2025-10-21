@@ -360,7 +360,8 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Guardando...';
         
         try {
-            const response = await fetch('app/actions/update_profile.php', {
+            const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
+            const response = await fetch(baseUrl + '/app/actions/update_profile.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -406,7 +407,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification(result.message || 'No se pudo actualizar el perfil', 'error');
             }
         } catch (error) {
-            console.error('Error:', error);
             showNotification('❌ Ocurrió un error al actualizar el perfil', 'error');
         } finally {
             // Restaurar botón
@@ -506,7 +506,8 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Cambiando...';
         
         try {
-            const response = await fetch('app/actions/change_password.php', {
+            const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
+            const response = await fetch(baseUrl + '/app/actions/change_password.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -532,7 +533,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification(result.message || 'No se pudo cambiar la contraseña', 'error');
             }
         } catch (error) {
-            console.error('Error:', error);
             showNotification('❌ Ocurrió un error al cambiar la contraseña', 'error');
         } finally {
             // Restaurar botón
@@ -628,11 +628,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             
             const favoritesModal = document.getElementById('favorites-modal');
-            
-            if (!favoritesModal) {
-                console.warn('Modal de favoritos no encontrado');
-                return;
-            }
             
             // Toggle del modal
             if (favoritesModal.style.display === 'block') {

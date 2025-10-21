@@ -186,6 +186,29 @@
 </button>
 
 <script>
+// ============ CARGAR SCRIPT ESPECÍFICO DE CATEGORÍAS ============
+(function() {
+    // Solo cargar si no está ya cargado
+    if (!document.querySelector('script[src*="smooth-table-update-categories.js"]')) {
+        const script = document.createElement('script');
+        script.src = 'public/assets/js/smooth-table-update-categories.js';
+        script.onload = function() {
+            console.log('✅ smooth-table-update-categories.js cargado para CATEGORÍAS');
+            // Disparar evento personalizado cuando el script se cargue
+            window.dispatchEvent(new Event('smoothTableUpdaterCategoriesLoaded'));
+        };
+        script.onerror = function() {
+            console.error('❌ Error al cargar smooth-table-update-categories.js');
+        };
+        document.head.appendChild(script);
+    } else {
+        // Si ya está cargado, disparar el evento inmediatamente
+        setTimeout(() => {
+            window.dispatchEvent(new Event('smoothTableUpdaterCategoriesLoaded'));
+        }, 100);
+    }
+})();
+
 // ============ CONFIGURACIÓN ============
 
 // Esperar a que AppConfig esté disponible y luego inicializar CONFIG
@@ -507,6 +530,10 @@ function showSearchLoading() {
 // Función principal para cargar categorias con efectos visuales (DEFINICIÓN TEMPRANA)
 async function loadCategorias(forceCacheBust = false, preserveState = null) {
     
+    console.log('🚀 loadCategorias iniciada');
+    console.log('📊 CONFIG:', window.CONFIG);
+    console.log('📍 CONFIG.apiUrl:', window.CONFIG?.apiUrl);
+    
     isLoading = true;
     
     try {
@@ -530,6 +557,8 @@ async function loadCategorias(forceCacheBust = false, preserveState = null) {
             page: currentPage,
             limit: 10
         });
+        
+        console.log('📦 Parámetros iniciales:', Object.fromEntries(params));
         
         // Agregar filtros si existen
         if (typeof $ !== 'undefined') {
@@ -569,6 +598,9 @@ async function loadCategorias(forceCacheBust = false, preserveState = null) {
         
         const finalUrl = `${CONFIG.apiUrl}?${params}`;
         
+        console.log('🌐 URL final:', finalUrl);
+        console.log('📡 Iniciando fetch...');
+        
         const response = await fetch(finalUrl, {
             method: 'GET',
             headers: {
@@ -576,7 +608,9 @@ async function loadCategorias(forceCacheBust = false, preserveState = null) {
                 'Accept': 'application/json'
             },
             cache: 'no-cache'
-        });    
+        });
+        
+        console.log('✅ Response recibido:', response.status, response.statusText);    
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
         }
@@ -584,10 +618,15 @@ async function loadCategorias(forceCacheBust = false, preserveState = null) {
         // Obtener texto crudo
         const responseText = await response.text();
         
+        console.log('📄 Respuesta text recibida, longitud:', responseText.length);
+        
         // Parsear JSON de forma segura
         let data;
         try {
             data = JSON.parse(responseText);
+            console.log('✅ JSON parseado correctamente');
+            console.log('📊 Success:', data.success);
+            console.log('📊 Data items:', data.data?.length);
         } catch (jsonError) {
             console.error('❌ Error al parsear JSON:', jsonError);
             console.error('📄 Respuesta recibida (primeros 500 caracteres):', responseText.substring(0, 500));
@@ -599,6 +638,9 @@ async function loadCategorias(forceCacheBust = false, preserveState = null) {
         }
         
         categorias = data.data || [];
+        
+        console.log('🎯 Categorías recibidas:', categorias.length);
+        console.log('📊 Llamando a displayProducts...');
         
         displayProducts(categorias, forceCacheBust, preserveState);
         updateStats(data.pagination);
@@ -652,7 +694,7 @@ window.loadProducts = loadCategorias;
 
 // 🎯 Función para cargar categorias con SMOOTH UPDATE (sin recargar tabla)
 async function loadProductsSmooth() {
-    if (!window.smoothTableUpdater) {
+    if (!window.categoriasTableUpdater) {
         console.warn('⚠️ smoothTableUpdater no disponible, usando carga normal');
         return loadCategorias();
     }
@@ -701,7 +743,7 @@ async function loadProductsSmooth() {
             // Verificar si hay categorias
             if (data.data && data.data.length > 0) {
                 // 🎨 SMOOTH UPDATE: Actualizar categorias uno por uno sin recargar la tabla
-                await window.smoothTableUpdater.updateMultipleProducts(data.data);
+                await window.categoriasTableUpdater.updateMultipleProducts(data.data);
                 
                 // Actualizar estadísticas y paginación
                 updateStats(data.pagination);
@@ -1242,7 +1284,7 @@ function displayProducts(products, forceCacheBust = false, preserveState = null)
                 ${categoria.descripcion_categoria || 'Sin descripción'}
             </td>
             <td>
-                <span class="badge badge-info">${totalProductos}</span>
+                <span class="badge badge-info">${totalProductos} prod. relacionado${totalProductos !== 1 ? 's' : ''}</span>
             </td>
             <td>
                 <span class="status-badge ${categoria.estado_categoria === 'activo' ? 'status-active' : 'status-inactive'}">
@@ -1420,8 +1462,8 @@ function toggleView(viewType, skipAnimation = false) {
     }
     
     // LIMPIAR CACHE del smooth updater al cambiar vista
-    if (window.smoothTableUpdater) {
-        window.smoothTableUpdater.clearCache();
+    if (window.categoriasTableUpdater) {
+        window.categoriasTableUpdater.clearCache();
         console.log('🧹 Cache del updater limpiado al cambiar vista');
     }
     
@@ -3707,14 +3749,14 @@ function updateStock(id, currentStock, event) {
                 }
                 
                 // Usar actualización SUAVE sin recargar toda la tabla
-                if (window.smoothTableUpdater && data.product) {
+                if (window.categoriasTableUpdater && data.product) {
                     console.log('🎯 Usando SmoothTableUpdater para actualizar solo el stock del categoria:', id);
-                    console.log('� Verificando smoothTableUpdater:', typeof window.smoothTableUpdater);
+                    console.log('� Verificando smoothTableUpdater:', typeof window.categoriasTableUpdater);
                     
                     try {
                         // Actualizar solo este categoria especificando que cambió el campo 'stock'
                         // Parámetros: (productId, updatedData, changedFields)
-                        window.smoothTableUpdater.updateSingleProduct(data.product.id_categoria, data.product, ['stock']);
+                        window.categoriasTableUpdater.updateSingleProduct(data.product.id_categoria, data.product, ['stock']);
                         console.log('✅ Actualización suave completada - solo campo stock');
                     } catch (error) {
                         console.error('❌ Error en smoothTableUpdater:', error);
@@ -3723,7 +3765,7 @@ function updateStock(id, currentStock, event) {
                     }
                 } else {
                     console.warn('⚠️ SmoothTableUpdater no disponible o categoria no retornado');
-                    console.warn('   - smoothTableUpdater existe:', !!window.smoothTableUpdater);
+                    console.warn('   - smoothTableUpdater existe:', !!window.categoriasTableUpdater);
                     console.warn('   - categoria recibido:', !!data.product);
                     console.log('🔄 Fallback: recargando tabla completa...');
                     loadProducts(true);
@@ -3894,19 +3936,31 @@ async function changeCategoriaEstado(id) {
         const updateResult = await updateResponse.json();
         
         if (updateResponse.ok && updateResult.success) {
-            console.log('Estado de categoría cambiado exitosamente');
+            console.log('✅ Estado de categoría cambiado exitosamente');
             
-            // SIEMPRE mostrar notificación de éxito
-            if (typeof showNotification === 'function') {
-                showNotification(`Categoría ${newEstado === 'activo' ? 'activada' : 'desactivada'} correctamente`, 'success');
-            }
+            // NO mostrar notificación al cambiar estado (solo en crear/editar)
+            
+            // Verificar smoothTableUpdater
+            console.log('🔍 window.categoriasTableUpdater:', window.categoriasTableUpdater);
+            console.log('🔍 typeof updateSingleProduct:', typeof window.categoriasTableUpdater?.updateSingleProduct);
             
             // Usar actualización suave si está disponible
-            if (window.smoothTableUpdater && updateResult.category) {
+            if (window.categoriasTableUpdater && updateResult.category) {
                 console.log('🎯 Usando actualización suave para cambiar estado de la categoría:', id);
-                window.smoothTableUpdater.updateSingleProduct(id, updateResult.category);
+                console.log('📊 Datos de categoría a actualizar:', updateResult.category);
+                
+                // LLAMAR con await para ver si hay errores
+                try {
+                    await window.categoriasTableUpdater.updateSingleProduct(id, updateResult.category);
+                    console.log('✅ updateSingleProduct completado sin errores');
+                } catch (error) {
+                    console.error('❌ Error en updateSingleProduct:', error);
+                    console.error('Stack:', error.stack);
+                }
             } else {
-                console.log('⚠️ SmoothTableUpdater no disponible o categoría no retornada - usando recarga tradicional');
+                console.log('⚠️ SmoothTableUpdater no disponible o categoría no retornada');
+                console.log('   - smoothTableUpdater existe:', !!window.categoriasTableUpdater);
+                console.log('   - category existe:', !!updateResult.category);
                 // Recargar lista
                 loadCategorias();
             }
@@ -4012,19 +4066,37 @@ function updateResultsCounter(showing, total) {
 // Función de inicialización principal
 function initializeProductsModule() {
     
-    // ===== INICIALIZAR SmoothTableUpdater para CATEGORÍAS =====
-    console.log('🔧 Verificando disponibilidad de SmoothTableUpdater...');
-    console.log('SmoothTableUpdater type:', typeof SmoothTableUpdater);
+    // ===== INICIALIZAR CATEGORIASTABLEUPDATER PARA CATEGORÍAS (FORZADO) =====
+    const initCategoriasUpdater = () => {
+        console.log('🔧 Verificando disponibilidad de CategoriasTableUpdater...');
+        console.log('CategoriasTableUpdater type:', typeof CategoriasTableUpdater);
+        
+        // 🔥 SIEMPRE destruir instancia anterior antes de crear nueva
+        if (window.categoriasTableUpdater) {
+            console.log('🗑️ Destruyendo instancia previa de CategoriasTableUpdater...');
+            if (typeof window.categoriasTableUpdater.destroy === 'function') {
+                window.categoriasTableUpdater.destroy();
+            }
+            window.categoriasTableUpdater = null;
+        }
+        
+        // ✅ Crear NUEVA instancia SOLO si la clase está disponible
+        if (typeof CategoriasTableUpdater !== 'undefined') {
+            console.log('✅ CategoriasTableUpdater encontrado - creando NUEVA instancia para CATEGORÍAS...');
+            window.categoriasTableUpdater = new CategoriasTableUpdater();
+            console.log('✅ CategoriasTableUpdater para CATEGORÍAS inicializado correctamente');
+            console.log('📋 Métodos disponibles:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.categoriasTableUpdater)));
+        } else {
+            console.error('❌ CategoriasTableUpdater no está definido - verificar carga de smooth-table-update-categories.js');
+            window.categoriasTableUpdater = null;
+        }
+    };
     
-    if (typeof SmoothTableUpdater !== 'undefined') {
-        console.log('✅ SmoothTableUpdater encontrado - creando instancia para CATEGORÍAS...');
-        window.smoothTableUpdater = new SmoothTableUpdater();
-        console.log('✅ SmoothTableUpdater para CATEGORÍAS inicializado correctamente');
-        console.log('📋 Métodos disponibles:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.smoothTableUpdater)));
-    } else {
-        console.error('❌ SmoothTableUpdater no está definido - verificar carga de smooth-table-update-categories.js');
-        window.smoothTableUpdater = null;
-    }
+    // Escuchar el evento de carga del script
+    window.addEventListener('smoothTableUpdaterCategoriesLoaded', initCategoriasUpdater, { once: true });
+    
+    // Fallback: intentar inicializar inmediatamente si ya está disponible
+    setTimeout(initCategoriasUpdater, 300);
     
     // Asegurar que CONFIG esté inicializado
     if (typeof CONFIG === 'undefined' || !CONFIG.apiUrl) {
@@ -5263,36 +5335,29 @@ function confirmDelete(productId, productName) {
     .then(data => {
         closeDeleteConfirmation();
         
+        console.log('📦 Respuesta del servidor al eliminar:', data);
+        
         if (data.success) {
             // Mostrar notificación de éxito
-            if (typeof showNotification === 'function') {
-                // showNotification(`Categoría "${productName}" eliminada exitosamente`, 'success');
-            }
+            showNotification(`Categoría "${productName}" eliminada exitosamente`, 'success');
             
             // Usar actualización suave si está disponible
-            if (window.smoothTableUpdater) {
+            if (window.categoriasTableUpdater) {
                 console.log('🎯 Usando actualización suave para eliminar categoría:', productId);
-                window.smoothTableUpdater.removeProduct(productId);
+                window.categoriasTableUpdater.removeProduct(productId);
             } else {
                 console.log('⚠️ SmoothTableUpdater no disponible - usando recarga tradicional');
                 // Actualizar lista inmediatamente sin reload
                 loadCategorias(true);
             }
         } else {
-            if (typeof showNotification === 'function') {
-                // showNotification('Error al eliminar categoría: ' + (data.error || 'Error desconocido'), 'error');
-            } else {
-                // alert('Error al eliminar categoría: ' + (data.error || 'Error desconocido'));
-            }
+            showNotification('Error al eliminar categoría: ' + (data.error || 'Error desconocido'), 'error');
         }
     })
     .catch(error => {
+        console.error('❌ Error al eliminar categoría:', error);
         closeDeleteConfirmation();
-        if (typeof showNotification === 'function') {
-            // showNotification('Error de conexión al eliminar categoría', 'error');
-        } else {
-            // alert('Error de conexión al eliminar categoría');
-        }
+        showNotification('Error de conexión al eliminar categoría', 'error');
     });
 }
 
@@ -5313,9 +5378,9 @@ function toggleProductStatus(productId, currentStatus) {
     .then(data => {
         if (data.success) {
             // Usar actualización suave si está disponible
-            if (window.smoothTableUpdater && (data.category || data.categoria)) {
+            if (window.categoriasTableUpdater && (data.category || data.categoria)) {
                 console.log('🎯 Usando actualización suave para cambiar estado de la categoría:', productId);
-                window.smoothTableUpdater.updateSingleProduct(productId, data.category || data.categoria);
+                window.categoriasTableUpdater.updateSingleProduct(productId, data.category || data.categoria);
             } else {
                 console.log('⚠️ SmoothTableUpdater no disponible o categoría no retornada - usando recarga tradicional');
                 // Actualizar lista inmediatamente sin reload
@@ -5663,10 +5728,19 @@ function initializeDragScroll() {
 // En su lugar, initializeProductsModule() llama a initializeDragScroll() directamente
 
 // ===== FUNCIÓN DE DESTRUCCIÓN DEL MÓDULO DE categorias =====
-window.destroycategoriasModule = function() {
+window.destroyCategoriasModule = function() {
     console.log('🗑️ Destruyendo módulo de categorias...');
     
     try {
+        // 🔥 0. DESTRUIR UPDATER DE CATEGORÍAS PRIMERO
+        if (window.categoriasTableUpdater) {
+            console.log('🗑️ Destruyendo CategoriasTableUpdater...');
+            if (typeof window.categoriasTableUpdater.destroy === 'function') {
+                window.categoriasTableUpdater.destroy();
+            }
+            window.categoriasTableUpdater = null;
+        }
+        
         // 1. Limpiar variable de estado de carga
         if (typeof isLoading !== 'undefined') {
             isLoading = false;
@@ -6748,5 +6822,6 @@ tbody tr.sorting {
     text-align: center;
 }
 </style>
+
 
 
