@@ -174,16 +174,16 @@ function uploadCroppedImage() {
     const uploadBtn = $('.btn-upload');
     uploadBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Subiendo...');
     
-    // Obtener imagen recortada
+    // Obtener imagen recortada con máxima calidad
     croppieInstance.result({
         type: 'blob',
         size: {
-            width: 500,
-            height: 500
+            width: 800,  // Mayor resolución
+            height: 800
         },
         format: 'jpeg',
-        quality: 0.9,
-        circle: false
+        quality: 1.0,    // Máxima calidad
+        circle: true     // Forzar círculo perfecto
     }).then(function(blob) {
        
         
@@ -230,38 +230,54 @@ function uploadCroppedImage() {
                     const $profileAvatar = $('.profile-sidebar .profile-avatar .avatar-image');
                     const $profileContainer = $('.profile-sidebar .profile-avatar');
                     
-                    // ACTUALIZAR INMEDIATAMENTE el avatar del perfil
-                    $profileAvatar.attr('src', newImageUrl);
+                    // PASO 1: Cerrar modal primero
+                    closeCropModal();
                     
-                    // Esperar a que la nueva imagen se cargue completamente
-                    $profileAvatar.off('load').one('load', function() {
+                    // PASO 2: Pre-cargar imagen en memoria
+                    const preloadImg = new Image();
+                    preloadImg.src = newImageUrl;
+                    
+                    preloadImg.onload = function() {
+                        // PASO 3: Actualizar avatar del perfil
+                        $profileAvatar.css({
+                            opacity: 0,
+                            transform: 'scale(0.9)',
+                            transition: 'none'
+                        }).attr('src', newImageUrl);
                         
-                        // CALCULAR Y APLICAR SHADOW AL AVATAR GRANDE
-                        const avatarContainer = $profileContainer[0];
-                        if (avatarContainer) {
-                            updateAvatarShadow(avatarContainer, this);
+                        // PASO 4: Animar entrada del nuevo avatar
+                        requestAnimationFrame(() => {
+                            $profileAvatar.css({
+                                opacity: 1,
+                                transform: 'scale(1)',
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            });
                             
-                            // Esperar un momento para que se aplique el shadow
-                            setTimeout(() => {
+                            // PASO 5: Aplicar shadow con animación
+                            const avatarContainer = $profileContainer[0];
+                            if (avatarContainer) {
+                                avatarContainer.style.transition = 'box-shadow 0.3s ease-out';
+                                updateAvatarShadow(avatarContainer, preloadImg);
                                 
-                                // AHORA ejecutar la animación (con el shadow ya aplicado)
-                                if (typeof window.flyAvatarToHeaderRealTime === 'function') {
-                                    window.flyAvatarToHeaderRealTime(newImageUrl, () => {
-                                        // Solo actualizar modal
-                                        updateModalAvatar(newImageUrl);
-                                    });
-                                } else {
-                                    flyAvatarToHeader(newImageUrl, () => {
-                                        updateModalAvatar(newImageUrl);
-                                    });
-                                }
-                            }, 150); // Esperar a que el shadow se aplique visualmente
-                        }
-                    });
+                                // PASO 6: Iniciar animación cuando el shadow esté listo
+                                setTimeout(() => {
+                                    if (typeof window.flyAvatarToHeaderRealTime === 'function') {
+                                        window.flyAvatarToHeaderRealTime(newImageUrl, () => {
+                                            updateModalAvatar(newImageUrl);
+                                        });
+                                    } else {
+                                        flyAvatarToHeader(newImageUrl, () => {
+                                            updateModalAvatar(newImageUrl);
+                                        });
+                                    }
+                                }, 100);
+                            }
+                        });
+                    };
                     
-                    // Si la imagen ya está en caché, forzar el evento load
-                    if ($profileAvatar[0].complete) {
-                        $profileAvatar.trigger('load');
+                    // Si la imagen ya está en caché
+                    if (preloadImg.complete) {
+                        preloadImg.onload();
                     }
                 } else {
                     // Actualización normal sin animación

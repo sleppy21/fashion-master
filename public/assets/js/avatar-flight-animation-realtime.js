@@ -1,7 +1,5 @@
 /**
  * ANIMACIÓN DE VUELO DEL AVATAR CON TRACKING EN TIEMPO REAL
- * Sistema de comunicación continua entre perfil y header
- * Usa requestAnimationFrame para máxima fluidez (60 FPS)
  */
 
 window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
@@ -112,7 +110,7 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
     // FUNCIÓN PRINCIPAL DE ANIMACIÓN
     function createAndAnimateClone() {
     
-    // CLONAR AVATAR VOLADOR USANDO IMG REAL (no background-image)
+    // CLONAR AVATAR VOLADOR USANDO IMG REAL
     const $flyingAvatar = $('<div>').css({
         position: 'fixed',
         top: initialPos.source.top + 'px',
@@ -122,10 +120,12 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
         borderRadius: '50%',
         overflow: 'hidden',
         zIndex: 9999999,
+        opacity: 0,
         pointerEvents: 'none',
-        boxShadow: imageShadow, // Usar shadow dinámico basado en color de imagen
-        willChange: 'transform, top, left, width, height',
-        transformOrigin: 'center center'
+        boxShadow: imageShadow,
+        willChange: 'transform, top, left, width, height, opacity',
+        transformOrigin: 'center center',
+        transition: 'none'
     });
     
     // CREAR IMG TAG REAL DENTRO DEL DIV
@@ -217,102 +217,118 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
         $flyingAvatar.css({
             opacity: 0,
             transform: 'scale(0.8)',
-            transition: 'all 0.4s ease-out'
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
         });
         
-        // Restaurar perfil inmediatamente
+        // Restaurar perfil gradualmente
         $profileAvatar.css({
             opacity: 1,
-            filter: 'none'
+            filter: 'none',
+            transition: 'all 0.3s ease-out'
         });
         
         // ESPERAR a que el clon "desaparezca" antes de actualizar el header
         setTimeout(() => {
-            // AHORA SÍ actualizar la imagen del header
+            // Actualizar imagen del header con efecto suave
             const $headerAvatar = $headerContainer.find('.avatar-image');
             const newImageUrl = avatarUrl + '?t=' + Date.now();
+            
+            // Preparar el header para la transición
+            $headerAvatar.css({
+                transition: 'all 0.3s ease-out',
+                opacity: 0,
+                transform: 'scale(0.9)'
+            });
             
                 
                 // NO aplicar shadow aquí - ya se aplicó desde avatarShadowUpdated
                 // Solo asegurarnos de que tenga el data-shadow-color
-                if (shadowColorRGB && !this.dataset.shadowColor) {
-                    const r = shadowColorRGB.r;
-                    const g = shadowColorRGB.g;
-                    const b = shadowColorRGB.b;
-                    
-                    this.dataset.shadowColor = `${r}, ${g}, ${b}`;
-                    this.dataset.shadowApplied = 'true';
-                    
-                }
+            // Actualizar header con delay y efectos suaves
+            setTimeout(() => {
+                const $headerAvatar = $headerContainer.find('.avatar-image');
+                const newImageUrl = avatarUrl + '?t=' + Date.now();
                 
-                // ACTUALIZAR TAMBIÉN EL AVATAR DEL MODAL CON SU SHADOW
-                const $modalAvatar = $('#user-account-modal .modal-avatar-img');
-                if ($modalAvatar.length > 0) {
-                    $modalAvatar.attr('src', newImageUrl);
-                    
-                    // Aplicar shadow al modal también
-                    if (shadowColorRGB) {
-                        const $modalContainer = $('#modal-user-avatar');
-                        const r = shadowColorRGB.r;
-                        const g = shadowColorRGB.g;
-                        const b = shadowColorRGB.b;
-                        
-                        $modalContainer.css({
-                            'box-shadow': `0 8px 24px rgba(${r}, ${g}, ${b}, 0.35)`
-                        });
-                        
-                    }
-                }
-                
-                // Disparar evento de confirmación
-                if (shadowColorRGB) {
-                    const event = new CustomEvent('avatarColorUpdated', {
-                        detail: { 
-                            r: shadowColorRGB.r, 
-                            g: shadowColorRGB.g, 
-                            b: shadowColorRGB.b 
-                        }
-                    });
-                    document.dispatchEvent(event);
-                }
-                
-                // Efectos finales header (sin sombras de colores)
+                // Preparar header para transición
                 $headerContainer.css({
-                    animation: 'none',
-                    transform: 'scale(1.15)',
-                    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                    transform: 'scale(0.9)',
+                    opacity: 0.5,
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                 });
                 
-                setTimeout(() => {
+                // Actualizar imagen y animar entrada
+                $headerAvatar.attr('src', newImageUrl);
+                $headerAvatar.one('load', function() {
                     $headerContainer.css({
-                        transform: 'scale(1)'
+                        transform: 'scale(1)',
+                        opacity: 1
                     });
-                }, 400);
+                    
+                    // Limpiar y ejecutar callback
+                    setTimeout(() => {
+                        $flyingAvatar.remove();
+                        if (callback) callback();
+                    }, 300);
+                });
                 
-                
-                if (callback) callback();
+                if ($headerAvatar[0].complete) {
+                    $headerAvatar.trigger('load');
+                }
+            }, 200);
             });
             
-            // Actualizar src DESPUÉS de que el clon haya desaparecido
-            $headerAvatar.attr('src', newImageUrl);
-            if ($headerAvatar[0].complete) {
-                $headerAvatar.trigger('load');
-            }
-            
-            // Remover avatar volador
-            $flyingAvatar.remove();
-            
-        }, 400); // Esperar 400ms a que el clon se desvanezca
+        }
+        
+        // Iniciar animación con pequeño delay
+        setTimeout(() => {
+            requestAnimationFrame(animateFrame);
+        }, 50);
     }
     
-    // INICIAR ANIMACIÓN
-    setTimeout(() => {
+    // Extraer color dominante y crear shadow
+    preloadImg.onload = function() {
+        try {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = preloadImg.width;
+            canvas.height = preloadImg.height;
+            ctx.drawImage(preloadImg, 0, 0);
+            
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            let r = 0, g = 0, b = 0;
+            
+            for (let i = 0; i < data.length; i += 4) {
+                r += data[i];
+                g += data[i + 1];
+                b += data[i + 2];
+            }
+            
+            const pixelCount = data.length / 4;
+            r = Math.floor(r / pixelCount);
+            g = Math.floor(g / pixelCount);
+            b = Math.floor(b / pixelCount);
+            
+            // Saturar color
+            const saturation = 1.3;
+            const avg = (r + g + b) / 3;
+            r = Math.min(255, Math.floor(avg + (r - avg) * saturation));
+            g = Math.min(255, Math.floor(avg + (g - avg) * saturation));
+            b = Math.min(255, Math.floor(avg + (b - avg) * saturation));
+            
+            shadowColorRGB = { r, g, b };
+            imageShadow = `0 8px 24px rgba(${r}, ${g}, ${b}, 0.35)`;
+        } catch (e) {
+            console.warn('Error al extraer color:', e);
+        }
         
-        animationId = requestAnimationFrame(animateFrame);
-    }, 100); // Delay inicial reducido para inicio más rápido
+        createAndAnimateClone();
+    };
     
-    } // FIN de createAndAnimateClone
-}; // FIN de flyAvatarToHeaderRealTime
+    preloadImg.onerror = function() {
+        console.warn('Error al cargar imagen para color extraction');
+        createAndAnimateClone();
+    };
+};
 
 // CSS PARA ANIMACIÓN
 if (!$('#avatar-realtime-flight-css').length) {

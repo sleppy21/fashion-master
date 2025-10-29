@@ -396,8 +396,10 @@
 })();
 
 // Estilos CSS inline para sugerencias (si no están en archivo CSS)
-const searchStyles = document.createElement('style');
-searchStyles.textContent = `
+if (!document.getElementById('search-live-styles')) {
+    const searchStyles = document.createElement('style');
+    searchStyles.id = 'search-live-styles';
+    searchStyles.textContent = `
     .search-suggestions {
         animation: fadeInDown 0.3s ease;
     }
@@ -552,4 +554,5 @@ searchStyles.textContent = `
         border-top-color: #404040;
     }
 `;
-document.head.appendChild(searchStyles);
+    document.head.appendChild(searchStyles);
+}
