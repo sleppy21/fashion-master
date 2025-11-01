@@ -19,7 +19,9 @@
     .products-grid-modern .row > div,
     .products-grid-modern .row > div[class*="col"],
     .products-grid-modern .row > .col-6,
+    .products-grid-modern .row > .col-lg-3,
     .products-grid-modern .row > .col-lg-4,
+    .products-grid-modern .row > .col-md-4,
     .products-grid-modern .row > .col-md-6 {
         flex: 0 0 calc(50% - 0px) !important;
         max-width: calc(50% - 0px) !important;

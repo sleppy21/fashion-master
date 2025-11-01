@@ -30,8 +30,10 @@
     }
     
     /* Override específico para clases de Bootstrap */
+    .products-grid-modern .row > .col-lg-3,
     .products-grid-modern .row > .col-lg-4,
     .products-grid-modern .row > .col-lg-6,
+    .products-grid-modern .row > .col-md-4,
     .products-grid-modern .row > .col-md-6,
     .products-grid-modern .row > .col-sm-6,
     .products-grid-modern .row > .col-6 {

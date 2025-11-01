@@ -1,6 +1,7 @@
 /**
- * DARK MODE TOGGLE
+ * DARK MODE TOGGLE - OPTIMIZADO SIN FLASH
  * Sistema de cambio de tema oscuro/claro con persistencia global
+ * NOTA: El tema inicial ya fue aplicado por el script inline en dark-mode-assets.php
  */
 
 (function() {
@@ -74,29 +75,19 @@
         }
     }
 
-    // Verificar preferencia guardada (SIEMPRE usar localStorage primero)
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Verificar estado actual del tema (ya aplicado por script inline)
+    const isDarkMode = document.documentElement.classList.contains('dark-mode');
     
-    // Aplicar tema inicial INMEDIATAMENTE (antes de que cargue la página)
-    const isDarkMode = savedTheme === 'dark' || (!savedTheme && prefersDark);
-    
-    // Aplicar tema lo más rápido posible
-    if (isDarkMode) {
-        document.documentElement.classList.add('dark-mode');
-        document.body.classList.add('dark-mode');
-    }
-    
-    // Esperar a que el DOM esté listo para el resto
+    // Esperar a que el DOM esté listo para actualizar icono y limpiar estilos
     document.addEventListener('DOMContentLoaded', function() {
-        applyTheme(isDarkMode);
+        // Solo actualizar el icono, NO aplicar tema de nuevo (ya está aplicado)
+        updateToggleIcon(isDarkMode);
         
         // Limpiar inline styles al cargar
         setTimeout(() => cleanModalInlineStyles(), 100);
     });
 
     // Event listener para el botón de toggle (verificar que existe)
-    // IMPORTANTE: Esperar a que el DOM esté completamente cargado
     const initToggleButton = () => {
         const toggleBtn = document.getElementById('dark-mode-toggle');
         if (toggleBtn) {
@@ -113,11 +104,6 @@
     } else {
         initToggleButton();
     }
-
-    // Limpiar inline styles cuando la página carga
-    window.addEventListener('DOMContentLoaded', function() {
-        cleanModalInlineStyles();
-    });
 
     // También limpiar cuando se abren los modales
     document.addEventListener('click', function(e) {
@@ -141,7 +127,6 @@
                 childList: true,
                 subtree: true
             });
-            
         }
     };
 
@@ -173,7 +158,6 @@
         window.dispatchEvent(new CustomEvent('themeChanged', { 
             detail: { isDark: isDark } 
         }));
-        
     }
 
     // 🔄 Escuchar cambios de tema desde otras pestañas/ventanas
@@ -188,10 +172,12 @@
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
         if (!localStorage.getItem('theme')) {
             if (e.matches) {
+                document.documentElement.classList.add('dark-mode');
                 document.body.classList.add('dark-mode');
                 updateToggleIcon(true);
                 cleanModalInlineStyles();
             } else {
+                document.documentElement.classList.remove('dark-mode');
                 document.body.classList.remove('dark-mode');
                 updateToggleIcon(false);
             }

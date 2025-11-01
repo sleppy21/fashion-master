@@ -34,7 +34,7 @@ function renderProductCard($product, $is_favorite = false, $user_logged = false,
         : 'public/assets/img/shop/default-product.jpg';
     
     ?>
-    <div class="col-lg-4 col-md-6 col-6">
+    <div class="col-lg-3 col-md-4 col-6">
         <div class="product-card-modern" data-product-id="<?= $product['id_producto'] ?>" data-aos="fade-up">
             
             <!-- Imagen del producto -->

@@ -39,17 +39,23 @@ if ($id_notificacion <= 0) {
 }
 
 try {
-    // Cambiar estado a eliminado
-    $query = "UPDATE notificacion 
-              SET estado_notificacion = 'eliminado' 
-              WHERE id_notificacion = ? 
-              AND id_usuario = ?";
+    // Verificar primero si la notificación existe y pertenece al usuario
+    $check_query = "SELECT estado_notificacion 
+                    FROM notificacion 
+                    WHERE id_notificacion = ? 
+                    AND id_usuario = ?";
+    $check_stmt = $conn->prepare($check_query);
+    $check_stmt->execute([$id_notificacion, $id_usuario]);
+    $notif = $check_stmt->fetch(PDO::FETCH_ASSOC);
     
-    $stmt = $conn->prepare($query);
-    $stmt->execute([$id_notificacion, $id_usuario]);
+    if (!$notif) {
+        echo json_encode(['success' => false, 'message' => 'Notificación no encontrada'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
     
-    if ($stmt->rowCount() > 0) {
-        // Obtener el nuevo count de notificaciones NO LEÍDAS
+    // Si ya está eliminada, retornar éxito sin hacer nada
+    if ($notif['estado_notificacion'] === 'eliminado') {
+        // Obtener count actual
         $count_query = "SELECT COUNT(*) as total 
                        FROM notificacion 
                        WHERE id_usuario = ? 
@@ -62,15 +68,40 @@ try {
         
         echo json_encode([
             'success' => true, 
-            'message' => 'Notificación eliminada',
+            'message' => 'Notificación eliminada correctamente',
             'notifications_count' => $notifications_count
         ], JSON_UNESCAPED_UNICODE);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'No se pudo eliminar la notificación'], JSON_UNESCAPED_UNICODE);
+        exit;
     }
+    
+    // Cambiar estado a eliminado
+    $query = "UPDATE notificacion 
+              SET estado_notificacion = 'eliminado' 
+              WHERE id_notificacion = ? 
+              AND id_usuario = ?";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->execute([$id_notificacion, $id_usuario]);
+    
+    // Obtener el nuevo count de notificaciones NO LEÍDAS
+    $count_query = "SELECT COUNT(*) as total 
+                   FROM notificacion 
+                   WHERE id_usuario = ? 
+                   AND leida_notificacion = 0 
+                   AND estado_notificacion = 'activo'";
+    $count_stmt = $conn->prepare($count_query);
+    $count_stmt->execute([$id_usuario]);
+    $count_result = $count_stmt->fetch(PDO::FETCH_ASSOC);
+    $notifications_count = $count_result ? intval($count_result['total']) : 0;
+    
+    echo json_encode([
+        'success' => true, 
+        'message' => 'Notificación eliminada correctamente',
+        'notifications_count' => $notifications_count
+    ], JSON_UNESCAPED_UNICODE);
 
 } catch (Exception $e) {
     error_log("Error al eliminar notificación: " . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => 'Error al eliminar'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => false, 'message' => 'Error al eliminar: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }
 ?>

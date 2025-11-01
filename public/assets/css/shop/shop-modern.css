@@ -859,3 +859,383 @@ body.dark-mode .noUi-handle:hover {
     border-color: #d4b896;
     box-shadow: 0 6px 16px rgba(201, 166, 124, 0.8);
 }
+
+/* ========================================
+   ESTILOS INLINE MOVIDOS DESDE shop.php
+   SECCIÓN: RESPONSIVE Y MOBILE
+   ======================================== */
+
+/* Topbar móvil - Ocultar título y contador */
+@media (max-width: 768px) {
+    .topbar-left-mobile {
+        display: none !important;
+    }
+    
+    /* Buscador y Ordenar lado a lado */
+    .modern-topbar {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 12px 15px !important;
+    }
+    
+    .topbar-right-mobile {
+        display: flex !important;
+        flex: 1 !important;
+        gap: 10px !important;
+        align-items: center !important;
+    }
+    
+    /* Buscador ocupa espacio flexible */
+    .search-box-modern {
+        flex: 1 !important;
+        margin: 0 !important;
+    }
+    
+    .search-box-modern input {
+        font-size: 13px !important;
+        padding: 10px 35px 10px 12px !important;
+    }
+    
+    /* Botón ordenar más compacto */
+    .sort-dropdown {
+        flex-shrink: 0 !important;
+    }
+    
+    .btn-sort {
+        padding: 10px 14px !important;
+        font-size: 13px !important;
+    }
+    
+    .btn-sort span {
+        display: inline !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .btn-sort span {
+        display: none !important;
+    }
+    
+    .btn-sort {
+        padding: 10px 12px !important;
+    }
+}
+
+/* ========================================
+   BOTÓN FLOTANTE DE FILTROS MÓVIL
+   ======================================== */
+
+/* Botón flotante base */
+.btn-mobile-filters {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+}
+
+/* Badge contador de filtros */
+.btn-mobile-filters .filter-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ff4757;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    border: 2px solid white;
+}
+
+/* Mostrar en móvil, ocultar en desktop */
+@media (max-width: 991px) {
+    .btn-mobile-filters {
+        display: flex !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .btn-mobile-filters {
+        display: none !important;
+    }
+}
+
+/* Efectos hover y active */
+.btn-mobile-filters:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+.btn-mobile-filters:active {
+    transform: scale(0.95);
+}
+
+/* Dark mode */
+body.dark-mode .btn-mobile-filters {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .btn-mobile-filters:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* ========================================
+   OVERLAY Y WRAPPER DE FILTROS MÓVIL
+   (Patrón Offcanvas)
+   ======================================== */
+
+/* Overlay oscuro */
+.filters-menu-overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.filters-menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Wrapper deslizante desde la izquierda */
+.filters-menu-wrapper {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 90%;
+    max-width: 360px;
+    height: 100%;
+    background: #ffffff;
+    padding: 0;
+    z-index: 9999;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.filters-menu-wrapper.active {
+    left: 0;
+}
+
+body.dark-mode .filters-menu-wrapper {
+    background: #1e1e1e;
+}
+
+/* Sidebar dentro del wrapper */
+.filters-menu-wrapper .modern-sidebar {
+    padding: 20px 15px !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Botón cerrar filtros */
+.filters__close {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 15px;
+    background: #ffffff;
+    z-index: 10;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+    font-size: 32px;
+    font-weight: 300;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.filters__close::before {
+    content: '×';
+    display: block;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.filters__close:hover::before {
+    background: rgba(0, 0, 0, 0.1);
+    transform: rotate(90deg);
+}
+
+body.dark-mode .filters__close {
+    background: #1e1e1e;
+    border-bottom-color: #333;
+    color: #fff;
+}
+
+body.dark-mode .filters__close::before {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .filters__close:hover::before {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ========================================
+   VISIBILIDAD SIDEBAR DESKTOP/MÓVIL
+   ======================================== */
+
+/* Ocultar overlay/wrapper en desktop */
+@media (min-width: 992px) {
+    .filters-menu-overlay,
+    .filters-menu-wrapper {
+        display: none !important;
+    }
+    
+    /* Asegurar que el sidebar ORIGINAL esté visible en desktop */
+    #shopFilters {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        position: sticky !important;
+        top: 100px !important;
+    }
+    
+    .col-lg-3 {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+}
+
+/* En móvil: ocultar sidebar original, mostrar solo el clon en wrapper */
+@media (max-width: 991px) {
+    .col-lg-3 > #shopFilters {
+        display: none !important;
+    }
+    
+    #shopFilters-mobile {
+        display: block !important;
+    }
+}
+
+/* ========================================
+   TARJETAS MÓVIL - ESPACIADO COMPACTO
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Contenido de texto: menos padding */
+    .product-content-modern {
+        padding: 8px 8px 10px 8px !important;
+    }
+    
+    /* Título: menos margen inferior */
+    .product-title-modern {
+        margin-bottom: 4px !important;
+    }
+    
+    /* Categoría: menos margen */
+    .product-category-modern {
+        margin-bottom: 4px !important;
+    }
+    
+    /* Rating: menos margen */
+    .product-rating-modern {
+        margin-bottom: 6px !important;
+    }
+    
+    /* Precios: menos margen y gap */
+    .product-price-modern {
+        margin-bottom: 6px !important;
+        gap: 4px !important;
+    }
+    
+    /* Stock badge: menos margen */
+    .stock-badge {
+        margin-bottom: 6px !important;
+    }
+    
+    /* Botón agregar al carrito: menos padding vertical */
+    .add-to-cart-btn-modern {
+        padding: 9px 12px !important;
+        margin-top: 6px !important;
+    }
+}
+
+/* ========================================
+   GRID MÓVIL - 2 COLUMNAS
+   ======================================== */
+
+@media (max-width: 767px) {
+    .products-grid-modern .row {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        margin: 0 -8px !important;
+    }
+    
+    .products-grid-modern .row > div {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+        width: 50% !important;
+        padding: 0 8px !important;
+        margin-bottom: 16px !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* ========================================
+   ESTILOS INLINE - ELEMENTOS ESPECÍFICOS
+   ======================================== */
+
+/* Sidebar y columna - Visibilidad forzada */
+aside.col-lg-3.col-md-4.col-12 {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.shop-sidebar.modern-sidebar#shopFilters {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+    display: block !important;
+    position: sticky !important;
+    top: 100px !important;
+}
+
+/* Small tag en título de filtro */
+.filter-title small {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-left: 4px;
+}

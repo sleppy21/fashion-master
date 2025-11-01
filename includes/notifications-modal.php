@@ -68,29 +68,36 @@ if($usuario_logueado):
                     $prioridadBadge = $notif['prioridad_notificacion'] === 'alta' ? 
                         '<span style="display: inline-block; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: 600; background: #fee; color: #d32f2f; margin-left: 6px;">ALTA</span>' : '';
                 ?>
-                <div class="notification-item" data-id="<?php echo $notif['id_notificacion']; ?>" 
-                     style="display: flex; gap: 10px; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #eee; <?php echo $isUnread ? 'border-left: 3px solid #667eea; background: #f8f9ff;' : ''; ?>">
-                    <div class="notification-icon" 
-                         style="width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; <?php echo $iconColor; ?>">
-                        <i class="fa <?php echo $iconClass; ?>"></i>
+                <div class="notification-item-wrapper" style="position: relative; margin-bottom: 8px;">
+                    <!-- Fondo gris izquierdo -->
+                    <div class="notification-delete-bg-left" style="position: absolute; top: 0; left: 0; bottom: 0; width: 80px; background: #f5f5f5; border-radius: 8px 0 0 8px; display: flex; align-items: center; justify-content: flex-start; padding-left: 20px; opacity: 0; transition: opacity 0.2s;">
+                        <i class="fa fa-trash" style="color: #999; font-size: 20px;"></i>
                     </div>
-                    <div class="notification-info" style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                        <h6 style="margin: 0; font-size: 13px; font-weight: 600; line-height: 1.3; color: #2c3e50;">
-                            <?php echo htmlspecialchars($notif['titulo_notificacion'] ?? 'Notificación'); ?><?php echo $prioridadBadge; ?>
-                        </h6>
-                        <p style="margin: 0; font-size: 12px; line-height: 1.4; opacity: 0.8; color: #555;">
-                            <?php echo htmlspecialchars($notif['mensaje_notificacion']); ?>
-                        </p>
-                        <small style="font-size: 10px; margin-top: auto; opacity: 0.6; color: #888;">
-                            <?php echo $dateStr; ?>
-                        </small>
+                    
+                    <!-- Fondo gris derecho -->
+                    <div class="notification-delete-bg-right" style="position: absolute; top: 0; right: 0; bottom: 0; width: 80px; background: #f5f5f5; border-radius: 0 8px 8px 0; display: flex; align-items: center; justify-content: flex-end; padding-right: 20px; opacity: 0; transition: opacity 0.2s;">
+                        <i class="fa fa-trash" style="color: #999; font-size: 20px;"></i>
                     </div>
-                    <div class="notification-actions">
-                        <button class="btn-notif-delete delete-notification-btn" 
-                                data-id="<?php echo $notif['id_notificacion']; ?>" 
-                                title="Eliminar notificación">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                    
+                    <!-- Tarjeta de notificación deslizable -->
+                    <div class="notification-item" 
+                         data-id="<?php echo $notif['id_notificacion']; ?>" 
+                         style="position: relative; display: flex; gap: 10px; padding: 10px; border-radius: 8px; border: 1px solid #eee; background: white; cursor: grab; touch-action: pan-y; <?php echo $isUnread ? 'border-left: 3px solid #667eea; background: #f8f9ff;' : ''; ?>">
+                        <div class="notification-icon" 
+                             style="width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; <?php echo $iconColor; ?>">
+                            <i class="fa <?php echo $iconClass; ?>"></i>
+                        </div>
+                        <div class="notification-info" style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                            <h6 style="margin: 0; font-size: 13px; font-weight: 600; line-height: 1.3; color: #2c3e50;">
+                                <?php echo htmlspecialchars($notif['titulo_notificacion'] ?? 'Notificación'); ?><?php echo $prioridadBadge; ?>
+                            </h6>
+                            <p style="margin: 0; font-size: 12px; line-height: 1.4; opacity: 0.8; color: #555;">
+                                <?php echo htmlspecialchars($notif['mensaje_notificacion']); ?>
+                            </p>
+                            <small style="font-size: 10px; margin-top: auto; opacity: 0.6; color: #888;">
+                                <?php echo $dateStr; ?>
+                            </small>
+                        </div>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -174,29 +181,132 @@ if($usuario_logueado):
         })
     }
     
-    // Event listeners para botones de notificaciones
-    function attachEventListeners() {
-        // Eliminar notificación - SIN CONFIRMACIÓN, CON TOAST
-        document.querySelectorAll('.btn-notif-delete').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const id = this.getAttribute('data-id');
-                const item = this.closest('.notification-item');
-                deleteNotification(id, item);
-            });
+    // ==========================================
+    // SWIPE TO DELETE - MOUSE Y TOUCH (AMBAS DIRECCIONES)
+    // ==========================================
+    
+    function initSwipeToDelete() {
+        const items = document.querySelectorAll('.notification-item');
+        
+        items.forEach(item => {
+            const wrapper = item.parentElement;
+            const deleteBgLeft = wrapper.querySelector('.notification-delete-bg-left');
+            const deleteBgRight = wrapper.querySelector('.notification-delete-bg-right');
+            
+            let startX = 0;
+            let currentX = 0;
+            let isDragging = false;
+            let startTime = 0;
+            
+            const SWIPE_THRESHOLD = 100; // Pixels para activar eliminación
+            const VELOCITY_THRESHOLD = 0.3; // Velocidad mínima para swipe rápido
+            
+            // Mouse Events
+            item.addEventListener('mousedown', handleStart);
+            document.addEventListener('mousemove', handleMove);
+            document.addEventListener('mouseup', handleEnd);
+            
+            // Touch Events
+            item.addEventListener('touchstart', handleStart, { passive: true });
+            document.addEventListener('touchmove', handleMove, { passive: false });
+            document.addEventListener('touchend', handleEnd);
+            
+            function handleStart(e) {
+                isDragging = true;
+                startTime = Date.now();
+                item.style.cursor = 'grabbing';
+                item.style.transition = 'none';
+                deleteBgLeft.style.transition = 'none';
+                deleteBgRight.style.transition = 'none';
+                
+                if (e.type === 'mousedown') {
+                    startX = e.clientX;
+                } else if (e.type === 'touchstart') {
+                    startX = e.touches[0].clientX;
+                }
+            }
+            
+            function handleMove(e) {
+                if (!isDragging) return;
+                
+                e.preventDefault();
+                
+                if (e.type === 'mousemove') {
+                    currentX = e.clientX - startX;
+                } else if (e.type === 'touchmove') {
+                    currentX = e.touches[0].clientX - startX;
+                }
+                
+                // Limitar el deslizamiento máximo en ambas direcciones
+                const maxSwipe = 150;
+                if (currentX > maxSwipe) {
+                    currentX = maxSwipe;
+                } else if (currentX < -maxSwipe) {
+                    currentX = -maxSwipe;
+                }
+                
+                // Aplicar transformación
+                item.style.transform = `translateX(${currentX}px)`;
+                
+                // Mostrar fondo correspondiente según dirección
+                const distance = Math.abs(currentX);
+                const opacity = Math.min(distance / SWIPE_THRESHOLD, 1);
+                
+                if (currentX > 0) {
+                    // Deslizando hacia la derecha - mostrar fondo izquierdo
+                    deleteBgLeft.style.opacity = opacity;
+                    deleteBgRight.style.opacity = 0;
+                } else if (currentX < 0) {
+                    // Deslizando hacia la izquierda - mostrar fondo derecho
+                    deleteBgRight.style.opacity = opacity;
+                    deleteBgLeft.style.opacity = 0;
+                } else {
+                    deleteBgLeft.style.opacity = 0;
+                    deleteBgRight.style.opacity = 0;
+                }
+            }
+            
+            function handleEnd(e) {
+                if (!isDragging) return;
+                
+                isDragging = false;
+                item.style.cursor = 'grab';
+                item.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+                deleteBgLeft.style.transition = 'opacity 0.2s';
+                deleteBgRight.style.transition = 'opacity 0.2s';
+                
+                const endTime = Date.now();
+                const timeDiff = endTime - startTime;
+                const velocity = Math.abs(currentX) / timeDiff;
+                
+                // Determinar si se debe eliminar (cualquier dirección)
+                const shouldDelete = Math.abs(currentX) >= SWIPE_THRESHOLD || velocity >= VELOCITY_THRESHOLD;
+                
+                if (shouldDelete) {
+                    // Eliminar notificación - animar en la dirección del swipe
+                    const id = item.getAttribute('data-id');
+                    const direction = currentX > 0 ? 1 : -1;
+                    deleteNotification(id, wrapper, item, direction);
+                } else {
+                    // Regresar a posición original
+                    item.style.transform = 'translateX(0)';
+                    deleteBgLeft.style.opacity = '0';
+                    deleteBgRight.style.opacity = '0';
+                }
+                
+                currentX = 0;
+            }
         });
     }
 
-    // Eliminar notificación con toast y animación - SIN CONFIRMACIÓN
-    function deleteNotification(id, item) {
+    // Eliminar notificación con animación
+    function deleteNotification(id, wrapper, item, direction) {
         const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
         
-        // Animación de salida inmediata
-        if (item) {
-            item.style.transition = 'all 0.3s ease';
-            item.style.opacity = '0';
-            item.style.transform = 'translateX(100%)';
-        }
+        // Animación de salida en la dirección del swipe
+        const translateValue = direction > 0 ? '100%' : '-100%';
+        item.style.transform = `translateX(${translateValue})`;
+        item.style.opacity = '0';
         
         fetch(baseUrl + '/app/actions/delete_notification.php', {
             method: 'POST',
@@ -208,9 +318,7 @@ if($usuario_logueado):
             if (data.success) {
                 // Eliminar del DOM después de la animación
                 setTimeout(() => {
-                    if (item) {
-                        item.remove();
-                    }
+                    wrapper.remove();
                     
                     // Verificar si quedan notificaciones
                     const remainingItems = document.querySelectorAll('.notification-item');
@@ -251,25 +359,22 @@ if($usuario_logueado):
                 showToast('Notificación eliminada', 'success');
             } else {
                 // Revertir animación si falló
-                if (item) {
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateX(0)';
-                }
+                item.style.transform = 'translateX(0)';
+                item.style.opacity = '1';
                 showToast(data.message || 'Error al eliminar notificación', 'error');
             }
         })
         .catch(error => {
-            if (item) {
-                item.style.opacity = '1';
-                item.style.transform = 'translateX(0)';
-            }
+            item.style.transform = 'translateX(0)';
+            item.style.opacity = '1';
             showToast('Error al eliminar notificación', 'error');
+            console.error('Error:', error);
         });
     }
 
     // Inicializar
-    attachEventListeners();
     markAllAsReadOnOpen();
+    initSwipeToDelete();
 })();
 </script>
 <?php endif; ?>

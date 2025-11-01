@@ -4,6 +4,52 @@
    ============================================ */
 
 /* ==========================================
+   FORZAR VISIBILIDAD DARK MODE TOGGLE - MÁXIMA PRIORIDAD
+   ========================================== */
+
+#dark-mode-toggle,
+li:has(#dark-mode-toggle) {
+    display: inline-flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Forzar visibilidad del icono específicamente - Font Awesome 6 Compatible */
+#dark-mode-toggle i,
+#dark-mode-toggle .fa,
+#dark-mode-toggle .fa-moon,
+#dark-mode-toggle .fa-sun,
+#dark-mode-toggle .fa-solid,
+#dark-mode-toggle .fa-regular {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    font-size: 20px !important;
+    color: #111111 !important;
+    font-weight: 900 !important;
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free', 'FontAwesome', sans-serif !important;
+    line-height: 1 !important;
+}
+
+/* Asegurar que el pseudo-elemento ::before sea visible */
+#dark-mode-toggle i::before,
+#dark-mode-toggle .fa::before,
+#dark-mode-toggle .fa-moon::before,
+#dark-mode-toggle .fa-sun::before {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Dark mode - MANTENER ICONO BLANCO (no amarillo) */
+body.dark-mode #dark-mode-toggle i,
+body.dark-mode #dark-mode-toggle .fa,
+body.dark-mode #dark-mode-toggle .fa-moon,
+body.dark-mode #dark-mode-toggle .fa-sun {
+    color: #ffffff !important;
+}
+
+/* ==========================================
    FORZAR HEADER ESTÁTICO - MÁXIMA PRIORIDAD
    ========================================== */
 
@@ -364,26 +410,304 @@ body.dark-mode .header__right__widget li.user-avatar-btn-container {
    BOTÓN LOGIN
    ========================================== */
 
+/* ==========================================
+   BOTONES DE AUTENTICACIÓN - DISEÑO MINIMALISTA (SOLO TEXTO)
+   ESPACIADO QUIRÚRGICO GARANTIZADO V3 - 80PX
+   ========================================== */
+
+.auth-separator {
+    width: 1px;
+    height: 20px;
+    background: #e0e0e0;
+    margin: 0 45px !important;
+    align-self: center;
+    flex-shrink: 0;
+}
+
+body.dark-mode .auth-separator {
+    background: #404040;
+}
+
+/* Contenedor de botones */
+.auth-buttons-container {
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-shrink: 0;
+}
+
+/* Botón Registrarse - Específico */
+.btn-register {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Botón Ingresar - Específico con GRAN margen izquierdo de 80px */
+.btn-login {
+    margin: 0 0 0 80px !important;
+    padding: 0 !important;
+}
+
+.btn-auth {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    border: none !important;
+    background: transparent !important;
+    transition: all 0.2s ease;
+    text-decoration: none !important;
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* Botón Registrarse - Solo Texto */
+.btn-register {
+    color: #666666 !important;
+}
+
+.btn-register:hover {
+    color: #1a1a1a !important;
+}
+
+.btn-register::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #1a1a1a;
+    transition: width 0.3s ease;
+}
+
+.btn-register:hover::after {
+    width: 100%;
+}
+
+/* Botón Ingresar - Solo Texto */
+.btn-login {
+    color: #1a1a1a !important;
+    font-weight: 600;
+}
+
+.btn-login:hover {
+    color: #000000 !important;
+}
+
+.btn-login::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #1a1a1a;
+    transition: width 0.3s ease;
+}
+
+.btn-login:hover::after {
+    width: 100%;
+}
+
+/* Active States */
+.btn-auth:active {
+    transform: scale(0.98);
+}
+
+/* ==========================================
+   DARK MODE - BOTONES DE AUTENTICACIÓN
+   ========================================== */
+
+body.dark-mode .btn-register {
+    color: #999999 !important;
+}
+
+body.dark-mode .btn-register:hover {
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-register::after {
+    background: #ffffff;
+}
+
+body.dark-mode .btn-login {
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-login:hover {
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-login::after {
+    background: #ffffff;
+}
+
+/* ==========================================
+   RESPONSIVE - BOTONES DE AUTENTICACIÓN
+   ========================================== */
+
+@media (max-width: 992px) {
+    .btn-auth {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 768px) {
+    .auth-buttons-container {
+        margin-left: 6px !important;
+    }
+    
+    .btn-auth {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 575px) {
+    .auth-buttons-container {
+        margin-left: 4px !important;
+    }
+    
+    .btn-auth {
+        font-size: 12px;
+    }
+}
+
+/* ==========================================
+   BOTÓN LOGIN HEADER - DISEÑO MODERNO V2 (LEGACY)
+   ========================================== */
+
+.btn-login-header-modern {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px !important;
+    background: transparent;
+    color: #1a1a1a !important;
+    border: 2px solid #1a1a1a;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-login-header-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: #1a1a1a;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+}
+
+.btn-login-header-modern .login-text {
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s ease;
+}
+
+.btn-login-header-modern:hover::before {
+    width: 100%;
+}
+
+.btn-login-header-modern:hover .login-text {
+    color: #ffffff !important;
+}
+
+.btn-login-header-modern:hover {
+    border-color: #1a1a1a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 26, 26, 0.15);
+}
+
+.btn-login-header-modern:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(26, 26, 26, 0.1);
+}
+
+/* Dark Mode */
+body.dark-mode .btn-login-header-modern {
+    color: #ffffff !important;
+    border-color: #ffffff;
+}
+
+body.dark-mode .btn-login-header-modern::before {
+    background: #ffffff;
+}
+
+body.dark-mode .btn-login-header-modern:hover .login-text {
+    color: #1a1a1a !important;
+}
+
+body.dark-mode .btn-login-header-modern:hover {
+    border-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .btn-login-header-modern {
+        padding: 8px 16px !important;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 575px) {
+    .btn-login-header-modern {
+        padding: 8px 14px !important;
+        font-size: 12px;
+    }
+}
+
+/* ==========================================
+   BOTÓN LOGIN HEADER - LEGACY (mantener compatibilidad)
+   ========================================== */
+
 .btn-login-header {
     display: inline-flex !important;
     align-items: center;
-    padding: 6px 14px !important;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px !important;
     background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%);
     color: white !important;
     border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    /* Sin transiciones - elemento del menú */
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0.3px;
     border: none;
     white-space: nowrap;
-    box-shadow: 0 2px 6px rgba(201, 166, 124, 0.3);
+    box-shadow: 0 2px 8px rgba(201, 166, 124, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-login-header i {
+    font-size: 14px;
+    margin: 0;
 }
 
 .btn-login-header:hover {
     background: linear-gradient(135deg, #d4b28a 0%, #c9a67c 100%);
-    box-shadow: 0 3px 8px rgba(201, 166, 124, 0.5);
+    box-shadow: 0 4px 12px rgba(201, 166, 124, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-login-header:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(201, 166, 124, 0.3);
 }
 
 /* ==========================================
@@ -396,13 +720,14 @@ body.dark-mode .header__right__widget li.user-avatar-btn-container {
     justify-content: center !important;
     width: 36px !important;
     height: 36px !important;
-    border-radius: 50% !important;
+    border-radius: 0 !important;
     background: transparent !important;
-    color: #111111 !important;
+    color: #1a1a1a !important;
     cursor: pointer !important;
     opacity: 1 !important;
     visibility: visible !important;
-    /* Sin transiciones - elemento del menú */
+    position: relative !important;
+    z-index: 10 !important;
 }
 
 #dark-mode-toggle:hover {
@@ -410,15 +735,26 @@ body.dark-mode .header__right__widget li.user-avatar-btn-container {
 }
 
 #dark-mode-toggle i {
-    font-size: 18px !important; /* Mismo tamaño que los demás iconos */
-    color: #111111 !important;
+    font-size: 18px !important;
+    color: #1a1a1a !important;
     opacity: 1 !important;
     visibility: visible !important;
+    display: inline-block !important;
+}
+
+/* Iconos específicos de Font Awesome para dark mode */
+#dark-mode-toggle .fa-moon,
+#dark-mode-toggle .fa-sun {
+    color: #1a1a1a !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
+    font-size: 18px !important;
 }
 
 body.dark-mode #dark-mode-toggle {
     background: transparent !important;
-    color: #dc143c !important;
+    color: #ffd700 !important;
 }
 
 body.dark-mode #dark-mode-toggle:hover {
@@ -426,7 +762,12 @@ body.dark-mode #dark-mode-toggle:hover {
 }
 
 body.dark-mode #dark-mode-toggle i {
-    color: #dc143c !important;
+    color: #ffd700 !important;
+}
+
+body.dark-mode #dark-mode-toggle .fa-moon,
+body.dark-mode #dark-mode-toggle .fa-sun {
+    color: #ffd700 !important;
 }
 
 /* Botón dark mode con más contraste cuando NO hay sesión */
@@ -459,7 +800,7 @@ body.dark-mode #dark-mode-toggle.no-session:hover {
 }
 
 body.dark-mode #dark-mode-toggle.no-session i {
-    color: #dc143c !important;
+    color: #ffd700 !important;
 }
 
 /* ==========================================

@@ -147,7 +147,10 @@ try {
 
     <!-- Css Styles -->
     <link rel="stylesheet" href="public/assets/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/font-awesome.min.css" type="text/css">
+    
+    <!-- Font Awesome 6.4.0 - FORZAR CARGA DESDE CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <link rel="stylesheet" href="public/assets/css/elegant-icons.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/jquery-ui.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/magnific-popup.css" type="text/css">
@@ -155,8 +158,9 @@ try {
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
     
-    <!-- Header Standard - COMPACTO v5.0 -->
-    <link rel="stylesheet" href="public/assets/css/header-standard.css?v=5.0">
+    <!-- Header Bootstrap Layout - Sistema Moderno -->
+    <link rel="stylesheet" href="public/assets/css/header-bootstrap-layout.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="public/assets/css/header-responsive.css?v=<?= time() ?>">
     
     <!-- AOS Animation -->
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">

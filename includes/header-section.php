@@ -88,14 +88,18 @@
             <div class="col-auto order-2 order-lg-3" style="min-width: 200px;">
                 <div class="header__right">
                     <ul class="header__right__widget d-flex align-items-center justify-content-end m-0 p-0 list-unstyled">
+                        <!-- Búsqueda global - Siempre visible -->
                         <li><span class="icon_search" id="global-search-trigger" style="cursor: pointer;"></span></li>
+                        
+                        <!-- Dark Mode Toggle - Siempre visible -->
                         <li>
                             <a href="#" id="dark-mode-toggle" title="Cambiar tema">
                                 <i class="fa fa-moon"></i>
                             </a>
                         </li>
-                        <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
                         
+                        <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
+                        <!-- Usuario logueado - Mostrar todas las opciones -->
                         <li><a href="#" id="notifications-link" title="Notificaciones">
                             <i class="fa fa-bell"></i>
                             <?php if(isset($notifications_count) && $notifications_count > 0): ?>
@@ -158,9 +162,24 @@
                             </a>
                         </li>
                         <?php else: ?>
+                        <!-- Usuario NO logueado - Mostrar iconos básicos + botones auth -->
                         <li><a href="login.php" title="Favoritos"><span class="icon_heart_alt"></span></a></li>
                         <li><a href="cart.php" title="Carrito"><span class="icon_bag_alt"></span></a></li>
-                        <li><a href="login.php" class="btn-login-header">Iniciar Sesión</a></li>
+                        
+                        <!-- Separador visual -->
+                        <li class="auth-separator"></li>
+                        
+                        <!-- Botones de autenticación -->
+                        <li class="auth-buttons-container">
+                            <a href="register.php" class="btn-auth btn-register" title="Crear Cuenta">
+                                Registrarse
+                            </a>
+                        </li>
+                        <li class="auth-buttons-container">
+                            <a href="login.php" class="btn-auth btn-login" title="Iniciar Sesión">
+                                Ingresar
+                            </a>
+                        </li>
                         <?php endif; ?>
                     </ul>
                 </div>

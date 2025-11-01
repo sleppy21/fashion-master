@@ -691,18 +691,130 @@ body.dark-mode .canvas__open i {
 
 /* Hover eliminado - menú estático */
 
-body.dark-mode .btn-login-header {
-    background: #c9a67c;
+/* Auth Buttons - Solo Texto - Dark Mode */
+body.dark-mode .btn-register {
+    color: #999999 !important;
 }
 
-body.dark-mode .btn-login-header:hover {
-    background: #d4b58d;
+body.dark-mode .btn-register:hover {
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-register::after {
+    background: #ffffff;
+}
+
+body.dark-mode .btn-login {
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-login:hover {
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-login::after {
+    background: #ffffff;
+}
+
+/* Responsive - Espaciado Quirúrgico V3 - 80PX DESKTOP */
+@media (min-width: 993px) {
+    .auth-separator {
+        margin: 0 45px !important;
+    }
+    
+    .btn-login {
+        margin-left: 80px !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .auth-separator {
+        margin: 0 40px !important;
+    }
+    
+    .btn-login {
+        margin-left: 70px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .auth-separator {
+        margin: 0 32px !important;
+        height: 18px;
+    }
+    
+    .btn-login {
+        margin-left: 55px !important;
+    }
+    
+    .btn-auth {
+        font-size: 13px;
+    }
 }
 
 @media (max-width: 575px) {
+    .auth-separator {
+        margin: 0 24px !important;
+        height: 16px;
+    }
+    
+    .btn-login {
+        margin-left: 40px !important;
+    }
+    
+    .btn-auth {
+        font-size: 12px;
+    }
+}
+
+/* Modern Login Button - Dark Mode */
+body.dark-mode .btn-login-header-modern {
+    color: #ffffff !important;
+    border-color: #ffffff;
+}
+
+body.dark-mode .btn-login-header-modern::before {
+    background: #ffffff;
+}
+
+body.dark-mode .btn-login-header-modern:hover .login-text {
+    color: #1a1a1a !important;
+}
+
+body.dark-mode .btn-login-header-modern:hover {
+    border-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+/* Legacy Login Button - Dark Mode */
+body.dark-mode .btn-login-header {
+    background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(201, 166, 124, 0.4);
+}
+
+body.dark-mode .btn-login-header:hover {
+    background: linear-gradient(135deg, #d4b28a 0%, #c9a67c 100%) !important;
+    box-shadow: 0 4px 12px rgba(201, 166, 124, 0.6);
+}
+
+body.dark-mode .btn-login-header i {
+    color: #ffffff !important;
+}
+
+@media (max-width: 575px) {
+    .btn-login-header-modern {
+        padding: 8px 14px !important;
+        font-size: 12px;
+    }
+    
     .btn-login-header {
         padding: 6px 12px;
         font-size: 11px;
+    }
+    
+    .btn-login-header span {
+        display: none !important;
     }
 }
 

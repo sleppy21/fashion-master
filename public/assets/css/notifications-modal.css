@@ -269,3 +269,108 @@
 .notifications-modal-body::-webkit-scrollbar-thumb:hover {
     background: #1a252f;
 }
+
+/* ============================================
+   SWIPE TO DELETE - SISTEMA DESLIZABLE (AMBAS DIRECCIONES)
+   ============================================ */
+
+/* Wrapper de notificación */
+.notification-item-wrapper {
+    position: relative;
+    margin-bottom: 8px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+/* Fondo gris izquierdo (deslizar hacia derecha) */
+.notification-delete-bg-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 80px;
+    background: #f5f5f5;
+    border-radius: 8px 0 0 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 20px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.notification-delete-bg-left i {
+    color: #999;
+    font-size: 20px;
+}
+
+/* Fondo gris derecho (deslizar hacia izquierda) */
+.notification-delete-bg-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 80px;
+    background: #f5f5f5;
+    border-radius: 0 8px 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 20px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.notification-delete-bg-right i {
+    color: #999;
+    font-size: 20px;
+}
+
+/* Tarjeta de notificación */
+.notification-item {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    background: white;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    z-index: 1;
+}
+
+.notification-item:active {
+    cursor: grabbing;
+}
+
+/* Dark mode */
+body.dark-mode .notification-item {
+    background: #1e1e1e;
+    border-color: #333;
+}
+
+body.dark-mode .notification-delete-bg-left,
+body.dark-mode .notification-delete-bg-right {
+    background: #2a2a2a;
+}
+
+body.dark-mode .notification-delete-bg-left i,
+body.dark-mode .notification-delete-bg-right i {
+    color: #666;
+}
+
+/* Remover botón de eliminar (ahora se usa swipe) */
+.notification-actions {
+    display: none !important;
+}
+
+.btn-notif-delete {
+    display: none !important;
+}

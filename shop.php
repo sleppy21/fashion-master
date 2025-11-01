@@ -47,7 +47,7 @@ $page_title = "Tienda";
     <?php include 'includes/modern-libraries.php'; ?>
     
     <!-- Base Shop Styles -->
-    <link rel="stylesheet" href="public/assets/css/shop/shop-modern.css?v=2.0">
+    <link rel="stylesheet" href="public/assets/css/shop/shop-modern.css?v=<?= time() ?>">
     
     <!-- Shop Components -->
     <link rel="stylesheet" href="public/assets/css/shop/shop-filters-modern.css?v=2.0">
@@ -93,275 +93,7 @@ $page_title = "Tienda";
             window.BASE_URL = window.BASE_URL.replace('http:', 'https:');
         }
     </script>
-     <style>
-        @media (max-width: 768px) {
-            /* 🚫 OCULTAR título Catálogo y contador de productos */
-            .topbar-left-mobile {
-                display: none !important;
-            }
-            
-            /* ✅ Buscador y Ordenar lado a lado */
-            .modern-topbar {
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                gap: 10px !important;
-                padding: 12px 15px !important;
-            }
-            
-            .topbar-right-mobile {
-                display: flex !important;
-                flex: 1 !important;
-                gap: 10px !important;
-                align-items: center !important;
-            }
-            
-            /* Buscador ocupa espacio flexible */
-            .search-box-modern {
-                flex: 1 !important;
-                margin: 0 !important;
-            }
-            
-            .search-box-modern input {
-                font-size: 13px !important;
-                padding: 10px 35px 10px 12px !important;
-            }
-            
-            /* Botón ordenar más compacto */
-            .sort-dropdown {
-                flex-shrink: 0 !important;
-            }
-            .btn-sort {
-                padding: 10px 14px !important;
-                font-size: 13px !important;
-            }
-            
-            .btn-sort span {
-                display: inline !important;
-            }
-        }
-        
-        @media (max-width: 400px) {
-            .btn-sort span {
-                display: none !important;
-            }
-            .btn-sort {
-                padding: 10px 12px !important;
-            }
-        }
-        
-        /* 🔘 Botón flotante de filtros - Responsive */
-        @media (max-width: 991px) {
-            #btnMobileFilters {
-                display: flex !important;
-            }
-        }
-        
-        @media (min-width: 992px) {
-            #btnMobileFilters {
-                display: none !important;
-            }
-        }
-        
-        /* Efecto hover en el botón - Shadow oscura */
-        #btnMobileFilters:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
-        }
-        
-        #btnMobileFilters:active {
-            transform: scale(0.95);
-        }
-        
-        /* Dark mode - sombra más suave */
-        body.dark-mode #btnMobileFilters {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
-        }
-        body.dark-mode #btnMobileFilters:hover {
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6) !important;
-        }
-        
-        /* 🎨 Overlay y Wrapper de Filtros (EXACTO AL OFFCANVAS) */
-        .filters-menu-overlay {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 9998;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .filters-menu-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .filters-menu-wrapper {
-            position: fixed;
-            left: -100%;
-            top: 0;
-            width: 90%;
-            max-width: 360px;
-            height: 100%;
-            background: #ffffff;
-            padding: 0;
-            z-index: 9999;
-            overflow-y: auto;
-            overflow-x: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .filters-menu-wrapper.active {
-            left: 0;
-        }
-        
-        body.dark-mode .filters-menu-wrapper {
-            background: #1e1e1e;
-        }
-        
-        /* Sidebar dentro del wrapper - con padding */
-        .filters-menu-wrapper .modern-sidebar {
-            padding: 20px 15px !important;
-            margin: 0 !important;
-            border: none !important;
-            border-radius: 0 !important;
-            box-shadow: none !important;
-            width: 100% !important;
-            max-width: 100% !important;
-        }
-        
-        /* Botón cerrar filtros */
-        .filters__close {
-            position: sticky;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0 15px;
-            background: #ffffff;
-            z-index: 10;
-            border-bottom: 1px solid #e0e0e0;
-            cursor: pointer;
-            font-size: 32px;
-            font-weight: 300;
-            color: #333;
-            transition: all 0.3s ease;
-        }
-        
-        .filters__close::before {
-            content: '×';
-            display: block;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .filters__close:hover::before {
-            background: rgba(0, 0, 0, 0.1);
-            transform: rotate(90deg);
-        }
-        
-        body.dark-mode .filters__close {
-            background: #1e1e1e;
-            border-bottom-color: #333;
-            color: #fff;
-        }
-        
-        body.dark-mode .filters__close::before {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        body.dark-mode .filters__close:hover::before {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        /* Ocultar en desktop */
-        @media (min-width: 992px) {
-            .filters-menu-overlay,
-            .filters-menu-wrapper {
-                display: none !important;
-            }
-            
-            /* ✅ FIX: Asegurar que el sidebar ORIGINAL esté visible en desktop */
-            #shopFilters {
-                display: block !important;
-                opacity: 1 !important;
-                visibility: visible !important;
-                position: sticky !important;
-                top: 100px !important;
-            }
-            
-            .col-lg-3 {
-                display: block !important;
-                opacity: 1 !important;
-                visibility: visible !important;
-            }
-        }
-        
-        /* ✅ En móvil: ocultar sidebar original, mostrar solo el clon en wrapper */
-        @media (max-width: 991px) {
-            .col-lg-3 > #shopFilters {
-                display: none !important;
-            }
-            
-            #shopFilters-mobile {
-                display: block !important;
-            }
-        }
-        
-        /* 📱 TARJETAS MÓVIL - Reducir espaciado interno (precios, texto, etc) */
-        @media (max-width: 768px) {
-            /* Contenido de texto: menos padding */
-            .product-content-modern {
-                padding: 8px 8px 10px 8px !important;
-            }
-            
-            /* Título: menos margen inferior */
-            .product-title-modern {
-                margin-bottom: 4px !important;
-            }
-            
-            /* Categoría: menos margen */
-            .product-category-modern {
-                margin-bottom: 4px !important;
-            }
-            
-            /* Rating: menos margen */
-            .product-rating-modern {
-                margin-bottom: 6px !important;
-            }
-            
-            /* Precios: menos margen y gap */
-            .product-price-modern {
-                margin-bottom: 6px !important;
-                gap: 4px !important;
-            }
-            
-            /* Stock badge: menos margen */
-            .stock-badge {
-                margin-bottom: 6px !important;
-            }
-            
-            /* Botón agregar al carrito: menos padding vertical */
-            .add-to-cart-btn-modern {
-                padding: 9px 12px !important;
-                margin-top: 6px !important;
-            }
-        }
-    </style>
+     
 </head>
 
 <body class="shop-page">
@@ -375,9 +107,9 @@ $page_title = "Tienda";
     <?php include 'includes/breadcrumb.php'; ?>
     
     <!-- Botón de filtros móvil - Diseño del offcanvas -->
-    <button class="btn-mobile-filters" id="btnMobileFilters" aria-label="Abrir filtros" style="position: fixed; bottom: 20px; right: 20px; z-index: 999; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); display: none; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; font-size: 18px;">
+    <button class="btn-mobile-filters" id="btnMobileFilters" aria-label="Abrir filtros">
         <i class="fa fa-filter"></i>
-        <span class="filter-count" id="filterCount" style="position: absolute; top: -4px; right: -4px; background: #ff4757; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; border: 2px solid white;">0</span>
+        <span class="filter-count" id="filterCount">0</span>
     </button>
     
     <!-- Overlay y Wrapper de Filtros Móvil (patrón offcanvas) -->
@@ -392,8 +124,8 @@ $page_title = "Tienda";
             <div class="row">
                 
                 <!-- ========== SIDEBAR - FILTROS ========== -->
-                <aside class="col-lg-3 col-md-4 col-12" style="display: block !important; opacity: 1 !important; visibility: visible !important;">
-                    <div class="shop-sidebar modern-sidebar" id="shopFilters" style="opacity: 1 !important; transform: none !important; visibility: visible !important; display: block !important; position: sticky !important; top: 100px !important;">
+                <aside class="col-lg-3 col-md-4 col-12">
+                    <div class="shop-sidebar modern-sidebar" id="shopFilters">
                         
                         <!-- Header -->
                         <div class="sidebar-header">
@@ -408,7 +140,6 @@ $page_title = "Tienda";
                         <div class="filter-section filter-section-first">
                             <h3 class="filter-title">
                                 <i class="fa fa-th-large"></i> Categorías
-                                <small style="font-size: 11px; opacity: 0.7; margin-left: 4px;">(Múltiple)</small>
                             </h3>
                             <div class="filter-buttons">
                                 <?php foreach($categorias as $cat): 
@@ -637,35 +368,6 @@ $page_title = "Tienda";
     <!-- Shop Scripts -->
     <script src="public/assets/js/shop/shop-filters.js?v=2.0"></script>
     <script src="public/assets/js/shop/search-live.js?v=2.0"></script>
-    
-    <!-- Optimización de Grid Móvil -->
-    <style>
-        @media (max-width: 767px) {
-            .products-grid-modern .row {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                margin: 0 -8px !important;
-            }
-            
-            .products-grid-modern .row > div {
-                flex: 0 0 50% !important;
-                max-width: 50% !important;
-                width: 50% !important;
-                padding: 0 8px !important;
-                margin-bottom: 16px !important;
-                box-sizing: border-box !important;
-            }
-        }
-    </style>
-    <script>
-    (function() {
-        'use strict';
-        
-        // ✅ FIX: Usar CSS en lugar de JavaScript para evitar MutationObserver infinito
-        // El CSS ya maneja todo el grid móvil correctamente
-        // NO necesitamos JavaScript adicional que cause loops
-    })();
-    </script>
     
     <!-- Filtros Móviles - Patrón Offcanvas -->
     <script src="public/assets/js/shop-filters-mobile.js?v=<?= time() ?>"></script>
