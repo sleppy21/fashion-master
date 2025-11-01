@@ -712,119 +712,95 @@ const RealTimeUpdates = (function() {
 
     // ============================================
     // INICIALIZAR EVENT LISTENERS
+    // ✅ FIX: Event delegation OPTIMIZADO - verificar SOLO si el click es relevante
     // ============================================
     
     function init() {
         
-        // Event delegation para botones dinámicos
+        // ✅ Event delegation OPTIMIZADO: Salir temprano si no es click relevante
         document.addEventListener('click', function(e) {
-            // Eliminar notificación
-            if (e.target.closest('.delete-notification-btn') || e.target.closest('.btn-notif-delete')) {
-                e.preventDefault();
-                const btn = e.target.closest('.delete-notification-btn') || e.target.closest('.btn-notif-delete');
-                const id = btn.dataset.notificationId || btn.dataset.id || btn.getAttribute('data-id');
+            const target = e.target;
+            
+            // ✅ OPTIMIZACIÓN: Si no es un elemento interactivo, salir inmediatamente
+            if (!target.closest('button, a, .notification-item, .favorite-item')) {
+                return; // Salir temprano para evitar 5000+ verificaciones innecesarias
+            }
+            
+            // Ahora sí, verificar qué tipo de elemento es
+            const clickedElement = target.closest(
+                '.delete-notification-btn, .btn-notif-delete, ' +
+                '.mark-read-btn, .btn-notif-read, ' +
+                '.add-to-favorites, ' +
+                '.btn-favorite-remove, ' +
+                '.btn-favorite-cart, ' +
+                '.btn-add-cart-modern, ' +
+                '.add-to-cart'
+            );
+            
+            if (!clickedElement) return; // No es ningún botón que nos interese
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // ✅ OPTIMIZACIÓN: Usar el elemento ya encontrado en lugar de buscar otra vez
+            const btn = clickedElement;
+            const productId = btn.dataset.id || btn.getAttribute('data-id');
+            
+            // Determinar qué tipo de acción ejecutar basado en la clase
+            if (btn.matches('.delete-notification-btn, .btn-notif-delete')) {
+                const id = btn.dataset.notificationId || productId;
                 const item = btn.closest('.notification-item');
                 deleteNotification(id, item);
             }
-
-            // Marcar notificación como leída
-            if (e.target.closest('.mark-read-btn') || e.target.closest('.btn-notif-read')) {
-                e.preventDefault();
-                const btn = e.target.closest('.mark-read-btn') || e.target.closest('.btn-notif-read');
-                const id = btn.dataset.notificationId || btn.dataset.id || btn.getAttribute('data-id');
+            else if (btn.matches('.mark-read-btn, .btn-notif-read')) {
+                const id = btn.dataset.notificationId || productId;
                 const item = btn.closest('.notification-item');
                 markNotificationAsRead(id, item);
             }
-
-            // FAVORITOS - Agregar/Quitar desde SHOP (clase: add-to-favorites)
-            if (e.target.closest('.add-to-favorites')) {
-                e.preventDefault();
-                e.stopPropagation();
-                const btn = e.target.closest('.add-to-favorites');
-                const productId = btn.dataset.id || btn.getAttribute('data-id');
-                
+            else if (btn.matches('.add-to-favorites')) {
                 addToFavorites(productId, btn);
             }
-
-            // FAVORITOS - Quitar desde MODAL (clase: btn-favorite-remove)
-            if (e.target.closest('.btn-favorite-remove')) {
-                e.preventDefault();
-                e.stopPropagation();
-                const btn = e.target.closest('.btn-favorite-remove');
-                const productId = btn.dataset.id || btn.getAttribute('data-id');
+            else if (btn.matches('.btn-favorite-remove')) {
                 const item = btn.closest('.favorite-item');
                 removeFromFavorites(productId, btn, item);
             }
-
-            // CARRITO - Agregar/quitar desde favoritos (clase: btn-favorite-cart)
-            if (e.target.closest('.btn-favorite-cart')) {
-                e.preventDefault();
-                e.stopPropagation();
-                const btn = e.target.closest('.btn-favorite-cart');
-                const productId = btn.dataset.id || btn.getAttribute('data-id');
+            else if (btn.matches('.btn-favorite-cart')) {
                 const inCart = btn.dataset.inCart === 'true' || btn.classList.contains('in-cart');
-                
                 if (inCart) {
                     removeFromCart(productId, btn);
                 } else {
                     addToCart(productId, 1, btn);
                 }
             }
-
-            // CARRITO - Botón de PRODUCT DETAILS (clase: btn-add-cart-modern) - IR AL CARRITO
-            if (e.target.closest('.btn-add-cart-modern')) {
-                e.preventDefault();
-                e.stopPropagation();
-                const btn = e.target.closest('.btn-add-cart-modern');
-                const productId = btn.dataset.id || btn.getAttribute('data-id');
-                
-                // No agregar si está deshabilitado
+            else if (btn.matches('.btn-add-cart-modern')) {
                 if (btn.disabled || btn.dataset.disabled === 'true') {
                     showToast('Producto sin stock', 'warning');
                     return;
                 }
                 
-                // Verificar si ya está en carrito
                 const inCart = btn.dataset.inCart === 'true' || btn.classList.contains('in-cart');
-                
                 if (inCart) {
-                    // Si ya está en carrito, ir a cart.php
                     window.location.href = baseUrl + '/cart.php';
                 } else {
-                    // Si no está en carrito, agregarlo
                     const quantity = btn.dataset.quantity || 1;
                     addToCart(productId, quantity, btn);
                 }
-                return; // Importante: salir para no ejecutar el siguiente handler
             }
-
-            // CARRITO - Botón de SHOP (clase: add-to-cart en <a>) - TOGGLE Agregar/Quitar
-            if (e.target.closest('.add-to-cart')) {
-                e.preventDefault();
-                e.stopPropagation();
-                const btn = e.target.closest('.add-to-cart');
-                const productId = btn.dataset.id || btn.getAttribute('data-id');
-                
-                // VALIDACIÓN: Verificar que productId existe y no está vacío
+            else if (btn.matches('.add-to-cart')) {
                 if (!productId || productId === 'null' || productId === 'undefined') {
                     showToast('Error: ID de producto no válido', 'error');
                     return;
                 }
                 
-                // No agregar si está deshabilitado
                 if (btn.dataset.disabled === 'true') {
                     showToast('Producto sin stock', 'warning');
                     return;
                 }
                 
-                // TOGGLE: verificar si ya está en carrito
                 const inCart = btn.dataset.inCart === 'true' || btn.classList.contains('in-cart');
-                
                 if (inCart) {
-                    // Si está en carrito, QUITARLO
                     removeFromCart(productId, btn);
                 } else {
-                    // Si no está en carrito, AGREGARLO
                     const quantity = btn.dataset.quantity || 1;
                     addToCart(productId, quantity, btn);
                 }

@@ -90,7 +90,8 @@ $page_title = "Tienda";
         
         // Verificar y corregir protocolo si es necesario
         if (window.location.protocol === 'https:' && window.BASE_URL.startsWith('http:')) {
-            window.BASE_URL = window.BASE_URL.replace('http:', 'https:');}
+            window.BASE_URL = window.BASE_URL.replace('http:', 'https:');
+        }
     </script>
      <style>
         @media (max-width: 768px) {
@@ -292,6 +293,32 @@ $page_title = "Tienda";
             .filters-menu-overlay,
             .filters-menu-wrapper {
                 display: none !important;
+            }
+            
+            /* ✅ FIX: Asegurar que el sidebar ORIGINAL esté visible en desktop */
+            #shopFilters {
+                display: block !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                position: sticky !important;
+                top: 100px !important;
+            }
+            
+            .col-lg-3 {
+                display: block !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+        }
+        
+        /* ✅ En móvil: ocultar sidebar original, mostrar solo el clon en wrapper */
+        @media (max-width: 991px) {
+            .col-lg-3 > #shopFilters {
+                display: none !important;
+            }
+            
+            #shopFilters-mobile {
+                display: block !important;
             }
         }
         
@@ -571,9 +598,6 @@ $page_title = "Tienda";
     
     <!-- Footer -->
     
-    <!-- jQuery (requerido por todos los scripts) -->
-    <script src="public/assets/js/jquery-3.3.1.min.js"></script>
-    
     <!-- Core Scripts -->
     <script>
         // BASE URL para peticiones AJAX - Compatible con ngrok y cualquier dominio
@@ -637,135 +661,9 @@ $page_title = "Tienda";
     (function() {
         'use strict';
         
-        // Función optimizada que se ejecuta una sola vez
-        function initMobileGrid() {
-            if (window.innerWidth > 767) return;
-            
-            const columns = document.querySelectorAll('.products-grid-modern .row > div');
-            columns.forEach(col => {
-                col.className = 'col-6';
-            });
-        }
-        
-        // Ejecutar solo cuando el DOM esté listo
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initMobileGrid);
-        } else {
-            initMobileGrid();
-        }
-        
-        // Ejecutar cuando se carguen nuevos productos (una sola vez)
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.addedNodes.length > 0) {
-                    initMobileGrid();
-                }
-            });
-        });
-        
-        const container = document.querySelector('#products-container');
-        if (container) {
-            observer.observe(container, { 
-                childList: true, 
-                subtree: false 
-            });
-        }
-    })();
-    </script>
-    
-    <!-- Fix botón filtros móvil - Patrón Offcanvas -->
-    <script>
-    (function() {
-        'use strict';
-        
-        // Funciones para abrir/cerrar filtros (igual que offcanvas)
-        function openFilters() {
-            const sidebar = document.querySelector('.modern-sidebar');
-            const overlay = document.querySelector('.filters-overlay');
-            
-            if (sidebar && overlay) {
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-        
-        function closeFilters() {
-            const sidebar = document.querySelector('.modern-sidebar');
-            const overlay = document.querySelector('.filters-overlay');
-            
-            if (sidebar && overlay) {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        }
-        
-        function initMobileFiltersButton() {
-            
-            const btnMobileFilters = document.getElementById('btnMobileFilters');
-            const sidebar = document.querySelector('.modern-sidebar');
-            
-            if (!btnMobileFilters || !sidebar) {
-                setTimeout(initMobileFiltersButton, 100);
-                return;
-            }
-            
-            
-            // Mostrar botón solo en móvil
-            if (window.innerWidth <= 991) {
-                btnMobileFilters.style.display = 'flex';
-            }
-            
-            // Crear overlay si no existe
-            let overlay = document.querySelector('.filters-overlay');
-            if (!overlay) {
-                overlay = document.createElement('div');
-                overlay.className = 'filters-overlay';
-                document.body.appendChild(overlay);
-            }
-            
-            // Preparar estilos del sidebar para móvil (igual que offcanvas)
-            sidebar.classList.add('mobile-filters-sidebar');
-            
-            // Event: Click en botón
-            btnMobileFilters.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                openFilters();
-            });
-            
-            // Event: Click en touchstart para móviles
-            btnMobileFilters.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                openFilters();
-            }, { passive: false });
-            
-            // Event: Click en overlay para cerrar
-            overlay.addEventListener('click', closeFilters);
-            
-            // Event: Responsive
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 991) {
-                    btnFilters.style.display = 'none';
-                    forceCloseFilters();
-                } else {
-                    btnFilters.style.display = 'flex';
-                }
-            });
-            
-        }
-        
-        // Iniciar cuando el DOM esté listo
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initMobileFiltersButton);
-        } else {
-            initMobileFiltersButton();
-        }
-        
-        // También probar inmediatamente
-        setTimeout(initMobileFiltersButton, 100);
-        setTimeout(initMobileFiltersButton, 500);
+        // ✅ FIX: Usar CSS en lugar de JavaScript para evitar MutationObserver infinito
+        // El CSS ya maneja todo el grid móvil correctamente
+        // NO necesitamos JavaScript adicional que cause loops
     })();
     </script>
     
@@ -814,11 +712,19 @@ $page_title = "Tienda";
     <!-- Fix Sidebar Visibility -->
     <script>
         (function() {
+            'use strict';
+            
+            // ✅ FIX: Asegurar visibilidad del sidebar original solo en desktop
             function ensureSidebarVisibility() {
-                const sidebar = document.querySelector('.modern-sidebar');
+                // Solo aplicar en desktop (>= 992px)
+                if (window.innerWidth < 992) {
+                    return; // En móvil, el sidebar se maneja con el clon
+                }
+                
+                const sidebar = document.querySelector('#shopFilters'); // Solo el original
                 const sidebarParent = document.querySelector('.col-lg-3');
                 
-                if (sidebar && window.innerWidth >= 992) {
+                if (sidebar) {
                     sidebar.style.cssText = `
                         opacity: 1 !important;
                         visibility: visible !important;
@@ -828,37 +734,29 @@ $page_title = "Tienda";
                         transform: none !important;
                     `;
                     
-                    sidebarParent.style.cssText = `
-                        display: block !important;
-                        opacity: 1 !important;
-                        visibility: visible !important;
-                    `;
+                    if (sidebarParent) {
+                        sidebarParent.style.cssText = `
+                            display: block !important;
+                            opacity: 1 !important;
+                            visibility: visible !important;
+                        `;
+                    }
                 }
             }
             
-            // Ejecutar inmediatamente
-            ensureSidebarVisibility();
+            // Ejecutar SOLO cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', ensureSidebarVisibility);
+            } else {
+                ensureSidebarVisibility();
+            }
             
-            // Ejecutar después de un delay
-            setTimeout(ensureSidebarVisibility, 100);
-            setTimeout(ensureSidebarVisibility, 500);
-            setTimeout(ensureSidebarVisibility, 1000);
-            
-            // Ejecutar en cada scroll y resize
-            window.addEventListener('scroll', ensureSidebarVisibility);
-            window.addEventListener('resize', ensureSidebarVisibility);
-            
-            // Ejecutar cuando el DOM esté listo
-            document.addEventListener('DOMContentLoaded', ensureSidebarVisibility);
-            
-            // Observer para detectar cambios en el DOM
-            const observer = new MutationObserver(ensureSidebarVisibility);
-            observer.observe(document.body, { 
-                childList: true, 
-                subtree: true,
-                attributes: true,
-                attributeFilter: ['style', 'class']
-            });
+            // Ejecutar SOLO en resize con throttle (máximo 1 vez cada 300ms)
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(ensureSidebarVisibility, 300);
+            }, { passive: true });
         })();
     </script>
     

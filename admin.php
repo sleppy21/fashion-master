@@ -1959,8 +1959,31 @@ try {
 
 
     <script>
+    /**
+     * Toggle del menú desplegable de usuario
+     */
     function toggleUserMenu(event) {
         event.stopPropagation();
+        const menu = document.getElementById('userDropdownMenu');
+        if (menu) {
+            menu.classList.toggle('show');
+        }
+    }
+    
+    // Cerrar menú al hacer click fuera
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('userDropdownMenu');
+        const userProfile = document.querySelector('.user-profile');
+        
+        if (menu && !userProfile.contains(event.target)) {
+            menu.classList.remove('show');
+        }
+    });
+    
+    /**
+     * Notificación Toast - Para feedback rápido
+     */
+    window.showToast = function(message, type = 'success') {
         const icons = {
             'success': 'success',
             'error': 'error',

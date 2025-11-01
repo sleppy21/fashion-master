@@ -258,7 +258,9 @@ class FashionStoreChatWidget {
         if (this.isOpen) return;
         
         // Solo mostrar el mensaje de "abriendo" si es la primera vez
-        if (!this.chatContainer) {        }
+        if (!this.chatContainer) {
+            // Chat no inicializado, se creará más adelante
+        }
         
         // Cambiar estado del botón
         const button = this.widget.querySelector('#fsChatButton');

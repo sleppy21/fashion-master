@@ -85,11 +85,11 @@ if($usuario_logueado):
                             <?php echo $dateStr; ?>
                         </small>
                     </div>
-                    <div class="notification-actions" style="display: flex; flex-direction: column; gap: 5px; justify-content: center;">
-                        <button class="btn-notif-delete" data-id="<?php echo $notif['id_notificacion']; ?>" 
-                                style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.3s ease; background: #ffebee; color: #c62828;" 
-                                title="Eliminar">
-                            <i class="fa fa-trash-o"></i>
+                    <div class="notification-actions">
+                        <button class="btn-notif-delete delete-notification-btn" 
+                                data-id="<?php echo $notif['id_notificacion']; ?>" 
+                                title="Eliminar notificación">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 </div>

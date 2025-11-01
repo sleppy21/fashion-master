@@ -170,24 +170,17 @@
     
     /**
      * Reinicializar event handlers después de renderizar productos
+     * ✅ FIX: NO agregar event listeners directos para evitar duplicación
+     * Los event listeners se manejan con EVENT DELEGATION en real-time-updates.js
      */
     function reinitializeProductHandlers() {
-        // Imágenes clickeables
-        document.querySelectorAll('.product-image-clickable').forEach(img => {
-            img.addEventListener('click', function() {
-                const url = this.getAttribute('data-product-url');
-                if (url) window.location.href = url;
-            });
-        });
+        // ✅ NO agregar listeners aquí - ya están manejados con delegation
+        // Event delegation en real-time-updates.js maneja:
+        // - Clicks en favoritos (.add-to-favorites)
+        // - Clicks en carrito (.add-to-cart)
+        // - Clicks en botones del modal
         
-        // FAVORITOS: NO agregar listeners aquí porque real-time-updates.js
-        // ya los maneja con event delegation (document.addEventListener)
-        // Si agregamos listeners aquí, se duplican y se envían 2 peticiones
-        
-        // CARRITO: Usar event delegation de real-time-updates.js también
-        // NO agregar listeners directos para evitar duplicados
-        
-        // Re-inicializar AOS animations
+        // SOLO re-inicializar AOS animations
         if (typeof AOS !== 'undefined') {
             AOS.refresh();
         }
