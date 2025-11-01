@@ -34,24 +34,30 @@ $page_title = "Tienda";
     <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+    <!-- jQuery (debe ser lo primero) -->
+    <script src="public/assets/js/jquery-3.3.1.min.js"></script>
+    
     <!-- Core CSS -->
     <link rel="stylesheet" href="public/assets/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/font-awesome.min.css" type="text/type">
     <link rel="stylesheet" href="public/assets/css/elegant-icons.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/jquery-ui.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     
     <?php include 'includes/modern-libraries.php'; ?>
     
-    <!-- Shop Modern CSS -->
-    <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0">
-    <link rel="stylesheet" href="public/assets/css/shop/shop-filters-modern.css?v=2.0">
-    <link rel="stylesheet" href="public/assets/css/shop/fix-grid.css?v=2.0">
-    <link rel="stylesheet" href="public/assets/css/shop/empty-state.css?v=2.0">
+    <!-- Base Shop Styles -->
+    <link rel="stylesheet" href="public/assets/css/shop/shop-modern.css?v=2.0">
     
-    <!-- Shop Mobile Optimization - DESDE CERO - 2 productos por fila -->
-    <link rel="stylesheet" href="public/assets/css/shop/shop-mobile-clean.css?v=2.0">
-    <link rel="stylesheet" href="public/assets/css/shop/mobile-grid-fix.css?v=2.0">
+    <!-- Shop Components -->
+    <link rel="stylesheet" href="public/assets/css/shop/shop-filters-modern.css?v=2.0">
+    <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0">
+    <link rel="stylesheet" href="public/assets/css/shop/empty-state.css?v=<?= time() ?>">
+    
+    <!-- Fixes & Overrides -->
+    <link rel="stylesheet" href="public/assets/css/shop/fix-grid.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="public/assets/css/shop/shop-mobile-clean.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="public/assets/css/shop/mobile-grid-fix.css?v=<?= time() ?>">
     
     <!-- noUiSlider CSS - Desactivado (filtro de precio removido) -->
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css"> -->
@@ -340,7 +346,7 @@ $page_title = "Tienda";
     
     <!-- Breadcrumb -->
     <?php include 'includes/breadcrumb.php'; ?>
-
+    
     <!-- Botón de filtros móvil - Diseño del offcanvas -->
     <button class="btn-mobile-filters" id="btnMobileFilters" aria-label="Abrir filtros" style="position: fixed; bottom: 20px; right: 20px; z-index: 999; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); display: none; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; font-size: 18px;">
         <i class="fa fa-filter"></i>
@@ -359,8 +365,8 @@ $page_title = "Tienda";
             <div class="row">
                 
                 <!-- ========== SIDEBAR - FILTROS ========== -->
-                <aside class="col-lg-3 col-md-4 col-12">
-                    <div class="shop-sidebar modern-sidebar" id="shopFilters">
+                <aside class="col-lg-3 col-md-4 col-12" style="display: block !important; opacity: 1 !important; visibility: visible !important;">
+                    <div class="shop-sidebar modern-sidebar" id="shopFilters" style="opacity: 1 !important; transform: none !important; visibility: visible !important; display: block !important; position: sticky !important; top: 100px !important;">
                         
                         <!-- Header -->
                         <div class="sidebar-header">
@@ -383,7 +389,7 @@ $page_title = "Tienda";
                                 ?>
                                     <button class="filter-chip <?= $is_active ? 'active' : '' ?>" 
                                             data-filter-type="categoria" 
-                                            data-filter-value="<?= htmlspecialchars($cat['id_categoria'], ENT_QUOTES) ?>"
+                                            data-filter-value="<?= $cat['id_categoria'] ?>"
                                             data-multi-select="true">
                                         <?php if (!empty($cat['url_imagen_categoria'])): ?>
                                             <img src="<?= $cat['url_imagen_categoria'] ?>" 
@@ -457,7 +463,7 @@ $page_title = "Tienda";
                 <main class="col-lg-9 col-md-8 col-12 ps-lg-4">
                     
                     <!-- Barra superior -->
-                    <div class="shop-topbar modern-topbar" data-aos="fade-left">
+                    <div class="shop-topbar modern-topbar">
                         <div class="topbar-left topbar-left-mobile">
                             <h1 class="shop-title">
                                 <i class="fa fa-store"></i> Catálogo
@@ -565,6 +571,9 @@ $page_title = "Tienda";
     
     <!-- Footer -->
     
+    <!-- jQuery (requerido por todos los scripts) -->
+    <script src="public/assets/js/jquery-3.3.1.min.js"></script>
+    
     <!-- Core Scripts -->
     <script>
         // BASE URL para peticiones AJAX - Compatible con ngrok y cualquier dominio
@@ -605,54 +614,61 @@ $page_title = "Tienda";
     <script src="public/assets/js/shop/shop-filters.js?v=2.0"></script>
     <script src="public/assets/js/shop/search-live.js?v=2.0"></script>
     
-    <!-- Fix Grid Móvil - 2 columnas FORZADO -->
+    <!-- Optimización de Grid Móvil -->
+    <style>
+        @media (max-width: 767px) {
+            .products-grid-modern .row {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                margin: 0 -8px !important;
+            }
+            
+            .products-grid-modern .row > div {
+                flex: 0 0 50% !important;
+                max-width: 50% !important;
+                width: 50% !important;
+                padding: 0 8px !important;
+                margin-bottom: 16px !important;
+                box-sizing: border-box !important;
+            }
+        }
+    </style>
     <script>
     (function() {
         'use strict';
         
-        function forceMobileGrid() {
+        // Función optimizada que se ejecuta una sola vez
+        function initMobileGrid() {
             if (window.innerWidth > 767) return;
             
-            
-            const rows = document.querySelectorAll('.products-grid-modern .row');
-            rows.forEach(row => {
-                row.style.cssText = 'display: flex !important; flex-wrap: wrap !important; margin: 0 -8px !important;';
-                
-                const columns = row.querySelectorAll('div[class*="col"]');
-                
-                columns.forEach((col, index) => {
-                    // Remover todas las clases de Bootstrap
-                    col.className = col.className.replace(/col-\w+-\d+/g, '').trim();
-                    
-                    // Agregar solo col-6
-                    if (!col.classList.contains('col-6')) {
-                        col.classList.add('col-6');
-                    }
-                    
-                    // Forzar estilos inline
-                    col.style.cssText = 'flex: 0 0 50% !important; max-width: 50% !important; width: 50% !important; padding: 0 8px !important; margin-bottom: 16px !important; box-sizing: border-box !important;';
-                    
-                });
+            const columns = document.querySelectorAll('.products-grid-modern .row > div');
+            columns.forEach(col => {
+                col.className = 'col-6';
             });
-            
         }
         
-        // Ejecutar múltiples veces para asegurar
+        // Ejecutar solo cuando el DOM esté listo
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', forceMobileGrid);
+            document.addEventListener('DOMContentLoaded', initMobileGrid);
         } else {
-            forceMobileGrid();
+            initMobileGrid();
         }
         
-        window.addEventListener('load', forceMobileGrid);
-        setTimeout(forceMobileGrid, 500);
-        setTimeout(forceMobileGrid, 1000);
+        // Ejecutar cuando se carguen nuevos productos (una sola vez)
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length > 0) {
+                    initMobileGrid();
+                }
+            });
+        });
         
-        // Observar cambios en el DOM
-        const observer = new MutationObserver(forceMobileGrid);
         const container = document.querySelector('#products-container');
         if (container) {
-            observer.observe(container, { childList: true, subtree: true });
+            observer.observe(container, { 
+                childList: true, 
+                subtree: false 
+            });
         }
     })();
     </script>
@@ -662,29 +678,13 @@ $page_title = "Tienda";
     (function() {
         'use strict';
         
-        function init() {
-            try {
-                initMobileFiltersButton();
-            } catch (error) {
-                console.error('Error al inicializar los filtros móviles:', error);
-            }
-        }
-
-        function forceCloseFilters() {
-            const wrapper = document.querySelector('.filters-menu-wrapper');
-            const overlay = document.querySelector('.filters-menu-overlay');
-            if (wrapper) wrapper.classList.remove('active');
-            if (overlay) overlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
         // Funciones para abrir/cerrar filtros (igual que offcanvas)
         function openFilters() {
-            const wrapper = document.querySelector('.filters-menu-wrapper');
-            const overlay = document.querySelector('.filters-menu-overlay');
+            const sidebar = document.querySelector('.modern-sidebar');
+            const overlay = document.querySelector('.filters-overlay');
             
-            if (wrapper && overlay) {
-                wrapper.classList.add('active');
+            if (sidebar && overlay) {
+                sidebar.classList.add('active');
                 overlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
@@ -747,10 +747,10 @@ $page_title = "Tienda";
             // Event: Responsive
             window.addEventListener('resize', function() {
                 if (window.innerWidth > 991) {
-                    btnMobileFilters.style.display = 'none';
+                    btnFilters.style.display = 'none';
                     forceCloseFilters();
                 } else {
-                    btnMobileFilters.style.display = 'flex';
+                    btnFilters.style.display = 'flex';
                 }
             });
             
@@ -758,158 +758,111 @@ $page_title = "Tienda";
         
         // Iniciar cuando el DOM esté listo
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
+            document.addEventListener('DOMContentLoaded', initMobileFiltersButton);
         } else {
-            init();
+            initMobileFiltersButton();
         }
         
         // También probar inmediatamente
-        setTimeout(init, 100);
-        setTimeout(init, 500);
+        setTimeout(initMobileFiltersButton, 100);
+        setTimeout(initMobileFiltersButton, 500);
     })();
     </script>
     
     <!-- Filtros Móviles - Patrón Offcanvas -->
     <script src="public/assets/js/shop-filters-mobile.js?v=<?= time() ?>"></script>
     
-    <!-- Global Scripts -->
-    <script src="public/assets/js/cart-favorites-handler.js"></script>
-    <script src="public/assets/js/dark-mode.js"></script>
-    <script src="public/assets/js/scroll-position-memory.js"></script>
-    <script src="public/assets/js/image-color-extractor.js"></script>
-    
-    <!-- Fix Modal Scrollbar - PREVENIR BARRA LATERAL -->
-    <script src="public/assets/js/fix-modal-scrollbar.js"></script>
-    
-    <!-- AOS Animations -->
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <!-- Global Scripts (después de que jQuery esté disponible) -->
     <script>
-        AOS.init({
-            duration: 600,
-            easing: 'ease-out-cubic',
-            once: true,
-            offset: 50,
-            // Desactivar AOS en móviles y sidebar
-            disable: function() {
-                return window.innerWidth < 768 || (this.classList && this.classList.contains('modern-sidebar'));
-            }
-        });
-        
-        // Remover AOS del sidebar inmediatamente
-        setTimeout(function() {
-            const sidebar = document.querySelector('.modern-sidebar');
-            if (sidebar) {
-                sidebar.removeAttribute('data-aos');
-                sidebar.classList.remove('aos-init', 'aos-animate');
-                sidebar.style.transform = 'none';
-                sidebar.style.animation = 'none';
-            }
-        }, 100);
-        
-        // Sticky Header Scroll Effect
-        document.addEventListener('DOMContentLoaded', function() {
+        // Asegurarse de que jQuery esté cargado
+        if (typeof jQuery === 'undefined') {
+            console.error('jQuery no está cargado. Algunos componentes pueden no funcionar correctamente.');
+        } else {
+            // Scripts que dependen de jQuery
+            $.getScript('public/assets/js/cart-favorites-handler.js');
+            $.getScript('public/assets/js/dark-mode.js');
+            $.getScript('public/assets/js/scroll-position-memory.js');
+            $.getScript('public/assets/js/image-color-extractor.js');
+            $.getScript('public/assets/js/fix-modal-scrollbar.js');
+        }
+    </script>
+    
+    <!-- Sticky Header Scroll Effect - Optimizado -->
+    <script>
+        (function() {
             const header = document.querySelector('.header');
-            let lastScroll = 0;
+            if (!header) return;
+            
+            let ticking = false;
             
             window.addEventListener('scroll', function() {
-                const currentScroll = window.pageYOffset;
-                
-                if (currentScroll > 50) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        const currentScroll = window.pageYOffset;
+                        header.classList.toggle('scrolled', currentScroll > 50);
+                        ticking = false;
+                    });
+                    ticking = true;
                 }
-                
-                lastScroll = currentScroll;
-            });
-        });
+            }, { passive: true });
+        })();
     </script>
     
-    <!-- Core Scripts -->
-    <script src="public/assets/js/jquery-3.3.1.min.js"></script>
+    <!-- Real-time Updates System -->
+    <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
+    
+    <!-- Fix Sidebar Visibility -->
     <script>
-        window.jQuery || document.write('<script src="https://code.jquery.com/jquery-3.3.1.min.js"><\/script>');
-    </script>
-    <script src="public/assets/js/bootstrap.min.js"></script>
-    <script src="public/assets/js/offcanvas-menu.js"></script>
-    
-    <!-- Shop Scripts -->
-    <script src="public/assets/js/shop/shop-filters.js"></script>
-    <script src="public/assets/js/shop/search-live.js"></script>
-    
-    <!-- Additional Scripts -->
+        (function() {
+            function ensureSidebarVisibility() {
+                const sidebar = document.querySelector('.modern-sidebar');
+                const sidebarParent = document.querySelector('.col-lg-3');
+                
+                if (sidebar && window.innerWidth >= 992) {
+                    sidebar.style.cssText = `
+                        opacity: 1 !important;
+                        visibility: visible !important;
+                        display: block !important;
+                        position: sticky !important;
+                        top: 100px !important;
+                        transform: none !important;
+                    `;
+                    
+                    sidebarParent.style.cssText = `
+                        display: block !important;
+                        opacity: 1 !important;
+                        visibility: visible !important;
+                    `;
+                }
+            }
+            
+            // Ejecutar inmediatamente
+            ensureSidebarVisibility();
+            
+            // Ejecutar después de un delay
+            setTimeout(ensureSidebarVisibility, 100);
+            setTimeout(ensureSidebarVisibility, 500);
+            setTimeout(ensureSidebarVisibility, 1000);
+            
+            // Ejecutar en cada scroll y resize
+            window.addEventListener('scroll', ensureSidebarVisibility);
+            window.addEventListener('resize', ensureSidebarVisibility);
+            
+            // Ejecutar cuando el DOM esté listo
+            document.addEventListener('DOMContentLoaded', ensureSidebarVisibility);
+            
+            // Observer para detectar cambios en el DOM
+            const observer = new MutationObserver(ensureSidebarVisibility);
+            observer.observe(document.body, { 
+                childList: true, 
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['style', 'class']
+            });
+        })();
     </script>
     
     <!-- Chatbot Widget -->
     <?php include 'includes/chatbot-widget.php'; ?>
-    
-    <!-- Core Scripts - Carga secuencial -->
-    <script src="public/assets/js/jquery-3.3.1.min.js"></script>
-    <script>
-        // Verificar jQuery y cargar desde CDN si falla la carga local
-        if (typeof jQuery === 'undefined') {
-            document.write('<script src="https://code.jquery.com/jquery-3.3.1.min.js"><\/script>');
-        }
-        
-        // Esperar a que jQuery esté listo antes de cargar otros scripts
-        function loadScripts() {
-            // Cargar Bootstrap
-            var bootstrap = document.createElement('script');
-            bootstrap.src = 'public/assets/js/bootstrap.min.js';
-            bootstrap.onload = function() {
-                // Después de Bootstrap, cargar offcanvas
-                var offcanvas = document.createElement('script');
-                offcanvas.src = 'public/assets/js/offcanvas-menu.js';
-                document.body.appendChild(offcanvas);
-                
-                // Después cargar los demás scripts
-                [
-                    'public/assets/js/shop/shop-filters.js',
-                    'public/assets/js/shop/search-live.js',
-                    'public/assets/js/cart-favorites-handler.js',
-                    'public/assets/js/dark-mode.js',
-                    'public/assets/js/scroll-position-memory.js',
-                    'public/assets/js/image-color-extractor.js',
-                    'public/assets/js/fix-modal-scrollbar.js',
-                    'https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js',
-                    'public/assets/js/real-time-updates.js'
-                ].forEach(function(src) {
-                    var script = document.createElement('script');
-                    script.src = src;
-                    script.async = false;  // Mantener orden de carga
-                    document.body.appendChild(script);
-                    
-                    // Inicializar AOS cuando se cargue
-                    if (src.includes('aos')) {
-                        script.onload = function() {
-                            if (typeof AOS !== 'undefined') {
-                                AOS.init({
-                                    duration: 600,
-                                    easing: 'ease-out-cubic',
-                                    once: true,
-                                    offset: 50,
-                                    disable: window.innerWidth < 768
-                                });
-                            }
-                        };
-                    }
-                });
-            };
-            document.body.appendChild(bootstrap);
-        }
-
-        // Cargar scripts cuando jQuery esté listo
-        if (window.jQuery) {
-            jQuery(document).ready(loadScripts);
-        } else {
-            document.addEventListener('DOMContentLoaded', function checkJQuery() {
-                if (window.jQuery) {
-                    jQuery(document).ready(loadScripts);
-                } else {
-                    setTimeout(checkJQuery, 50);
-                }
-            });
-        }
-    </script>
 </body>
 </html>

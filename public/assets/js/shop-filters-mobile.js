@@ -1,45 +1,31 @@
 /**
- * FILTROS MÓVILES - Patrón Offcanvas
- * Abre los filtros laterales igual que el menú hamburguesa
+ * Optimized Mobile Filters for Shop Page
+ * Versión optimizada que evita recargas y congelamiento
  */
-(function() {
+(function($) {
     'use strict';
-    
-    // Funciones para abrir/cerrar usando LayerManager
-    function forceOpenFilters() {
-        
-        // Usar LayerManager si está disponible
-        if (window.LayerManager) {
-            window.LayerManager.openFilters();
-        } else {
-            // Fallback manual
-            const wrapper = document.querySelector('.filters-menu-wrapper');
-            const overlay = document.querySelector('.filters-menu-overlay');
-            
-            if (wrapper && overlay) {
-                wrapper.classList.add('active');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
+
+    // Cache de elementos DOM
+    const elements = {
+        btnFilters: null,
+        sidebar: null,
+        wrapper: null,
+        overlay: null,
+        closeBtn: null
+    };
+
+    function openFilters() {
+        if (!elements.wrapper || !elements.overlay) return;
+        elements.wrapper.classList.add('active');
+        elements.overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
-    
-    function forceCloseFilters() {
-        
-        // Usar LayerManager si está disponible
-        if (window.LayerManager) {
-            window.LayerManager.closeFilters();
-        } else {
-            // Fallback manual
-            const wrapper = document.querySelector('.filters-menu-wrapper');
-            const overlay = document.querySelector('.filters-menu-overlay');
-            
-            if (wrapper && overlay) {
-                wrapper.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        }
+
+    function closeFilters() {
+        if (!elements.wrapper || !elements.overlay) return;
+        elements.wrapper.classList.remove('active');
+        elements.overlay.classList.remove('active');
+        document.body.style.overflow = '';
     }
     
     function init() {
