@@ -102,9 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_contacto'])) {
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
     
-    <!-- Header Standard - COMPACTO v5.0 -->
-    <link rel="stylesheet" href="public/assets/css/header-standard.css?v=5.0">
-    
     <!-- AOS Animation -->
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     
@@ -122,9 +119,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_contacto'])) {
     <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0">
     <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
     <link rel="stylesheet" href="public/assets/css/notifications-modal.css">
-    
-    <!-- Header Fix - DEBE IR AL FINAL -->
-    <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
     
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

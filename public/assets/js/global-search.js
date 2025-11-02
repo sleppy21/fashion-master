@@ -6,6 +6,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 
+    console.log('[Global Search] 🔍 Inicializando búsqueda global...');
+
     // Elementos
     const modal = document.getElementById('global-search-modal');
     const trigger = document.getElementById('global-search-trigger');
@@ -15,25 +17,48 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingState = document.getElementById('search-loading');
     const noResultsState = document.getElementById('search-no-results');
 
+    console.log('[Global Search] Elementos encontrados:', {
+        modal: !!modal,
+        trigger: !!trigger,
+        searchInput: !!searchInput,
+        triggerElement: trigger
+    });
+
     let searchTimeout = null;
 
     if (!modal || !trigger || !searchInput) {
-    return;
+        console.error('[Global Search] ❌ Faltan elementos requeridos:', {
+            modal: !!modal,
+            trigger: !!trigger,
+            searchInput: !!searchInput
+        });
         return;
     }
+
+    console.log('[Global Search] ✅ Todos los elementos encontrados');
 
     // ========================================
     // ABRIR/CERRAR
     // ========================================
     function abrirBuscador() {
-        modal.classList.add('active');
-        setTimeout(() => searchInput.focus(), 100);
+        console.log('[Global Search] 📂 Aplicando clase modal-open...');
+        modal.classList.add('modal-open');
+        modal.classList.remove('modal-closing');
+        setTimeout(() => {
+            searchInput.focus();
+            console.log('[Global Search] ✅ Modal abierto y input enfocado');
+        }, 100);
     }
 
     function cerrarBuscador() {
-        modal.classList.remove('active');
-        searchInput.value = '';
-        limpiarResultados();
+        console.log('[Global Search] 🚪 Cerrando modal...');
+        modal.classList.add('modal-closing');
+        setTimeout(() => {
+            modal.classList.remove('modal-open', 'modal-closing');
+            searchInput.value = '';
+            limpiarResultados();
+            console.log('[Global Search] ✅ Modal cerrado');
+        }, 250); // Match CSS animation duration
     }
 
     // ========================================
@@ -145,20 +170,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========================================
-    // EVENTOS
+    // EVENT LISTENERS
     // ========================================
+    
+    console.log('[Global Search] 🎯 Agregando event listener al trigger...');
     
     // Click en trigger
     trigger.addEventListener('click', function(e) {
+        console.log('[Global Search] 🖱️ Click detectado en trigger!', e);
         e.preventDefault();
         e.stopPropagation();
         
-        if (modal.classList.contains('active')) {
+        if (modal.classList.contains('modal-open')) {
+            console.log('[Global Search] Cerrando modal...');
             cerrarBuscador();
         } else {
+            console.log('[Global Search] Abriendo modal...');
             abrirBuscador();
         }
     });
+
+    console.log('[Global Search] ✅ Event listener agregado correctamente');
 
     // Input de búsqueda
     searchInput.addEventListener('input', function(e) {
@@ -176,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Cerrar al hacer click fuera
     document.addEventListener('click', function(e) {
-        if (modal.classList.contains('active')) {
+        if (modal.classList.contains('modal-open')) {
             if (!modal.contains(e.target) && e.target !== trigger) {
                 cerrarBuscador();
             }
@@ -185,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Cerrar con ESC
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
+        if (e.key === 'Escape' && modal.classList.contains('modal-open')) {
             cerrarBuscador();
         }
     });

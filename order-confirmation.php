@@ -161,6 +161,7 @@ $tipo_comprobante_texto = $tipos_comprobante[$pedido['tipo_comprobante_pedido']]
     <link rel="stylesheet" href="public/assets/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
+    
     <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
     
@@ -731,5 +732,7 @@ $tipo_comprobante_texto = $tipos_comprobante[$pedido['tipo_comprobante_pedido']]
     <?php include 'includes/notifications-modal.php'; ?>
     <?php endif; ?>
 
+    <!-- Chatbot Widget -->
+    <?php include 'includes/chatbot-widget.php'; ?>
 </body>
 </html>

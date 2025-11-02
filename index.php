@@ -158,10 +158,6 @@ try {
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
     
-    <!-- Header Bootstrap Layout - Sistema Moderno -->
-    <link rel="stylesheet" href="public/assets/css/header-bootstrap-layout.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="public/assets/css/header-responsive.css?v=<?= time() ?>">
-    
     <!-- AOS Animation -->
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     
@@ -182,9 +178,6 @@ try {
     <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0">
     <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
     <link rel="stylesheet" href="public/assets/css/notifications-modal.css">
-    
-    <!-- Header Fix - DEBE IR AL FINAL -->
-    <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
     
     <style>
         /* Hero Section Moderno */
@@ -673,6 +666,9 @@ try {
     
     <!-- Real-time Updates System - DEBE IR ANTES que cart-favorites-handler -->
     <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
+    
+    <!-- Swipe Gestures - Para cerrar modales y offcanvas con gestos táctiles -->
+    <script src="public/assets/js/swipe-gestures.js"></script>
     
     <!-- AOS Animation -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>

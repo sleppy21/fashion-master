@@ -17,9 +17,8 @@
 </script>
 
 <!-- Dark Mode CSS -->
-<link rel="stylesheet" href="public/assets/css/dark-mode.css?v=<?php echo time(); ?>" type="text/css">
-<link rel="stylesheet" href="public/assets/css/header-dark-mode.css?v=<?php echo time(); ?>" type="text/css">
+<link rel="stylesheet" href="public/assets/css/themes/dark-mode.css?v=<?php echo time(); ?>" type="text/css">
 <link rel="stylesheet" href="public/assets/css/modals-dark-mode.css?v=<?php echo time(); ?>" type="text/css">
 
-<!-- Dark Mode JavaScript -->
-<script src="public/assets/js/dark-mode.js"></script>
+<!-- Dark Mode JavaScript (con cache busting para forzar actualización) -->
+<script src="public/assets/js/dark-mode.js?v=<?php echo time(); ?>"></script>

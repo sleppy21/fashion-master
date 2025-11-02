@@ -94,7 +94,7 @@ body.modal-open::-webkit-scrollbar {
     background: rgba(0, 0, 0, 0.30) !important; /* Fondo oscuro 30% */
     backdrop-filter: blur(3px) !important; /* Blur de 3px */
     -webkit-backdrop-filter: blur(3px) !important;
-    z-index: 9999 !important;
+    z-index: 9999999999999 !important; /* Por encima de offcanvas (999999999999) */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;

@@ -1,0 +1,687 @@
+/**
+ * FASHION STORE - HEADER COMPONENT
+ * Header unificado con responsive, dark mode y animaciones
+ * Consolida: header-responsive, header-bootstrap-layout, header-mobile, 
+ *            header-override, header-dark-mode, badges-override
+ * @version 2.0
+ * @date 2025-11-01
+ */
+
+/* ========================================
+   HEADER BASE - ESTRUCTURA PRINCIPAL
+   ======================================== */
+
+.header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: var(--z-header) !important;
+    background: var(--header-bg) !important;
+    box-shadow: var(--header-shadow) !important;
+    margin: 0 !important;
+    padding: 3px 0 !important;
+    transition: box-shadow var(--transition-base) ease;
+    overflow: visible !important;
+    height: 64px !important;
+}
+
+/* Header scrolled */
+.header.scrolled {
+    box-shadow: var(--header-shadow-scrolled) !important;
+}
+
+/* Header container */
+.header .container-fluid {
+    max-width: 100%;
+    padding: 0 15px;
+    overflow: visible !important;
+}
+
+.header .row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    height: 100% !important;
+    margin: 0 !important;
+    overflow: visible !important;
+}
+
+/* ========================================
+   LOGO SECTION
+   ======================================== */
+
+.header__logo {
+    display: flex;
+    align-items: center;
+}
+
+.header__logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.header__logo img {
+    max-height: 40px;
+    width: auto;
+}
+
+/* ========================================
+   MENU NAVIGATION
+   ======================================== */
+
+.header__menu {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.header__menu ul {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+    gap: var(--spacing-lg) !important;
+}
+
+.header__menu ul li {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.header__menu ul li a {
+    display: inline-block;
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--text-primary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    transition: color var(--transition-base) var(--ease-in-out);
+    border-radius: var(--border-radius-sm);
+}
+
+.header__menu ul li a:hover {
+    color: var(--primary-color);
+    background: var(--primary-light);
+}
+
+.header__menu ul li.active a {
+    color: var(--primary-color);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Admin menu item */
+.header__menu ul li.admin-menu-item a {
+    color: var(--secondary-color);
+    font-weight: var(--font-weight-bold);
+}
+
+.header__menu ul li.admin-menu-item a:hover {
+    background: rgba(202, 21, 21, 0.1);
+}
+
+/* ========================================
+   HEADER RIGHT - BOTONES Y WIDGETS
+   ======================================== */
+
+.header__right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    overflow: visible !important;
+    padding: 0 20px 0 0 !important;
+    position: relative !important;
+    justify-content: flex-end !important;
+}
+
+/* Auth buttons */
+.header__right__auth {
+    display: flex !important;
+    align-items: center !important;
+    overflow: visible !important;
+    position: relative !important;
+}
+
+.header__right__auth a {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 8px 12px !important;
+    border-radius: var(--border-radius-sm) !important;
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    transition: all var(--transition-base) var(--ease-in-out) !important;
+}
+
+/* Quitar efectos de separador */
+.header__right__auth a::after,
+.header__right__auth a::before,
+#user-account-link::after,
+#user-account-link::before {
+    display: none !important;
+    content: none !important;
+}
+
+.header__right__auth a:hover {
+    color: #111111 !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Widget icons */
+.header__right__widget {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 10px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+.header__right__widget li {
+    position: relative !important;
+    overflow: visible !important;
+    list-style: none !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 34px !important;
+    width: 34px !important;
+    padding: 0 !important;
+}
+
+.header__right__widget li a,
+.header__right__widget li span {
+    position: relative !important;
+    overflow: visible !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all var(--transition-base) var(--ease-in-out) !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    color: var(--text-primary);
+    font-size: 18px;
+}
+
+.header__right__widget li a:hover,
+.header__right__widget li span:hover {
+    color: #111111 !important;
+    transform: scale(1.08) translateY(-2px) !important;
+}
+
+.header__right__widget li a:hover i,
+.header__right__widget li span:hover i {
+    color: #111111 !important;
+}
+
+/* Fix iconos - centrado perfecto */
+.header__right__widget li a i,
+.header__right__widget li span i,
+.header__right__widget li a [class^="icon_"],
+.header__right__widget li span [class^="icon_"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Dark mode toggle - sin animaciones */
+#dark-mode-toggle {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer;
+}
+
+/* ========================================
+   BADGES - CONTADORES
+   ======================================== */
+
+.header__right__widget li a .tip,
+.header__right__auth a .tip,
+.header .tip,
+#cart-count,
+#favorites-count,
+#notifications-count {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f) !important;
+    color: #ffffff !important;
+    min-width: var(--badge-size) !important;
+    height: var(--badge-size) !important;
+    font-size: var(--badge-font-size) !important;
+    font-weight: var(--font-weight-bold) !important;
+    border-radius: calc(var(--badge-size) / 2) !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(238, 90, 111, 0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 4px !important;
+    line-height: 1 !important;
+    position: absolute !important;
+    top: -6px !important;
+    right: -6px !important;
+    z-index: 10 !important;
+}
+
+/* Ocultar badge cuando esté vacío */
+.tip[style*="display: none"],
+#cart-count[style*="display: none"],
+#favorites-count[style*="display: none"],
+#notifications-count[style*="display: none"] {
+    display: none !important;
+}
+
+/* Animación de badge al hover del padre */
+.header__right__auth a:hover .tip,
+.header__right__widget li a:hover .tip {
+    transform: scale(1.08) !important;
+    transition: transform var(--transition-base) var(--ease-in-out) !important;
+}
+
+/* ========================================
+   OFFCANVAS MENU (Móvil)
+   ======================================== */
+
+.canvas__open {
+    display: none;
+    font-size: 24px;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    transition: color var(--transition-base) ease;
+}
+
+.canvas__open:hover {
+    color: var(--primary-color);
+}
+
+/* ========================================
+   DARK MODE OVERRIDES
+   ======================================== */
+
+body.dark-mode .header__menu ul li a {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .header__menu ul li a:hover {
+    color: var(--dark-accent);
+    background: var(--dark-accent-light);
+}
+
+body.dark-mode .header__menu ul li.active a {
+    color: var(--dark-accent);
+}
+
+body.dark-mode .header__right__auth a {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .header__right__auth a:hover {
+    color: var(--dark-accent) !important;
+    background: var(--dark-accent-light) !important;
+}
+
+body.dark-mode .header__right__widget li a,
+body.dark-mode .header__right__widget li span {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .header__right__widget li a:hover,
+body.dark-mode .header__right__widget li span:hover {
+    color: var(--dark-accent) !important;
+}
+
+body.dark-mode .header__right__widget li a:hover i,
+body.dark-mode .header__right__widget li span:hover i {
+    color: var(--dark-accent) !important;
+}
+
+/* Badges en dark mode */
+body.dark-mode .tip,
+body.dark-mode #cart-count,
+body.dark-mode #favorites-count,
+body.dark-mode #notifications-count {
+    box-shadow: 0 3px 8px rgba(255, 107, 107, 0.4) !important;
+}
+
+/* ========================================
+   RESPONSIVE - TABLET
+   ======================================== */
+
+@media (max-width: 991px) {
+    .header .row {
+        gap: 8px !important;
+    }
+    
+    .header__menu ul {
+        gap: var(--spacing-sm) !important;
+    }
+    
+    .header__menu ul li a {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-sm);
+    }
+    
+    .header__right {
+        gap: 12px !important;
+    }
+    
+    .header__right__widget {
+        gap: 6px !important;
+    }
+}
+
+/* ========================================
+   RESPONSIVE - MÓVIL
+   ======================================== */
+
+@media (max-width: 767px) {
+    .header {
+        padding: 4px 0 !important;
+        height: 60px !important;
+    }
+    
+    .header .container-fluid {
+        padding: 0 12px !important;
+        height: 100% !important;
+    }
+    
+    .header .row {
+        height: 100% !important;
+        gap: 8px !important;
+        margin: 0 !important;
+    }
+    
+    /* Mostrar botón hamburguesa */
+    .canvas__open {
+        display: block;
+        margin-right: 12px !important;
+    }
+    
+    /* Ocultar logo en móvil */
+    .header__logo {
+        display: none;
+    }
+    
+    /* Menu centrado en móvil */
+    .header__menu {
+        order: 3;
+        flex: 1 100%;
+        margin-top: var(--spacing-sm);
+    }
+    
+    .header__menu ul {
+        gap: var(--spacing-xs) !important;
+    }
+    
+    .header__menu ul li a {
+        padding: 6px 8px;
+        font-size: 13px;
+    }
+    
+    /* Header right más espaciado */
+    .header__right {
+        gap: 6px !important;
+        padding: 0 8px 0 0 !important;
+        margin-left: auto;
+    }
+    
+    .header__right__widget {
+        gap: 8px !important;
+        padding: 0 !important;
+    }
+    
+    .header__right__widget li {
+        height: 36px !important;
+        width: 36px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .header__right__widget li a,
+    .header__right__widget li span {
+        font-size: 18px !important;
+        padding: 0 !important;
+        width: 36px !important;
+        height: 36px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .header__right__widget li a i,
+    .header__right__widget li span i {
+        font-size: 19px !important;
+    }
+    
+    /* Avatar separado - sin margen extra */
+    .header-user-avatar {
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+        margin-left: 0 !important;
+        transform: translateY(5px) !important;
+    }
+    
+    /* Badges más pequeños en móvil */
+    .tip,
+    #cart-count,
+    #favorites-count,
+    #notifications-count {
+        min-width: 19px !important;
+        height: 19px !important;
+        font-size: 11px !important;
+        padding: 3px 5px !important;
+        border-radius: 10px !important;
+        top: -2px !important;
+        right: -2px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+    }
+}
+
+@media (max-width: 575px) {
+    .header__menu ul {
+        justify-content: flex-start !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+    
+    .header__menu ul::-webkit-scrollbar {
+        display: none !important;
+    }
+    
+    .header__menu ul li a {
+        white-space: nowrap;
+    }
+}
+
+/* ========================================
+   COMPENSAR ESPACIO DEL HEADER FIXED
+   ======================================== */
+
+/* Espacio superior para todas las páginas */
+.breadcrumb-option {
+    margin-top: 60px !important;
+    padding-top: 40px !important;
+    padding-bottom: 10px !important;
+}
+
+/* Shop - más espacio */
+body[class*="shop"] .breadcrumb-option,
+.shop-page .breadcrumb-option {
+    padding-bottom: 30px !important;
+}
+
+/* Checkout - menos espacio */
+body[class*="checkout"] .breadcrumb-option,
+.checkout-page .breadcrumb-option {
+    padding-bottom: 10px !important;
+}
+
+/* Cart page */
+body.cart-page .breadcrumb-option {
+    margin-top: 0 !important;
+    padding-top: 90px !important;
+    padding-bottom: 20px !important;
+}
+
+body.cart-page .shop-cart {
+    padding-top: 30px !important;
+}
+
+/* Shop modern */
+.shop-modern {
+    padding-top: 10px !important;
+    margin-top: 0 !important;
+}
+
+/* Responsive breadcrumb */
+@media (max-width: 991px) {
+    .breadcrumb-option {
+        margin-top: 70px !important;
+        padding-bottom: 10px !important;
+    }
+    
+    .shop-modern {
+        padding-top: 0 !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .breadcrumb-option {
+        margin-top: 50px !important;
+        padding-bottom: 10px !important;
+    }
+    
+    body.cart-page .breadcrumb-option {
+        padding-top: 105px !important;
+        padding-bottom: 0px !important;
+    }
+    
+    body.cart-page .shop-cart {
+        padding-top: 10px !important;
+    }
+}
+
+/* ========================================
+   UTILIDADES
+   ======================================== */
+
+/* Evitar animaciones innecesarias en el header */
+.header,
+.header *:not(.header__right__widget li a):not(.header__right__widget li span):not(.header-user-avatar) {
+    animation: none !important;
+    will-change: auto !important;
+    contain: layout style !important;
+    backface-visibility: hidden !important;
+}
+
+/* Permitir overflow visible para dropdowns */
+.header,
+.header .container,
+.header .row {
+    overflow: visible !important;
+}
+
+/* ========================================
+   AVATAR EN HEADER
+   ======================================== */
+
+.header-user-avatar {
+    position: relative;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% !important;
+    overflow: hidden;
+    background: var(--bg-secondary);
+    border: none !important;
+    box-shadow: none !important;
+    flex-shrink: 0 !important;
+}
+
+.header-user-avatar img.avatar-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.header-user-avatar .avatar-initial {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    font-weight: var(--font-weight-bold);
+    font-size: 16px;
+}
+
+.header-user-avatar .avatar-status-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+    background: #4caf50;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+.header__right__widget li.user-avatar-btn-container {
+    height: 32px !important;
+    width: 32px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-avatar-link {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+    padding: 0 !important;
+}
+
+/* Dark mode */
+body.dark-mode .header-user-avatar {
+    background: var(--dark-bg-tertiary);
+}
+
+body.dark-mode .header-user-avatar .avatar-status-dot {
+    border-color: var(--dark-bg-primary);
+}
+

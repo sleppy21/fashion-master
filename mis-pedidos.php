@@ -133,6 +133,7 @@ $metodos_pago = [
     <link rel="stylesheet" href="public/assets/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
+    
     <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
@@ -582,8 +583,8 @@ $metodos_pago = [
 
     <script>
         function verDetalles(idPedido) {
-            if (window.LayerManager) {
-                window.LayerManager.openModal('orderDetailsModal');
+            if (window.OffcanvasManager) {
+                window.OffcanvasManager.openModal('orderDetailsModal');
             }
             $('#orderDetailsModal').modal('show');
             
@@ -745,5 +746,8 @@ $metodos_pago = [
             return `${day}/${month}/${year} ${hours}:${minutes}`;
         }
     </script>
+    
+    <!-- Chatbot Widget -->
+    <?php include 'includes/chatbot-widget.php'; ?>
 </body>
 </html>

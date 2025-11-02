@@ -4340,7 +4340,19 @@ textarea.form-control {
 }
 
 .products-grid.active {
-    display: grid;
+    display: grid !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* FORZAR grid visible en móvil SIEMPRE */
+@media (max-width: 768px) {
+    .products-grid.active {
+        display: grid !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        min-height: 200px !important;
+    }
 }
 
 .product-card {
@@ -7036,11 +7048,22 @@ code::-webkit-scrollbar-thumb:hover {
    ======================================== */
 
 .categorias-grid {
-    display: grid;
+    display: grid !important;
+    visibility: visible !important;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 24px;
     padding: 20px;
     background: var(--background-base);
+}
+
+/* FORZAR grid visible en móvil SIEMPRE */
+@media (max-width: 768px) {
+    .categorias-grid {
+        display: grid !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        min-height: 200px !important;
+    }
 }
 
 .categoria-card {

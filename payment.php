@@ -102,14 +102,12 @@ try {
     <link rel="stylesheet" href="public/assets/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/header-standard.css?v=5.0" type="text/css">
     <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/dark-mode.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
     <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
     <link rel="stylesheet" href="public/assets/css/notifications-modal.css">
-    <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
     
     <style>
         body {
@@ -568,7 +566,7 @@ try {
     <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
     <script src="public/assets/js/cart-favorites-handler.js"></script>
     <script src="public/assets/js/user-account-modal.js"></script>
-    <script src="public/assets/js/dark-mode.js"></script>
+    <!-- ❌ REMOVIDO: dark-mode.js (ya se carga desde dark-mode-assets.php) -->
 
     <script>
         function selectPayment(metodo) {

@@ -1,0 +1,1079 @@
+/**
+ * FASHION STORE - MODALS COMPONENT
+ * Modales unificados: user, notifications, favorites, global-search
+ * Consolida: modals-animations, user-account-modal, notifications-modal,
+ *            favorites-modal, global-search-modal
+ * @version 2.0
+ * @date 2025-11-01
+ */
+
+/* ========================================
+   BLOQUEO DE SCROLL - Para modal de usuario en móvil
+   ======================================== */
+
+body.modal-scroll-lock {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ========================================
+   KEYFRAMES - ANIMACIONES
+   ======================================== */
+
+@keyframes slideDownFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-15px) scale(0.98);
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideUpFadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.98);
+    }
+}
+
+/* ✅ Animación desde abajo (bottom sheet) */
+@keyframes slideUpFromBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDownToBottom {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+}
+
+/* Animaciones especiales para modal de búsqueda (centrado horizontalmente) */
+@keyframes searchModalFadeIn {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -15px) scale(0.98);
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
+}
+
+@keyframes searchModalFadeOut {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -12px) scale(0.98);
+    }
+}
+
+/* ========================================
+   MODAL BASE - ESTRUCTURA COMÚN
+   ======================================== */
+
+.favorites-modal,
+.notifications-modal,
+.user-modal,
+.user-account-modal,
+.global-search-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    z-index: var(--z-modal);
+    pointer-events: none;
+}
+
+/* Modal abierto - contenedor invisible, solo pointer-events */
+.modal-open {
+    display: block !important;
+    width: 0 !important;
+    height: 0 !important;
+    pointer-events: auto;
+}
+
+/* Modal content wrapper */
+.notifications-modal-content,
+.favorites-modal-content,
+.user-modal-content,
+.user-account-modal-content,
+.global-search-modal-content {
+    position: fixed;
+    top: 75px !important;
+    right: 20px !important;
+    max-width: var(--modal-max-width);
+    background: var(--bg-primary);
+    border-radius: var(--modal-border-radius);
+    box-shadow: var(--modal-shadow);
+    z-index: var(--z-modal);
+    transform-origin: top right !important;
+    will-change: transform, opacity !important;
+    overflow: hidden;
+}
+
+/* User modal - Desktop (arriba derecha) - Z-index específico para cada modal */
+.user-modal-content,
+.user-account-modal-content {
+    z-index: var(--z-user-modal) !important;
+}
+
+.notifications-modal-content {
+    z-index: var(--z-notifications) !important;
+}
+
+.favorites-modal-content {
+    z-index: calc(var(--z-notifications) - 1) !important;
+}
+
+/* Flechas de los dropdowns */
+.user-modal-content::before,
+.user-account-modal-content::before,
+.favorites-modal-content::before,
+.notifications-modal-content::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 35px !important;
+    left: auto !important;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid var(--bg-primary);
+    transform: none !important;
+}
+
+/* ======================================== 
+   ANIMACIONES DE MODALES
+   ======================================== */
+
+.modal-open .user-modal-content,
+.modal-open .user-account-modal-content,
+.modal-open .notifications-modal-content,
+.modal-open .favorites-modal-content {
+    animation: slideDownFadeIn 0.35s var(--ease-out) forwards !important;
+}
+
+.modal-closing .user-modal-content,
+.modal-closing .user-account-modal-content,
+.modal-closing .notifications-modal-content,
+.modal-closing .favorites-modal-content {
+    animation: slideUpFadeOut 0.25s var(--ease-in) forwards !important;
+}
+
+/* Animaciones específicas para modal de búsqueda (centrado) */
+.modal-open .global-search-modal-content {
+    animation: searchModalFadeIn 0.35s var(--ease-out) forwards !important;
+}
+
+.modal-closing .global-search-modal-content {
+    animation: searchModalFadeOut 0.25s var(--ease-in) forwards !important;
+}
+
+/* ========================================
+   MODAL DE USUARIO EN MÓVIL - BOTTOM SHEET
+   ======================================== */
+@media (max-width: 767px) {
+    /* Posicionar modal de usuario abajo de la pantalla */
+    .user-modal-content,
+    .user-account-modal-content {
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        border-radius: var(--modal-border-radius) var(--modal-border-radius) 0 0 !important;
+        transform-origin: bottom center !important;
+    }
+    
+    /* Ocultar flecha del dropdown en móvil */
+    .user-modal-content::before,
+    .user-account-modal-content::before {
+        display: none !important;
+    }
+    
+    /* Animación desde abajo */
+    .modal-open .user-modal-content,
+    .modal-open .user-account-modal-content {
+        animation: slideUpFromBottom 0.35s var(--ease-out) forwards !important;
+    }
+    
+    /* ✅ DESACTIVAR animación cuando está siendo arrastrado */
+    .modal-open .user-modal-content.dragging,
+    .modal-open .user-account-modal-content.dragging {
+        animation: none !important;
+    }
+    
+    /* ✅ DESACTIVAR TODAS las animaciones cuando se cierra con swipe */
+    .swipe-closing .user-modal-content,
+    .swipe-closing .user-account-modal-content,
+    .swipe-closing.modal-open .user-modal-content,
+    .swipe-closing.modal-open .user-account-modal-content {
+        animation: none !important;
+    }
+    
+    .modal-closing .user-modal-content,
+    .modal-closing .user-account-modal-content {
+        animation: slideDownToBottom 0.25s var(--ease-in) forwards !important;
+    }
+}
+
+/* ========================================
+   USER MODAL - CUENTA DE USUARIO
+   ======================================== */
+
+.user-account-modal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0 !important;
+}
+
+.header-user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.user-account-modal-header h3 {
+    margin: 0 0 var(--spacing-xs) 0;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+}
+
+.user-account-modal-header .user-email {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.user-role-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--primary-light);
+    color: var(--primary-color);
+    border-radius: var(--border-radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+}
+
+/* User stats */
+.user-stats {
+    display: flex;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+    width: 100%;
+    justify-content: center;
+}
+
+.user-stat {
+    text-align: center;
+}
+
+.user-stat-value {
+    display: block;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-color);
+}
+
+.user-stat-label {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-top: var(--spacing-xs);
+}
+
+/* User actions */
+.user-account-modal-body {
+    padding: var(--spacing-md) 0;
+    max-height: 400px;
+    overflow-y: auto;
+    flex: 1 !important;
+    overflow-x: hidden !important;
+    min-height: 0 !important;
+}
+
+.user-action-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-md) var(--spacing-xl);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background var(--transition-base) ease;
+}
+
+.user-action-item:hover {
+    background: var(--bg-secondary);
+}
+
+.user-action-item i {
+    width: 24px;
+    margin-right: var(--spacing-md);
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+}
+
+.user-action-item span {
+    flex: 1;
+    font-size: var(--font-size-base);
+}
+
+/* ========================================
+   NOTIFICATIONS MODAL
+   ======================================== */
+
+.notifications-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0 !important;
+}
+
+.notifications-modal-header h3 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+}
+
+.notifications-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.notifications-actions button {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    color: var(--text-secondary);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: all var(--transition-base) ease;
+}
+
+.notifications-actions button:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.notifications-modal-body {
+    padding: 0;
+    height: 300px; /* ✅ Altura FIJA para exactamente 3 filas */
+    max-height: 300px;
+    min-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden !important;
+    flex-shrink: 0 !important;
+}
+
+.notification-item {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background var(--transition-base) ease;
+    position: relative;
+    height: 100px; /* ✅ Altura FIJA para cada notificación */
+    min-height: 100px;
+    max-height: 100px;
+}
+
+.notification-item:hover {
+    background: var(--bg-secondary);
+}
+
+.notification-item.unread {
+    background: var(--primary-light);
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.notification-message {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+}
+
+.notification-time {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.notification-delete {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    opacity: 0;
+    transition: all var(--transition-base) ease;
+}
+
+.notification-item:hover .notification-delete {
+    opacity: 1;
+}
+
+.notification-delete:hover {
+    background: #ff4444;
+    color: white;
+}
+
+/* Empty state */
+.notifications-empty {
+    padding: var(--spacing-3xl) var(--spacing-xl);
+    text-align: center;
+}
+
+.notifications-empty i {
+    font-size: 48px;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-lg);
+}
+
+.notifications-empty p {
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+}
+
+/* ========================================
+   FAVORITES MODAL
+   ======================================== */
+
+.favorites-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0 !important;
+}
+
+.favorites-modal-header h3 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+}
+
+.favorites-modal-body {
+    padding: var(--spacing-lg);
+    height: 300px; /* ✅ Altura FIJA para exactamente 3 filas (igual que notificaciones) */
+    max-height: 300px;
+    min-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden !important;
+    flex-shrink: 0 !important;
+}
+
+.favorite-item {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md);
+    transition: all var(--transition-base) ease;
+    height: 88px; /* ✅ Altura FIJA para cada favorito (descontando padding y margin del body) */
+    min-height: 88px;
+    max-height: 88px;
+}
+
+.favorite-item:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.favorite-image {
+    width: 60px; /* ✅ Reducido para caber en altura fija */
+    height: 60px;
+    object-fit: cover;
+    border-radius: var(--border-radius-sm);
+    flex-shrink: 0;
+}
+
+.favorite-info {
+    flex: 1;
+}
+
+.favorite-name {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.favorite-price {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+}
+
+.favorite-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.btn-favorite-cart,
+.btn-favorite-remove {
+    padding: 6px 12px;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-base) ease;
+}
+
+.btn-favorite-cart {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-favorite-cart:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-favorite-remove {
+    background: transparent;
+    color: #ff4444;
+    border: 1px solid #ff4444;
+}
+
+.btn-favorite-remove:hover {
+    background: #ff4444;
+    color: white;
+}
+
+/* Empty state */
+.favorites-empty {
+    padding: var(--spacing-3xl) var(--spacing-xl);
+    text-align: center;
+}
+
+.favorites-empty i {
+    font-size: 48px;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-lg);
+}
+
+.favorites-empty p {
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+}
+
+/* ========================================
+   GLOBAL SEARCH MODAL
+   ======================================== */
+
+.global-search-modal-content {
+    top: 80px !important;
+    left: 50% !important;
+    transform: translate(-50%, 0);
+    right: auto !important;
+    max-width: 600px;
+    width: calc(100% - 40px);
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Modal abierto - mostrar contenido */
+.modal-open .global-search-modal-content {
+    opacity: 1;
+    visibility: visible;
+}
+
+.search-modal-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.search-input-wrapper {
+    position: relative;
+    background: var(--bg-primary);
+}
+
+.search-input-wrapper input {
+    width: 100%;
+    padding: 14px 50px 14px 50px;
+    border: none;
+    background: var(--bg-secondary);
+    border-radius: 25px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.search-input-wrapper input:focus {
+    outline: none;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.search-input-wrapper input::placeholder {
+    color: #999;
+}
+
+.search-input-wrapper .search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.search-input-wrapper .search-clear-btn {
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 5px;
+    transition: color 0.2s ease;
+}
+
+.search-input-wrapper .search-clear-btn:hover {
+    color: var(--primary-color);
+}
+
+/* Resultados de búsqueda */
+.search-results-wrapper {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.search-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.spinner-search {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--bg-secondary);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.search-loading p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.search-no-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    color: var(--text-muted);
+}
+
+.search-no-results i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.3;
+}
+
+.search-no-results p {
+    margin: 0;
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+.search-products-list {
+    padding: 0;
+}
+
+.search-product-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    position: relative;
+}
+
+.search-product-item:hover {
+    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    border-left: 3px solid var(--primary-color);
+    padding-left: 17px;
+    transform: translateX(2px);
+}
+
+.search-product-item:last-child {
+    border-bottom: none;
+}
+
+.search-product-image {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 12px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.search-product-item:hover .search-product-image {
+    transform: scale(1.05);
+}
+
+.search-product-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.search-product-name {
+    margin: 0 0 6px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s ease;
+}
+
+.search-product-item:hover .search-product-name {
+    color: var(--primary-color);
+}
+
+.search-product-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.search-product-category {
+    font-size: 11px;
+    color: #95a5a6;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: #f0f0f0;
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+.search-product-price {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.search-product-old-price {
+    font-size: 14px;
+    color: #95a5a6;
+    text-decoration: line-through;
+    font-weight: 400;
+}
+
+/* ========================================
+   DARK MODE - MODALES
+   ======================================== */
+
+body.dark-mode .user-modal-content,
+body.dark-mode .user-account-modal-content,
+body.dark-mode .notifications-modal-content,
+body.dark-mode .favorites-modal-content,
+body.dark-mode .global-search-modal-content {
+    background: var(--dark-bg-secondary);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .user-modal-content::before,
+body.dark-mode .user-account-modal-content::before,
+body.dark-mode .favorites-modal-content::before,
+body.dark-mode .notifications-modal-content::before {
+    border-bottom-color: var(--dark-bg-secondary);
+}
+
+body.dark-mode .user-account-modal-header,
+body.dark-mode .notifications-modal-header,
+body.dark-mode .favorites-modal-header {
+    border-bottom-color: var(--dark-border);
+}
+
+body.dark-mode .user-role-badge {
+    background: var(--dark-accent-light);
+    color: var(--dark-accent);
+}
+
+body.dark-mode .user-stats {
+    border-top-color: var(--dark-border);
+}
+
+body.dark-mode .user-action-item:hover,
+body.dark-mode .notification-item:hover,
+body.dark-mode .search-product-item:hover {
+    background: var(--dark-bg-tertiary);
+}
+
+body.dark-mode .notification-item.unread {
+    background: var(--dark-accent-light);
+}
+
+body.dark-mode .favorite-item {
+    border-color: var(--dark-border);
+    background: var(--dark-bg-primary);
+}
+
+body.dark-mode .search-input-wrapper input {
+    background: var(--dark-bg-tertiary);
+    border-color: var(--dark-border);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .search-input-wrapper input:focus {
+    background: var(--dark-bg-secondary);
+}
+
+body.dark-mode .search-product-item {
+    border-bottom-color: var(--dark-border);
+}
+
+body.dark-mode .search-product-item:hover {
+    background: linear-gradient(to right, var(--dark-bg-tertiary), var(--dark-bg-secondary));
+}
+
+body.dark-mode .search-product-name {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .search-product-item:hover .search-product-name {
+    color: var(--primary-color);
+}
+
+body.dark-mode .search-product-category {
+    color: var(--dark-text-muted);
+    background: var(--dark-bg-tertiary);
+}
+
+body.dark-mode .search-loading p,
+body.dark-mode .search-no-results p {
+    color: var(--dark-text-secondary);
+}
+
+/* ========================================
+   RESPONSIVE - MODALES
+   ======================================== */
+
+@media (max-width: 991px) {
+    /* Solo notificaciones y favoritos en tablet */
+    .notifications-modal-content,
+    .favorites-modal-content {
+        top: 70px !important;
+        right: 15px !important;
+    }
+    
+    /* User modal se mantiene arriba derecha en tablet */
+    .user-modal-content,
+    .user-account-modal-content {
+        top: 70px !important;
+        right: 15px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Notificaciones y favoritos - mantienen posición arriba */
+    .notifications-modal-content,
+    .favorites-modal-content {
+        top: 65px !important; /* Debajo del header móvil (60px + 5px margen) */
+        right: 10px !important;
+        left: 10px !important;
+        width: auto !important;
+        max-width: calc(100vw - 20px) !important;
+        min-height: auto !important;
+        max-height: calc(100vh - 75px) !important; /* Altura disponible bajo el header */
+        height: auto !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    /* ✅ Modal de usuario - DESDE ABAJO (bottom sheet) */
+    .user-modal-content,
+    .user-account-modal-content {
+        top: auto !important;
+        bottom: 0 !important; /* Pegado al fondo */
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0 !important; /* Redondeo solo arriba */
+        max-height: none !important; /* Sin límite de altura */
+        height: auto !important;
+        overflow: visible !important; /* Sin scroll */
+        display: flex !important;
+        flex-direction: column !important;
+        transform-origin: bottom center !important; /* Animación desde abajo */
+        touch-action: pan-y !important; /* ✅ Permitir swipe vertical */
+        will-change: transform; /* ✅ Optimizar para animaciones */
+    }
+    
+    /* ✅ Cuando está siendo arrastrado - permitir movimiento con transform */
+    .user-modal-content.dragging,
+    .user-account-modal-content.dragging {
+        transition: none !important; /* Sin transición durante arrastre */
+    }
+    
+    /* Ocultar header en móvil - mostrar solo body */
+    .user-account-modal-header {
+        display: none !important;
+    }
+    
+    /* ✅ Ocultar botón de cerrar - se cierra con swipe abajo */
+    .user-account-modal-close {
+        display: none !important;
+    }
+    
+    /* Body sin scroll - todo visible */
+    .user-account-modal-body {
+        flex: none !important;
+        overflow: visible !important;
+        overflow-y: visible !important;
+        overflow-x: hidden !important;
+        max-height: none !important;
+        height: auto !important;
+        padding: 16px !important;
+        touch-action: pan-y !important; /* ✅ Permitir swipe vertical */
+    }
+    
+    /* Ocultar flecha en móvil (modal es fullwidth) */
+    .user-modal-content::before,
+    .user-account-modal-content::before,
+    .notifications-modal-content::before,
+    .favorites-modal-content::before {
+        display: none !important;
+    }
+    
+    /* ✅ MÓVIL - Mantener altura FIJA de 3 filas */
+    .notifications-modal-body {
+        height: 300px !important; /* 3 notificaciones de 100px cada una */
+        max-height: 300px !important;
+        min-height: 300px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .favorites-modal-body {
+        height: 300px !important; /* 3 favoritos (mismo alto que notificaciones) */
+        max-height: 300px !important;
+        min-height: 300px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .user-account-modal-body {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        min-height: 0 !important;
+    }
+    
+    .global-search-modal-content {
+        max-width: calc(100% - 20px);
+    }
+}

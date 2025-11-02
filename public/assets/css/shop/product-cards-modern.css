@@ -28,7 +28,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 100%; /* 100% para que todas tengan la misma altura */
+    height: auto; /* Altura automática - cada tarjeta su propio tamaño */
     z-index: 1; /* Mantener bajo para que dropdowns queden encima */
 }
 
@@ -199,11 +199,11 @@
    INFORMACIÓN DEL PRODUCTO
    ======================================== */
 .product-info {
-    padding: 16px 18px 18px;
+    padding: 10px 12px 12px; /* Reducido de 16px 18px 18px */
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    flex: 1;
+    gap: 2px; /* Reducido de 4px a 2px */
+    flex: 0 0 auto; /* No expandir - tamaño natural del contenido */
     background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(248,249,250,0.3) 100%);
 }
 
@@ -226,11 +226,10 @@
     font-size: 23px;
     font-weight: 600;
     color: #2a2a2e;
-    line-height: 1.5;
-    min-height: 10px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    line-height: 1.4; /* Más compacto */
+    min-height: auto; /* Sin altura mínima - ajuste natural al contenido */
+    display: block; /* Sin line-clamp - mostrar todo el texto */
+    overflow: visible; /* Visible - no truncar */
     transition: color 0.3s ease;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -251,7 +250,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    margin: 2px 0 4px 0;
+    margin: 2px 0 2px 0; /* Reducido margen inferior de 4px a 2px */
 }
 
 .stars {
@@ -284,8 +283,8 @@
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    margin-top: 8px;
-    padding: 8px 0;
+    margin-top: 4px; /* Reducido de 8px a 4px */
+    padding: 0; /* Eliminado padding de 8px 0 */
 }
 
 .price-current {
@@ -417,40 +416,83 @@
    ======================================== */
    
 /* Layout con Bootstrap Flexbox */
+/* ========================================
+   GRID LAYOUT - PRODUCTO CARDS MODERN
+   CONTROL TOTAL - Grid con alturas naturales
+   ======================================== */
+
+/* Todos los breakpoints - Grid con flexbox */
 .products-grid-modern .row {
-    display: flex;
-    flex-wrap: wrap;
-    margin-right: -15px;
-    margin-left: -15px;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: flex-start !important; /* Importante: alinear arriba */
 }
 
 .products-grid-modern .row > [class*='col-'] {
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-bottom: 30px;
+    display: flex !important;
 }
 
 .product-card-modern {
-    height: 100%; /* Todas las tarjetas misma altura */
-    display: flex;
-    flex-direction: column;
+    height: auto !important; /* Altura automática basada en contenido */
+    min-height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
 }
 
-@media (max-width: 768px) and (min-width: 577px) {
-    /* 2 columnas en tablet con masonry */
+/* Desktop (>992px) - 4 columnas */
+@media (min-width: 992px) {
     .products-grid-modern .row {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
+        margin-right: -15px !important;
+        margin-left: -15px !important;
     }
     
+    .products-grid-modern .row > [class*='col-'] {
+        padding-right: 15px !important;
+        padding-left: 15px !important;
+        margin-bottom: 30px !important;
+    }
+}
+
+/* Tablet (577px - 991px) - 3 columnas */
+@media (min-width: 577px) and (max-width: 991px) {
+    .products-grid-modern .row {
+        margin-right: -10px !important;
+        margin-left: -10px !important;
+    }
+    
+    .products-grid-modern .row > [class*='col-'] {
+        padding-right: 10px !important;
+        padding-left: 10px !important;
+        margin-bottom: 20px !important;
+    }
+}
+
+/* Móvil (≤576px) - 2 columnas */
+@media (max-width: 576px) {
+    .products-grid-modern .row {
+        margin-right: -6px !important;
+        margin-left: -6px !important;
+    }
+    
+    .products-grid-modern .row > [class*='col-'] {
+        padding-right: 6px !important;
+        padding-left: 6px !important;
+        margin-bottom: 12px !important;
+    }
+}
+
+/* Tablet (577px - 991px) - Ajustes de contenido interno */
+@media (min-width: 577px) and (max-width: 991px) {
     .product-info {
-        padding: 14px 16px 16px;
+        padding: 12px 14px 14px;
         gap: 3px;
     }
     
     .product-name {
         font-size: 14px;
-        min-height: 42px;
+        min-height: auto !important; /* Altura natural */
+        line-height: 1.4;
     }
     
     .price-current {
@@ -477,11 +519,14 @@
     }
 }
 
+/* Móvil (<= 576px) - Ajustes de contenido interno */
 @media (max-width: 576px) {
-    /* 2 columnas en móvil con masonry */
-    .products-grid-modern .row {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
+    .product-card-modern {
+        border-radius: 10px !important;
+    }
+    
+    .product-image-wrapper {
+        padding-top: 120% !important; /* Proporción más alta para móvil */
     }
     
     .product-quick-actions {
@@ -489,31 +534,45 @@
         transform: translateX(0);
     }
     
-    .product-card-modern {
-        border-radius: 16px;
+    .product-info {
+        padding: 8px 10px 10px; /* Más compacto */
+        gap: 2px;
     }
     
     .product-name {
-        font-size: 13px;
-        min-height: 38px;
+        font-size: 12px; /* Más pequeño */
+        min-height: auto !important; /* Sin altura mínima - ajuste natural */
+        line-height: 1.3;
+        margin-bottom: 4px;
     }
     
     .price-current {
-        font-size: 24px;
+        font-size: 18px; /* Más compacto */
         font-weight: 900;
     }
     
     .price-original {
-        font-size: 16px;
+        font-size: 13px;
     }
     
     .badge-modern {
-        font-size: 11px;
-        padding: 5px 10px;
+        font-size: 9px;
+        padding: 3px 7px;
     }
     
     .badge-sale {
-        font-size: 12px;
+        font-size: 10px;
+        padding: 3px 7px;
+    }
+    
+    .btn-quick-action {
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
+    }
+    
+    .product-rating {
+        font-size: 11px;
     }
 }
 

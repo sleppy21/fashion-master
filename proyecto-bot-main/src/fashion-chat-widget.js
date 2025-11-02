@@ -90,9 +90,6 @@ class FashionStoreChatWidget {
      * Crear solo el botón flotante (sin el chat aún)
      */
     createFloatingButton() {
-        // BOTÓN OCULTO - El chatbot no está activo actualmente
-        return;
-        
         // Verificar que el CSS esté cargado
         this.ensureCSSLoaded();
         
@@ -171,19 +168,15 @@ class FashionStoreChatWidget {
         const screenWidth = window.innerWidth;
         
         if (screenWidth <= 500) {
-            // Pantallas muy pequeñas: botón más centrado
+            // En móvil, NO aplicar pointer-events en el widget, solo display
             this.widget.style.cssText = `
-                position: fixed !important; 
-                bottom: 20px !important; 
-                right: 20px !important; 
-                z-index: 10000 !important;
                 display: block !important;
                 visibility: visible !important;
                 opacity: 1 !important;
-                pointer-events: auto !important;
             `;
         } else {
             // Todas las demás pantallas: pegado a la derecha y visible
+            // NO incluir pointer-events aquí - el CSS lo maneja
             this.widget.style.cssText = `
                 position: fixed !important; 
                 bottom: 20px !important; 
@@ -192,7 +185,6 @@ class FashionStoreChatWidget {
                 display: block !important;
                 visibility: visible !important;
                 opacity: 1 !important;
-                pointer-events: auto !important;
             `;
         }
     }
@@ -237,6 +229,23 @@ class FashionStoreChatWidget {
             if (e.key === 'Escape' && this.isOpen) {
                 this.closeChat();
             }
+        });
+        
+        // Cerrar al hacer click fuera del chat en móviles (click en el overlay)
+        document.addEventListener('click', (e) => {
+            if (!this.isOpen) return;
+            
+            // Solo en móviles
+            if (window.innerWidth > 767) return;
+            
+            // Si el click fue en el chatContainer o dentro de él, no cerrar
+            if (this.chatContainer && this.chatContainer.contains(e.target)) return;
+            
+            // Si el click fue en el botón flotante, no cerrar (ya lo maneja toggleChat)
+            if (button && button.contains(e.target)) return;
+            
+            // Click fuera del chat en móviles = cerrar
+            this.closeChat();
         });
     }
 
@@ -452,92 +461,12 @@ class FashionStoreChatWidget {
 
     /**
      * Ajustar posición del chat según el tamaño de pantalla
+     * SIMPLIFICADO: Dejar que CSS maneje todo el responsive
      */
     adjustChatPosition() {
-        if (!this.chatContainer) return;
-        
-        const screenWidth = window.innerWidth;
-        
-        if (screenWidth <= 500) {
-            // Pantallas muy pequeñas: modal centrado perfectamente
-            this.chatContainer.style.cssText = `
-                position: fixed !important; 
-                top: 25px !important; 
-                left: 50% !important; 
-                right: auto !important; 
-                bottom: auto !important; 
-                width: calc(100vw - 32px) !important; 
-                height: calc(100vh - 50px) !important; 
-                z-index: 10000 !important;
-                border-radius: 20px !important;
-                transform: translateX(-50%) !important;
-                border: 1px solid var(--fs-border) !important;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
-                margin: 0 !important;
-            `;
-        } else if (screenWidth <= 576) {
-            // Pantallas pequeñas: modal centrado
-            this.chatContainer.style.cssText = `
-                position: fixed !important; 
-                top: 30px !important; 
-                left: 50% !important; 
-                right: auto !important; 
-                bottom: auto !important; 
-                width: calc(100vw - 40px) !important; 
-                height: calc(100vh - 60px) !important; 
-                z-index: 10000 !important;
-                border-radius: 16px !important;
-                max-height: calc(100vh - 60px) !important;
-                border: 1px solid var(--fs-border) !important;
-                transform: translateX(-50%) !important;
-                margin: 0 !important;
-            `;
-        } else if (screenWidth >= 580 && screenWidth <= 750) {
-            // RANGO PROBLEMÁTICO 580px-750px: Solución optimizada
-            this.chatContainer.style.cssText = `
-                position: fixed !important; 
-                top: 60px !important; 
-                left: 50% !important; 
-                right: auto !important; 
-                bottom: auto !important; 
-                width: calc(100vw - 80px) !important; 
-                height: calc(100vh - 120px) !important; 
-                z-index: 10000 !important;
-                border-radius: 16px !important;
-                max-height: calc(100vh - 120px) !important;
-                border: 1px solid var(--fs-border) !important;
-                transform: translateX(-50%) !important;
-                margin: 0 !important;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
-            `;
-        } else if (screenWidth <= 768) {
-            // Rango general: resto de tablets
-            this.chatContainer.style.cssText = `
-                position: fixed !important; 
-                top: 40px !important; 
-                left: 50% !important; 
-                right: auto !important; 
-                bottom: auto !important; 
-                width: calc(100vw - 50px) !important; 
-                height: calc(100vh - 80px) !important; 
-                z-index: 10000 !important;
-                border-radius: 16px !important;
-                max-height: calc(100vh - 80px) !important;
-                border: 1px solid var(--fs-border) !important;
-                transform: translateX(-50%) !important;
-                margin: 0 !important;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
-            `;
-        } else {
-            // Pantallas normales: pegado a la derecha
-            this.chatContainer.style.cssText = `
-                position: fixed !important; 
-                bottom: 90px !important; 
-                right: 10px !important; 
-                z-index: 10000 !important;
-                transform: none !important;
-            `;
-        }
+        // ✅ NO agregar estilos inline - dejar que el CSS media queries lo manejen
+        // El CSS ya tiene estilos perfectamente configurados para cada breakpoint
+        // Los estilos inline sobrescriben los media queries y causan problemas
     }
 
     /**
@@ -592,14 +521,23 @@ class FashionStoreChatWidget {
      * Mostrar interfaz del chat
      */
     showChatInterface() {
-        // 🔧 FIX: Calcular ancho del scrollbar antes de ocultar overflow
-        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        // 🔧 FIX: Solo aplicar padding en desktop (>= 768px) para compensar scrollbar
+        const isMobile = window.innerWidth < 768;
         
-        // Solo compensar si hay scrollbar visible
-        if (scrollbarWidth > 0) {
-            document.body.style.paddingRight = `${scrollbarWidth}px`;
-            // Guardar el valor para restaurarlo después
-            document.body.setAttribute('data-scrollbar-width', scrollbarWidth);
+        if (!isMobile) {
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+            
+            // Solo compensar si hay scrollbar visible
+            if (scrollbarWidth > 0) {
+                document.body.style.paddingRight = `${scrollbarWidth}px`;
+                // Guardar el valor para restaurarlo después
+                document.body.setAttribute('data-scrollbar-width', scrollbarWidth);
+            }
+        } else {
+            // En móvil, ASEGURAR que el body pueda scrollear
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('position');
+            document.body.style.removeProperty('height');
         }
         
         this.chatContainer.classList.add('fs-visible');
@@ -623,11 +561,25 @@ class FashionStoreChatWidget {
             this.chatContainer.classList.remove('fs-visible');
         }
         
-        // 🔧 FIX: Remover el padding agregado cuando se abrió el chat
-        document.body.style.paddingRight = '';
+        // 🔧 FIX: Remover TODOS los estilos inline que puedan bloquear el scroll
+        document.body.style.removeProperty('padding-right');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('position');
+        document.body.style.removeProperty('height');
         document.body.removeAttribute('data-scrollbar-width');
         
         document.body.classList.remove('fs-chat-open');
+        
+        // 🔴 CRÍTICO: Forzar que el body pueda scrollear en móviles
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+            // Remover cualquier inline style que pueda existir
+            setTimeout(() => {
+                document.body.style.removeProperty('overflow');
+                document.body.style.removeProperty('position');
+                document.body.style.removeProperty('height');
+            }, 100);
+        }
     }
 
     /**

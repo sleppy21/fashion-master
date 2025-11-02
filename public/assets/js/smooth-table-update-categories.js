@@ -96,6 +96,7 @@ class SmoothTableUpdater {
         this.dataCache = new Map(); // Cache de datos para comparación
         this.observer = null; // Intersection Observer para lazy updates
         this.rafId = null; // RequestAnimationFrame ID para cancelar animaciones
+        this.debugMode = false; // 🔧 Cambiar a true solo para debugging
         
         // Mapeo de campos a selectores CSS (Vista Tabla) - ADAPTADO PARA CATEGORÍAS
         this.fieldSelectorsTable = {
@@ -118,7 +119,26 @@ class SmoothTableUpdater {
     }
 
     /**
-     * 🚀 NUEVA FUNCIÓN: Actualizar SOLO campos específicos que cambiaron
+     * � Helper para logs condicionales
+     */
+    log(...args) {
+        if (this.debugMode) {
+            console.log(...args);
+        }
+    }
+    
+    warn(...args) {
+        if (this.debugMode) {
+            console.warn(...args);
+        }
+    }
+    
+    error(...args) {
+        console.error(...args); // Errores siempre se muestran
+    }
+
+    /**
+     * �🚀 NUEVA FUNCIÓN: Actualizar SOLO campos específicos que cambiaron
      * @param {number|object} productId - ID del categoria o datos completos
      * @param {object} updatedData - Datos actualizados
      * @param {array} changedFields - Array de campos que cambiaron (opcional, se detecta automáticamente)
@@ -157,24 +177,20 @@ class SmoothTableUpdater {
             this.cache.delete(`card-${productId}`);
             
             
-            // Detectar campos que cambiaron si no se especificaron
-            if (!changedFields) {
+            // 🎯 CAMBIO CRÍTICO: Al editar, SIEMPRE actualizar TODOS los campos
+            // No confiar en la detección de cambios porque puede fallar con el cache
+            if (!changedFields && updatedData.nombre_categoria) {
+                // Categoría completa recibida del backend - actualizar TODO
+                this.log('📝 Actualización completa de categoría:', productId);
+                changedFields = ['imagen', 'nombre', 'descripcion', 'total_productos', 'estado'];
+            } else if (!changedFields) {
+                // Detectar campos que cambiaron solo si no vienen datos completos
                 changedFields = this.detectChangedFields(productId, updatedData);
-                
-                // 🎯 PARCHE: Si viene desde EDICIÓN y solo detectó estado,
-                // forzar actualización de TODOS los campos para evitar problemas de caché
-                // NOTA: NO incluir 'fecha' porque fecha_creacion nunca cambia
-                // NOTA 2: NO incluir 'codigo' porque no existe en la tabla de categorías
-                if (changedFields && changedFields.length <= 2 && 
-                    updatedData.nombre_categoria) {
-                    // Para TABLA y GRID: mismo conjunto de campos (sin codigo)
-                    changedFields = ['imagen', 'nombre', 'descripcion', 'total_productos', 'estado'];
-                }
             }
             
-            // 🆕 FORZAR ACTUALIZACIÓN DE TODOS LOS CAMPOS AL EDITAR DESDE MODAL
-            // Si los datos vienen completos (con nombre_categoria, etc.), actualizar TODO
-            if (!changedFields && updatedData.nombre_categoria) {
+            // Asegurar que siempre haya campos a actualizar
+            if (!changedFields || changedFields.length === 0) {
+                this.warn('⚠️ No hay campos para actualizar, forzando actualización completa');
                 changedFields = ['imagen', 'nombre', 'descripcion', 'total_productos', 'estado'];
             }
 
@@ -197,6 +213,7 @@ class SmoothTableUpdater {
 
             
         } catch (error) {
+            this.error('❌ Error en updateSingleProduct:', error);
             // Fallback mejorado: recargar solo si es crítico
             if (error.message.includes('inválido')) {
                 if (typeof window.loadProducts === 'function') {
@@ -293,8 +310,15 @@ class SmoothTableUpdater {
         if (!row || !document.contains(row)) {
             row = document.querySelector(`#categorias-table-body tr[data-product-id="${productId}"]`);
             
+            if (!row) {
+                this.error(`❌ No se encontró fila para categoría ${productId}`);
+                return;
+            }
+            
             this.cache.set(`row-${productId}`, row);
         }
+        
+        this.log(`📝 Actualizando ${changedFields.length} campos en tabla para categoría ${productId}:`, changedFields);
         
         // Actualizar cada campo que cambió (SIN await - paralelo)
         for (const field of changedFields) {
@@ -312,8 +336,15 @@ class SmoothTableUpdater {
         if (!card || !document.contains(card)) {
             card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
             
+            if (!card) {
+                this.error(`❌ No se encontró card para categoría ${productId}`);
+                return;
+            }
+            
             this.cache.set(`card-${productId}`, card);
         }
+        
+        this.log(`📝 Actualizando ${changedFields.length} campos en grid para categoría ${productId}:`, changedFields);
         
         // Actualizar cada campo que cambió (SIN await - paralelo)
         for (const field of changedFields) {
@@ -328,13 +359,23 @@ class SmoothTableUpdater {
         const selectors = viewType === 'table' ? this.fieldSelectorsTable : this.fieldSelectorsGrid;
         const selector = selectors[field];
 
+        if (!selector) {
+            this.warn(`⚠️ No hay selector para campo "${field}" en vista ${viewType}`);
+            return;
+        }
 
         const element = container.querySelector(selector);
+        
+        if (!element) {
+            this.warn(`⚠️ No se encontró elemento para "${field}" con selector "${selector}" en vista ${viewType}`);
+            return;
+        }
 
         // Obtener nuevo valor
         const newValue = this.getFieldValue(field, productData);
         const currentValue = this.getCurrentFieldValue(element, field);
 
+        this.log(`   ✏️ Campo "${field}": "${currentValue}" → "${newValue}"`);
 
         // Actualizar contenido INMEDIATAMENTE
         this.setFieldValue(element, field, productData, newValue);
@@ -1158,6 +1199,16 @@ class SmoothTableUpdater {
                 resolve();
             }
         });
+    }
+
+    /**
+     * 🧹 Limpiar todo el caché
+     */
+    clearCache() {
+        this.log('🧹 Limpiando caché completo...');
+        this.cache.clear();
+        this.dataCache.clear();
+        this.log('✅ Caché limpiado');
     }
 
     /**

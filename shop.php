@@ -46,18 +46,10 @@ $page_title = "Tienda";
     
     <?php include 'includes/modern-libraries.php'; ?>
     
-    <!-- Base Shop Styles -->
-    <link rel="stylesheet" href="public/assets/css/shop/shop-modern.css?v=<?= time() ?>">
-    
-    <!-- Shop Components -->
-    <link rel="stylesheet" href="public/assets/css/shop/shop-filters-modern.css?v=2.0">
+    <!-- Shop Styles - Unificados v3.0 -->
+    <link rel="stylesheet" href="public/assets/css/shop/shop.css?v=3.0">
     <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0">
-    <link rel="stylesheet" href="public/assets/css/shop/empty-state.css?v=<?= time() ?>">
-    
-    <!-- Fixes & Overrides -->
-    <link rel="stylesheet" href="public/assets/css/shop/fix-grid.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="public/assets/css/shop/shop-mobile-clean.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="public/assets/css/shop/mobile-grid-fix.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="public/assets/css/shop/shop-responsive.css?v=3.1">
     
     <!-- noUiSlider CSS - Desactivado (filtro de precio removido) -->
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css"> -->
@@ -69,18 +61,13 @@ $page_title = "Tienda";
     <link rel="stylesheet" href="public/assets/css/user-account-modal.css">
     <link rel="stylesheet" href="public/assets/css/modals-dark-mode.css">
     
+    <!-- Breadcrumb Modern - Global (Debe cargarse DESPUÉS para tener prioridad) -->
+    <link rel="stylesheet" href="public/assets/css/breadcrumb-modern.css?v=2.1">
+    
     <!-- Dark Mode -->
-    <link rel="stylesheet" href="public/assets/css/dark-mode.css?v=<?= time() ?>">
-    
-    <link rel="stylesheet" href="public/assets/css/badges-override.css?v=<?= time() ?>">
-    
-    <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
-    <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
+    <!-- Dark mode ya incluido en dark-mode-assets.php -->
     
     <!-- SIDEBAR NORMAL - SIN STICKY -->
-    
-    <!-- HEADER FIX - SOLO PARA HEADER -->
-    <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
     
     <!-- Config Script -->
     <script>
@@ -97,10 +84,7 @@ $page_title = "Tienda";
 </head>
 
 <body class="shop-page">
-    <!-- Offcanvas Menu -->
-    <?php include 'includes/offcanvas-menu.php'; ?>
-    
-    <!-- Header con modales -->
+    <!-- Header con modales (ya incluye offcanvas-menu.php) -->
     <?php include 'includes/header-section.php'; ?>
     
     <!-- Breadcrumb -->
@@ -109,13 +93,25 @@ $page_title = "Tienda";
     <!-- Botón de filtros móvil - Diseño del offcanvas -->
     <button class="btn-mobile-filters" id="btnMobileFilters" aria-label="Abrir filtros">
         <i class="fa fa-filter"></i>
-        <span class="filter-count" id="filterCount">0</span>
     </button>
     
     <!-- Overlay y Wrapper de Filtros Móvil (patrón offcanvas) -->
     <div class="filters-menu-overlay"></div>
     <div class="filters-menu-wrapper">
-        <div class="filters__close" title="Cerrar filtros"></div>
+        <!-- Indicador de swipe (igual que offcanvas menu) -->
+        <div class="swipe-indicator">
+            <div style="width: 4px; height: 40px; background: rgba(0,0,0,0.2); border-radius: 2px; margin: 0 auto;"></div>
+        </div>
+        
+        <!-- Header del sidebar móvil -->
+        <div class="mobile-filters-header">
+            <h2><i class="fa fa-sliders"></i> Filtros</h2>
+            <button class="btn-clear-icon" onclick="limpiarFiltros()" title="Limpiar filtros" aria-label="Limpiar filtros">
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>
+        <!-- Contenido de filtros (se clonará aquí via JS) -->
+        <div id="mobile-filters-content"></div>
     </div>
     
     <!-- Main Shop Section -->
@@ -368,9 +364,9 @@ $page_title = "Tienda";
     <!-- Shop Scripts -->
     <script src="public/assets/js/shop/shop-filters.js?v=2.0"></script>
     <script src="public/assets/js/shop/search-live.js?v=2.0"></script>
+    <script src="public/assets/js/shop/masonry-layout.js?v=1.1"></script>
     
-    <!-- Filtros Móviles - Patrón Offcanvas -->
-    <script src="public/assets/js/shop-filters-mobile.js?v=<?= time() ?>"></script>
+    <!-- Filtros Móviles - Ya cargado en header-section.php -->
     
     <!-- Global Scripts (después de que jQuery esté disponible) -->
     <script>
@@ -380,7 +376,7 @@ $page_title = "Tienda";
         } else {
             // Scripts que dependen de jQuery
             $.getScript('public/assets/js/cart-favorites-handler.js');
-            $.getScript('public/assets/js/dark-mode.js');
+            // ❌ REMOVIDO: dark-mode.js ya se carga desde dark-mode-assets.php
             $.getScript('public/assets/js/scroll-position-memory.js');
             $.getScript('public/assets/js/image-color-extractor.js');
             $.getScript('public/assets/js/fix-modal-scrollbar.js');
@@ -410,6 +406,9 @@ $page_title = "Tienda";
     
     <!-- Real-time Updates System -->
     <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
+    
+    <!-- Swipe Gestures - Para cerrar filtros con gestos táctiles -->
+    <script src="public/assets/js/swipe-gestures.js"></script>
     
     <!-- Fix Sidebar Visibility -->
     <script>
@@ -462,7 +461,43 @@ $page_title = "Tienda";
         })();
     </script>
     
+    <!-- FIX: Limpiar offcanvas-active al cargar la página -->
+    <script>
+        // Ejecutar inmediatamente Y después del DOM load
+        function cleanOffcanvasState() {
+            document.body.classList.remove('offcanvas-active');
+            
+            // Cerrar todos los overlays y wrappers
+            document.querySelectorAll('.offcanvas-menu-overlay, .filters-menu-overlay, .offcanvas-menu-wrapper, .filters-menu-wrapper').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Forzar pointer-events en el contenido principal
+            const shopModern = document.querySelector('.shop-modern');
+            const breadcrumb = document.querySelector('.breadcrumb-option');
+            const productsGrid = document.querySelector('.products-grid-modern');
+            
+            if (shopModern) shopModern.style.pointerEvents = 'auto';
+            if (breadcrumb) breadcrumb.style.pointerEvents = 'auto';
+            if (productsGrid) productsGrid.style.pointerEvents = 'auto';
+        }
+        
+        // Ejecutar inmediatamente
+        cleanOffcanvasState();
+        
+        // Ejecutar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', cleanOffcanvasState);
+        } else {
+            cleanOffcanvasState();
+        }
+        
+        // Ejecutar después de un pequeño delay para asegurar
+        setTimeout(cleanOffcanvasState, 100);
+    </script>
+    
     <!-- Chatbot Widget -->
     <?php include 'includes/chatbot-widget.php'; ?>
 </body>
 </html>
+

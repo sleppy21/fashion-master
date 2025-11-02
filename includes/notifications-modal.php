@@ -16,7 +16,7 @@ if($usuario_logueado):
             FROM notificacion
             WHERE id_usuario = ? AND estado_notificacion = 'activo'
             ORDER BY fecha_creacion_notificacion DESC
-            LIMIT 50
+            LIMIT 3
         ", [$usuario_logueado['id_usuario']]);
         $notificaciones_usuario = $notificaciones_usuario ? $notificaciones_usuario : [];
     } catch(Exception $e) {
@@ -32,7 +32,7 @@ if($usuario_logueado):
         </button>
         
         <!-- Header -->
-        <div class="notifications-modal-header" style="padding: 15px; border-bottom: 2px solid; flex-shrink: 0;">
+        <div class="notifications-modal-header" style="padding: 15px; flex-shrink: 0;">
             <h3 style="margin: 0 0 5px 0; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
                 <i class="fa fa-bell"></i> Notificaciones
             </h3>
@@ -194,12 +194,16 @@ if($usuario_logueado):
             const deleteBgRight = wrapper.querySelector('.notification-delete-bg-right');
             
             let startX = 0;
+            let startY = 0;
             let currentX = 0;
+            let currentY = 0;
             let isDragging = false;
+            let isHorizontalSwipe = false;
             let startTime = 0;
             
             const SWIPE_THRESHOLD = 100; // Pixels para activar eliminación
             const VELOCITY_THRESHOLD = 0.3; // Velocidad mínima para swipe rápido
+            const DIRECTION_THRESHOLD = 10; // Pixels para determinar dirección inicial
             
             // Mouse Events
             item.addEventListener('mousedown', handleStart);
@@ -212,58 +216,83 @@ if($usuario_logueado):
             document.addEventListener('touchend', handleEnd);
             
             function handleStart(e) {
-                isDragging = true;
                 startTime = Date.now();
                 item.style.cursor = 'grabbing';
-                item.style.transition = 'none';
-                deleteBgLeft.style.transition = 'none';
-                deleteBgRight.style.transition = 'none';
                 
                 if (e.type === 'mousedown') {
                     startX = e.clientX;
+                    startY = e.clientY;
+                    isDragging = true;
+                    isHorizontalSwipe = null; // No determinado aún
                 } else if (e.type === 'touchstart') {
                     startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    isDragging = true;
+                    isHorizontalSwipe = null; // No determinado aún
                 }
             }
             
             function handleMove(e) {
                 if (!isDragging) return;
                 
-                e.preventDefault();
-                
+                let clientX, clientY;
                 if (e.type === 'mousemove') {
-                    currentX = e.clientX - startX;
+                    clientX = e.clientX;
+                    clientY = e.clientY;
                 } else if (e.type === 'touchmove') {
-                    currentX = e.touches[0].clientX - startX;
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
                 }
                 
-                // Limitar el deslizamiento máximo en ambas direcciones
-                const maxSwipe = 150;
-                if (currentX > maxSwipe) {
-                    currentX = maxSwipe;
-                } else if (currentX < -maxSwipe) {
-                    currentX = -maxSwipe;
+                const deltaX = clientX - startX;
+                const deltaY = clientY - startY;
+                
+                // Determinar dirección del gesto en el primer movimiento significativo
+                if (isHorizontalSwipe === null && (Math.abs(deltaX) > DIRECTION_THRESHOLD || Math.abs(deltaY) > DIRECTION_THRESHOLD)) {
+                    isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
                 }
                 
-                // Aplicar transformación
-                item.style.transform = `translateX(${currentX}px)`;
-                
-                // Mostrar fondo correspondiente según dirección
-                const distance = Math.abs(currentX);
-                const opacity = Math.min(distance / SWIPE_THRESHOLD, 1);
-                
-                if (currentX > 0) {
-                    // Deslizando hacia la derecha - mostrar fondo izquierdo
-                    deleteBgLeft.style.opacity = opacity;
-                    deleteBgRight.style.opacity = 0;
-                } else if (currentX < 0) {
-                    // Deslizando hacia la izquierda - mostrar fondo derecho
-                    deleteBgRight.style.opacity = opacity;
-                    deleteBgLeft.style.opacity = 0;
-                } else {
-                    deleteBgLeft.style.opacity = 0;
-                    deleteBgRight.style.opacity = 0;
+                // Solo manejar swipe horizontal
+                if (isHorizontalSwipe === true) {
+                    // Prevenir scroll solo si es swipe horizontal
+                    e.preventDefault();
+                    
+                    item.style.transition = 'none';
+                    deleteBgLeft.style.transition = 'none';
+                    deleteBgRight.style.transition = 'none';
+                    
+                    currentX = deltaX;
+                    currentY = deltaY;
+                    
+                    // Limitar el deslizamiento máximo en ambas direcciones
+                    const maxSwipe = 150;
+                    if (currentX > maxSwipe) {
+                        currentX = maxSwipe;
+                    } else if (currentX < -maxSwipe) {
+                        currentX = -maxSwipe;
+                    }
+                    
+                    // Aplicar transformación
+                    item.style.transform = `translateX(${currentX}px)`;
+                    
+                    // Mostrar fondo correspondiente según dirección
+                    const distance = Math.abs(currentX);
+                    const opacity = Math.min(distance / SWIPE_THRESHOLD, 1);
+                    
+                    if (currentX > 0) {
+                        // Deslizando hacia la derecha - mostrar fondo izquierdo
+                        deleteBgLeft.style.opacity = opacity;
+                        deleteBgRight.style.opacity = 0;
+                    } else if (currentX < 0) {
+                        // Deslizando hacia la izquierda - mostrar fondo derecho
+                        deleteBgRight.style.opacity = opacity;
+                        deleteBgLeft.style.opacity = 0;
+                    } else {
+                        deleteBgLeft.style.opacity = 0;
+                        deleteBgRight.style.opacity = 0;
+                    }
                 }
+                // Si es vertical (scroll), no hacer nada y dejar que el navegador maneje el scroll
             }
             
             function handleEnd(e) {
@@ -275,26 +304,36 @@ if($usuario_logueado):
                 deleteBgLeft.style.transition = 'opacity 0.2s';
                 deleteBgRight.style.transition = 'opacity 0.2s';
                 
-                const endTime = Date.now();
-                const timeDiff = endTime - startTime;
-                const velocity = Math.abs(currentX) / timeDiff;
-                
-                // Determinar si se debe eliminar (cualquier dirección)
-                const shouldDelete = Math.abs(currentX) >= SWIPE_THRESHOLD || velocity >= VELOCITY_THRESHOLD;
-                
-                if (shouldDelete) {
-                    // Eliminar notificación - animar en la dirección del swipe
-                    const id = item.getAttribute('data-id');
-                    const direction = currentX > 0 ? 1 : -1;
-                    deleteNotification(id, wrapper, item, direction);
+                // Solo procesar eliminación si fue un swipe horizontal
+                if (isHorizontalSwipe === true) {
+                    const endTime = Date.now();
+                    const timeDiff = endTime - startTime;
+                    const velocity = Math.abs(currentX) / timeDiff;
+                    
+                    // Determinar si se debe eliminar (cualquier dirección)
+                    const shouldDelete = Math.abs(currentX) >= SWIPE_THRESHOLD || velocity >= VELOCITY_THRESHOLD;
+                    
+                    if (shouldDelete) {
+                        // Eliminar notificación - animar en la dirección del swipe
+                        const id = item.getAttribute('data-id');
+                        const direction = currentX > 0 ? 1 : -1;
+                        deleteNotification(id, wrapper, item, direction);
+                    } else {
+                        // Regresar a posición original
+                        item.style.transform = 'translateX(0)';
+                        deleteBgLeft.style.opacity = '0';
+                        deleteBgRight.style.opacity = '0';
+                    }
                 } else {
-                    // Regresar a posición original
+                    // Si fue vertical, simplemente resetear cualquier transformación
                     item.style.transform = 'translateX(0)';
                     deleteBgLeft.style.opacity = '0';
                     deleteBgRight.style.opacity = '0';
                 }
                 
                 currentX = 0;
+                currentY = 0;
+                isHorizontalSwipe = null;
             }
         });
     }

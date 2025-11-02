@@ -166,6 +166,16 @@
         if (typeof AOS !== 'undefined') {
             AOS.refresh();
         }
+        
+        // Disparar evento para reinicializar Masonry después de que todo esté renderizado
+        setTimeout(() => {
+            document.dispatchEvent(new Event('productsUpdated'));
+            
+            // También llamar directamente por si acaso
+            if (typeof window.reinitMasonry === 'function') {
+                window.reinitMasonry();
+            }
+        }, 300);
     }
     
     /**
@@ -199,7 +209,7 @@
         }
         
         const col = document.createElement('div');
-        col.className = 'col-lg-4 col-md-6 col-sm-6';
+        col.className = 'col-lg-3 col-md-4 col-6';
         
         // Calcular precio con descuento
         const precioOriginal = parseFloat(product.precio_producto);
@@ -467,7 +477,6 @@
         
         // Aplicar filtros (array vacío de categorías = TODAS las categorías)
         aplicarFiltrosAjax();
-        
     };
     
     /**
@@ -559,11 +568,17 @@
         const btnSort = document.getElementById('btnSort');
         const sortMenu = document.getElementById('sortMenu');
         
+        console.log('[Sort Button] Elementos encontrados:', { btnSort: !!btnSort, sortMenu: !!sortMenu });
+        
         if (btnSort && sortMenu) {
+            console.log('[Sort Button] ✅ Agregando event listeners...');
+            
             btnSort.addEventListener('click', function(e) {
+                console.log('[Sort Button] 🖱️ Click detectado!', e);
                 e.preventDefault();
                 e.stopPropagation();
                 sortMenu.classList.toggle('show');
+                console.log('[Sort Button] Menu toggled. Show:', sortMenu.classList.contains('show'));
             });
             
             // Cerrar al hacer click fuera
@@ -582,6 +597,10 @@
                     sortMenu.classList.remove('show');
                 });
             });
+            
+            console.log('[Sort Button] ✅ Event listeners agregados correctamente');
+        } else {
+            console.error('[Sort Button] ❌ No se encontraron los elementos btnSort o sortMenu');
         }
         
         // Búsqueda en tiempo real (con debounce)

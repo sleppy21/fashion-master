@@ -6,13 +6,22 @@
  */
 ?>
 <!-- Offcanvas Menu Begin -->
-<div class="offcanvas-menu-overlay"></div>
+<div class="offcanvas-menu-overlay" onclick="
+    if (window.OffcanvasManager) {
+        window.OffcanvasManager.close('menu');
+    } else {
+        const wrapper = document.querySelector('.offcanvas-menu-wrapper');
+        const overlay = document.querySelector('.offcanvas-menu-overlay');
+        if (wrapper) wrapper.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+        document.body.classList.remove('offcanvas-active');
+        document.body.style.overflow = '';
+    }
+"></div>
 <div class="offcanvas-menu-wrapper">
-    <div class="offcanvas__close" title="Cerrar">+</div>
-    
-    <!-- Logo -->
-    <div class="offcanvas__logo">
-        <a href="./index.php"><img src="public/assets/img/logo.png" alt="SleppyStore"></a>
+    <!-- Indicador de swipe (girado 90 grados para swipe izquierda) -->
+    <div class="offcanvas-swipe-handle">
+        <div style="width: 4px; height: 40px; background: rgba(0,0,0,0.2); border-radius: 2px; margin: 0 auto;"></div>
     </div>
     
     <!-- Usuario en móvil - Nuevo diseño desde 0 -->
@@ -75,39 +84,14 @@
             <li><a href="./admin.php"><i class="fa fa-shield"></i> Admin</a></li>
             <?php endif; ?>
             
-            <!-- Asistente Virtual -->
-            <li><a href="#" id="open-chatbot-mobile"><i class="fa fa-robot"></i> Asistente Virtual</a></li>
+            <!-- Asistente Virtual - Abrir modal del chatbot -->
+            <li><a href="#" id="open-chatbot-mobile"><i class="fa fa-comments"></i> Asistente Virtual</a></li>
             
             <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
             <li><a href="logout.php"><i class="fa fa-sign-out"></i> Cerrar Sesión</a></li>
             <?php endif; ?>
         </ul>
     </nav>
-    
-    <!-- Iconos -->
-    <ul class="offcanvas__widget">
-        <li><span class="icon_search search-switch"></span></li>
-        <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
-        <li><a href="#" id="notifications-link-mobile" title="Notificaciones">
-            <i class="fa fa-bell"></i>
-            <?php if(isset($notifications_count) && $notifications_count > 0): ?>
-            <div class="tip"><?php echo $notifications_count; ?></div>
-            <?php endif; ?>
-        </a></li>
-        <li><a href="#" id="favorites-link-mobile"><span class="icon_heart_alt"></span>
-            <?php if(isset($favorites_count) && $favorites_count > 0): ?>
-            <div class="tip"><?php echo $favorites_count; ?></div>
-            <?php endif; ?>
-        </a></li>
-        <?php else: ?>
-        <li><a href="login.php"><span class="icon_heart_alt"></span></a></li>
-        <?php endif; ?>
-        <li><a href="cart.php"><span class="icon_bag_alt"></span>
-            <?php if(isset($cart_count) && $cart_count > 0): ?>
-            <div class="tip"><?php echo $cart_count; ?></div>
-            <?php endif; ?>
-        </a></li>
-    </ul>
     
     <!-- Botones de autenticación (solo si no está logueado) -->
     <?php if(!isset($usuario_logueado) || !$usuario_logueado): ?>
@@ -118,3 +102,82 @@
     <?php endif; ?>
 </div>
 <!-- Offcanvas Menu End -->
+
+<script>
+// Abrir chatbot desde menú móvil - VERSION MEJORADA
+document.addEventListener('DOMContentLoaded', function() {
+    const chatbotMobileBtn = document.getElementById('open-chatbot-mobile');
+    
+    if (!chatbotMobileBtn) {
+        console.warn('[Chatbot Mobile] Botón no encontrado');
+        return;
+    }
+    
+    chatbotMobileBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        console.log('[Chatbot Mobile] Click detectado');
+        
+        // Cerrar menú offcanvas
+        const offcanvasWrapper = document.querySelector('.offcanvas-menu-wrapper');
+        const offcanvasOverlay = document.querySelector('.offcanvas-menu-overlay');
+        
+        if (offcanvasWrapper) offcanvasWrapper.classList.remove('active');
+        if (offcanvasOverlay) offcanvasOverlay.classList.remove('active');
+        document.body.classList.remove('offcanvas-active');
+        
+        // Función para abrir el chatbot
+        function tryOpenChatbot() {
+            // Método 1: Usar openChat() si existe
+            if (window.fashionStoreChat && typeof window.fashionStoreChat.openChat === 'function') {
+                console.log('[Chatbot Mobile] ✅ Abriendo con openChat()');
+                window.fashionStoreChat.openChat();
+                return true;
+            }
+            
+            // Método 2: Usar toggleChat() si existe
+            if (window.fashionStoreChat && typeof window.fashionStoreChat.toggleChat === 'function') {
+                console.log('[Chatbot Mobile] ✅ Abriendo con toggleChat()');
+                window.fashionStoreChat.toggleChat();
+                return true;
+            }
+            
+            // Método 3: Click en botón flotante
+            const chatButton = document.getElementById('fsChatButton');
+            if (chatButton) {
+                console.log('[Chatbot Mobile] ✅ Click en botón flotante');
+                chatButton.click();
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // Esperar animación de cierre del menú
+        setTimeout(function() {
+            // Intentar abrir inmediatamente
+            if (tryOpenChatbot()) {
+                return;
+            }
+            
+            // Si no funcionó, esperar a que se inicialice
+            console.log('[Chatbot Mobile] Widget no listo, esperando...');
+            let attempts = 0;
+            const maxAttempts = 30; // 3 segundos
+            
+            const checkInterval = setInterval(function() {
+                attempts++;
+                
+                if (tryOpenChatbot()) {
+                    clearInterval(checkInterval);
+                    console.log('[Chatbot Mobile] ✅ Widget listo después de', attempts * 100, 'ms');
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(checkInterval);
+                    console.error('[Chatbot Mobile] ❌ Timeout');
+                    alert('El asistente virtual no está disponible. Por favor, recarga la página.');
+                }
+            }, 100);
+        }, 300);
+    });
+});
+</script>

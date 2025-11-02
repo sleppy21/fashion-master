@@ -1,7 +1,7 @@
-﻿<?php
+<?php
 /**
- * P�GINA DE DETALLES DEL PRODUCTO
- * Muestra informaci�n completa de un producto espec�fico
+ * P?GINA DE DETALLES DEL PRODUCTO
+ * Muestra informaci?n completa de un producto espec?fico
  */
 
 error_reporting(E_ALL);
@@ -20,7 +20,7 @@ if ($producto_id === 0) {
     exit;
 }
 
-// Obtener informaci�n del producto
+// Obtener informaci?n del producto
 $query = "SELECT p.id_producto, p.nombre_producto, p.precio_producto,
            p.codigo, p.descripcion_producto,
            COALESCE(p.descuento_porcentaje_producto, 0) as descuento_porcentaje_producto,
@@ -43,7 +43,7 @@ if (empty($producto)) {
 
 $producto = $producto[0];
 
-// Verificar si el usuario está logueado y obtener datos completos
+// Verificar si el usuario est� logueado y obtener datos completos
 $usuario_logueado = null;
 $nombre_usuario = null;
 if(isset($_SESSION['user_id'])) {
@@ -62,15 +62,15 @@ if(isset($_SESSION['user_id'])) {
     }
 }
 
-// Obtener categorías para el menú
+// Obtener categor�as para el men�
 $categorias = [];
 try {
     $categorias = executeQuery("SELECT id_categoria, nombre_categoria FROM categoria WHERE status_categoria = 1 ORDER BY nombre_categoria ASC");
 } catch(Exception $e) {
-    error_log("Error al obtener categorías: " . $e->getMessage());
+    error_log("Error al obtener categor�as: " . $e->getMessage());
 }
 
-// Obtener marcas para el menú
+// Obtener marcas para el men�
 $marcas = [];
 try {
     $marcas = executeQuery("SELECT id_marca, nombre_marca FROM marca WHERE status_marca = 1 ORDER BY nombre_marca ASC");
@@ -120,10 +120,10 @@ if($usuario_logueado) {
     }
 }
 
-// Si el usuario est� logueado, verificar si el producto est� en favoritos
+// Si el usuario est? logueado, verificar si el producto est? en favoritos
 $es_favorito = in_array($producto_id, $favoritos_ids);
 
-// Verificar si el producto ya está en el carrito y obtener cantidad
+// Verificar si el producto ya est� en el carrito y obtener cantidad
 $producto_en_carrito = false;
 $cantidad_en_carrito = 1;
 if($usuario_logueado) {
@@ -167,9 +167,6 @@ $page_title = $producto['nombre_producto'];
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
     
-    <!-- Header Standard - COMPACTO v5.0 -->
-    <link rel="stylesheet" href="public/assets/css/header-standard.css?v=5.0">
-    
     <?php include 'includes/modern-libraries.php'; ?>
     
     <!-- User Account Modal CSS -->
@@ -181,7 +178,7 @@ $page_title = $producto['nombre_producto'];
     <!-- Global Responsive Styles - TODO EL PROYECTO -->
     <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
     
-    <!-- Breadcrumb Moderno - Diseño consistente -->
+    <!-- Breadcrumb Moderno - Dise�o consistente -->
     <link rel="stylesheet" href="public/assets/css/breadcrumb-modern.css?v=1.0" type="text/css">
     
     <!-- Product Details CSS -->
@@ -198,891 +195,17 @@ $page_title = $producto['nombre_producto'];
     
     <!-- Dark Mode CSS - Force reload with timestamp -->
     <link rel="stylesheet" href="public/assets/css/dark-mode.css?v=<?php echo time(); ?>" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/modals-dark-mode.css" type="text/css">
     
-    <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
+    <!-- Badges Override - Consistencia con Shop -->
+    <link rel="stylesheet" href="public/assets/css/badges-override.css?v=<?= time() ?>">
+    
+    <!-- ? FIX: Eliminar barra blanca al lado del scrollbar -->
     <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
     
-    <!-- Header Fix - DEBE IR AL FINAL -->
-    <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
+    <!-- ?? PRODUCT DETAILS MODERN - Dise�o optimizado y responsivo -->
+    <link rel="stylesheet" href="public/assets/css/product-details-modern.css?v=<?= time() ?>" type="text/css">
     
-    <!-- 📱 OPTIMIZACIÓN MÓVIL COMPLETA - Product Details -->
-    <style>
-        @media (max-width: 991px) {
-            /* 🔧 OCULTAR BREADCRUMB EN MÓVIL - Ocupa mucho espacio */
-            .breadcrumb-option {
-                display: none !important;
-            }
-            
-            /* 🖼️ IMAGEN DEL PRODUCTO - Más grande y pegada arriba */
-            .product-details.spad {
-                padding-top: 0 !important;
-            }
-            
-            .product-details .container {
-                padding-left: 0 !important;
-                padding-right: 0 !important;
-                max-width: 100% !important;
-            }
-            
-            .product-details .row {
-                margin: 0 !important;
-            }
-            
-            .product__details__pic {
-                margin-bottom: 15px !important;
-                padding: 0 !important;
-            }
-            
-            .product__details__slider__content {
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            
-            .product__details__pic__slider {
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            
-            .product__details__pic__slider img {
-                width: 100% !important;
-                height: auto !important;
-                border-radius: 0 !important;
-                max-height: 70vh !important;
-                object-fit: cover !important;
-                display: block !important;
-            }
-            
-            /* 📝 DETALLES DEL PRODUCTO - Contenedor compacto y visual */
-            .product__details__text {
-                padding: 20px 15px 15px 15px !important;
-                background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.02) 100px) !important;
-                margin-top: -20px !important;
-                position: relative !important;
-                z-index: 2 !important;
-            }
-            
-            body.dark-mode .product__details__text {
-                background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.03) 100px) !important;
-            }
-            
-            /* Título más destacado */
-            .product__details__text h3 {
-                font-size: 24px !important;
-                line-height: 1.2 !important;
-                margin-bottom: 8px !important;
-                font-weight: 700 !important;
-            }
-            
-            .product__details__text h3 span {
-                display: inline-block !important;
-                font-size: 13px !important;
-                margin-left: 8px !important;
-                opacity: 0.6;
-                font-weight: 400 !important;
-                padding: 3px 8px !important;
-                background: rgba(0,0,0,0.05) !important;
-                border-radius: 6px !important;
-            }
-            
-            body.dark-mode .product__details__text h3 span {
-                background: rgba(255,255,255,0.1) !important;
-            }
-            
-            /* 💰 PRECIO - Más destacado con badge */
-            .product__details__price {
-                font-size: 32px !important;
-                margin-bottom: 12px !important;
-                padding: 0 !important;
-                font-weight: 800 !important;
-                color: #ca1515 !important;
-                display: flex !important;
-                align-items: center !important;
-                gap: 10px !important;
-            }
-            
-            .product__details__price span {
-                font-size: 20px !important;
-                text-decoration: line-through !important;
-                opacity: 0.5 !important;
-                font-weight: 500 !important;
-            }
-            
-            body.dark-mode .product__details__price {
-                color: #ff4757 !important;
-            }
-            
-            /* 📄 DESCRIPCIÓN - Más legible con fondo */
-            .product__details__text > p {
-                font-size: 14px !important;
-                line-height: 1.7 !important;
-                margin-bottom: 15px !important;
-                padding: 12px !important;
-                background: rgba(0,0,0,0.03) !important;
-                border-radius: 10px !important;
-                border-left: 3px solid #ca1515 !important;
-            }
-            
-            body.dark-mode .product__details__text > p {
-                background: rgba(255,255,255,0.05) !important;
-                border-left-color: #ff4757 !important;
-            }
-            
-            /* 📋 WIDGETS - Cards visuales con iconos */
-            .product__details__widget {
-                margin-bottom: 15px !important;
-                background: white !important;
-                border-radius: 12px !important;
-                padding: 12px !important;
-                box-shadow: 0 2px 12px rgba(0,0,0,0.08) !important;
-            }
-            
-            .product__details__widget ul {
-                margin: 0 !important;
-                display: grid !important;
-                grid-template-columns: 1fr 1fr !important;
-                gap: 10px !important;
-            }
-            
-            .product__details__widget ul li {
-                padding: 12px !important;
-                border: 1px solid rgba(0, 0, 0, 0.08) !important;
-                border-radius: 8px !important;
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 5px !important;
-                background: rgba(0,0,0,0.02) !important;
-                text-align: center !important;
-            }
-            
-            .product__details__widget ul li > span:first-child {
-                font-size: 11px !important;
-                font-weight: 600 !important;
-                text-transform: uppercase !important;
-                opacity: 0.6 !important;
-                letter-spacing: 0.5px !important;
-            }
-            
-            .product__details__widget ul li p {
-                font-size: 13px !important;
-                margin: 0 !important;
-                font-weight: 600 !important;
-            }
-            
-            /* Stock checkbox - versión visual */
-            .stock__checkbox {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-            }
-            
-            .stock__checkbox label {
-                font-size: 13px !important;
-                margin: 0 !important;
-                font-weight: 600 !important;
-            }
-            
-            .checkmark {
-                width: 16px !important;
-                height: 16px !important;
-                margin-left: 6px !important;
-            }
-            
-            /* Stock disponible: verde */
-            .product__details__widget ul li:has(.stock__checkbox label:has(input:checked)) {
-                background: rgba(76, 175, 80, 0.1) !important;
-                border-color: rgba(76, 175, 80, 0.3) !important;
-            }
-            
-            body.dark-mode .product__details__widget {
-                background: rgba(255, 255, 255, 0.05) !important;
-                box-shadow: 0 2px 12px rgba(0,0,0,0.3) !important;
-            }
-            
-            body.dark-mode .product__details__widget ul li {
-                border-color: rgba(255, 255, 255, 0.1) !important;
-                background: rgba(255, 255, 255, 0.03) !important;
-            }
-            
-            /* 🎯 SECCIÓN DE ACCIÓN COMPLETA - Diseño desde cero */
-            .product__details__action {
-                padding: 0 15px 20px 15px !important;
-                background: white !important;
-                margin: 0 !important;
-                border-radius: 0 0 20px 20px !important;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
-            }
-            
-            body.dark-mode .product__details__action {
-                background: rgba(255, 255, 255, 0.03) !important;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
-            }
-            
-            /* 📦 SELECTOR DE CANTIDAD - Card compacto */
-            .quantity-selector-modern {
-                margin-bottom: 15px !important;
-                padding: 0 !important;
-                background: transparent !important;
-                border-radius: 0 !important;
-                box-shadow: none !important;
-                display: flex !important;
-                flex-direction: row !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                gap: 15px !important;
-                padding-bottom: 15px !important;
-                border-bottom: 1px solid rgba(0,0,0,0.08) !important;
-            }
-            
-            .quantity-label {
-                display: none !important;
-            }
-            
-            .quantity-input-group {
-                margin: 0 !important;
-                display: flex !important;
-                align-items: center !important;
-                gap: 10px !important;
-                flex: 1 !important;
-            }
-            
-            .quantity-input-group::before {
-                content: 'Cantidad:' !important;
-                font-size: 14px !important;
-                font-weight: 600 !important;
-                color: rgba(0,0,0,0.7) !important;
-            }
-            
-            body.dark-mode .quantity-input-group::before {
-                color: rgba(255,255,255,0.7) !important;
-            }
-            
-            .qty-select {
-                font-size: 16px !important;
-                padding: 8px 30px 8px 12px !important;
-                width: auto !important;
-                min-width: 70px !important;
-                border-radius: 8px !important;
-                border: 2px solid rgba(202,21,21,0.2) !important;
-                font-weight: 700 !important;
-                background: linear-gradient(135deg, rgba(202,21,21,0.05), rgba(202,21,21,0.1)) !important;
-                color: #ca1515 !important;
-                cursor: pointer !important;
-                transition: all 0.3s ease !important;
-            }
-            
-            .qty-select:focus {
-                border-color: #ca1515 !important;
-                box-shadow: 0 0 0 3px rgba(202,21,21,0.1) !important;
-                outline: none !important;
-            }
-            
-            body.dark-mode .qty-select {
-                background: linear-gradient(135deg, rgba(255,71,87,0.1), rgba(255,71,87,0.15)) !important;
-                border-color: rgba(255,71,87,0.3) !important;
-                color: #ff4757 !important;
-            }
-            
-            /* 📊 Stock Info - Badge moderno */
-            .stock-info {
-                font-size: 11px !important;
-                padding: 6px 12px !important;
-                background: linear-gradient(135deg, #4caf50, #66bb6a) !important;
-                border-radius: 20px !important;
-                color: white !important;
-                font-weight: 700 !important;
-                white-space: nowrap !important;
-                text-transform: uppercase !important;
-                letter-spacing: 0.5px !important;
-                box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3) !important;
-            }
-            
-            .stock-info i {
-                margin-right: 4px !important;
-                font-size: 12px !important;
-            }
-            
-            .stock-available {
-                font-size: 11px !important;
-            }
-            
-            .stock-out {
-                background: linear-gradient(135deg, #f44336, #e57373) !important;
-                box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3) !important;
-            }
-            
-            body.dark-mode .quantity-selector-modern {
-                border-bottom-color: rgba(255,255,255,0.08) !important;
-            }
-            
-            /* 🔘 BOTONES DE ACCIÓN - Layout horizontal */
-            .action-buttons-modern {
-                display: flex !important;
-                flex-direction: row !important;
-                gap: 12px !important;
-                margin: 0 !important;
-                padding-top: 15px !important;
-            }
-            
-            /* Botón principal - Flex para ocupar espacio */
-            .btn-add-cart-modern {
-                flex: 1 !important;
-                padding: 18px 20px !important;
-                font-size: 16px !important;
-                border-radius: 14px !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                gap: 10px !important;
-                font-weight: 800 !important;
-                background: linear-gradient(135deg, #ca1515 0%, #e63946 100%) !important;
-                border: none !important;
-                color: white !important;
-                box-shadow: 0 6px 20px rgba(202, 21, 21, 0.4) !important;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                text-transform: uppercase !important;
-                letter-spacing: 0.5px !important;
-                position: relative !important;
-                overflow: hidden !important;
-            }
-            
-            .btn-add-cart-modern::before {
-                content: '' !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: -100% !important;
-                width: 100% !important;
-                height: 100% !important;
-                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
-                transition: left 0.5s ease !important;
-            }
-            
-            .btn-add-cart-modern:active::before {
-                left: 100% !important;
-            }
-            
-            .btn-add-cart-modern:active {
-                transform: scale(0.98) !important;
-                box-shadow: 0 4px 12px rgba(202, 21, 21, 0.3) !important;
-            }
-            
-            .btn-add-cart-modern.in-cart {
-                background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%) !important;
-                box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4) !important;
-            }
-            
-            .btn-add-cart-modern i {
-                font-size: 20px !important;
-            }
-            
-            .btn-add-cart-modern span {
-                font-size: 16px !important;
-            }
-            
-            /* Botón favorito - Solo icono circular (como tarjetas) */
-            .btn-favorite-modern {
-                width: 60px !important;
-                height: 60px !important;
-                min-width: 60px !important;
-                padding: 0 !important;
-                border-radius: 14px !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                background: white !important;
-                border: 2px solid rgba(0,0,0,0.08) !important;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
-                transition: all 0.3s ease !important;
-                flex-shrink: 0 !important;
-            }
-            
-            .btn-favorite-modern::after {
-                display: none !important;
-            }
-            
-            .btn-favorite-modern i {
-                font-size: 24px !important;
-                color: #ca1515 !important;
-                transition: all 0.3s ease !important;
-            }
-            
-            /* Estado activo - fondo rojo con corazón blanco */
-            .btn-favorite-modern.active {
-                background: linear-gradient(135deg, #ca1515, #e63946) !important;
-                border-color: #ca1515 !important;
-                box-shadow: 0 4px 12px rgba(202, 21, 21, 0.3) !important;
-            }
-            
-            .btn-favorite-modern.active i {
-                color: white !important;
-            }
-            
-            /* Efecto al presionar - solo escala, sin rotar */
-            .btn-favorite-modern:active {
-                transform: scale(0.9) !important;
-            }
-            
-            /* Dark mode */
-            body.dark-mode .btn-add-cart-modern {
-                background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%) !important;
-                box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4) !important;
-            }
-            
-            body.dark-mode .btn-favorite-modern {
-                background: rgba(255, 255, 255, 0.05) !important;
-                border-color: rgba(255, 255, 255, 0.1) !important;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-            }
-            
-            body.dark-mode .btn-favorite-modern i {
-                color: #ff4757 !important;
-            }
-            
-            body.dark-mode .btn-favorite-modern.active {
-                background: linear-gradient(135deg, #ff4757, #ff6b81) !important;
-                border-color: #ff4757 !important;
-            }
-            
-            body.dark-mode .btn-favorite-modern.active i {
-                color: white !important;
-            }
-            
-            /* 📊 TABS MODERNOS - Diseño visual mejorado */
-            .product-tabs-modern {
-                margin-top: 25px !important;
-                padding: 0 !important;
-                background: white !important;
-                border-radius: 15px 15px 0 0 !important;
-                overflow: hidden !important;
-                box-shadow: 0 -4px 20px rgba(0,0,0,0.08) !important;
-            }
-            
-            .tabs-navigation {
-                display: flex !important;
-                overflow-x: auto !important;
-                -webkit-overflow-scrolling: touch !important;
-                background: linear-gradient(to right, #f8f9fa, #ffffff) !important;
-                margin: 0 !important;
-                gap: 0 !important;
-                padding: 0 15px !important;
-                border-bottom: 2px solid rgba(0,0,0,0.05) !important;
-            }
-            
-            .tab-button {
-                font-size: 14px !important;
-                padding: 15px 20px !important;
-                white-space: nowrap !important;
-                min-width: auto !important;
-                flex-shrink: 0 !important;
-                background: transparent !important;
-                border: none !important;
-                border-bottom: 3px solid transparent !important;
-                font-weight: 600 !important;
-                color: rgba(0,0,0,0.5) !important;
-                transition: all 0.3s ease !important;
-            }
-            
-            .tab-button.active {
-                color: #ca1515 !important;
-                border-bottom-color: #ca1515 !important;
-            }
-            
-            .tab-button i {
-                font-size: 16px !important;
-                margin-right: 8px !important;
-            }
-            
-            .tab-button span {
-                font-size: 14px !important;
-            }
-            
-            .tabs-content {
-                padding: 20px 15px !important;
-                background: white !important;
-            }
-            
-            .tab-panel {
-                padding: 0 !important;
-                display: none !important;
-            }
-            
-            .tab-panel.active {
-                display: block !important;
-            }
-            
-            .tab-header h3 {
-                font-size: 20px !important;
-                margin-bottom: 6px !important;
-                font-weight: 700 !important;
-            }
-            
-            .tab-subtitle {
-                font-size: 13px !important;
-                margin-bottom: 15px !important;
-                opacity: 0.6 !important;
-            }
-            
-            .description-content,
-            .specifications-content,
-            .reviews-container {
-                font-size: 14px !important;
-                line-height: 1.8 !important;
-            }
-            
-            body.dark-mode .product-tabs-modern {
-                background: rgba(255, 255, 255, 0.05) !important;
-                box-shadow: 0 -4px 20px rgba(0,0,0,0.3) !important;
-            }
-            
-            body.dark-mode .tabs-navigation {
-                background: linear-gradient(to right, rgba(255,255,255,0.03), rgba(255,255,255,0.05)) !important;
-                border-bottom-color: rgba(255, 255, 255, 0.1) !important;
-            }
-            
-            body.dark-mode .tabs-content {
-                background: transparent !important;
-            }
-            
-            body.dark-mode .tab-button {
-                color: rgba(255,255,255,0.5) !important;
-            }
-            
-            body.dark-mode .tab-button.active {
-                color: #ff4757 !important;
-                border-bottom-color: #ff4757 !important;
-            }
-            
-            /* 📊 TABS ANTIGUOS (por compatibilidad) */
-            .product__details__tab {
-                margin-top: 30px !important;
-                padding: 0 15px !important;
-            }
-            
-            .product__details__tab .nav-tabs {
-                border-bottom: 2px solid rgba(0, 0, 0, 0.1) !important;
-                margin-bottom: 20px !important;
-                overflow-x: auto !important;
-                -webkit-overflow-scrolling: touch !important;
-                flex-wrap: nowrap !important;
-            }
-            
-            .product__details__tab .nav-link {
-                font-size: 14px !important;
-                padding: 12px 20px !important;
-                white-space: nowrap !important;
-            }
-            
-            .product__details__tab .tab-content {
-                padding: 15px 0 !important;
-            }
-            
-            body.dark-mode .product__details__tab .nav-tabs {
-                border-bottom-color: rgba(255, 255, 255, 0.1) !important;
-            }
-            
-            /* 💬 RESEÑAS - Optimizado móvil */
-            .product__details__tab__content__item p {
-                font-size: 14px !important;
-                line-height: 1.7 !important;
-            }
-            
-            /* Contenedor de reseñas */
-            .reviews-container {
-                padding: 0 !important;
-            }
-            
-            .review-card,
-            .review-item {
-                padding: 15px !important;
-                margin-bottom: 15px !important;
-                border-radius: 10px !important;
-            }
-            
-            .review-header {
-                margin-bottom: 10px !important;
-            }
-            
-            .review-author {
-                font-size: 14px !important;
-                font-weight: 600 !important;
-            }
-            
-            .review-date {
-                font-size: 12px !important;
-            }
-            
-            .review-rating {
-                margin: 8px 0 !important;
-            }
-            
-            .review-rating i {
-                font-size: 14px !important;
-            }
-            
-            .review-text {
-                font-size: 14px !important;
-                line-height: 1.6 !important;
-            }
-            
-            /* Formulario de reseña */
-            .review-form {
-                padding: 15px !important;
-                border-radius: 10px !important;
-            }
-            
-            .review-form input,
-            .review-form textarea {
-                font-size: 14px !important;
-                padding: 10px 12px !important;
-            }
-            
-            .review-form textarea {
-                min-height: 120px !important;
-            }
-            
-            .review-form button {
-                width: 100% !important;
-                padding: 12px !important;
-                font-size: 15px !important;
-            }
-            
-            /* � ESPECIFICACIONES - Lista optimizada */
-            .specifications-list {
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            
-            .spec-item {
-                padding: 12px 0 !important;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 5px !important;
-            }
-            
-            .spec-label {
-                font-size: 13px !important;
-                font-weight: 600 !important;
-                color: rgba(0, 0, 0, 0.6) !important;
-            }
-            
-            .spec-value {
-                font-size: 14px !important;
-                color: rgba(0, 0, 0, 0.9) !important;
-            }
-            
-            body.dark-mode .spec-item {
-                border-bottom-color: rgba(255, 255, 255, 0.08) !important;
-            }
-            
-            body.dark-mode .spec-label {
-                color: rgba(255, 255, 255, 0.6) !important;
-            }
-            
-            body.dark-mode .spec-value {
-                color: rgba(255, 255, 255, 0.9) !important;
-            }
-            
-            /* �🛍️ PRODUCTOS RELACIONADOS - 2 columnas en móvil */
-            .related__title {
-                padding: 20px 15px 15px 15px !important;
-                font-size: 20px !important;
-                margin: 30px 0 15px 0 !important;
-                background: linear-gradient(to right, rgba(202,21,21,0.1), transparent) !important;
-                border-left: 4px solid #ca1515 !important;
-            }
-            
-            .related__title h5 {
-                font-size: 18px !important;
-                margin: 0 !important;
-                font-weight: 700 !important;
-                text-transform: uppercase !important;
-                letter-spacing: 1px !important;
-            }
-            
-            body.dark-mode .related__title {
-                background: linear-gradient(to right, rgba(255,71,87,0.1), transparent) !important;
-                border-left-color: #ff4757 !important;
-            }
-            
-            .products-grid-modern .row {
-                margin: 0 -8px !important;
-            }
-            
-            .products-grid-modern .col-lg-4,
-            .products-grid-modern .col-lg-3,
-            .products-grid-modern .col-md-4,
-            .products-grid-modern .col-md-6 {
-                padding: 0 8px !important;
-                margin-bottom: 15px !important;
-            }
-            
-            /* Productos relacionados: usar mismo estilo compacto que shop */
-            #products-container-related .product-content-modern {
-                padding: 8px 8px 10px 8px !important;
-            }
-            
-            #products-container-related .product-title-modern {
-                margin-bottom: 4px !important;
-            }
-            
-            #products-container-related .product-category-modern {
-                margin-bottom: 4px !important;
-            }
-            
-            #products-container-related .product-rating-modern {
-                margin-bottom: 6px !important;
-            }
-            
-            #products-container-related .product-price-modern {
-                margin-bottom: 6px !important;
-                gap: 4px !important;
-            }
-            
-            #products-container-related .stock-badge {
-                margin-bottom: 6px !important;
-            }
-            
-            #products-container-related .add-to-cart-btn-modern {
-                padding: 9px 12px !important;
-                margin-top: 6px !important;
-            }
-            
-            /* 🎨 SECCIÓN COMPLETA - Sin espacios desperdiciados */
-            .product-details.spad {
-                padding-top: 0 !important;
-                padding-bottom: 20px !important;
-            }
-            
-            .product-details .container {
-                padding-left: 0 !important;
-                padding-right: 0 !important;
-            }
-            
-            /* Solo el texto tiene padding lateral */
-            .col-lg-4,
-            .col-lg-8 {
-                padding-left: 0 !important;
-                padding-right: 0 !important;
-            }
-            
-            /* 🔄 FIX: Eliminar espaciados innecesarios */
-            .spad {
-                padding: 0 !important;
-            }
-            
-            /* 📱 SHARE BUTTONS - Stack vertical */
-            .product__details__text .share {
-                margin-top: 20px !important;
-                padding-top: 20px !important;
-                border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
-            }
-            
-            .product__details__text .share span {
-                display: block !important;
-                margin-bottom: 10px !important;
-                font-size: 14px !important;
-            }
-            
-            .product__details__text .share a {
-                margin: 5px 10px 5px 0 !important;
-                font-size: 18px !important;
-            }
-            
-            body.dark-mode .product__details__text .share {
-                border-top-color: rgba(255, 255, 255, 0.1) !important;
-            }
-        }
-        
-        /* 📱 Móviles muy pequeños (< 400px) */
-        @media (max-width: 400px) {
-            .product__details__pic__slider img {
-                max-height: 60vh !important;
-            }
-            
-            .product__details__text {
-                padding: 15px 12px !important;
-            }
-            
-            .product__details__text h3 {
-                font-size: 20px !important;
-            }
-            
-            .product__details__price {
-                font-size: 28px !important;
-            }
-            
-            .product__details__text > p {
-                font-size: 13px !important;
-                padding: 10px !important;
-            }
-            
-            .btn-add-cart-modern {
-                padding: 14px 16px !important;
-                font-size: 15px !important;
-            }
-            
-            .btn-favorite-modern {
-                width: 56px !important;
-                height: 56px !important;
-            }
-            
-            .quantity-selector-modern {
-                padding: 12px !important;
-            }
-            
-            .tab-button {
-                font-size: 12px !important;
-                padding: 12px 15px !important;
-            }
-            
-            .tab-button span {
-                display: none !important;
-            }
-            
-            .tab-button i {
-                margin-right: 0 !important;
-                font-size: 18px !important;
-            }
-            
-            .product__details__widget ul {
-                grid-template-columns: 1fr !important;
-            }
-        }
-        
-        /* 🎨 MEJORAS GENERALES MÓVIL */
-        @media (max-width: 991px) {
-            /* Mejorar touch targets */
-            a, button {
-                min-height: 44px !important;
-                min-width: 44px !important;
-            }
-            
-            /* Suavizar scrolling */
-            * {
-                -webkit-overflow-scrolling: touch !important;
-            }
-            
-            /* Prevenir zoom en inputs */
-            input[type="text"],
-            input[type="email"],
-            input[type="number"],
-            select,
-            textarea {
-                font-size: 16px !important;
-            }
-            
-            /* Imagen del producto: prevenir overflow */
-            .product__details__pic {
-                overflow: hidden !important;
-            }
-            
-            /* Mejorar contraste de textos */
-            p, span, li {
-                -webkit-font-smoothing: antialiased !important;
-                -moz-osx-font-smoothing: grayscale !important;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -1149,7 +272,7 @@ $page_title = $producto['nombre_producto'];
                             <span>$<?php echo number_format($precio_original, 2); ?></span>
                             <?php endif; ?>
                         </div>
-                        <p><?php echo nl2br(htmlspecialchars($producto['descripcion_producto'] ?? 'Sin descripción')); ?></p>
+                        <p><?php echo nl2br(htmlspecialchars($producto['descripcion_producto'] ?? 'Sin descripci�n')); ?></p>
                         
                         <div class="product__details__widget">
                             <ul>
@@ -1165,20 +288,20 @@ $page_title = $producto['nombre_producto'];
                                 </li>
                                 <?php if(!empty($producto['nombre_categoria'])): ?>
                                 <li>
-                                    <span>Categoría:</span>
+                                    <span>Categor�a:</span>
                                     <p><?php echo htmlspecialchars($producto['nombre_categoria']); ?></p>
                                 </li>
                                 <?php endif; ?>
                                 <?php if(!empty($producto['genero_producto'])): ?>
                                 <li>
-                                    <span>Género:</span>
+                                    <span>G�nero:</span>
                                     <p><?php echo ucfirst(htmlspecialchars($producto['genero_producto'])); ?></p>
                                 </li>
                                 <?php endif; ?>
                             </ul>
                         </div>
                         
-                        <!-- Sección de Acciones Mejorada -->
+                        <!-- Secci�n de Acciones Mejorada -->
                         <div class="product__details__action">
                             <!-- Selector de Cantidad Mejorado -->
                             <div class="quantity-selector-modern">
@@ -1206,7 +329,7 @@ $page_title = $producto['nombre_producto'];
                                 </span>
                             </div>
                             
-                            <!-- Botones de Acción Mejorados -->
+                            <!-- Botones de Acci�n Mejorados -->
                             <div class="action-buttons-modern">
                                 <?php if($usuario_logueado): ?>
                                     <?php if($producto['stock_actual_producto'] > 0): ?>
@@ -1219,7 +342,7 @@ $page_title = $producto['nombre_producto'];
                                                 <span>Ir al Carrito</span>
                                             </button>
                                         <?php else: ?>
-                                            <!-- Producto no está en el carrito -->
+                                            <!-- Producto no est� en el carrito -->
                                             <button class="btn-add-cart-modern add-to-cart" 
                                                     data-id="<?php echo $producto['id_producto']; ?>"
                                                     data-in-cart="false">
@@ -1242,7 +365,7 @@ $page_title = $producto['nombre_producto'];
                                 <?php else: ?>
                                     <a href="login.php" class="btn-add-cart-modern">
                                         <i class="fa fa-sign-in"></i>
-                                        <span>Iniciar Sesión para Comprar</span>
+                                        <span>Iniciar Sesi�n para Comprar</span>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -1250,13 +373,13 @@ $page_title = $producto['nombre_producto'];
                     </div>
                 </div>
                 <div class="col-lg-12">
-                    <!-- TABS MODERNOS - DISEÑO COMPLETAMENTE NUEVO -->
+                    <!-- TABS MODERNOS - DISE�O COMPLETAMENTE NUEVO -->
                     <div class="product-tabs-modern">
-                        <!-- Navegación de Tabs -->
+                        <!-- Navegaci�n de Tabs -->
                         <div class="tabs-navigation">
                             <button class="tab-button active" data-tab="descripcion">
                                 <i class="fa fa-align-left"></i>
-                                <span>Descripción</span>
+                                <span>Descripci�n</span>
                             </button>
                             <button class="tab-button" data-tab="especificaciones">
                                 <i class="fa fa-list-ul"></i>
@@ -1264,16 +387,16 @@ $page_title = $producto['nombre_producto'];
                             </button>
                             <button class="tab-button" data-tab="reviews">
                                 <i class="fa fa-star"></i>
-                                <span>Reseñas</span>
+                                <span>Rese�as</span>
                             </button>
                         </div>
 
                         <!-- Contenido de Tabs -->
                         <div class="tabs-content">
-                            <!-- Tab Descripción -->
+                            <!-- Tab Descripci�n -->
                             <div class="tab-panel active" id="tab-descripcion">
                                 <div class="tab-header">
-                                    <h3>Descripción del Producto</h3>
+                                    <h3>Descripci�n del Producto</h3>
                                     <p class="tab-subtitle">Conoce todos los detalles de este producto</p>
                                 </div>
 
@@ -1282,19 +405,19 @@ $page_title = $producto['nombre_producto'];
                                         <?php 
                                         $descripcion = !empty($producto['descripcion_producto']) 
                                             ? nl2br(htmlspecialchars($producto['descripcion_producto'])) 
-                                            : 'Este es un producto de alta calidad diseñado para satisfacer tus necesidades. Fabricado con los mejores materiales y siguiendo estrictos estándares de calidad.';
+                                            : 'Este es un producto de alta calidad dise�ado para satisfacer tus necesidades. Fabricado con los mejores materiales y siguiendo estrictos est�ndares de calidad.';
                                         echo $descripcion;
                                         ?>
                                     </div>
 
-                                    <!-- Características destacadas -->
+                                    <!-- Caracter�sticas destacadas -->
                                     <div class="features-grid">
                                         <div class="feature-card">
                                             <div class="feature-icon">
                                                 <i class="fa fa-shield"></i>
                                             </div>
                                             <div class="feature-content">
-                                                <h4>Garantía de Calidad</h4>
+                                                <h4>Garant�a de Calidad</h4>
                                                 <p>Productos 100% verificados y garantizados</p>
                                             </div>
                                         </div>
@@ -1304,8 +427,8 @@ $page_title = $producto['nombre_producto'];
                                                 <i class="fa fa-truck"></i>
                                             </div>
                                             <div class="feature-content">
-                                                <h4>Envío Rápido</h4>
-                                                <p>Entrega en 2-5 días hábiles</p>
+                                                <h4>Env�o R�pido</h4>
+                                                <p>Entrega en 2-5 d�as h�biles</p>
                                             </div>
                                         </div>
 
@@ -1314,8 +437,8 @@ $page_title = $producto['nombre_producto'];
                                                 <i class="fa fa-refresh"></i>
                                             </div>
                                             <div class="feature-content">
-                                                <h4>Devoluciones Fáciles</h4>
-                                                <p>30 días de garantía de devolución</p>
+                                                <h4>Devoluciones F�ciles</h4>
+                                                <p>30 d�as de garant�a de devoluci�n</p>
                                             </div>
                                         </div>
 
@@ -1335,7 +458,7 @@ $page_title = $producto['nombre_producto'];
                             <!-- Tab Especificaciones -->
                             <div class="tab-panel" id="tab-especificaciones">
                                 <div class="tab-header">
-                                    <h3>Especificaciones Técnicas</h3>
+                                    <h3>Especificaciones T�cnicas</h3>
                                     <p class="tab-subtitle">Detalles completos del producto</p>
                                 </div>
 
@@ -1344,7 +467,7 @@ $page_title = $producto['nombre_producto'];
                                     <div class="spec-item">
                                         <div class="spec-label">
                                             <i class="fa fa-tag"></i>
-                                            <span>Categoría</span>
+                                            <span>Categor�a</span>
                                         </div>
                                         <div class="spec-value">
                                             <?php echo htmlspecialchars($producto['nombre_categoria']); ?>
@@ -1368,7 +491,7 @@ $page_title = $producto['nombre_producto'];
                                     <div class="spec-item">
                                         <div class="spec-label">
                                             <i class="fa fa-user"></i>
-                                            <span>Género</span>
+                                            <span>G�nero</span>
                                         </div>
                                         <div class="spec-value">
                                             <?php echo ucfirst(htmlspecialchars($producto['genero_producto'])); ?>
@@ -1380,7 +503,7 @@ $page_title = $producto['nombre_producto'];
                                     <div class="spec-item">
                                         <div class="spec-label">
                                             <i class="fa fa-barcode"></i>
-                                            <span>Código SKU</span>
+                                            <span>C�digo SKU</span>
                                         </div>
                                         <div class="spec-value code">
                                             <?php echo htmlspecialchars($producto['codigo']); ?>
@@ -1404,16 +527,16 @@ $page_title = $producto['nombre_producto'];
                                 </div>
                             </div>
 
-                            <!-- Tab Reseñas -->
+                            <!-- Tab Rese�as -->
                             <div class="tab-panel" id="tab-reviews">
                                 <div class="tab-header">
-                                    <h3>Reseñas de Clientes</h3>
+                                    <h3>Rese�as de Clientes</h3>
                                     <p class="tab-subtitle">Lo que nuestros clientes dicen sobre este producto</p>
                                 </div>
 
                                 <div class="reviews-container">
                                     <?php
-                                    // Obtener reseñas del producto
+                                    // Obtener rese�as del producto
                                     $query_resenas = "SELECT r.*, u.nombre_usuario 
                                                      FROM resena r 
                                                      INNER JOIN usuario u ON r.id_usuario = u.id_usuario 
@@ -1424,7 +547,7 @@ $page_title = $producto['nombre_producto'];
                                     $resenas_mostrar = array_slice($resenas, 0, 5); // Primeras 5
                                     
                                     if(!empty($resenas_mostrar)):
-                                        // Calcular promedio de calificación
+                                        // Calcular promedio de calificaci�n
                                         $suma_calificaciones = array_sum(array_column($resenas, 'calificacion'));
                                         $promedio = $suma_calificaciones / $total_resenas;
                                     ?>
@@ -1438,11 +561,11 @@ $page_title = $producto['nombre_producto'];
                                                     <i class="fa fa-star<?php echo $i <= round($promedio) ? '' : '-o'; ?>"></i>
                                                 <?php endfor; ?>
                                             </div>
-                                            <div class="rating-count">Basado en <?php echo $total_resenas; ?> reseña<?php echo $total_resenas != 1 ? 's' : ''; ?></div>
+                                            <div class="rating-count">Basado en <?php echo $total_resenas; ?> rese�a<?php echo $total_resenas != 1 ? 's' : ''; ?></div>
                                         </div>
                                     </div>
 
-                                    <!-- Lista de Reseñas -->
+                                    <!-- Lista de Rese�as -->
                                     <div class="reviews-list">
                                         <?php foreach($resenas_mostrar as $resena): ?>
                                         <div class="review-card">
@@ -1486,24 +609,24 @@ $page_title = $producto['nombre_producto'];
                                     <?php if($total_resenas > 5): ?>
                                     <div class="reviews-footer">
                                         <button class="btn-view-more">
-                                            Ver todas las reseñas (<?php echo $total_resenas; ?>)
+                                            Ver todas las rese�as (<?php echo $total_resenas; ?>)
                                             <i class="fa fa-arrow-right"></i>
                                         </button>
                                     </div>
                                     <?php endif; ?>
 
                                     <?php else: ?>
-                                    <!-- Estado vacío -->
+                                    <!-- Estado vac�o -->
                                     <div class="reviews-empty">
                                         <div class="empty-icon">
                                             <i class="fa fa-star-o"></i>
                                         </div>
-                                        <h4>Aún no hay reseñas</h4>
-                                        <p>Sé el primero en compartir tu opinión sobre este producto</p>
+                                        <h4>A�n no hay rese�as</h4>
+                                        <p>S� el primero en compartir tu opini�n sobre este producto</p>
                                         <?php if($usuario_logueado): ?>
                                         <button class="btn-write-review">
                                             <i class="fa fa-pencil"></i>
-                                            Escribir una reseña
+                                            Escribir una rese�a
                                         </button>
                                         <?php endif; ?>
                                     </div>
@@ -1528,7 +651,7 @@ $page_title = $producto['nombre_producto'];
             <div class="products-grid-modern" id="products-container-related">
                 <div class="row">
                     <?php
-                    // Obtener productos relacionados de la misma categoría
+                    // Obtener productos relacionados de la misma categor�a
                     $query_related = "SELECT p.id_producto, p.nombre_producto, p.precio_producto,
                                             p.url_imagen_producto, p.stock_actual_producto,
                                             COALESCE(p.descuento_porcentaje_producto, 0) as descuento_porcentaje_producto,
@@ -1558,7 +681,7 @@ $page_title = $producto['nombre_producto'];
                         foreach($productos_relacionados as $prod):
                             $es_favorito_rel = in_array($prod['id_producto'], $favoritos_ids ?? []);
                             
-                            // Verificar si está en el carrito
+                            // Verificar si est� en el carrito
                             $in_cart = false;
                             if ($usuario_logueado) {
                                 $cart_check = executeQuery(
@@ -1616,7 +739,7 @@ $page_title = $producto['nombre_producto'];
                 baseUrlFromPHP = window.location.origin + basePath;
             }
             
-            // CRÍTICO: Si la página está en HTTPS, forzar BASE_URL a HTTPS
+            // CR�TICO: Si la p�gina est� en HTTPS, forzar BASE_URL a HTTPS
             if (window.location.protocol === 'https:' && baseUrlFromPHP.startsWith('http://')) {
                 baseUrlFromPHP = baseUrlFromPHP.replace('http://', 'https://');
             }
@@ -1639,7 +762,7 @@ $page_title = $producto['nombre_producto'];
     <script src="public/assets/js/jquery.nicescroll.min.js"></script>
     <script src="public/assets/js/main.js"></script>
     
-    <!-- Header Handler - Actualización en tiempo real de contadores -->
+    <!-- Header Handler - Actualizaci�n en tiempo real de contadores -->
     <script src="public/assets/js/header-handler.js?v=1.0"></script>
     
     <!-- Sistema Global de Contadores -->
@@ -1678,12 +801,14 @@ $page_title = $producto['nombre_producto'];
     }
     
     /* Breadcrumb con el mismo color de fondo */
+    /* ELIMINADO - Ahora breadcrumb-modern.css controla todos los estilos
     .breadcrumb-option {
         background-color: #f8f5f2 !important;
         padding: 15px 0 10px 0;
         margin-top: 1px;
         margin-bottom: 0;
     }
+    */
     
     /* Centrar breadcrumb compensando scrollbar */
     .breadcrumb-option .container {
@@ -1691,11 +816,13 @@ $page_title = $producto['nombre_producto'];
         margin-right: auto !important;
     }
     
+    /* ELIMINADO - Ahora breadcrumb-modern.css controla el dark mode
     body.dark-mode .breadcrumb-option {
         background-color: #1a1a1a !important;
     }
+    */
     
-    /* Reducir espaciado en la sección de detalles */
+    /* Reducir espaciado en la secci�n de detalles */
     .product-details {
         padding-top: 20px !important;
         padding-bottom: 20px !important;
@@ -1721,13 +848,13 @@ $page_title = $producto['nombre_producto'];
         margin-right: auto !important;
     }
     
-    /* Centrar título de relacionados */
+    /* Centrar t�tulo de relacionados */
     .product-details .related__title {
         text-align: center !important;
     }
     
     /* ============================================
-       ESTILOS ESPECÍFICOS DE PRODUCT-DETAILS
+       ESTILOS ESPEC�FICOS DE PRODUCT-DETAILS
        ============================================ */
     
     /* ============================================
@@ -1758,7 +885,7 @@ $page_title = $producto['nombre_producto'];
         transition: all 0.3s ease !important;
     }
     
-    /* En pantallas muy grandes, limitar el tamaño máximo */
+    /* En pantallas muy grandes, limitar el tama�o m�ximo */
     @media (min-width: 1400px) {
         .product-details .product__big__img {
             max-width: 800px !important;
@@ -1899,14 +1026,14 @@ $page_title = $producto['nombre_producto'];
     }
     
     /* ============================================
-       TABS MODERNOS - DISEÑO COMPLETAMENTE NUEVO
+       TABS MODERNOS - DISE�O COMPLETAMENTE NUEVO
        ============================================ */
     .product-tabs-modern {
         margin-top: 60px;
         margin-bottom: 60px;
     }
 
-    /* Navegación de Tabs */
+    /* Navegaci�n de Tabs */
     .tabs-navigation {
         display: flex;
         gap: 0;
@@ -2010,7 +1137,7 @@ $page_title = $producto['nombre_producto'];
     }
 
     /* ============================================
-       TAB DESCRIPCIÓN
+       TAB DESCRIPCI�N
        ============================================ */
     .description-content {
         background: transparent !important;
@@ -2029,7 +1156,7 @@ $page_title = $producto['nombre_producto'];
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     }
 
-    /* Grid de Características */
+    /* Grid de Caracter�sticas */
     .features-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -2214,7 +1341,7 @@ $page_title = $producto['nombre_producto'];
     }
 
     /* ============================================
-       TAB RESEÑAS
+       TAB RESE�AS
        ============================================ */
     .reviews-container {
         background: #ffffff;
@@ -2258,7 +1385,7 @@ $page_title = $producto['nombre_producto'];
         opacity: 0.9;
     }
 
-    /* Lista de Reseñas */
+    /* Lista de Rese�as */
     .reviews-list {
         display: flex;
         flex-direction: column;
@@ -2364,7 +1491,7 @@ $page_title = $producto['nombre_producto'];
         margin: 0;
     }
 
-    /* Footer de Reseñas */
+    /* Footer de Rese�as */
     .reviews-footer {
         text-align: center;
         margin-top: 35px;
@@ -2401,7 +1528,7 @@ $page_title = $producto['nombre_producto'];
         transform: translateX(5px);
     }
 
-    /* Estado Vacío de Reseñas */
+    /* Estado Vac�o de Rese�as */
     .reviews-empty {
         text-align: center;
         padding: 80px 20px;
@@ -2626,7 +1753,7 @@ $page_title = $producto['nombre_producto'];
             transition: box-shadow 0.3s ease !important;
         }
         
-        /* Estilos para imagen principal con shadow dinámico */
+        /* Estilos para imagen principal con shadow din�mico */
         .product-details .product__big__img {
             border-radius: 12px !important;
             max-width: 500px !important;
@@ -2636,7 +1763,7 @@ $page_title = $producto['nombre_producto'];
             margin: 0 auto !important;
         }
 
-        /* Dar más espacio al texto del producto */
+        /* Dar m�s espacio al texto del producto */
         .product__details__text {
             padding: 0 20px !important;
         }
@@ -2692,7 +1819,7 @@ $page_title = $producto['nombre_producto'];
     }
 
     /* ============================================
-       QUANTITY INPUT - DISEÑO MODERNO RESPONSIVO
+       QUANTITY INPUT - DISE�O MODERNO RESPONSIVO
        ============================================ */
     
     /* Contenedor de cantidad */
@@ -2808,7 +1935,7 @@ $page_title = $producto['nombre_producto'];
         }
     }
 
-    /* Móviles */
+    /* M�viles */
     @media (max-width: 768px) {
         .product__details__button .quantity {
             flex-direction: column;
@@ -2844,7 +1971,7 @@ $page_title = $producto['nombre_producto'];
         }
     }
 
-    /* Móviles pequeños */
+    /* M�viles peque�os */
     @media (max-width: 576px) {
         .product__details__button .quantity {
             gap: 8px;
@@ -2874,7 +2001,7 @@ $page_title = $producto['nombre_producto'];
         }
     }
 
-    /* Móviles extra pequeños */
+    /* M�viles extra peque�os */
     @media (max-width: 400px) {
         .pro-qty {
             max-width: 160px;
@@ -2902,7 +2029,7 @@ $page_title = $producto['nombre_producto'];
     /* ============================================
        PRODUCTOS RELACIONADOS - USA CSS DE SHOP.PHP
        ============================================ */
-    /* Solo título personalizado */
+    /* Solo t�tulo personalizado */
     .related__title {
         margin-bottom: 30px;
         margin-top: 40px;
@@ -2952,7 +2079,7 @@ $page_title = $producto['nombre_producto'];
                 masonryInstance = null;
             }
 
-            // Solo en móvil
+            // Solo en m�vil
             if (window.innerWidth <= 991) {
                 imagesLoaded(grid, function() {
                     masonryInstance = new Masonry(grid, {
@@ -2986,7 +2113,7 @@ $page_title = $producto['nombre_producto'];
             $('.tab-button').removeClass('active');
             $('.tab-panel').removeClass('active');
             
-            // Agregar active al botón clickeado
+            // Agregar active al bot�n clickeado
             $(this).addClass('active');
             
             // Mostrar el panel correspondiente
@@ -2994,7 +2121,7 @@ $page_title = $producto['nombre_producto'];
         });
 
         // ============================================
-        // FUNCIÓN DE NOTIFICACIÓN (FALLBACK)
+        // FUNCI�N DE NOTIFICACI�N (FALLBACK)
         // ============================================
         // Esperar un poco para que cart-favorites-handler.js se cargue completamente
         setTimeout(function() {
@@ -3006,7 +2133,7 @@ $page_title = $producto['nombre_producto'];
         }, 100);
 
         // ============================================
-        // SELECTOR DE CANTIDAD CON ACTUALIZACIÓN EN TIEMPO REAL
+        // SELECTOR DE CANTIDAD CON ACTUALIZACI�N EN TIEMPO REAL
         // ============================================
         const $qtySelect = $('#product-quantity');
         const productoId = <?php echo $producto_id; ?>;
@@ -3029,14 +2156,14 @@ $page_title = $producto['nombre_producto'];
                 return;
             }
             
-            // Si el producto está en el carrito, actualizar cantidad
+            // Si el producto est� en el carrito, actualizar cantidad
             if (productoEnCarrito) {
                 actualizarCantidadCarrito(productoId, nuevaCantidad);
             }
             
         });
         
-        // Función para actualizar cantidad en el carrito
+        // Funci�n para actualizar cantidad en el carrito
         function actualizarCantidadCarrito(id, cantidad) {
             const baseUrl = window.BASE_URL || '';
             const $select = $('#product-quantity');
@@ -3065,7 +2192,7 @@ $page_title = $producto['nombre_producto'];
                         window.updateCartCount();
                     }
                     
-                    // Mostrar notificación sutil
+                    // Mostrar notificaci�n sutil
                     if (window.showNotification) {
                         window.showNotification('Cantidad actualizada: ' + cantidad + ' unidad' + (cantidad > 1 ? 'es' : ''), 'success');
                     }
@@ -3088,25 +2215,25 @@ $page_title = $producto['nombre_producto'];
                 $select.val(prevValue);
                 
                 if (window.showNotification) {
-                    window.showNotification('Error de conexión al actualizar cantidad', 'error');
+                    window.showNotification('Error de conexi�n al actualizar cantidad', 'error');
                 }
             });
         }
 
         // ============================================
-        // FUNCIÓN PARA AGREGAR AL CARRITO CON ACTUALIZACIÓN EN TIEMPO REAL
+        // FUNCI�N PARA AGREGAR AL CARRITO CON ACTUALIZACI�N EN TIEMPO REAL
         // ============================================
-        // Verificar si el producto ya está en el carrito (desde PHP)
+        // Verificar si el producto ya est� en el carrito (desde PHP)
         let productoEnCarrito = <?php echo $producto_en_carrito ? 'true' : 'false'; ?>;
 
-        // Evento para "Ir al Carrito" (cuando ya está en el carrito)
+        // Evento para "Ir al Carrito" (cuando ya est� en el carrito)
         $(document).on('click', '.go-to-cart', function(e) {
             e.preventDefault();
             window.location.href = 'cart.php';
         });
 
         // ============================================
-        // FUNCIÓN PARA ACTUALIZAR CONTADORES EN TIEMPO REAL
+        // FUNCI�N PARA ACTUALIZAR CONTADORES EN TIEMPO REAL
         // ============================================
         function actualizarContadoresTiempoReal(tipo) {
             const baseUrl = window.BASE_URL || '';
@@ -3170,7 +2297,7 @@ $page_title = $producto['nombre_producto'];
         }
 
         // ============================================
-        // FUNCIÓN PARA ACTUALIZAR MODAL DE FAVORITOS
+        // FUNCI�N PARA ACTUALIZAR MODAL DE FAVORITOS
         // ============================================
         function actualizarModalFavoritos() {
             const $modalBody = $('.favorites-modal-body');
@@ -3233,11 +2360,11 @@ $page_title = $producto['nombre_producto'];
         }
 
         // ============================================
-        // ACTUALIZAR BOTÓN DE CARRITO EN LA PÁGINA
+        // ACTUALIZAR BOT�N DE CARRITO EN LA P�GINA
         // ============================================
         function actualizarBotonCarritoPagina(productoId, enCarrito) {
             
-            // Buscar el botón de carrito (puede tener clase add-to-cart o go-to-cart)
+            // Buscar el bot�n de carrito (puede tener clase add-to-cart o go-to-cart)
             let $btn = $('.add-to-cart');
             if ($btn.length === 0) {
                 $btn = $('.go-to-cart');
@@ -3274,8 +2401,7 @@ $page_title = $producto['nombre_producto'];
     <!-- Global Offcanvas Menu JavaScript -->
     <script src="public/assets/js/offcanvas-menu.js"></script>
     
-    <!-- Dark Mode JavaScript -->
-    <script src="public/assets/js/dark-mode.js"></script>
+    <!-- ? REMOVIDO: Dark Mode JavaScript (ya se carga desde dark-mode-assets.php en modern-libraries.php) -->
 
     <script>
     // Asegurar que las tarjetas de productos relacionados funcionen

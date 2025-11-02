@@ -6,11 +6,58 @@
     // Esto previene el flash blanco al cargar la página
     (function() {
         const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        // Solo aplicar si el usuario explícitamente eligió dark mode
+        // NO usar preferencias del sistema automáticamente
+        if (savedTheme === 'dark') {
             document.documentElement.classList.add('dark-mode');
             document.body.classList.add('dark-mode');
+        }
+    })();
+    
+    // FIX: ASEGURAR QUE NO HAYA MODALES BLOQUEANDO AL CARGAR
+    // Esto previene que overlays se queden activos
+    (function() {
+        function clearBlockingLayers() {
+            // Remover clases modal-open y modal-closing de todos los modales
+            const modals = document.querySelectorAll('.favorites-modal, .notifications-modal, .user-modal, .user-account-modal');
+            modals.forEach(modal => {
+                modal.classList.remove('modal-open', 'modal-closing');
+                modal.style.display = 'none';
+            });
+            
+            // Remover overlays activos
+            const overlays = document.querySelectorAll('.offcanvas-menu-overlay, .filters-menu-overlay, .modal-backdrop');
+            overlays.forEach(overlay => {
+                overlay.classList.remove('active', 'show');
+                overlay.style.display = 'none';
+            });
+            
+            // CRÍTICO: Limpiar estilos inline del chatbot que puedan estar bloqueando
+            const chatWidget = document.querySelector('.fs-chat-widget');
+            if (chatWidget) {
+                // Remover estilos inline problemáticos
+                chatWidget.style.removeProperty('pointer-events');
+                chatWidget.style.removeProperty('width');
+                chatWidget.style.removeProperty('height');
+                // El CSS manejará la visibilidad y pointer-events correctamente
+            }
+            
+            // Restaurar scroll del body
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            document.documentElement.style.overflow = '';
+            document.body.classList.remove('modal-open');
+            
+            console.log('[Header] ✅ Capas bloqueantes limpiadas');
+        }
+        
+        // Ejecutar inmediatamente
+        clearBlockingLayers();
+        
+        // También ejecutar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', clearBlockingLayers);
         }
     })();
 </script>
@@ -24,19 +71,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
-     <!-- Header global - COMPACTO v5.0 -->
-
+     <!-- ========================================
+          FASHION STORE CSS - ARQUITECTURA MODULAR V2.0
+          Sistema optimizado y consolidado
+          ======================================== -->
+    
+    <!-- CORE: Base del sistema -->
+    <link rel="stylesheet" href="public/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="public/assets/css/core/variables.css?v=<?php echo time(); ?>">
+    
+    <!-- COMPONENTS: Componentes reutilizables -->
+    <link rel="stylesheet" href="public/assets/css/components/header.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="public/assets/css/components/modals.css?v=<?php echo time(); ?>">
+    
+    <!-- LAYOUTS: Estructuras de página -->
+    <link rel="stylesheet" href="public/assets/css/layouts/shop.css?v=<?php echo time(); ?>">
+    
+    <!-- THEMES: Temas y animaciones -->
+    <link rel="stylesheet" href="public/assets/css/themes/dark-mode.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="public/assets/css/themes/animations.css?v=<?php echo time(); ?>">
+    
+    <!-- LEGACY: Archivos originales necesarios (style.css principal) -->
     <link rel="stylesheet" href="public/assets/css/style.css">
-    <link rel="stylesheet" href="public/assets/css/modals-animations.css">
-    <link rel="stylesheet" href="public/assets/css/header-responsive.css">
-    <link rel="stylesheet" href="public/assets/css/header-bootstrap-layout.css">
-    <link rel="stylesheet" href="public/assets/css/badges-override.css">
-    <link rel="stylesheet" href="public/assets/css/global-search-modal.css?v=<?php echo time(); ?>">
     
-    <!-- Header Mobile - Diseño específico para móviles -->
-    <link rel="stylesheet" href="public/assets/css/header-mobile.css?v=<?php echo time(); ?>">
-    
-    <!-- Offcanvas Menu Mobile - Diseño del menú lateral -->
+    <!-- ESPECÍFICOS: Archivos que aún no se han consolidado -->
     <link rel="stylesheet" href="public/assets/css/offcanvas-mobile.css?v=<?php echo time(); ?>">
 
 </head>
@@ -169,15 +227,15 @@
                         <!-- Separador visual -->
                         <li class="auth-separator"></li>
                         
-                        <!-- Botones de autenticación -->
+                        <!-- Botones de autenticación con iconos -->
                         <li class="auth-buttons-container">
                             <a href="register.php" class="btn-auth btn-register" title="Crear Cuenta">
-                                Registrarse
+                                <i class="fa fa-user-plus"></i>
                             </a>
                         </li>
                         <li class="auth-buttons-container">
                             <a href="login.php" class="btn-auth btn-login" title="Iniciar Sesión">
-                                Ingresar
+                                <i class="fa fa-sign-in"></i>
                             </a>
                         </li>
                         <?php endif; ?>
@@ -724,95 +782,209 @@ endif;
 <!-- Script para búsqueda global (siempre cargado) -->
 <script src="public/assets/js/global-search.js?v=<?php echo time(); ?>"></script>
 
-<!-- Script para offcanvas menu móvil -->
-<script src="public/assets/js/offcanvas-menu.js?v=<?php echo time(); ?>"></script>
-
-<!-- Script inline para forzar funcionamiento del offcanvas -->
+<!-- Script completo para offcanvas menu con swipe -->
 <script>
 (function() {
+    'use strict';
     
-    // Función para forzar apertura del offcanvas con LayerManager
-    function forceOpenOffcanvas() {
+    const wrapper = document.querySelector('.offcanvas-menu-wrapper');
+    const overlay = document.querySelector('.offcanvas-menu-overlay');
+    const hamburger = document.querySelector('.canvas__open');
+    const closeBtn = document.querySelector('.offcanvas__close');
+    const footer = document.querySelector('footer, .footer, .mobile-cart-footer__content');
+    
+    // ============================================
+    // FUNCIONES DE CONTROL
+    // ============================================
+    
+    function openOffcanvas() {
+        if (!wrapper || !overlay) return;
         
-        // Usar LayerManager si está disponible
-        if (window.LayerManager) {
-            window.LayerManager.openOffcanvas();
+        // Cerrar otros offcanvas usando OffcanvasManager
+        if (window.OffcanvasManager) {
+            window.OffcanvasManager.close('filters');
+            window.OffcanvasManager.open('menu');
+        }
+        
+        wrapper.classList.add('active');
+        overlay.classList.add('active');
+        document.body.classList.add('offcanvas-active');
+        document.body.style.overflow = 'hidden';
+        if (footer) footer.style.display = 'none';
+    }
+    
+    function closeOffcanvas() {
+        if (!wrapper || !overlay) return;
+        
+        // Notificar a OffcanvasManager
+        if (window.OffcanvasManager) {
+            window.OffcanvasManager.close('menu');
+        }
+        
+        wrapper.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.classList.remove('offcanvas-active');
+        document.body.style.overflow = '';
+        if (footer) footer.style.display = '';
+    }
+    
+    function toggleOffcanvas() {
+        if (wrapper && wrapper.classList.contains('active')) {
+            closeOffcanvas();
         } else {
-            // Fallback manual
-            const wrapper = document.querySelector('.offcanvas-menu-wrapper');
-            const overlay = document.querySelector('.offcanvas-menu-overlay');
+            openOffcanvas();
+        }
+    }
+    
+    // ============================================
+    // EVENTOS DE CLICK
+    // ============================================
+    
+    if (hamburger) {
+        hamburger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleOffcanvas();
+        });
+    }
+    
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeOffcanvas();
+        });
+    }
+    
+    if (overlay) {
+        overlay.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeOffcanvas();
+        });
+    }
+    
+    // ============================================
+    // SWIPE GESTURE - Deslizar izquierda para cerrar
+    // ============================================
+    
+    if (wrapper) {
+        let touchStartX = 0;
+        let touchCurrentX = 0;
+        let isSwiping = false;
+        const swipeThreshold = 100;
+        
+        wrapper.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+            touchCurrentX = touchStartX;
+            isSwiping = true;
+            wrapper.style.transition = 'none';
+        }, { passive: true });
+        
+        wrapper.addEventListener('touchmove', function(e) {
+            if (!isSwiping) return;
             
-            if (wrapper && overlay) {
-                wrapper.classList.add('active');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
+            touchCurrentX = e.touches[0].clientX;
+            const deltaX = touchCurrentX - touchStartX;
+            
+            // Solo permitir swipe hacia la izquierda
+            if (deltaX < 0) {
+                const translateX = Math.max(deltaX, -wrapper.offsetWidth);
+                wrapper.style.transform = `translateX(${translateX}px)`;
+            }
+        }, { passive: true });
+        
+        wrapper.addEventListener('touchend', function(e) {
+            if (!isSwiping) return;
+            
+            const deltaX = touchCurrentX - touchStartX;
+            const swipeDistance = Math.abs(deltaX);
+            
+            wrapper.style.transition = '';
+            wrapper.style.transform = '';
+            
+            // Si deslizó hacia la izquierda más del threshold, cerrar
+            if (deltaX < 0 && swipeDistance > swipeThreshold) {
+                closeOffcanvas();
+            }
+            
+            isSwiping = false;
+        }, { passive: true });
+    }
+    
+    // ============================================
+    // SUBMENÚS DENTRO DEL OFFCANVAS
+    // ============================================
+    
+    document.addEventListener('click', function(e) {
+        const toggle = e.target.closest('.offcanvas-menu-toggle');
+        if (!toggle) return;
+        
+        e.preventDefault();
+        const submenu = toggle.nextElementSibling;
+        
+        if (submenu && submenu.classList.contains('offcanvas-submenu')) {
+            toggle.classList.toggle('active');
+            
+            if (submenu.style.display === 'block') {
+                submenu.style.display = 'none';
+            } else {
+                // Cerrar otros submenús
+                document.querySelectorAll('.offcanvas-submenu').forEach(function(sub) {
+                    if (sub !== submenu) {
+                        sub.style.display = 'none';
+                        const otherToggle = sub.previousElementSibling;
+                        if (otherToggle) otherToggle.classList.remove('active');
+                    }
+                });
+                submenu.style.display = 'block';
             }
         }
-    }
+    });
     
-    // Función para cerrar el offcanvas
-    function forceCloseOffcanvas() {
-        
-        // Usar LayerManager si está disponible
-        if (window.LayerManager) {
-            window.LayerManager.closeOffcanvas();
-        } else {
-            // Fallback manual
-            const wrapper = document.querySelector('.offcanvas-menu-wrapper');
-            const overlay = document.querySelector('.offcanvas-menu-overlay');
-            
-            if (wrapper && overlay) {
-                wrapper.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
+    // ============================================
+    // ENLACES ESPECIALES DENTRO DEL OFFCANVAS
+    // ============================================
+    
+    const userProfileLink = document.getElementById('offcanvas-user-profile');
+    if (userProfileLink) {
+        userProfileLink.addEventListener('click', function() {
+            closeOffcanvas();
+            const modal = document.getElementById('userAccountModal');
+            if (modal && window.$ && $.fn.modal) {
+                $(modal).modal('show');
             }
-        }
+        });
     }
     
-    // Esperar a que el DOM esté listo
-    function init() {
-        const hamburger = document.querySelector('.canvas__open');
-        
-        if (hamburger) {
-            
-            // Agregar evento click
-            hamburger.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                forceOpenOffcanvas();
-            });
-            
-            // También probar con touchstart en móviles
-            hamburger.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                forceOpenOffcanvas();
-            }, { passive: false });
-            
-        }
-        
-        // Eventos para cerrar
-        const closeBtn = document.querySelector('.offcanvas__close');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', forceCloseOffcanvas);
-        }
-        
-        const overlay = document.querySelector('.offcanvas-menu-overlay');
-        if (overlay) {
-            overlay.addEventListener('click', forceCloseOffcanvas);
-        }
+    const favoritesLink = document.getElementById('favorites-link-mobile');
+    if (favoritesLink) {
+        favoritesLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeOffcanvas();
+            const modal = document.getElementById('favoritesModal');
+            if (modal && window.$ && $.fn.modal) {
+                $(modal).modal('show');
+            }
+        });
     }
     
-    // Iniciar cuando el DOM esté listo
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
+    // Mostrar footer cuando termine la transición
+    if (wrapper) {
+        wrapper.addEventListener('transitionend', function() {
+            if (!wrapper.classList.contains('active') && footer) {
+                footer.style.display = '';
+            }
+        });
     }
     
-    // También probar inmediatamente
-    setTimeout(init, 100);
+    // Exponer funciones globalmente para LayerManager
+    window.OffcanvasMenu = {
+        open: openOffcanvas,
+        close: closeOffcanvas,
+        toggle: toggleOffcanvas
+    };
+    
 })();
 </script>
 
-<!-- Layer Manager - Sistema de coordinación de capas UI -->
-<script src="public/assets/js/layer-manager.js?v=<?= time() ?>"></script>
+<!-- Script para shop-filters-mobile con OffcanvasManager -->
+<script src="public/assets/js/shop-filters-mobile.js?v=<?= time() ?>"></script>

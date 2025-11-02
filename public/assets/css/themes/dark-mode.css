@@ -1,0 +1,220 @@
+/**
+ * FASHION STORE - DARK MODE THEME
+ * Sistema de dark mode global unificado
+ * @version 2.0
+ * @date 2025-11-01
+ */
+
+/* ========================================
+   DARK MODE BASE
+   ======================================== */
+
+body.dark-mode {
+    background-color: var(--dark-bg-primary);
+    color: var(--dark-text-primary);
+}
+
+/* ========================================
+   TEXTOS Y HEADINGS
+   ======================================== */
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode p {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode a {
+    color: var(--dark-accent);
+}
+
+body.dark-mode a:hover {
+    color: var(--dark-accent-hover);
+}
+
+/* ========================================
+   BOTONES
+   ======================================== */
+
+body.dark-mode .btn-primary,
+body.dark-mode .primary__btn {
+    background: var(--dark-accent);
+    border-color: var(--dark-accent);
+    color: white;
+}
+
+body.dark-mode .btn-primary:hover,
+body.dark-mode .primary__btn:hover {
+    background: var(--dark-accent-hover);
+    border-color: var(--dark-accent-hover);
+}
+
+body.dark-mode .btn-secondary {
+    background: var(--dark-bg-tertiary);
+    border-color: var(--dark-border);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .btn-secondary:hover {
+    background: var(--dark-bg-secondary);
+}
+
+/* ========================================
+   FORMULARIOS
+   ======================================== */
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    background: var(--dark-bg-tertiary);
+    border-color: var(--dark-border);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode input:focus,
+body.dark-mode textarea:focus,
+body.dark-mode select:focus {
+    background: var(--dark-bg-secondary);
+    border-color: var(--dark-accent);
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: var(--dark-text-muted);
+}
+
+/* ========================================
+   CARDS Y CONTAINERS
+   ======================================== */
+
+body.dark-mode .card,
+body.dark-mode .container-box {
+    background: var(--dark-bg-secondary);
+    border-color: var(--dark-border);
+}
+
+/* ========================================
+   BREADCRUMB
+   ======================================== */
+
+body.dark-mode .breadcrumb-option {
+    background: var(--dark-bg-secondary);
+}
+
+body.dark-mode .breadcrumb__links a {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode .breadcrumb__links a:hover {
+    color: var(--dark-accent);
+}
+
+body.dark-mode .breadcrumb__links span {
+    color: var(--dark-text-muted);
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+
+body.dark-mode .footer {
+    background: var(--dark-bg-secondary);
+    border-top: 1px solid var(--dark-border);
+}
+
+body.dark-mode .footer__about {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode .footer__widget h6 {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .footer__widget ul li a {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode .footer__widget ul li a:hover {
+    color: var(--dark-accent);
+}
+
+/* ========================================
+   TABLAS
+   ======================================== */
+
+body.dark-mode table {
+    background: var(--dark-bg-secondary);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode table thead {
+    background: var(--dark-bg-tertiary);
+}
+
+body.dark-mode table tbody tr {
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.dark-mode table tbody tr:hover {
+    background: var(--dark-bg-tertiary);
+}
+
+/* ========================================
+   SCROLLBAR GLOBAL
+   ======================================== */
+
+body.dark-mode::-webkit-scrollbar {
+    width: 10px;
+}
+
+body.dark-mode::-webkit-scrollbar-track {
+    background: var(--dark-bg-primary);
+}
+
+body.dark-mode::-webkit-scrollbar-thumb {
+    background: var(--dark-bg-tertiary);
+    border-radius: 5px;
+}
+
+body.dark-mode::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-border);
+}
+
+/* ========================================
+   OFFCANVAS MENU
+   ======================================== */
+
+body.dark-mode .offcanvas-menu-wrapper {
+    background: var(--dark-bg-secondary);
+}
+
+body.dark-mode .offcanvas__menu ul li a {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .offcanvas__menu ul li a:hover {
+    color: var(--dark-accent);
+}
+
+/* ========================================
+   SOMBRAS EN DARK MODE
+   ======================================== */
+
+body.dark-mode .shadow-sm {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.dark-mode .shadow-lg {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7) !important;
+}

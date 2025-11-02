@@ -2,8 +2,47 @@
  * MODALS DARK MODE
  * Adaptación completa de modales al modo oscuro
  * - Modal de Favoritos
+ * - Modal de Notificaciones
  * - Modal de Cuenta de Usuario
  */
+
+/* =================================================================
+   Z-INDEX DE MODALES - MÁXIMA PRIORIDAD SOBRE OFFCANVAS
+   Los modales deben aparecer SIEMPRE por encima de los offcanvas
+   ================================================================= */
+#favorites-modal,
+#notifications-modal,
+#user-account-modal,
+.favorites-modal,
+.notifications-modal,
+.user-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 99999999999999 !important; /* Máxima prioridad sobre offcanvas (999999999999) */
+    display: none; /* Oculto por defecto */
+}
+
+.favorites-modal-content,
+.notifications-modal-content,
+.user-modal-content {
+    position: relative !important;
+    z-index: 999999999999999 !important; /* Contenido aún más alto */
+}
+
+/* Cuando el modal está abierto */
+#favorites-modal.modal-open,
+#notifications-modal.modal-open,
+#user-account-modal.modal-open,
+.favorites-modal.modal-open,
+.notifications-modal.modal-open,
+.user-modal.modal-open {
+    display: block !important;
+}
 
 /* =================================================================
    VARIABLES DE COLOR PARA MODALES

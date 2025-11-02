@@ -138,8 +138,6 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
     <link rel="stylesheet" href="public/assets/css/jquery-ui.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
-    <!-- Header Standard - COMPACTO v5.0 -->
-    <link rel="stylesheet" href="public/assets/css/header-standard.css?v=5.0" type="text/css">
     
 
     <!-- Modern Libraries -->
@@ -176,9 +174,6 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
     <!-- Avatar Crop Modal Styles -->
     <link rel="stylesheet" href="public/assets/css/avatar-crop-modal.css?v=2.0" type="text/css">
     
-    <!-- Header Fix - DEBE IR AL FINAL -->
-    <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=2.0">
-    
     <style>
         /* ============================================
            FONDO DEL BODY
@@ -196,8 +191,12 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
         
         body {
             overflow-x: hidden !important;
+            overflow-y: auto !important;
             margin: 0 !important;
             padding: 0 !important;
+            /* Asegurar scroll en móvil */
+            -webkit-overflow-scrolling: touch !important;
+            min-height: 100vh;
         }
         
         /* Ocultar scrollbar horizontal */
@@ -1486,8 +1485,7 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
     <!-- Settings Manager Script -->
     <script src="public/assets/js/settings-manager.js"></script>
     
-    <!-- Dark Mode Script -->
-    <script src="public/assets/js/dark-mode.js"></script>
+    <!-- ❌ REMOVIDO: Dark Mode Script (ya se carga desde dark-mode-assets.php en modern-libraries.php) -->
     
     <!-- Offcanvas Menu Global JS -->
     <script src="public/assets/js/offcanvas-menu.js"></script>
@@ -1566,5 +1564,8 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
             window.addEventListener('scroll', positionFixedSidebar);
         });
     </script>
+    
+    <!-- Chatbot Widget -->
+    <?php include 'includes/chatbot-widget.php'; ?>
 </body>
 </html>

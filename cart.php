@@ -135,40 +135,38 @@ try {
     <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- Css Styles -->
+    <!-- ========================================
+         ARQUITECTURA CSS UNIFICADA - ORDEN CRÍTICO
+         ======================================== -->
+    
+    <!-- 1. CORE: Base del sistema -->
     <link rel="stylesheet" href="public/assets/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/font-awesome.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/elegant-icons.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/jquery-ui.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/core/variables.css" type="text/css">
+    
+    <!-- 2. COMPONENTS: Header y Modales completos -->
+    <link rel="stylesheet" href="public/assets/css/components/header.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/components/modals.css" type="text/css">
+    
+    <!-- 3. LAYOUTS: Shop layout (incluye product cards) -->
+    <link rel="stylesheet" href="public/assets/css/layouts/shop.css" type="text/css">
+    
+    <!-- 4. THEMES: Dark mode y animaciones -->
+    <link rel="stylesheet" href="public/assets/css/themes/dark-mode.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/themes/animations.css" type="text/css">
+    
+    <!-- 5. LEGACY: Estilos originales (temporal) -->
     <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
     
-
-    <?php include 'includes/modern-libraries.php'; ?>
-    
-    <!-- User Account Modal Styles -->
-    <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
-    
-    <!-- Favorites Modal Styles -->
-    <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
-    
-    <!-- Dark Mode Styles -->
-    <link rel="stylesheet" href="public/assets/css/dark-mode.css" type="text/css">
-    
-    <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
+    <!-- 6. SPECIFIC: Estilos específicos de página -->
+    <link rel="stylesheet" href="public/assets/css/offcanvas-mobile.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/cart-improvements.css?v=<?= time() ?>" type="text/css">
     <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
     
-    <!-- Modern Styles -->
-    <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="public/assets/css/notifications-modal.css">
-    
-    <!-- Header Fix - DEBE IR AL FINAL -->
-    <link rel="stylesheet" href="public/assets/css/shop/shop-header-fix.css?v=<?= time() ?>">
-    
-    <!-- Product Cards Modern CSS -->
-    <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0">
-    
-    <!-- Global Responsive Styles - TODO EL PROYECTO -->
+    <?php include 'includes/modern-libraries.php'; ?>
     
     <style>
         /* ============================================
@@ -936,12 +934,14 @@ try {
         }
         
         .btn-proceed-checkout i {
-            font-size: 20px;
+            font-size: 14px; /* ICONO MÁS PEQUEÑO */
+            color: #ffffff; /* BLANCO */
             transition: transform 0.3s ease;
         }
         
         .btn-proceed-checkout:hover i {
             transform: translateX(5px);
+            color: #ffffff; /* MANTENER BLANCO al hover */
         }
 
         /* Sección de Confianza y Seguridad */
@@ -1895,7 +1895,7 @@ try {
         }
         
         /* ============================================
-           ESTILOS PARA CHECKBOXES DE SELECCIÓN
+           ESTILOS PARA CHECKBOXES DE SELECCIÓN - NEGRO
            ============================================ */
         /* Ocultar checkbox nativo */
         .item-checkbox,
@@ -1906,7 +1906,7 @@ try {
             -moz-appearance: none;
             width: 22px;
             height: 22px;
-            border: 2.5px solid #333;
+            border: 2.5px solid #000000; /* NEGRO */
             border-radius: 50%; /* ⭕ CIRCULAR */
             cursor: pointer;
             position: relative;
@@ -1931,35 +1931,36 @@ try {
             }
         }
         
-        /* Checkbox cuando está marcado */
+        /* Checkbox cuando está marcado - NEGRO */
         .item-checkbox:checked,
         .item-checkbox-mobile:checked,
         #select-all-items:checked {
-            background: #667eea; /* Color más moderno */
-            border-color: #667eea;
+            background: #000000; /* NEGRO */
+            border-color: #000000; /* NEGRO */
         }
         
-        /* Check blanco dentro del cuadrado */
+        /* Check blanco dentro del círculo */
         .item-checkbox:checked::after,
         .item-checkbox-mobile:checked::after,
         #select-all-items:checked::after {
-            content: '✓';
+            content: '\f00c'; /* Font Awesome check icon */
+            font-family: 'FontAwesome';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: white;
-            font-size: 13px;
-            font-weight: bold;
+            color: white; /* Check blanco */
+            font-size: 12px;
+            font-weight: 900;
         }
         
-        /* Hover effect */
+        /* Hover effect - NEGRO */
         .item-checkbox:hover,
         .item-checkbox-mobile:hover,
         #select-all-items:hover {
-            border-color: #667eea;
+            border-color: #333333; /* Gris oscuro al hover */
             transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
         
         /* Dark mode para checkboxes */
@@ -1987,7 +1988,7 @@ try {
     </style>
 </head>
 
-<body>
+<body class="cart-page">
     <?php include 'includes/offcanvas-menu.php'; ?>
 
     <!-- Header Section Begin -->
@@ -2512,8 +2513,7 @@ try {
     <script src="public/assets/js/user-account-modal.js"></script>
     <script src="public/assets/js/cart-favorites-handler.js"></script>
     
-    <!-- Dark Mode Script -->
-    <script src="public/assets/js/dark-mode.js"></script>
+    <!-- ❌ REMOVIDO: Dark Mode Script (ya se carga desde dark-mode-assets.php en modern-libraries.php) -->
     
     <!-- Offcanvas Menu Global JS -->
     <script src="public/assets/js/offcanvas-menu.js"></script>
@@ -2544,7 +2544,10 @@ try {
                 item.find('.item-checkbox-mobile') : 
                 item.find('.item-checkbox');
             
-
+            // ✅ SOLO CONTAR SI ESTÁ SELECCIONADO
+            if (!checkbox.is(':checked')) {
+                return; // Skip este item
+            }
             
             productosSeleccionados++;
             

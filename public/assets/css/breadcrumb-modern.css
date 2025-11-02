@@ -1,52 +1,200 @@
 /**
- * BREADCRUMB MODERN - Estilos modernos del breadcrumb
+ * BREADCRUMB MODERN - Diseño moderno y elegante
+ * Aplicable globalmente en todas las páginas
+ * @version 2.2
+ * @date 2025-11-02
  */
 
+/* ========================================
+   CONTENEDOR PRINCIPAL
+   ======================================== */
 .breadcrumb-option {
-    padding: 20px 0;
-    background: #f8f9fa;
+    padding: 30px 0 !important;
+    margin-top: 80px !important;
+    background: #f8f5f2 !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-body.dark-mode .breadcrumb-option {
-    background: var(--dark-bg-secondary);
-}
-
+/* ========================================
+   ENLACES DEL BREADCRUMB
+   ======================================== */
 .breadcrumb__links {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
 }
 
 .breadcrumb__links a,
 .breadcrumb__links span {
     font-size: 14px;
-    color: #6c757d;
+    font-weight: 500;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+/* Enlaces normales */
+.breadcrumb__links a {
+    color: #6c757d;
+    background: transparent;
 }
 
 .breadcrumb__links a:hover {
     color: #667eea;
+    background: rgba(102, 126, 234, 0.08);
+    transform: translateY(-1px);
 }
 
-.breadcrumb__links a i {
-    margin-right: 5px;
+/* Icono home */
+.breadcrumb__links a i.fa-home {
+    font-size: 15px;
+    margin-right: 4px;
+    transition: transform 0.3s ease;
 }
 
+.breadcrumb__links a:hover i.fa-home {
+    transform: scale(1.1);
+}
+
+/* Separadores entre items */
+.breadcrumb__links a::after {
+    content: '›';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #dee2e6;
+    font-size: 16px;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+/* Último enlace (no mostrar separador) */
+.breadcrumb__links a:last-of-type::after {
+    display: none;
+}
+
+/* Item activo (página actual) */
 .breadcrumb__links span {
     color: #2c3e50;
     font-weight: 600;
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.12) 0%, 
+        rgba(118, 75, 162, 0.08) 100%
+    );
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+body.dark-mode .breadcrumb-option {
+    background: linear-gradient(135deg, #1a1d2e 0%, #2d3250 100%);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .breadcrumb-option::before {
+    background: linear-gradient(90deg, 
+        #ff1744 0%, 
+        #d81b60 50%, 
+        #ff1744 100%
+    );
 }
 
 body.dark-mode .breadcrumb__links a {
-    color: #999;
+    color: #b0b3c1;
 }
 
 body.dark-mode .breadcrumb__links a:hover {
     color: #ff1744;
+    background: rgba(255, 23, 68, 0.1);
+}
+
+body.dark-mode .breadcrumb__links a::after {
+    color: #3d4364;
 }
 
 body.dark-mode .breadcrumb__links span {
-    color: var(--dark-text-primary);
+    color: #e0e0e0;
+    background: linear-gradient(135deg, 
+        rgba(255, 23, 68, 0.15) 0%, 
+        rgba(216, 27, 96, 0.1) 100%
+    );
+    box-shadow: 0 2px 8px rgba(255, 23, 68, 0.2);
 }
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 991px) {
+    .breadcrumb-option {
+        margin-top: 70px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .breadcrumb-option {
+        padding: 20px 0 !important;
+        margin-top: 60px !important;
+    }
+    
+    .breadcrumb__links {
+        gap: 4px !important;
+        font-size: 13px !important;
+    }
+    
+    .breadcrumb__links a,
+    .breadcrumb__links span {
+        font-size: 12px !important;
+        padding: 4px 8px !important;
+    }
+    
+    .breadcrumb__links a::after {
+        font-size: 14px !important;
+        right: -6px !important;
+    }
+    
+    /* Ocultar algunos items intermedios en móvil muy pequeño */
+    @media (max-width: 480px) {
+        .breadcrumb__links a:not(:first-child):not(:last-of-type) {
+            display: none;
+        }
+        
+        /* Mostrar "..." entre inicio y página actual */
+        .breadcrumb__links a:first-child::after {
+            content: '...' !important;
+            right: -12px !important;
+            font-size: 12px !important;
+        }
+    }
+}
+
+/* ========================================
+   ANIMACIÓN DE ENTRADA
+   ======================================== */
+@keyframes breadcrumbSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.breadcrumb__links a,
+.breadcrumb__links span {
+    animation: breadcrumbSlideIn 0.4s ease-out backwards;
+}
+
+.breadcrumb__links a:nth-child(1) { animation-delay: 0.05s; }
+.breadcrumb__links a:nth-child(2) { animation-delay: 0.1s; }
+.breadcrumb__links a:nth-child(3) { animation-delay: 0.15s; }
+.breadcrumb__links a:nth-child(4) { animation-delay: 0.2s; }
+.breadcrumb__links span { animation-delay: 0.25s; }

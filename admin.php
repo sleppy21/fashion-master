@@ -19,33 +19,14 @@ if (!isset($conn)) {
 
 // Verificar si el usuario está logueado y es administrador
 if (!isset($_SESSION['user_id'])) {
-    echo '<script>
-        Swal.fire({
-            icon: "error",
-            title: "Sesión no iniciada",
-            text: "No hay sesión iniciada. Redirigiendo al login...",
-            timer: 2000,
-            showConfirmButton: false,
-            timerProgressBar: true
-        }).then(() => {
-            window.location.href="login.php";
-        });
-    </script>';
+    // Redirección simple sin SweetAlert (no está cargado aún)
+    header('Location: login.php');
     exit;
 }
 
 if ($_SESSION['rol'] !== 'admin') {
-    echo '<script>
-        Swal.fire({
-            icon: "error",
-            title: "Acceso denegado",
-            text: "No tienes permisos de administrador. Rol actual: ' . ($_SESSION['rol'] ?? 'No definido') . '",
-            confirmButtonText: "Volver al inicio",
-            confirmButtonColor: "#3085d6"
-        }).then(() => {
-            window.location.href="index.php";
-        });
-    </script>';
+    // Redirección simple sin SweetAlert (no está cargado aún)
+    header('Location: index.php');
     exit;
 }
 
@@ -165,12 +146,13 @@ try {
     <!-- Configuración global de rutas -->
     <script src="public/assets/js/config.js"></script>
     
+    <!-- ⭐ Sistema de sincronización de vistas (Grid/Tabla) -->
+    <script src="public/assets/js/view-sync-system.js"></script>
+    
     <!-- ⚠️ SCRIPTS CARGADOS ESPECÍFICAMENTE POR CADA MÓDULO (NO AQUÍ) -->
     <!-- smooth-table-update.js se carga SOLO en admin_productos.php -->
     <!-- smooth-table-update-categories.js se carga SOLO en admin_categorias.php -->
-    
-    <!-- Sistema de modales de productos -->
-    <script src="public/assets/js/product-modals.js"></script>
+    <!-- product-modals.js - Funcionalidad integrada directamente en admin.php -->
     
     <!-- Sistema de notificaciones toast -->
     <script src="public/assets/js/cart-favorites-handler.js"></script>
@@ -1942,6 +1924,7 @@ try {
                 }
             } catch (e) {
             }
+        }); // ← CIERRE de DOMContentLoaded
             
 
         // También limpiar cuando se recarga la página
@@ -3037,5 +3020,7 @@ try {
 
     </script>
 
+    <!-- Chatbot Widget - DESHABILITADO EN ADMIN -->
+    <?php // include 'includes/chatbot-widget.php'; // No mostrar chatbot en panel de administración ?>
 </body>
 </html>

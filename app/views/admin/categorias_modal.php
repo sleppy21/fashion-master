@@ -927,10 +927,10 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
       
       console.log('🔍 Verificando actualización en tiempo real...');
       console.log('   - targetWindow:', targetWindow !== window ? 'parent' : 'self');
-      console.log('   - smoothTableUpdater existe:', !!targetWindow.smoothTableUpdater);
+      console.log('   - categoriasTableUpdater existe:', !!targetWindow.categoriasTableUpdater);
       console.log('   - updatedCategory:', updatedCategory);
       
-      if (targetWindow.smoothTableUpdater && updatedCategory) {
+      if (targetWindow.categoriasTableUpdater && updatedCategory) {
         // 🆕 DETECTAR SI ES CREAR O EDITAR
         const isCreate = !document.getElementById('categoryForm')?.querySelector('input[name="id_categoria"]')?.value;
         
@@ -940,7 +940,7 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         if (isCreate) {
           // ⭐ CREAR nueva categoría EN TABLA
           console.log('➕ Agregando nueva categoría con smooth-table-update:', updatedCategory);
-          return targetWindow.smoothTableUpdater.addNewProduct(updatedCategory)
+          return targetWindow.categoriasTableUpdater.addNewProduct(updatedCategory)
             .then(() => {
               console.log('✅ Categoría agregada exitosamente en tiempo real');
             })
@@ -951,12 +951,12 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
         } else {
           // ⭐ ACTUALIZAR categoría existente EN TIEMPO REAL
           console.log('✏️ Actualizando categoría existente con smooth-table-update...');
-          console.log('   - Código anterior vs nuevo:', updatedCategory.codigo_categoria);
+          console.log('   - ID categoría:', updatedCategory.id_categoria);
+          console.log('   - Datos completos:', updatedCategory);
           
-          return targetWindow.smoothTableUpdater.updateSingleProduct(updatedCategory.id_categoria, updatedCategory)
+          return targetWindow.categoriasTableUpdater.updateSingleProduct(updatedCategory.id_categoria, updatedCategory)
             .then(() => {
               console.log('✅ Categoría actualizada exitosamente en tiempo real');
-              console.log('   - Código actualizado a:', updatedCategory.codigo_categoria);
             })
             .catch(err => {
               console.error('❌ Error al actualizar categoría:', err);
@@ -965,8 +965,8 @@ $iconClass = $isView ? 'eye' : ($isEdit ? 'edit' : 'plus');
             });
         }
       } else {
-        console.warn('⚠️ smoothTableUpdater no disponible o sin categoría, usando recarga completa');
-        if (!targetWindow.smoothTableUpdater) console.warn('   - smoothTableUpdater no existe');
+        console.warn('⚠️ categoriasTableUpdater no disponible o sin categoría, usando recarga completa');
+        if (!targetWindow.categoriasTableUpdater) console.warn('   - categoriasTableUpdater no existe');
         if (!updatedCategory) console.warn('   - updatedCategory es null/undefined');
         fallbackReload(targetWindow);
       }

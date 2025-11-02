@@ -1,6 +1,6 @@
 <!-- BUSCADOR GLOBAL - DROPDOWN -->
 <div id="global-search-modal" class="global-search-modal">
-    <div class="search-dropdown-content">
+    <div class="global-search-modal-content">
         <!-- Input de búsqueda -->
         <div class="search-input-wrapper">
             <i class="fa fa-search search-icon"></i>

@@ -87,23 +87,42 @@
         setTimeout(() => cleanModalInlineStyles(), 100);
     });
 
-    // Event listener para el botón de toggle (verificar que existe)
+    // Event listener para el botón de toggle (MÚLTIPLES ESTRATEGIAS)
     const initToggleButton = () => {
+        console.log('[Dark Mode] Intentando inicializar botón...');
         const toggleBtn = document.getElementById('dark-mode-toggle');
+        
         if (toggleBtn) {
-            toggleBtn.addEventListener('click', function(e) {
+            console.log('[Dark Mode] ✅ Botón encontrado');
+            
+            // Remover listeners previos (evitar duplicados)
+            const newBtn = toggleBtn.cloneNode(true);
+            toggleBtn.parentNode.replaceChild(newBtn, toggleBtn);
+            
+            // Añadir listener al nuevo botón
+            newBtn.addEventListener('click', function(e) {
+                console.log('[Dark Mode] 🖱️ Click detectado');
                 e.preventDefault();
+                e.stopPropagation();
                 toggleDarkMode();
             });
+            
+            console.log('[Dark Mode] ✅ Listener añadido correctamente');
+        } else {
+            console.warn('[Dark Mode] ⚠️ Botón no encontrado todavía');
         }
     };
     
-    // Inicializar botón cuando el DOM esté listo
+    // ESTRATEGIA 1: DOMContentLoaded
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initToggleButton);
     } else {
+        // ESTRATEGIA 2: DOM ya está listo
         initToggleButton();
     }
+    
+    // ESTRATEGIA 3: Reintentar después de 500ms (para AJAX/lazy loading)
+    setTimeout(initToggleButton, 500);
 
     // También limpiar cuando se abren los modales
     document.addEventListener('click', function(e) {

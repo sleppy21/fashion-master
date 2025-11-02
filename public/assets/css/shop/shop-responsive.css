@@ -1,0 +1,770 @@
+/* ==========================================
+   SHOP RESPONSIVE - FILTROS MÓVILES 
+   JERARQUÍA DE Z-INDEX (Sistema de gestión de offcanvas):
+   - Modales (notificaciones/favoritos): 99999999999999 - Máxima prioridad
+   - Offcanvas hamburguesa: 9999999 (overlay) / 99999999 (wrapper)
+   - Filtros móviles: 9999999 (overlay) / 99999999 (wrapper) - MISMO nivel que offcanvas
+   - Botón filtros: 9999999999
+   - Elementos normales: < 100000
+   
+   NOTA: Solo un offcanvas puede estar abierto a la vez (OffcanvasManager)
+         Los modales pueden abrirse sobre offcanvas abiertos
+   ========================================== */
+
+    /* Botón limpiar filtros al fondo solo en móvil */
+    .btn-clear-bottom {
+        display: none;
+    }
+
+    @media (max-width: 991px) {
+        /* BOTÓN LIMPIAR - DENTRO DEL SCROLL DEL OFFCANVAS */
+        .btn-clear-bottom {
+            display: flex !important;
+            position: static !important;
+            width: 48px !important;
+            height: 48px !important;
+            margin: 20px auto 20px auto !important;
+            padding: 0 !important;
+            border-radius: 50% !important;
+            justify-content: center !important;
+            align-items: center !important;
+            background: rgba(108, 117, 125, 0.9) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            z-index: 10 !important;
+            font-size: 18px !important;
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            cursor: pointer !important;
+            /* BLOQUEAR TODO */
+            transition: none !important;
+            animation: none !important;
+            overflow: visible !important;
+            gap: 0 !important;
+            transform: translateY(-100px);
+        }
+        
+        /* BLOQUEAR PSEUDO-ELEMENTOS */
+        .btn-clear-bottom::before,
+        .btn-clear-bottom::after {
+            content: none !important;
+            display: none !important;
+        }
+        
+        .btn-clear-bottom i {
+            font-size: 18px !important;
+            color: white !important;
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
+        }
+        
+        /* SIN CAMBIOS EN HOVER */
+        .btn-clear-bottom:hover {
+            background: rgba(108, 117, 125, 0.9) !important;
+            transform: translateX(-50%) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            transition: none !important;
+            animation: none !important;
+        }
+        
+        .btn-clear-bottom:hover::before {
+            content: none !important;
+            display: none !important;
+        }
+        
+        .btn-clear-bottom:hover i {
+            transform: none !important;
+            animation: none !important;
+            color: white !important;
+        }
+        
+        /* SIN CAMBIOS EN ACTIVE */
+        .btn-clear-bottom:active {
+            background: rgba(108, 117, 125, 0.9) !important;
+            transform: translateX(-50%) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            transition: none !important;
+            animation: none !important;
+        }
+        
+        .btn-clear-bottom:active i {
+            transform: none !important;
+            color: white !important;
+        }
+        
+        /* BLOQUEAR has-filters */
+        .btn-clear-bottom.has-filters {
+            animation: none !important;
+            background: rgba(108, 117, 125, 0.9) !important;
+        }
+        
+        /* SIN CAMBIOS EN FOCUS */
+        .btn-clear-bottom:focus {
+            outline: none !important;
+            background: rgba(108, 117, 125, 0.9) !important;
+            transform: translateX(-50%) !important;
+        }
+        
+        .mobile-filters-header .btn-clear {
+            display: none !important;
+        }
+    }
+/**
+ * SHOP - ESTILOS RESPONSIVE Y MÓVIL
+ * Todos los estilos responsive unificados
+ * @version 3.0 - Unificado
+ * @date 2025-11-02
+ */
+
+/* ========================================
+   MÓVIL - GRID 2 COLUMNAS
+   Solo para móviles (max-width: 767px)
+   ======================================== */
+@media only screen and (max-width: 767px) {
+    
+    /* Layout principal */
+    .shop-modern {
+        padding: 15px 0;
+    }
+    
+    .shop-modern .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    /* Topbar compacto */
+    .shop-topbar.modern-topbar {
+        padding: 15px;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .shop-title {
+        font-size: 22px;
+    }
+    
+    .results-count {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+    
+    .search-input {
+        padding: 10px 40px 10px 16px;
+        font-size: 13px;
+    }
+    
+    /* Sidebar oculto en móvil */
+    aside.col-lg-3.col-md-4.col-12 {
+        display: none !important;
+    }
+    
+    /* Productos ocupan todo el ancho */
+    .col-lg-9.col-md-8.col-12 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+    
+    /* ✅ TODOS LOS ESTILOS DE TARJETAS MOVIDOS A product-cards-modern.css
+       Este archivo solo maneja filtros móviles y offcanvas */
+    
+    /* Empty state móvil */
+    .no-products-found {
+        padding: 60px 20px;
+        min-height: 400px;
+    }
+    
+    .empty-state-icon {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .empty-state-title {
+        font-size: 24px;
+    }
+}
+
+/* ========================================
+   SIDEBAR MÓVIL - OFFCANVAS
+   Solo visible en móvil/tablet (< 992px)
+   ======================================== */
+@media (max-width: 991px) {
+    
+    /* Botón flotante para abrir filtros */
+    .btn-mobile-filters {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none !important;
+        outline: none !important;
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        cursor: pointer;
+        z-index: 9999999999 !important; /* Alto z-index pero menor que el offcanvas */
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Ocultar botón cuando el chat está abierto */
+    body.fs-chat-open .btn-mobile-filters {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        transform: scale(0.8) !important;
+    }
+    
+    .btn-mobile-filters:hover,
+    .btn-mobile-filters:active,
+    .btn-mobile-filters:focus {
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+        border: none !important;
+        outline: none !important;
+    }
+    
+    .btn-mobile-filters i {
+        font-size: 20px;
+        line-height: 1;
+    }
+    
+    /* Contador de filtros activos */
+    .btn-mobile-filters .filter-count {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: #dc3545;
+        color: white;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-mobile-filters .filter-count:empty,
+    .btn-mobile-filters .filter-count[data-count="0"] {
+        display: none;
+    }
+    
+    /* Overlay oscuro */
+    .filters-menu-overlay {
+        position: fixed;
+        top: 60px; /* Debajo del header */
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 60px); /* Altura total menos el header */
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 999999999 !important; /* 🔴 MAYOR que wrapper para recibir clicks */
+        backdrop-filter: blur(2px);
+        pointer-events: none;
+    }
+    
+    .filters-menu-overlay.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto !important;
+        cursor: pointer;
+    }
+    
+    /* Wrapper del sidebar - Panel deslizante (mismo ancho que offcanvas-menu) */
+    .filters-menu-wrapper {
+        position: fixed;
+        top: 60px; /* Debajo del header móvil (60px) */
+        left: 0;
+        width: 280px; /* ✅ Mismo ancho que offcanvas hamburguesa */
+        max-width: 85vw;
+        height: calc(100vh - 60px); /* Altura total menos el header */
+        background: white;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 99999999 !important; /* 🔴 MENOR que overlay pero visible porque está a la izquierda */
+        overflow-y: auto; /* Scroll vertical */
+        overflow-x: hidden; /* Sin scroll horizontal */
+        box-shadow: 8px 0 16px -8px rgba(0, 0, 0, 0.15); /* ✅ Misma sombra que offcanvas */
+        -webkit-overflow-scrolling: touch;
+        
+        /* 🔴 CRÍTICO: Evitar que el contenido bloquee el overlay */
+        pointer-events: auto !important;
+    }
+    
+    /* Asegurar que el contenido interno NO se desborde */
+    .filters-menu-wrapper * {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Indicador de swipe - Mismo estilo que el offcanvas hamburguesa */
+    .filters-menu-wrapper .swipe-indicator {
+        position: absolute;
+        top: 40%; /* ✅ Mismo que offcanvas-menu (más arriba del centro) */
+        right: 8px; /* ✅ 8px desde el borde derecho */
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.7;
+        pointer-events: none;
+        z-index: 10;
+        padding: 10px;
+    }
+    
+    .filters-menu-wrapper .swipe-indicator div {
+        width: 4px !important;
+        height: 40px !important;
+        background: rgba(0,0,0,0.2) !important;
+        border-radius: 2px !important;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    }
+    
+    .filters-menu-wrapper.active {
+        transform: translateX(0);
+    }
+    
+    /* Header del sidebar móvil - Fijo en la parte superior */
+    .mobile-filters-header {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 100;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .mobile-filters-header h2 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .mobile-filters-header h2 i {
+        color: #667eea;
+        font-size: 18px;
+    }
+    
+    /* Botón limpiar - Solo ícono sin fondo */
+    .mobile-filters-header .btn-clear-icon {
+        background: none;
+        border: none !important;
+        outline: none !important;
+        padding: 8px;
+        cursor: pointer;
+        color: #6c757d;
+        font-size: 18px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .mobile-filters-header .btn-clear-icon:hover,
+    .mobile-filters-header .btn-clear-icon:focus {
+        color: #dc3545;
+        transform: scale(1.1);
+        border: none !important;
+        outline: none !important;
+    }
+    
+    .mobile-filters-header .btn-clear-icon:active {
+        transform: scale(0.95);
+        border: none !important;
+        outline: none !important;
+    }
+    
+    .mobile-filters-header .btn-clear-icon i {
+        pointer-events: none;
+    }
+    
+    .mobile-filters-header .btn-clear {
+        padding: 6px 12px;
+        font-size: 13px;
+        border-radius: 8px;
+        border: none !important;
+        outline: none !important;
+        background: #f8f9fa;
+        color: #6c757d;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .mobile-filters-header .btn-clear:hover,
+    .mobile-filters-header .btn-clear:focus {
+        background: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        border: none !important;
+        outline: none !important;
+    }
+    
+    .mobile-filters-header .btn-clear:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(220, 53, 69, 0.2);
+        border: none !important;
+        outline: none !important;
+
+        color: white;
+    }
+    
+    .mobile-filters-header .btn-clear i {
+        font-size: 14px;
+    }
+    
+    /* Contenido de filtros móvil */
+    #mobile-filters-content {
+        padding: 20px;
+        padding-bottom: 80px; /* Espacio para el botón de limpiar */
+    }
+    
+    /* Filtros más compactos - 2 columnas */
+    #mobile-filters-content .filter-buttons {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    #mobile-filters-content .filter-chip {
+        padding: 8px 12px;
+        font-size: 13px;
+        justify-content: center;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    #mobile-filters-content .filter-chip img.brand-logo {
+        width: 16px;
+        height: 16px;
+    }
+    
+    #mobile-filters-content .filter-chip i {
+        font-size: 14px;
+    }
+    
+    #mobile-filters-content .filter-chip span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    /* Filtro de género - 2 columnas (2 arriba, 1 abajo) */
+    #mobile-filters-content .filter-section:has(.filter-chip [class*="fa-mars"]) .filter-buttons,
+    #mobile-filters-content .filter-section:has(.filter-chip [class*="fa-venus"]) .filter-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Secciones de filtros más compactas */
+    #mobile-filters-content .filter-section {
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    #mobile-filters-content .filter-section:last-child {
+        border-bottom: none;
+    }
+    
+    #mobile-filters-content .filter-title {
+        font-size: 15px;
+        margin-bottom: 12px;
+        font-weight: 700;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    #mobile-filters-content .filter-title i {
+        font-size: 16px;
+        color: #667eea;
+    }
+    .filters__close {
+        position: absolute;
+        top: 15px; /* Ajustado para el nuevo header */
+        right: 15px;
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+        z-index: 101; /* Por encima del mobile-filters-header */
+        transition: all 0.3s ease;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .filters__close:hover {
+        background: rgba(220, 53, 69, 0.1);
+        transform: rotate(90deg);
+    }
+    
+    .filters__close::before,
+    .filters__close::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 2px;
+        background: #495057;
+        transition: background 0.3s ease;
+    }
+    
+    .filters__close::before {
+        transform: translate(-50%, -50%) rotate(45deg);
+    }
+    
+    .filters__close::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+    }
+    
+    .filters__close:hover::before,
+    .filters__close:hover::after {
+        background: #dc3545;
+    }
+    
+    /* Ajustes del header del sidebar móvil */
+    .filters-menu-wrapper .sidebar-header {
+        padding-top: 40px;
+        margin-bottom: 20px;
+    }
+    
+    .filters-menu-wrapper .sidebar-header h2 {
+        font-size: 22px;
+    }
+    
+    /* Ocultar scrollbar en el sidebar móvil */
+    .filters-menu-wrapper {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+    
+    .filters-menu-wrapper::-webkit-scrollbar {
+        display: none;  /* Chrome, Safari and Opera */
+    }
+    
+    /* Prevenir scroll del body cuando el sidebar está abierto */
+    body.filters-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+    
+    /* Dark mode para sidebar móvil */
+    body.dark-mode .btn-mobile-filters {
+        background: linear-gradient(135deg, #ff1744 0%, #d81b60 100%);
+        box-shadow: 0 4px 20px rgba(255, 23, 68, 0.4);
+        border: none !important;
+        outline: none !important;
+    }
+    
+    body.dark-mode .btn-mobile-filters:hover,
+    body.dark-mode .btn-mobile-filters:active,
+    body.dark-mode .btn-mobile-filters:focus {
+        box-shadow: 0 6px 25px rgba(255, 23, 68, 0.5);
+        border: none !important;
+        outline: none !important;
+    }
+    
+    body.dark-mode .filters-menu-wrapper {
+        background: #2a2a2e;
+    }
+    
+    body.dark-mode .filters-menu-wrapper .modern-sidebar {
+        background: #2a2a2e;
+    }
+    
+    body.dark-mode .filters-menu-wrapper .sidebar-header {
+        background: #2a2a2e;
+        border-bottom-color: #404040;
+    }
+    
+    body.dark-mode .filters__close::before,
+    body.dark-mode .filters__close::after {
+        background: #e0e0e0;
+    }
+    
+    body.dark-mode .filters__close:hover {
+        background: rgba(255, 23, 68, 0.1);
+    }
+    
+    body.dark-mode .filters__close:hover::before,
+    body.dark-mode .filters__close:hover::after {
+        background: #ff1744;
+    }
+    
+    /* Dark mode para sidebar móvil de filtros (nuevo sistema) */
+    [data-theme="dark"] .filters-menu-wrapper {
+        background: #1a1d2e;
+        border-left: 1px solid #2d3250;
+    }
+    
+    [data-theme="dark"] .mobile-filters-header {
+        background: #1a1d2e;
+        border-bottom: 1px solid #2d3250;
+    }
+    
+    [data-theme="dark"] .mobile-filters-header h2 {
+        color: #e0e0e0;
+    }
+    
+    [data-theme="dark"] .mobile-filters-header .btn-clear-icon {
+        color: #b0b3c1;
+        border: none !important;
+        outline: none !important;
+    }
+    
+    [data-theme="dark"] .mobile-filters-header .btn-clear-icon:hover,
+    [data-theme="dark"] .mobile-filters-header .btn-clear-icon:focus {
+        color: #ff1744;
+        border: none !important;
+        outline: none !important;
+    }
+    
+    [data-theme="dark"] .mobile-filters-header .btn-clear {
+        background: rgba(255, 255, 255, 0.05);
+        color: #b0b3c1;
+        border: none !important;
+        outline: none !important;
+    }
+    
+    [data-theme="dark"] .mobile-filters-header .btn-clear:hover,
+    [data-theme="dark"] .mobile-filters-header .btn-clear:focus {
+        background: #dc3545;
+        color: white;
+        border: none !important;
+        outline: none !important;
+    }
+    
+    [data-theme="dark"] .mobile-filters-header .btn-clear:active {
+        border: none !important;
+        outline: none !important;
+    }
+    
+    [data-theme="dark"] #mobile-filters-content .filter-title {
+        color: #e0e0e0;
+    }
+    
+    [data-theme="dark"] #mobile-filters-content .filter-section {
+        border-bottom-color: #2d3250;
+    }
+    
+    [data-theme="dark"] #mobile-filters-content .filter-chip {
+        background: #2d3250;
+        color: #b0b3c1;
+        border-color: #3d4364;
+    }
+    
+    [data-theme="dark"] #mobile-filters-content .filter-chip:hover {
+        background: #3d4364;
+        border-color: #667eea;
+    }
+    
+    [data-theme="dark"] #mobile-filters-content .filter-chip.active {
+        background: #667eea;
+        color: #fff;
+        border-color: #667eea;
+    }
+    
+    [data-theme="dark"] .filters__close::before,
+    [data-theme="dark"] .filters__close::after {
+        background: #e0e0e0;
+    }
+    
+    [data-theme="dark"] .filters__close:hover {
+        background: rgba(220, 53, 69, 0.1);
+    }
+    
+    [data-theme="dark"] .filters__close:hover::before,
+    [data-theme="dark"] .filters__close:hover::after {
+        background: #dc3545;
+    }
+}
+
+/* Móviles pequeños - Ajustes internos (mantener 280px de ancho) */
+@media (max-width: 480px) {
+    /* ✅ NO sobrescribir width - mantener 280px */
+    
+    .filters-menu-wrapper .modern-sidebar {
+        padding: 70px 16px 24px 16px;
+    }
+    
+    .filters-menu-wrapper .sidebar-header {
+        padding: 16px;
+        margin: -70px -16px 16px -16px;
+    }
+    
+    .filters-menu-wrapper .sidebar-header h2 {
+        font-size: 18px;
+    }
+    
+    .filters-menu-wrapper .filter-chip {
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+    
+    .filters-menu-wrapper .filter-title {
+        font-size: 14px;
+    }
+}
+
+/* ==========================================
+   PREVENIR INTERACCIONES CUANDO OFFCANVAS ESTÁ ACTIVO
+   ========================================== */
+body.offcanvas-active {
+    overflow: hidden !important;
+}
+
+/* Solo bloquear el contenido principal de shop, NO el header */
+body.offcanvas-active .shop-modern,
+body.offcanvas-active .breadcrumb,
+body.offcanvas-active .products-grid-modern {
+    pointer-events: none !important;
+}
+
+/* Permitir interacciones en los offcanvas activos */
+body.offcanvas-active .offcanvas-menu-wrapper.active,
+body.offcanvas-active .filters-menu-wrapper.active,
+body.offcanvas-active .offcanvas-menu-overlay.active,
+body.offcanvas-active .filters-menu-overlay.active {
+    pointer-events: auto !important;
+}

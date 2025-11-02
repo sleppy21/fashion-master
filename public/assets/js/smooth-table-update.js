@@ -1117,6 +1117,16 @@ class SmoothTableUpdater {
         });
     }
 
+    /**
+     * 🧹 Limpiar todo el caché
+     */
+    clearCache() {
+        console.log('🧹 Limpiando caché completo...');
+        this.cache.clear();
+        this.dataCache.clear();
+        console.log('✅ Caché limpiado');
+    }
+
     destroy() {
         this.clearCache();
         if (this.rafId) {

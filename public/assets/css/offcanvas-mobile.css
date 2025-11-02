@@ -7,25 +7,29 @@
 @media only screen and (max-width: 767px) {
     
     /* ==========================================
-       OVERLAY
+       OVERLAY - CRÍTICO: Debe cubrir TODA la pantalla EXCEPTO el header
        ========================================== */
     .offcanvas-menu-overlay {
         position: fixed;
         left: 0;
-        top: 0;
+        top: 60px; /* ✅ Debajo del header (60px de alto) */
         width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(4px);
-        z-index: 9998;
+        height: calc(100vh - 60px); /* ✅ Altura total menos el header */
+        background: transparent; /* ✅ Completamente transparente */
+        z-index: 9999999 !important;
         opacity: 0;
         visibility: hidden;
-        transition: all 0.3s ease;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        pointer-events: none;
+        display: none;
     }
     
     .offcanvas-menu-overlay.active {
         opacity: 1;
         visibility: visible;
+        pointer-events: auto !important;
+        display: block !important;
+        cursor: pointer;
     }
     
     /* ==========================================
@@ -34,16 +38,16 @@
     .offcanvas-menu-wrapper {
         position: fixed;
         left: -280px;
-        top: 0;
+        top: 60px; /* Debajo del header */
         width: 280px;
-        height: 100%;
+        height: calc(100vh - 60px); /* Altura total menos el header */
         background: #ffffff;
         padding: 20px;
-        z-index: 9999;
+        z-index: 99999999 !important; /* ✅ Por encima del overlay */
         overflow-y: auto;
         overflow-x: hidden;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 8px 0 16px -8px rgba(0, 0, 0, 0.15); /* ✅ Solo derecha, sin sombra arriba */
     }
     
     .offcanvas-menu-wrapper.active {
@@ -72,31 +76,20 @@
        BOTÓN CERRAR
        ========================================== */
     .offcanvas__close {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0, 0, 0, 0.05);
-        border-radius: 8px;
-        font-size: 24px;
-        color: #111111;
-        cursor: pointer;
-        transform: rotate(45deg);
-        transition: all 0.2s ease;
+        display: none !important; /* ✅ Oculto - se cierra con swipe derecha */
+    }
+    
+    /* ==========================================
+       INDICADOR DE SWIPE (Vertical - swipe izquierda)
+       ========================================== */
+    .offcanvas-swipe-handle {
+        position: absolute; /* ✅ Relativo al wrapper */
+        top: 40%; /* ✅ Más arriba del centro */
+        right: 8px; /* ✅ 8px desde el borde derecho del wrapper */
+        transform: translateY(-50%); /* ✅ Centrar en la nueva posición */
         z-index: 10;
-    }
-    
-    .offcanvas__close:hover {
-        background: rgba(0, 0, 0, 0.1);
-        transform: rotate(45deg) scale(1.1);
-    }
-    
-    .offcanvas__close:active {
-        transform: rotate(45deg) scale(0.95);
+        padding: 10px;
+        pointer-events: none;
     }
     
     /* ==========================================
@@ -122,11 +115,10 @@
        PERFIL DE USUARIO COMPACTO
        ========================================== */
     .offcanvas__user-compact {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border-radius: 12px;
         padding: 16px;
         margin-bottom: 20px;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        background-color: #4d4d4d07;
     }
     
     .user-compact-content {
@@ -191,7 +183,7 @@
     
     .user-greeting {
         font-size: 11px;
-        color: rgba(255, 255, 255, 0.8);
+        color: rgba(0, 0, 0, 0.8);
         text-transform: uppercase;
         letter-spacing: 0.5px;
         font-weight: 500;
@@ -199,7 +191,7 @@
     
     .user-name {
         font-size: 16px;
-        color: #ffffff;
+        color: #000000c2;
         font-weight: 600;
         white-space: nowrap;
         overflow: hidden;
@@ -251,6 +243,21 @@
     .offcanvas__nav > ul > li > a:active {
         background: rgba(0, 0, 0, 0.08);
         transform: scale(0.98);
+    }
+    
+    /* Estilo especial para el enlace del chatbot */
+    #open-chatbot-mobile {
+        background: linear-gradient(135deg, rgba(201, 166, 124, 0.1) 0%, rgba(212, 184, 150, 0.1) 100%);
+        border: 1px solid rgba(201, 166, 124, 0.3);
+    }
+    
+    #open-chatbot-mobile i {
+        color: #c9a67c !important;
+    }
+    
+    #open-chatbot-mobile:hover {
+        background: linear-gradient(135deg, rgba(201, 166, 124, 0.2) 0%, rgba(212, 184, 150, 0.2) 100%);
+        border-color: rgba(201, 166, 124, 0.5);
     }
     
     /* ==========================================
@@ -447,6 +454,21 @@
     
     body.dark-mode .offcanvas__nav > ul > li > a:active {
         background: rgba(255, 255, 255, 0.08);
+    }
+    
+    /* Estilo especial para chatbot en dark mode */
+    body.dark-mode #open-chatbot-mobile {
+        background: linear-gradient(135deg, rgba(201, 166, 124, 0.15) 0%, rgba(212, 184, 150, 0.15) 100%);
+        border-color: rgba(201, 166, 124, 0.4);
+    }
+    
+    body.dark-mode #open-chatbot-mobile i {
+        color: #d4b896 !important;
+    }
+    
+    body.dark-mode #open-chatbot-mobile:hover {
+        background: linear-gradient(135deg, rgba(201, 166, 124, 0.25) 0%, rgba(212, 184, 150, 0.25) 100%);
+        border-color: rgba(201, 166, 124, 0.6);
     }
     
     body.dark-mode .offcanvas-submenu li a {
