@@ -187,7 +187,8 @@
                     debug: true
                 }
             },
-            // Imágenes de productos
+            // Imágenes de productos - DESHABILITADO
+            /*
             {
                 selector: '.product-image',
                 config: {
@@ -200,6 +201,7 @@
                     debug: false
                 }
             },
+            */
             // Imágenes en product details
             {
                 selector: '.product__details__pic__slider img, .product__big__img',

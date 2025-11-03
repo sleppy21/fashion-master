@@ -58,6 +58,7 @@
     object-fit: cover; /* Cubre todo el espacio */
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     display: block;
+    box-shadow: none !important; /* Eliminar cualquier sombra aplicada dinámicamente */
 }
 
 .product-card-modern:hover .product-image {
@@ -202,9 +203,9 @@
     padding: 10px 12px 12px; /* Reducido de 16px 18px 18px */
     display: flex;
     flex-direction: column;
-    gap: 2px; /* Reducido de 4px a 2px */
+    gap: 0; /* Sin gap entre elementos */
     flex: 0 0 auto; /* No expandir - tamaño natural del contenido */
-    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(248,249,250,0.3) 100%);
+    box-shadow: none !important; /* Eliminar cualquier sombra aplicada dinámicamente */
 }
 
 .product-category {
@@ -213,7 +214,7 @@
     color: #8b95a5;
     text-transform: uppercase;
     letter-spacing: 1.2px;
-    margin-bottom: 0;
+    margin-bottom: 4px;
     display: inline-block;
     transition: color 0.2s ease;
 }
@@ -232,6 +233,7 @@
     overflow: visible; /* Visible - no truncar */
     transition: color 0.3s ease;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin-bottom: 4px; /* Espacio pequeño antes del rating */
 }
 
 .product-name a {
@@ -250,7 +252,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    margin: 2px 0 2px 0; /* Reducido margen inferior de 4px a 2px */
+    margin: 0; /* Sin margen para eliminar espacios innecesarios */
 }
 
 .stars {

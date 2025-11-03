@@ -162,1825 +162,13 @@ try {
     
     <!-- Breadcrumb Modern - Global (Debe cargarse DESPUÉS para tener prioridad) -->
     <link rel="stylesheet" href="public/assets/css/breadcrumb-modern.css?v=2.1">
+
+    <!-- Estilos específicos del carrito -->
+    <link rel="stylesheet" href="public/assets/css/cart/cart.css?v=<?= time() ?>" type="text/css">
     
-    <style>
-        /* ============================================
-           FONDO DEL BODY
-           ============================================ */
-        body {
-            background-color: #f8f5f2 !important;
-        }
-        
-        /* Dark mode */
-        body.dark-mode {
-            background-color: #1a1a1a !important;
-        }
-        
-        /* ============================================
-           ESTILOS ESPECÍFICOS DEL CARRITO
-           Los estilos del header responsive están en: header-responsive.css
-           ============================================ */
-        
-        /* ============================================
-           ESTILOS DE TABLA DE CARRITO - DESKTOP
-           ============================================ */
-        
-        /* Ocultar tabla por defecto en móvil */
-        .shop__cart__table {
-            display: none;
-        }
-        
-        /* Mostrar solo en desktop */
-        @media (min-width: 992px) {
-            .shop__cart__table {
-                display: block;
-                background: white;
-                margin-bottom: 40px;
-                width: 100%;
-                border-radius: 16px;
-                padding: 20px;
-                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-                overflow: visible !important;
-            }
-        }
-        
-        .shop__cart__table table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 12px;
-            min-width: auto !important;
-            table-layout: fixed;
-        }
-        
-        .shop__cart__table thead th {
-            padding: 12px 6px;
-            background: #f8f9fa;
-            color: #666;
-            font-weight: 600;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            border: none;
-        }
-        
-        .shop__cart__table thead th:first-child {
-            border-radius: 8px 0 0 8px;
-            padding-left: 12px;
-            width: 40px;
-            text-align: center;
-        }
-        
-        .shop__cart__table thead th:nth-child(2) {
-            width: 32%;
-        }
-        
-        .shop__cart__table thead th:nth-child(3) {
-            width: 16%;
-        }
-        
-        .shop__cart__table thead th:nth-child(4) {
-            width: 20%;
-        }
-        
-        .shop__cart__table thead th:nth-child(5) {
-            width: 16%;
-        }
-        
-        .shop__cart__table thead th:last-child {
-            border-radius: 0 8px 8px 0;
-            padding-right: 12px;
-            width: 7%;
-        }
-        
-        .shop__cart__table tbody tr {
-            background: white;
-            transition: all 0.3s ease;
-        }
-        
-        .shop__cart__table tbody tr:hover {
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .shop__cart__table tbody td {
-            padding: 12px 6px;
-            vertical-align: middle;
-            background: white;
-            border-top: 1px solid #f1f1f1;
-            border-bottom: 1px solid #f1f1f1;
-            overflow: hidden;
-        }
-        
-        .shop__cart__table tbody td:first-child {
-            border-left: 1px solid #f1f1f1;
-            border-radius: 10px 0 0 10px;
-            padding-left: 12px;
-        }
-        
-        .shop__cart__table tbody td:last-child {
-            border-right: 1px solid #f1f1f1;
-            border-radius: 0 10px 10px 0;
-            padding-right: 12px;
-        }
-        
-        .cart__product__item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            max-width: 100%;
-            overflow: hidden;
-        }
-        
-        .cart__product__item img {
-            width: 55px;
-            height: 55px;
-            object-fit: cover;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-        
-        .cart__product__item__title {
-            flex: 1;
-            min-width: 0;
-            overflow: hidden;
-        }
-        
-        .cart__product__item__title h6 {
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 3px;
-            color: #333;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            word-break: break-word;
-            line-height: 1.3;
-        }
-        
-        .cart__price,
-        .cart__total {
-            font-size: 12px;
-            font-weight: 700;
-            color: #333;
-        }
-        
-        /* Ajustes para que todo quepa bien en desktop */
-        @media (min-width: 992px) {
-            .shop__cart__table {
-                padding: 20px;
-                overflow: visible !important;
-            }
-            
-            .shop__cart__table table {
-                min-width: auto !important;
-                table-layout: fixed;
-            }
-            
-            .shop__cart__table thead th {
-                font-size: 10px;
-                padding: 12px 8px;
-            }
-            
-            .shop__cart__table tbody td {
-                padding: 14px 8px;
-            }
-            
-            .cart__product__item img {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .cart__product__item__title h6 {
-                font-size: 13px;
-            }
-            
-            .cart__price,
-            .cart__total {
-                font-size: 13px;
-            }
-        }
-        
-        /* Pantallas más grandes - más espacio */
-        @media (min-width: 1200px) {
-            .shop__cart__table {
-                padding: 25px;
-            }
-            
-            .shop__cart__table thead th {
-                padding: 14px 10px;
-                font-size: 11px;
-            }
-            
-            .shop__cart__table tbody td {
-                padding: 16px 10px;
-            }
-            
-            .cart__product__item {
-                gap: 10px;
-            }
-            
-            .cart__product__item img {
-                width: 65px;
-                height: 65px;
-            }
-            
-            .cart__product__item__title h6 {
-                font-size: 14px;
-            }
-            
-            .cart__price,
-            .cart__total {
-                font-size: 14px;
-            }
-        }
-        
-        /* Pantallas extra grandes */
-        @media (min-width: 1400px) {
-            .shop__cart__table {
-                padding: 30px;
-            }
-            
-            .shop__cart__table thead th {
-                padding: 15px 12px;
-                font-size: 12px;
-            }
-            
-            .shop__cart__table tbody td {
-                padding: 18px 12px;
-            }
-            
-            .cart__product__item {
-                gap: 12px;
-            }
-            
-            .cart__product__item img {
-                width: 70px;
-                height: 70px;
-            }
-            
-            .cart__product__item__title h6 {
-                font-size: 15px;
-            }
-            
-            .cart__price,
-            .cart__total {
-                font-size: 15px;
-            }
-        }
-        
-        /* ============================================
-           FOOTER STICKY MÓVIL
-           ============================================ */
-        
-        /* Ocultar por defecto en desktop */
-        .mobile-cart-footer {
-            display: none;
-        }
+    <!-- Estilos de tarjetas de productos (productos relacionados) -->
+    <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0" type="text/css">
 
-        /* Solo visible en móvil */
-        @media (max-width: 991px) {
-            .mobile-cart-footer {
-                display: block;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: white;
-                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-                z-index: 999;
-                border-top: 1px solid #e0e0e0;
-                backdrop-filter: blur(10px);
-                background: rgba(255, 255, 255, 0.98);
-            }
-
-            .mobile-cart-footer__content {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 12px 20px;
-                gap: 15px;
-                max-width: 1200px;
-                margin: 0 auto;
-            }
-
-            .mobile-cart-footer__total {
-                flex: 1;
-                min-width: 0;
-            }
-
-            .mobile-cart-footer__label {
-                font-size: 11px;
-                color: #666;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                margin-bottom: 2px;
-                font-weight: 500;
-            }
-
-            .mobile-cart-footer__amount {
-                font-size: 22px;
-                font-weight: 800;
-                color: #111;
-                line-height: 1.2;
-            }
-
-            .mobile-cart-footer__savings {
-                font-size: 11px;
-                color: #28a745;
-                font-weight: 600;
-                margin-top: 2px;
-            }
-
-            .mobile-cart-footer__action {
-                flex-shrink: 0;
-            }
-
-            .mobile-checkout-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                padding: 14px 28px;
-                background: linear-gradient(135deg, #ca1515 0%, #a01010 100%);
-                color: white;
-                border-radius: 50px;
-                font-weight: 700;
-                font-size: 15px;
-                text-decoration: none;
-                box-shadow: 0 4px 15px rgba(202, 21, 21, 0.3);
-                transition: all 0.3s ease;
-                white-space: nowrap;
-                border: none;
-            }
-
-            .mobile-checkout-btn:hover {
-                background: linear-gradient(135deg, #a01010 0%, #800c0c 100%);
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(202, 21, 21, 0.4);
-                color: white;
-                text-decoration: none;
-            }
-
-            .mobile-checkout-btn i {
-                font-size: 14px;
-                transition: transform 0.3s ease;
-            }
-
-            .mobile-checkout-btn:hover i {
-                transform: translateX(3px);
-            }
-
-            /* Agregar padding al body para compensar el footer sticky */
-            body {
-                padding-bottom: 80px;
-            }
-
-            /* Ocultar el sidebar de resumen en móvil ya que tenemos el footer */
-            .cart-summary-sidebar {
-                display: none !important;
-            }
-        }
-
-        /* Móviles pequeños - ajustes */
-        @media (max-width: 576px) {
-            .mobile-cart-footer__content {
-                padding: 10px 15px;
-                gap: 12px;
-            }
-
-            .mobile-cart-footer__label {
-                font-size: 10px;
-            }
-
-            .mobile-cart-footer__amount {
-                font-size: 20px;
-            }
-
-            .mobile-cart-footer__savings {
-                font-size: 10px;
-            }
-
-            .mobile-checkout-btn {
-                padding: 12px 22px;
-                font-size: 14px;
-                gap: 8px;
-            }
-
-            .mobile-checkout-btn span {
-                display: none;
-            }
-
-            .mobile-checkout-btn::after {
-                content: 'Pagar';
-            }
-
-            body {
-                padding-bottom: 70px;
-            }
-        }
-
-        /* Pantallas muy pequeñas */
-        @media (max-width: 400px) {
-            .mobile-cart-footer__content {
-                padding: 8px 12px;
-                gap: 10px;
-            }
-
-            .mobile-cart-footer__amount {
-                font-size: 18px;
-            }
-
-            .mobile-checkout-btn {
-                padding: 10px 18px;
-                font-size: 13px;
-            }
-        }
-
-        /* ============================================
-           ESTILOS DEL CARRITO
-           ============================================ */
-
-        .cart-empty {
-            text-align: center;
-            padding: 100px 20px;
-        }
-        .cart-empty i {
-            font-size: 100px;
-            color: #ddd;
-            margin-bottom: 30px;
-        }
-        .cart-empty h3 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        .cart-empty p {
-            font-size: 16px;
-            color: #999;
-            margin-bottom: 30px;
-        }
-        .btn-continue-shopping {
-            display: inline-block;
-            padding: 15px 40px;
-            background: #ca1515;
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        .btn-continue-shopping:hover {
-            background: #a01010;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(202, 21, 21, 0.3);
-            color: white;
-        }
-
-        /* ========================================
-           SIDEBAR DEL CARRITO - ESTILO MODERNO
-           ======================================== */
-        .cart-summary-sidebar {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 0;
-            position: sticky;
-            top: 90px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
-        }
-        
-        .cart-summary-sidebar:hover {
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
-            transform: translateY(-2px);
-        }
-
-        /* Sección Código de Descuento */
-        .discount-section {
-            padding: 30px;
-            border-bottom: 1px solid #f0f0f0;
-            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
-        }
-        
-        .discount-section h6 {
-            font-size: 15px;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: 0.3px;
-        }
-        
-        .discount-section h6 i {
-            color: #667eea;
-            font-size: 16px;
-        }
-        
-        .discount-form {
-            margin: 0;
-        }
-        
-        .input-group {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .discount-input {
-            flex: 1;
-            padding: 14px 18px;
-            border: 2px solid #e8e8e8;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #ffffff;
-            color: #2c3e50;
-            font-weight: 500;
-        }
-        
-        .discount-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-            background: #ffffff;
-        }
-        
-        .discount-input::placeholder {
-            color: #95a5a6;
-            font-weight: 400;
-        }
-        
-        .btn-apply-discount {
-            padding: 14px 28px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #ffffff;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            white-space: nowrap;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .btn-apply-discount:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-apply-discount:active {
-            transform: translateY(0);
-        }
-
-        #coupon-message {
-            padding: 10px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            z-index: 9999;
-            min-width: 300px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            animation: slideInRight 0.3s ease-out;
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        /* Animaciones para toast de notificaciones */
-        @keyframes slideInUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        @keyframes progressBar {
-            from {
-                transform: scaleX(1);
-            }
-            to {
-                transform: scaleX(0);
-            }
-        }
-        
-        #coupon-message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        #coupon-message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        /* Sección Totales */
-        .cart-totals-section {
-            padding: 30px;
-            border-bottom: 1px solid #f0f0f0;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
-        }
-        
-        .cart-totals-section h5 {
-            font-size: 17px;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e8e8e8;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .cart-totals-section h5 i {
-            color: #667eea;
-            font-size: 18px;
-        }
-        
-        .totals-list {
-            margin-bottom: 25px;
-        }
-        
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 16px 0;
-            font-size: 15px;
-            color: #34495e;
-            border-bottom: 1px solid #f0f0f0;
-            transition: all 0.2s ease;
-        }
-        
-        .total-row:last-child {
-            border-bottom: none;
-        }
-        
-        .total-row.discount-row {
-            padding: 14px 18px;
-            margin: 10px -18px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            color: #155724;
-            display: none;
-            font-weight: 600;
-        }
-        
-        .total-row.discount-row.active {
-            display: flex;
-        }
-        
-        .total-row.total-final {
-            font-size: 20px;
-            font-weight: 700;
-            color: #2c3e50;
-            padding-top: 20px;
-            margin-top: 15px;
-            border-top: 3px solid #667eea;
-            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
-            padding: 20px 15px 15px 15px;
-            margin: 15px -15px 0 -15px;
-            border-radius: 10px;
-        }
-        
-        .total-row .amount {
-            font-weight: 700;
-            color: #2c3e50;
-        }
-        
-        .total-row.total-final .amount {
-            font-size: 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .btn-proceed-checkout {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            width: 100%;
-            padding: 18px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #ffffff;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 16px;
-            text-transform: uppercase;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.35);
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-proceed-checkout::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-        
-        .btn-proceed-checkout:hover::before {
-            left: 100%;
-        }
-        
-        .btn-proceed-checkout:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.45);
-            color: #ffffff;
-        }
-        
-        .btn-proceed-checkout:active {
-            transform: translateY(-1px);
-        }
-        
-        .btn-proceed-checkout i {
-            font-size: 14px; /* ICONO MÁS PEQUEÑO */
-            color: #ffffff; /* BLANCO */
-            transition: transform 0.3s ease;
-        }
-        
-        .btn-proceed-checkout:hover i {
-            transform: translateX(5px);
-            color: #ffffff; /* MANTENER BLANCO al hover */
-        }
-
-        /* Sección de Confianza y Seguridad */
-        .trust-section {
-            padding: 30px;
-            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-        }
-        
-        .trust-badge {
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            margin-bottom: 15px;
-            padding: 16px 18px;
-            background: #ffffff;
-            border-radius: 12px;
-            border: 2px solid #e8f5e9;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        }
-        
-        .trust-badge:hover {
-            transform: translateX(8px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
-            border-color: #c8e6c9;
-        }
-        
-        .trust-badge:last-child {
-            margin-bottom: 0;
-        }
-        
-        .trust-badge:last-of-type {
-            margin-bottom: 0;
-        }
-        
-        .trust-badge i {
-            font-size: 26px;
-            color: #4caf50;
-            min-width: 26px;
-            margin-top: 2px;
-            transition: all 0.3s ease;
-        }
-        
-        .trust-badge:hover i {
-            color: #667eea;
-            transform: scale(1.15);
-        }
-        
-        .trust-text {
-            flex: 1;
-        }
-        
-        .trust-text strong {
-            display: block;
-            font-size: 14px;
-            color: #2c3e50;
-            font-weight: 700;
-            margin-bottom: 4px;
-            letter-spacing: 0.3px;
-        }
-        
-        .trust-text p {
-            margin: 0;
-            font-size: 12px;
-            color: #7f8c8d;
-            line-height: 1.5;
-        }
-
-        .secure-payments {
-            margin-top: 25px;
-            padding-top: 25px;
-            border-top: 2px solid #e8e8e8;
-        }
-        
-        .payment-icons {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .payment-icons img {
-            transition: all 0.3s ease;
-            filter: grayscale(0%);
-        }
-        
-        .payment-icons img:hover {
-            transform: scale(1.15);
-            filter: brightness(1.1);
-        }
-        
-        .payment-icons i {
-            transition: all 0.3s ease;
-            opacity: 0.9;
-        }
-        
-        .payment-icons i:hover {
-            transform: scale(1.1);
-            opacity: 1;
-        }
-        
-        /* Dark mode para iconos de pago */
-        body.dark-mode .payment-icons i.fa-cc-visa {
-            color: #5b7fff !important;
-        }
-        
-        body.dark-mode .payment-icons i.fa-cc-mastercard {
-            color: #ff5757 !important;
-        }
-        
-        body.dark-mode .payment-icons i.fa-cc-amex {
-            color: #4da6ff !important;
-        }
-        
-        body.dark-mode .payment-icons i.fa-credit-card {
-            color: #999 !important;
-        }
-
-        /* ========================================
-           MODO OSCURO - SIDEBAR CARRITO
-           ======================================== */
-        
-        /* Sidebar principal */
-        body.dark-mode .cart-summary-sidebar {
-            background: #2a2a2e;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-        
-        /* Sección de descuento */
-        body.dark-mode .discount-section {
-            background: linear-gradient(135deg, #35353a 0%, #2a2a2e 100%);
-            border-bottom-color: #404040;
-        }
-        
-        body.dark-mode .discount-section h6 {
-            color: #e0e0e0;
-        }
-        
-        body.dark-mode .discount-section h6 i {
-            color: #c9a67c;
-        }
-        
-        /* Input de descuento */
-        body.dark-mode .discount-input {
-            background: #35353a;
-            border-color: #404040;
-            color: #e0e0e0;
-        }
-        
-        body.dark-mode .discount-input:focus {
-            border-color: #c9a67c;
-            background: #404040;
-            box-shadow: 0 0 0 4px rgba(201, 166, 124, 0.15);
-        }
-        
-        body.dark-mode .discount-input::placeholder {
-            color: #6c757d;
-        }
-        
-        /* Botón aplicar descuento */
-        body.dark-mode .btn-apply-discount {
-            background: #c9a67c !important;
-            box-shadow: 0 4px 15px rgba(201, 166, 124, 0.4);
-        }
-        
-        body.dark-mode .btn-apply-discount:hover {
-            box-shadow: 0 6px 20px #c9a67c !important;
-            background-color: #c9a67c !important;
-        }
-        
-        /* Sección de totales */
-        body.dark-mode .cart-totals-section {
-            background: linear-gradient(135deg, #2a2a2e 0%, #35353a 100%);
-            border-bottom-color: #404040;
-        }
-        
-        body.dark-mode .cart-totals-section h5 {
-            color: #e0e0e0;
-            border-bottom-color: #404040;
-        }
-        
-        body.dark-mode .cart-totals-section h5 i {
-            color: #c9a67c;
-        }
-        
-        /* Filas de totales */
-        body.dark-mode .total-row {
-            color: #b0b0b0;
-            border-bottom-color: #404040;
-        }
-        
-        body.dark-mode .total-row .amount {
-            color: #e0e0e0;
-        }
-        
-        /* Fila de descuento */
-        body.dark-mode .total-row.discount-row {
-            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-            color: #a5d6a7;
-        }
-        
-        /* Total final */
-        body.dark-mode .total-row.total-final {
-            background: linear-gradient(135deg, #35353a 0%, #2a2a2e 100%);
-            border-top-color: #c9a67c;
-            color: #e0e0e0;
-        }
-        
-        body.dark-mode .total-row.total-final .amount {
-            background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        /* Botón proceder al pago */
-        body.dark-mode .btn-proceed-checkout {
-            background: linear-gradient(135deg, #c9a67c 0%, #b8956b 100%);
-            box-shadow: 0 8px 25px rgba(201, 166, 124, 0.4);
-        }
-        
-        body.dark-mode .btn-proceed-checkout:hover {
-            box-shadow: 0 12px 35px rgba(201, 166, 124, 0.5);
-        }
-        
-        /* Sección de confianza */
-        body.dark-mode .trust-section {
-            background: linear-gradient(135deg, #35353a 0%, #2a2a2e 100%);
-        }
-        
-        body.dark-mode .trust-badge {
-            background: #35353a;
-            border-color: #2e7d32;
-        }
-        
-        body.dark-mode .trust-badge:hover {
-            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.2);
-            border-color: #c9a67c;
-        }
-        
-        body.dark-mode .trust-badge i {
-            color: #66bb6a;
-        }
-        
-        body.dark-mode .trust-badge:hover i {
-            color: #c9a67c;
-        }
-        
-        body.dark-mode .trust-text strong {
-            color: #e0e0e0;
-        }
-        
-        body.dark-mode .trust-text p {
-            color: #9e9e9e;
-        }
-        
-        /* Pagos seguros */
-        body.dark-mode .secure-payments {
-            border-top-color: #404040;
-        }
-        
-        /* Mensaje de cupón */
-        body.dark-mode #coupon-message.success {
-            background: #1b5e20;
-            color: #a5d6a7;
-            border-color: #2e7d32;
-        }
-        
-        body.dark-mode #coupon-message.error {
-            background: #b71c1c;
-            color: #ef9a9a;
-            border-color: #c62828;
-        }
-
-        /* Vista móvil - oculta por defecto */
-        .cart-mobile-view {
-            display: none;
-        }
-
-        /* Estilos base para mejor responsividad */
-        .container {
-            padding-left: 15px;
-            padding-right: 15px;
-        }
-
-        .shop-cart.spad {
-            padding: 60px 0;
-        }
-        
-        /* Desktop - espaciado optimizado */
-        @media (min-width: 992px) {
-            .shop-cart.spad {
-                padding-top: 30px;
-                padding-bottom: 60px;
-            }
-            
-            /* REMOVIDO - ya está definido arriba con más espaciado */
-            
-            /* Reducir espacio entre breadcrumb y productos */
-            .shop__cart__table {
-                margin-top: 0;
-                margin-bottom: 30px;
-            }
-            
-            .cart-summary-sidebar {
-                margin-top: 0;
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 991px) {
-            .cart-summary-sidebar {
-                position: relative;
-                top: 0;
-                margin-top: 30px;
-            }
-            
-            .trust-section {
-                padding: 20px;
-            }
-            
-            .trust-badge {
-                padding: 10px;
-            }
-        }
-
-        /* Responsive para tablets */
-        @media (max-width: 768px) {
-            /* Ocultar tabla en tablets también */
-            .shop__cart__table {
-                display: none !important;
-            }
-
-            .shop__cart__table table {
-                display: none;
-            }
-            
-            /* Mostrar vista de tarjetas móvil */
-            .cart-mobile-view {
-                display: block !important;
-            }
-
-            .shop__cart__table thead th {
-                font-size: 13px;
-                padding: 12px 10px;
-                background: #f8f8f8;
-                position: sticky;
-                top: 0;
-                z-index: 10;
-            }
-
-            .shop__cart__table tbody td {
-                padding: 15px 10px;
-                vertical-align: middle;
-            }
-
-            /* Reducir tamaño de imagen de producto */
-            .cart__product__item img {
-                width: 70px !important;
-                height: 70px !important;
-            }
-
-            .cart__product__item__title h6 {
-                font-size: 13px;
-            }
-
-            .cart__product__item__title p {
-                font-size: 11px;
-            }
-
-            .cart__product__item__title .rating i {
-                font-size: 11px;
-            }
-
-            /* Ajustar botones de cantidad */
-            .quantity-controls {
-                gap: 4px;
-            }
-
-            .qty-btn {
-                width: 28px;
-                height: 28px;
-                font-size: 14px;
-            }
-
-            .quantity-input {
-                width: 40px;
-                font-size: 13px;
-            }
-
-            /* Precios y totales más pequeños */
-            .cart__price {
-                font-size: 14px;
-            }
-
-            .cart__total {
-                font-size: 15px;
-                font-weight: 700;
-            }
-
-            /* Botón eliminar */
-            .remove-cart-item {
-                width: 28px;
-                height: 28px;
-                font-size: 13px;
-            }
-
-            /* Sidebar del carrito */
-            .discount-section,
-            .cart-totals-section {
-                padding: 20px;
-            }
-
-            .discount-section h6,
-            .cart-totals-section h5 {
-                font-size: 15px;
-            }
-
-            /* Botón proceder al pago */
-            .btn-proceed-checkout {
-                font-size: 14px;
-                padding: 14px 18px;
-            }
-
-            /* Trust badges */
-            .trust-badge {
-                margin-bottom: 12px;
-                padding: 10px;
-            }
-
-            .trust-badge i {
-                font-size: 20px;
-            }
-
-            .trust-text strong {
-                font-size: 13px;
-            }
-
-            .trust-text p {
-                font-size: 11px;
-            }
-
-            /* Iconos de pago */
-            .payment-icons img {
-                height: 22px;
-            }
-        }
-
-        /* Responsive para móviles */
-        @media (max-width: 576px) {
-            /* Ocultar tabla y mostrar vista de tarjetas */
-            .shop__cart__table {
-                display: none !important;
-            }
-            
-            .shop__cart__table table {
-                display: none;
-            }
-
-            /* Vista de tarjetas para móvil */
-            .cart-mobile-view {
-                display: block !important;
-            }
-
-            .cart-mobile-item {
-                background: white;
-                border: 1px solid #e0e0e0;
-                border-radius: 12px;
-                padding: 15px;
-                margin-bottom: 15px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            }
-
-            .cart-mobile-item__header {
-                display: flex;
-                gap: 10px;
-                margin-bottom: 12px;
-                padding-bottom: 12px;
-                border-bottom: 1px solid #f0f0f0;
-                position: relative;
-                align-items: center; /* Centra verticalmente */
-            }
-
-            .cart-mobile-item__checkbox {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-shrink: 0;
-            }
-
-            .cart-mobile-item__image {
-                flex-shrink: 0;
-            }
-
-            .cart-mobile-item__image img {
-                width: 80px;
-                height: 80px;
-                object-fit: cover;
-                border-radius: 8px;
-            }
-
-            .cart-mobile-item__info {
-                flex: 1;
-                min-width: 0;
-            }
-
-            .cart-mobile-item__title {
-                font-size: 14px;
-                font-weight: 600;
-                color: #333;
-                margin-bottom: 4px;
-                line-height: 1.3;
-            }
-
-            .cart-mobile-item__brand {
-                font-size: 12px;
-                color: #666;
-                margin-bottom: 6px;
-            }
-
-            .cart-mobile-item__price {
-                font-size: 16px;
-                font-weight: 700;
-                color: #111;
-            }
-
-            .cart-mobile-item__price-original {
-                font-size: 13px;
-                color: #999;
-                text-decoration: line-through;
-                margin-left: 6px;
-            }
-
-            .cart-mobile-item__discount-badge {
-                display: inline-block;
-                background: #ff4757;
-                color: white;
-                padding: 2px 6px;
-                border-radius: 4px;
-                font-size: 11px;
-                font-weight: 600;
-                margin-left: 6px;
-            }
-
-            .cart-mobile-item__body {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                gap: 12px;
-            }
-
-            .cart-mobile-item__quantity {
-                display: flex;
-                flex-direction: column;
-                gap: 4px;
-            }
-
-            .cart-mobile-item__quantity-label {
-                font-size: 10px;
-                color: #666;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-
-            .cart-mobile-item__total {
-                text-align: right;
-                flex-shrink: 0;
-            }
-
-            .cart-mobile-item__total-label {
-                font-size: 10px;
-                color: #666;
-                margin-bottom: 3px;
-                text-transform: uppercase;
-            }
-
-            .cart-mobile-item__total-amount {
-                font-size: 16px;
-                font-weight: 700;
-                color: #111;
-            }
-
-            .cart-mobile-item__remove {
-                position: absolute;
-                top: 0;
-                right: 0;
-            }
-
-            .cart-mobile-item__remove-btn {
-                background: transparent;
-                color: #999;
-                border: none;
-                padding: 0;
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                font-size: 16px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .cart-mobile-item__remove-btn:hover {
-                background: #f8f8f8;
-                color: #dc3545;
-                transform: scale(1.1);
-            }
-
-            /* Ajustes del sidebar en móvil */
-            .cart-summary-sidebar {
-                margin-top: 20px;
-                border-radius: 12px;
-            }
-
-            .discount-section {
-                padding: 18px;
-            }
-
-            .discount-section h6 {
-                font-size: 14px;
-                margin-bottom: 12px;
-            }
-
-            .input-group {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .discount-input {
-                width: 100%;
-                padding: 12px;
-                font-size: 14px;
-            }
-
-            .btn-apply-discount {
-                width: 100%;
-                padding: 12px;
-                font-size: 14px;
-            }
-
-            .cart-totals-section {
-                padding: 18px;
-            }
-
-            .cart-totals-section h5 {
-                font-size: 16px;
-                margin-bottom: 15px;
-            }
-
-            .total-row {
-                font-size: 14px;
-                padding: 12px 0;
-            }
-
-            .total-row.total-final {
-                font-size: 18px;
-                padding-top: 15px;
-                margin-top: 10px;
-            }
-
-            .total-row.total-final .amount {
-                font-size: 20px;
-            }
-
-            .btn-proceed-checkout {
-                font-size: 14px;
-                padding: 14px 16px;
-                border-radius: 30px;
-            }
-
-            .btn-proceed-checkout i {
-                font-size: 16px;
-            }
-
-            /* Trust section en móvil */
-            .trust-section {
-                padding: 18px;
-            }
-
-            .trust-badge {
-                flex-direction: row;
-                gap: 10px;
-                padding: 10px;
-                margin-bottom: 10px;
-            }
-
-            .trust-badge i {
-                font-size: 18px;
-                min-width: 20px;
-            }
-
-            .trust-text strong {
-                font-size: 12px;
-            }
-
-            .trust-text p {
-                font-size: 10px;
-            }
-
-            .secure-payments {
-                margin-top: 15px;
-                padding-top: 15px;
-            }
-
-            .payment-icons {
-                gap: 10px;
-            }
-
-            .payment-icons img {
-                height: 20px;
-            }
-
-            /* Notificación de cupón en móvil */
-            #coupon-message {
-                top: 60px;
-                right: 10px;
-                left: 10px;
-                min-width: auto;
-                font-size: 12px;
-                padding: 10px;
-            }
-
-            /* Botón continuar comprando - ya manejado en estilos principales */
-
-            /* Carrito vacío */
-            .cart-empty {
-                padding: 30px 20px;
-            }
-
-            .cart-empty i {
-                font-size: 60px;
-            }
-
-            .cart-empty h3 {
-                font-size: 20px;
-            }
-
-            .cart-empty p {
-                font-size: 13px;
-            }
-
-            .btn-continue-shopping {
-                padding: 12px 30px;
-                font-size: 14px;
-            }
-
-            /* Título de la sección */
-            .shop-cart h2,
-            .shop-cart h3 {
-                font-size: 20px;
-                margin-bottom: 20px;
-            }
-
-            /* Mejorar espaciado general */
-            .shop-cart.spad {
-                padding: 10px 0; /* Reducido aún más */
-                padding-bottom: 100px; /* Espacio extra para el footer sticky móvil */
-            }
-
-            .container {
-                padding-left: 15px;
-                padding-right: 15px;
-            }
-
-            /* Mejorar tabla en móvil cuando está visible */
-            .shop__cart__table {
-                margin-bottom: 20px;
-            }
-
-            /* Ajustar mensajes de alerta */
-            .alert {
-                font-size: 13px;
-                padding: 12px;
-                margin-bottom: 15px;
-            }
-        }
-
-        /* Ajustes extra pequeños */
-        @media (max-width: 400px) {
-            .cart-mobile-item {
-                padding: 12px;
-            }
-
-            .cart-mobile-item__image img {
-                width: 70px;
-                height: 70px;
-            }
-
-            .cart-mobile-item__title {
-                font-size: 13px;
-            }
-
-            .cart-mobile-item__price {
-                font-size: 15px;
-            }
-
-            .cart-mobile-item__total-amount {
-                font-size: 16px;
-            }
-
-            .quantity-controls {
-                gap: 3px;
-            }
-
-            .qty-btn {
-                width: 26px;
-                height: 26px;
-                font-size: 13px;
-            }
-
-            .quantity-input {
-                width: 35px;
-                font-size: 12px;
-            }
-
-            .payment-icons img {
-                height: 18px;
-            }
-
-            /* Botón continuar comprando - ya manejado en estilos principales */
-
-            /* Espaciado general */
-            .shop-cart.spad {
-                padding: 5px 0; /* Muy reducido */
-                padding-bottom: 100px;
-            }
-
-            .mb-4 {
-                margin-bottom: 20px !important;
-            }
-        }
-
-        /* Landscape en móviles */
-        @media (max-width: 767px) and (orientation: landscape) {
-            .cart-mobile-item {
-                padding: 12px;
-            }
-
-            .cart-summary-sidebar {
-                margin-top: 15px;
-            }
-
-            .trust-badge {
-                padding: 8px;
-                margin-bottom: 8px;
-            }
-
-            .secure-payments {
-                margin-top: 10px;
-                padding-top: 10px;
-            }
-        }
-
-        /* Mejoras para tabletas en modo portrait */
-        @media (min-width: 577px) and (max-width: 991px) {
-            .col-lg-9,
-            .col-lg-3 {
-                padding-left: 15px;
-                padding-right: 15px;
-            }
-
-            .shop__cart__table {
-                margin-bottom: 30px;
-            }
-
-            .cart-summary-sidebar {
-                margin-top: 30px;
-            }
-        }
-        
-        /* ============================================
-           ESTILOS PARA SELECT DE CANTIDAD
-           ============================================ */
-        .qty-select-cart {
-            width: 100px !important;
-            height: 40px !important;
-            padding: 0 32px 0 12px !important;
-            font-size: 14px !important;
-            font-weight: 600 !important;
-            color: #333 !important;
-            background: #ffffff !important;
-            border: 2px solid #e0e0e0 !important;
-            border-radius: 8px !important;
-            cursor: pointer !important;
-            outline: none !important;
-            appearance: none !important;
-            -webkit-appearance: none !important;
-            -moz-appearance: none !important;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
-            background-repeat: no-repeat !important;
-            background-position: right 12px center !important;
-            background-size: 10px !important;
-            transition: all 0.3s ease !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-        }
-        
-        .qty-select-cart:hover {
-            border-color: #667eea !important;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15) !important;
-            transform: translateY(-1px);
-        }
-        
-        .qty-select-cart:focus {
-            border-color: #667eea !important;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
-            outline: none !important;
-        }
-        
-        .qty-select-cart:disabled {
-            opacity: 0.6;
-            cursor: not-allowed !important;
-            background-color: #f5f5f5 !important;
-        }
-        
-        .qty-select-cart option {
-            background: #ffffff !important;
-            color: #333 !important;
-            padding: 8px !important;
-        }
-        
-        /* Dark mode para select */
-        body.dark-mode .qty-select-cart {
-            background-color: #2a2a2e !important;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
-            background-repeat: no-repeat !important;
-            background-position: right 12px center !important;
-            background-size: 10px !important;
-            color: #fff !important;
-            border-color: #404040 !important;
-        }
-        
-        body.dark-mode .qty-select-cart:hover {
-            border-color: #667eea !important;
-            background-color: #2a2a2e !important;
-        }
-        
-        body.dark-mode .qty-select-cart:focus {
-            border-color: #667eea !important;
-            background-color: #2a2a2e !important;
-        }
-        
-        body.dark-mode .qty-select-cart option {
-            background: #2a2a2e !important;
-            color: #fff !important;
-        }
-        
-        /* ============================================
-           ESTILOS PARA CHECKBOXES DE SELECCIÓN - NEGRO
-           ============================================ */
-        /* Ocultar checkbox nativo */
-        .item-checkbox,
-        .item-checkbox-mobile,
-        #select-all-items {
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            width: 22px;
-            height: 22px;
-            border: 2.5px solid #000000; /* NEGRO */
-            border-radius: 50%; /* ⭕ CIRCULAR */
-            cursor: pointer;
-            position: relative;
-            background: white;
-            transition: all 0.3s ease;
-            margin: 0;
-            flex-shrink: 0;
-        }
-        
-        /* MÓVIL: Checkbox más pequeño y circular */
-        @media (max-width: 991px) {
-            .item-checkbox-mobile {
-                width: 20px !important;
-                height: 20px !important;
-                border-width: 2px !important;
-                border-radius: 50% !important; /* CIRCULAR en móvil */
-                min-width: 20px;
-            }
-            
-            .item-checkbox-mobile:checked::after {
-                font-size: 12px !important;
-            }
-        }
-        
-        /* Checkbox cuando está marcado - NEGRO */
-        .item-checkbox:checked,
-        .item-checkbox-mobile:checked,
-        #select-all-items:checked {
-            background: #000000; /* NEGRO */
-            border-color: #000000; /* NEGRO */
-        }
-        
-        /* Check blanco dentro del círculo */
-        .item-checkbox:checked::after,
-        .item-checkbox-mobile:checked::after,
-        #select-all-items:checked::after {
-            content: '\f00c'; /* Font Awesome check icon */
-            font-family: 'FontAwesome';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white; /* Check blanco */
-            font-size: 12px;
-            font-weight: 900;
-        }
-        
-        /* Hover effect - NEGRO */
-        .item-checkbox:hover,
-        .item-checkbox-mobile:hover,
-        #select-all-items:hover {
-            border-color: #333333; /* Gris oscuro al hover */
-            transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Dark mode para checkboxes */
-        body.dark-mode .item-checkbox,
-        body.dark-mode .item-checkbox-mobile,
-        body.dark-mode #select-all-items {
-            border-color: #fff;
-            background: #2a2a2e;
-        }
-        
-        body.dark-mode .item-checkbox:checked,
-        body.dark-mode .item-checkbox-mobile:checked,
-        body.dark-mode #select-all-items:checked {
-            background: #fff;
-            border-color: #fff;
-        }
-        
-        body.dark-mode .item-checkbox:checked::after,
-        body.dark-mode .item-checkbox-mobile:checked::after,
-        body.dark-mode #select-all-items:checked::after {
-            color: #000;
-        }
-    
-    
-    </style>
 </head>
 
 <body class="cart-page">
@@ -1998,7 +186,7 @@ try {
             <?php if(!empty($cart_items)): ?>
             <div class="row">
                 <!-- Lista de Productos (Izquierda) -->
-                <div class="col-lg-8">
+                <div class="col-lg-9 col-md-8 col-12 ps-lg-4">
                     <div class="shop__cart__table">
                         <table>
                             <thead>
@@ -2054,18 +242,27 @@ try {
                                         <?php endif; ?>
                                     </td>
                                     <td class="cart__quantity">
-                                        <select class="qty-select-cart" 
-                                                data-id="<?php echo $item['id_carrito']; ?>" 
-                                                data-max="<?php echo $item['stock_actual_producto']; ?>">
-                                            <?php 
-                                            $max_qty = min(30, $item['stock_actual_producto']);
-                                            for($i = 1; $i <= $max_qty; $i++): 
-                                            ?>
-                                                <option value="<?php echo $i; ?>" <?php echo ($i == $item['cantidad_carrito']) ? 'selected' : ''; ?>>
-                                                    <?php echo $i; ?>
-                                                </option>
-                                            <?php endfor; ?>
-                                        </select>
+                                        <div class="qty-select-wrapper">
+                                            <button class="qty-display-btn" 
+                                                    type="button"
+                                                    data-id="<?php echo $item['id_carrito']; ?>" 
+                                                    data-max="<?php echo $item['stock_actual_producto']; ?>"
+                                                    data-current="<?php echo $item['cantidad_carrito']; ?>">
+                                                <span class="qty-value"><?php echo $item['cantidad_carrito']; ?></span>
+                                                <span class="arrow">▼</span>
+                                            </button>
+                                            <div class="qty-dropdown">
+                                                <?php 
+                                                $max_qty = min(30, $item['stock_actual_producto']);
+                                                for($i = 1; $i <= $max_qty; $i++): 
+                                                ?>
+                                                    <div class="qty-option <?php echo ($i == $item['cantidad_carrito']) ? 'selected' : ''; ?>" 
+                                                         data-value="<?php echo $i; ?>">
+                                                        <?php echo $i; ?>
+                                                    </div>
+                                                <?php endfor; ?>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td class="cart__total">$<?php echo number_format($subtotal, 2); ?></td>
                                     <td class="cart__close" style="text-align: center;">
@@ -2116,41 +313,44 @@ try {
                                     <div class="cart-mobile-item__brand">
                                         <?php echo htmlspecialchars($item['nombre_marca'] ?? 'Sin marca'); ?>
                                     </div>
-                                    <div class="cart-mobile-item__price">
-                                        $<?php echo number_format($precio_final, 2); ?>
-                                        <?php if($tiene_descuento): ?>
-                                            <span class="cart-mobile-item__price-original">$<?php echo number_format($precio_original, 2); ?></span>
-                                            <span class="cart-mobile-item__discount-badge">-<?php echo $item['descuento_porcentaje_producto']; ?>%</span>
-                                        <?php endif; ?>
+                                    <div class="cart-mobile-item__price-row">
+                                        <div class="cart-mobile-item__price">
+                                            $<?php echo number_format($precio_final, 2); ?>
+                                            <?php if($tiene_descuento): ?>
+                                                <span class="cart-mobile-item__price-original">$<?php echo number_format($precio_original, 2); ?></span>
+                                                <span class="cart-mobile-item__discount-badge">-<?php echo $item['descuento_porcentaje_producto']; ?>%</span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="cart-mobile-item__quantity">
+                                            <span class="cart-mobile-item__quantity-label">Cantidad:</span>
+                                            <div class="qty-select-wrapper">
+                                                <button class="qty-display-btn" 
+                                                        type="button"
+                                                        data-id="<?php echo $item['id_carrito']; ?>" 
+                                                        data-max="<?php echo $item['stock_actual_producto']; ?>"
+                                                        data-current="<?php echo $item['cantidad_carrito']; ?>">
+                                                    <span class="qty-value"><?php echo $item['cantidad_carrito']; ?></span>
+                                                    <span class="arrow">▼</span>
+                                                </button>
+                                                <div class="qty-dropdown">
+                                                    <?php 
+                                                    $max_qty = min(30, $item['stock_actual_producto']);
+                                                    for($i = 1; $i <= $max_qty; $i++): 
+                                                    ?>
+                                                        <div class="qty-option <?php echo ($i == $item['cantidad_carrito']) ? 'selected' : ''; ?>" 
+                                                             data-value="<?php echo $i; ?>">
+                                                            <?php echo $i; ?>
+                                                        </div>
+                                                    <?php endfor; ?>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="cart-mobile-item__remove">
                                     <button class="cart-mobile-item__remove-btn remove-cart-item" data-id="<?php echo $item['id_carrito']; ?>">
                                         <i class="fa fa-trash-o"></i>
                                     </button>
-                                </div>
-                            </div>
-                            <div class="cart-mobile-item__body">
-                                <div class="cart-mobile-item__quantity">
-                                    <span class="cart-mobile-item__quantity-label">Cantidad</span>
-                                    <select class="qty-select-cart" 
-                                            data-id="<?php echo $item['id_carrito']; ?>" 
-                                            data-max="<?php echo $item['stock_actual_producto']; ?>">
-                                        <?php 
-                                        $max_qty = min(30, $item['stock_actual_producto']);
-                                        for($i = 1; $i <= $max_qty; $i++): 
-                                        ?>
-                                            <option value="<?php echo $i; ?>" <?php echo ($i == $item['cantidad_carrito']) ? 'selected' : ''; ?>>
-                                                <?php echo $i; ?>
-                                            </option>
-                                        <?php endfor; ?>
-                                    </select>
-                                </div>
-                                <div class="cart-mobile-item__total">
-                                    <div class="cart-mobile-item__total-label">Total</div>
-                                    <div class="cart-mobile-item__total-amount cart__total">
-                                        $<?php echo number_format($subtotal, 2); ?>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -2242,35 +442,37 @@ try {
                     if(!empty($related_products)):
                     ?>
                     
-                    <div style="margin-top: 60px;">
+                    <div style="margin-top: 30px;">
                         <div class="section-title">
                             <h4>Productos que tal vez quieras agregar</h4>
                         </div>
                         
-                        <div class="row">
-                            <?php 
-                            // Obtener favoritos del usuario si está logueado
-                            $favoritos = [];
-                            $productos_en_carrito = [];
-                            
-                            if($usuario_logueado) {
-                                $fav_result = executeQuery("SELECT id_producto FROM favorito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
-                                if($fav_result) {
-                                    $favoritos = array_column($fav_result, 'id_producto');
+                        <div class="products-grid-modern">
+                            <div class="row">
+                                <?php 
+                                // Obtener favoritos del usuario si está logueado
+                                $favoritos = [];
+                                $productos_en_carrito = [];
+                                
+                                if($usuario_logueado) {
+                                    $fav_result = executeQuery("SELECT id_producto FROM favorito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
+                                    if($fav_result) {
+                                        $favoritos = array_column($fav_result, 'id_producto');
+                                    }
+                                    
+                                    $cart_result = executeQuery("SELECT id_producto FROM carrito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
+                                    if($cart_result) {
+                                        $productos_en_carrito = array_column($cart_result, 'id_producto');
+                                    }
                                 }
                                 
-                                $cart_result = executeQuery("SELECT id_producto FROM carrito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
-                                if($cart_result) {
-                                    $productos_en_carrito = array_column($cart_result, 'id_producto');
-                                }
-                            }
-                            
-                            foreach($related_products as $product): 
-                                $is_favorite = in_array($product['id_producto'], $favoritos);
-                                $in_cart = in_array($product['id_producto'], $productos_en_carrito);
-                                renderProductCard($product, $is_favorite, true, $in_cart);
-                            endforeach; 
-                            ?>
+                                foreach($related_products as $product): 
+                                    $is_favorite = in_array($product['id_producto'], $favoritos);
+                                    $in_cart = in_array($product['id_producto'], $productos_en_carrito);
+                                    renderProductCard($product, $is_favorite, true, $in_cart);
+                                endforeach; 
+                                ?>
+                            </div>
                         </div>
                     </div>
                     
@@ -2278,7 +480,7 @@ try {
                 </div>
 
                 <!-- Resumen del Carrito (Derecha) -->
-                <div class="col-lg-4">
+                <div class="col-lg-3 col-md-4 col-12">
                     <div class="cart-summary-sidebar">
                         
                         <!-- Código de descuento -->
@@ -2496,6 +698,9 @@ try {
     <script src="public/assets/js/jquery.slicknav.js"></script>
     <script src="public/assets/js/main.js"></script>
     
+    <!-- Masonry Layout para productos relacionados -->
+    <script src="public/assets/js/shop/masonry-layout.js?v=1.1"></script>
+    
     <!-- Header Handler - Actualización en tiempo real de contadores -->
     <script src="public/assets/js/header-handler.js?v=1.0"></script>
     
@@ -2554,7 +759,9 @@ try {
                 const priceOriginalText = item.find('.cart-mobile-item__price-original').text().trim().replace('$', '').replace(/,/g, '');
                 const precioOriginal = priceOriginalText ? parseFloat(priceOriginalText) : precioFinal;
                 
-                const cantidad = parseInt(item.find('.qty-select-cart').val()); // 🔧 CORREGIDO
+                // 🔧 CORREGIDO: Obtener cantidad del dropdown botón o del atributo data-quantity
+                const cantidadFromBtn = item.find('.qty-value').text().trim();
+                const cantidad = cantidadFromBtn ? parseInt(cantidadFromBtn) : parseInt(item.data('quantity'));
                 
                 
                 subtotalSinDescuento += precioOriginal * cantidad;
@@ -2623,7 +830,74 @@ try {
         }
     }
 
-    // Select de cantidad - Evento change
+    // ========== DROPDOWN DE CANTIDAD - NUEVO ==========
+    
+    // Toggle dropdown al hacer click en el botón
+    $(document).on('click', '.qty-display-btn', function(e) {
+        e.stopPropagation();
+        const btn = $(this);
+        const wrapper = btn.closest('.qty-select-wrapper');
+        const dropdown = wrapper.find('.qty-dropdown');
+        
+        // Cerrar otros dropdowns abiertos
+        $('.qty-dropdown').not(dropdown).removeClass('active');
+        $('.qty-display-btn').not(btn).removeClass('active');
+        
+        // Toggle del dropdown actual
+        dropdown.toggleClass('active');
+        btn.toggleClass('active');
+    });
+    
+    // Seleccionar cantidad del dropdown
+    $(document).on('click', '.qty-option', function(e) {
+        e.stopPropagation();
+        const option = $(this);
+        const newQty = parseInt(option.data('value'));
+        const wrapper = option.closest('.qty-select-wrapper');
+        const btn = wrapper.find('.qty-display-btn');
+        const dropdown = wrapper.find('.qty-dropdown');
+        const cartId = btn.data('id');
+        const maxStock = btn.data('max');
+        const prevQty = parseInt(btn.data('current'));
+        
+        // Validar stock
+        if(newQty > maxStock) {
+            alert('Stock máximo alcanzado: ' + maxStock);
+            return;
+        }
+        
+        // Actualizar visualmente
+        btn.find('.qty-value').text(newQty);
+        btn.data('current', newQty);
+        
+        // Actualizar clases de selección
+        wrapper.find('.qty-option').removeClass('selected');
+        option.addClass('selected');
+        
+        // Cerrar dropdown
+        dropdown.removeClass('active');
+        btn.removeClass('active');
+        
+        // Actualizar en el servidor
+        if(newQty >= 1 && newQty !== prevQty) {
+            updateCartQuantityAjax(cartId, newQty, btn);
+        }
+    });
+    
+    // Cerrar dropdowns al hacer click fuera
+    $(document).on('click', function() {
+        $('.qty-dropdown').removeClass('active');
+        $('.qty-display-btn').removeClass('active');
+    });
+    
+    // Prevenir que se cierre al hacer click dentro del dropdown
+    $(document).on('click', '.qty-dropdown', function(e) {
+        e.stopPropagation();
+    });
+    
+    // ========== FIN DROPDOWN DE CANTIDAD ==========
+
+    // Select de cantidad - Evento change (DEPRECADO - mantener por compatibilidad)
     $(document).on('change', '.qty-select-cart', function() {
         const select = $(this);
         const cartId = select.data('id');
@@ -2769,7 +1043,7 @@ try {
                         updateCartTotals();
                         // Verificar si quedó vacío
                         if($('tr[data-cart-id]').length === 0 && $('.cart-mobile-item[data-cart-id]').length === 0) {
-                            location.reload();
+                            setTimeout(() => location.reload(), 500);
                         }
                     });
 
@@ -2778,7 +1052,7 @@ try {
                         $(this).remove();
                         updateCartTotals();
                         if($('tr[data-cart-id]').length === 0 && $('.cart-mobile-item[data-cart-id]').length === 0) {
-                            location.reload();
+                            setTimeout(() => location.reload(), 500);
                         }
                     });
                     
@@ -2813,9 +1087,9 @@ try {
             $row.fadeOut(300, function() {
                 $(this).remove();
                 updateCartTotals();
-                // Si quedó vacío, recargar para mostrar la vista vacía
+                // Solo recargar si el carrito quedó completamente vacío
                 if($('tr[data-cart-id]').length === 0 && $('.cart-mobile-item[data-cart-id]').length === 0) {
-                    location.reload();
+                    setTimeout(() => location.reload(), 500);
                 }
             });
         }
@@ -2825,8 +1099,9 @@ try {
             $mobile.fadeOut(300, function() {
                 $(this).remove();
                 updateCartTotals();
+                // Solo recargar si el carrito quedó completamente vacío
                 if($('tr[data-cart-id]').length === 0 && $('.cart-mobile-item[data-cart-id]').length === 0) {
-                    location.reload();
+                    setTimeout(() => location.reload(), 500);
                 }
             });
         }
