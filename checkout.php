@@ -198,2032 +198,18 @@ try {
     <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
     <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
     
+    <!-- Breadcrumb Modern - Global (Debe cargarse DESPUÉS para tener prioridad) -->
+    <link rel="stylesheet" href="public/assets/css/breadcrumb-modern.css?v=2.1">
+    
     <!-- Global Responsive Styles - TODO EL PROYECTO -->
     <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
     
     <!-- Modern Styles -->
     <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
     <link rel="stylesheet" href="public/assets/css/notifications-modal.css">
-    
-    <style>
-        /* ============================================
-           ESTILOS DEL CHECKOUT
-           ============================================ */
-        
-        /* Quitar línea del breadcrumb y ajustar márgenes */
-        .breadcrumb-option {
-            border-bottom: none !important;
-            padding-bottom: 0 !important;
-            margin-bottom: 0 !important;
-        }
+    <link rel="stylesheet" href="public/assets/css/checkout/checkout.css?v=6.6" type="text/css">
 
-        .checkout.spad {
-            padding-top: 30px !important;
-        }
-
-        /* Eliminar padding extra en columna del resumen */
-        .checkout .row {
-            margin-top: 0 !important;
-            display: flex !important;
-            flex-wrap: wrap !important;
-        }
-
-        .checkout .col-lg-8,
-        .checkout .col-lg-4,
-        .checkout .col-md-4,
-        .checkout .col-md-8 {
-            padding-top: 0 !important;
-        }
-        
-        .checkout-steps {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 40px;
-            padding: 20px 0;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        .checkout-step {
-            flex: 1;
-            text-align: center;
-            position: relative;
-        }
-        .checkout-step::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #e1e1e1;
-            z-index: -1;
-        }
-        .checkout-step:first-child::before {
-            left: 50%;
-        }
-        .checkout-step:last-child::before {
-            right: 50%;
-        }
-        .step-number {
-            width: 40px;
-            height: 40px;
-            background: #e1e1e1;
-            color: #666;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        .checkout-step.active .step-number {
-            background: #ca1515;
-            color: white;
-        }
-        .checkout-step.completed .step-number {
-            background: #28a745;
-            color: white;
-        }
-
-        /* ============================================
-           ESTILOS DEL CHECKOUT
-           ============================================ */
-        
-        .checkout-steps {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 40px;
-            padding: 20px 0;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        .checkout-step {
-            flex: 1;
-            text-align: center;
-            position: relative;
-        }
-        .checkout-step::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #e1e1e1;
-            z-index: -1;
-        }
-        .checkout-step:first-child::before {
-            left: 50%;
-        }
-        .checkout-step:last-child::before {
-            right: 50%;
-        }
-        .step-number {
-            width: 40px;
-            height: 40px;
-            background: #e1e1e1;
-            color: #666;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        .checkout-step.active .step-number {
-            background: #ca1515;
-            color: white;
-        }
-        .checkout-step.completed .step-number {
-            background: #2ecc71;
-            color: white;
-        }
-        .step-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: #666;
-        }
-        .checkout-step.active .step-title {
-            color: #111;
-        }
-        
-        .form-section {
-            background: #f8f8f8;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            border: 1px solid #e1e1e1;
-        }
-        .form-section h5 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #111;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ca1515;
-            display: inline-block;
-        }
-        .form-group label {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-        }
-        .form-control {
-            border: 1px solid #e1e1e1;
-            border-radius: 5px;
-            padding: 12px 15px;
-            font-size: 14px;
-            background: white;
-        }
-        .form-control:focus {
-            border-color: #ca1515;
-            box-shadow: 0 0 0 0.2rem rgba(202,21,21,0.1);
-        }
-        
-        /* MODO OSCURO - Form Sections */
-        body.dark-mode .form-section {
-            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
-            border: 2px solid #3a3a3a;
-        }
-        
-        body.dark-mode .form-section h5 {
-            color: #c9a67c;
-            border-bottom-color: #c9a67c;
-        }
-        
-        body.dark-mode .form-group label {
-            color: #c9a67c;
-        }
-        
-        body.dark-mode .form-control {
-            background: #1a1a1a;
-            border-color: #3a3a3a;
-            color: #e0e0e0;
-        }
-        
-        body.dark-mode .form-control:focus {
-            border-color: #c9a67c;
-            box-shadow: 0 0 0 0.2rem rgba(201, 166, 124, 0.2);
-        }
-        
-        body.dark-mode .form-control::placeholder {
-            color: #666;
-        }
-        
-        body.dark-mode select.form-control option {
-            background: #1a1a1a;
-            color: #e0e0e0;
-        }
-        
-        /* ============================================
-           GRID DE PRODUCTOS EN CHECKOUT - UNA SOLA FILA CON SCROLL
-           ============================================ */
-        .checkout-products-grid {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            overflow-x: auto;
-            overflow-y: hidden;
-            padding-bottom: 10px;
-            scrollbar-width: thin;
-            scrollbar-color: #c9a67c #f0f0f0;
-        }
-
-        .checkout-products-grid::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .checkout-products-grid::-webkit-scrollbar-track {
-            background: #f0f0f0;
-            border-radius: 10px;
-        }
-
-        .checkout-products-grid::-webkit-scrollbar-thumb {
-            background: #c9a67c;
-            border-radius: 10px;
-        }
-
-        .checkout-products-grid::-webkit-scrollbar-thumb:hover {
-            background: #a08661;
-        }
-
-        .checkout-products-more {
-            min-width: 140px;
-            width: 140px;
-            flex-shrink: 0;
-            background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%);
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            color: #1a1a1a;
-            font-weight: 700;
-            cursor: default;
-            border: 2px solid #c9a67c;
-            min-height: 200px;
-        }
-
-        .checkout-products-more-count {
-            font-size: 32px;
-            line-height: 1;
-        }
-
-        .checkout-products-more-text {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .checkout-product-card {
-            min-width: 140px;
-            width: 140px;
-            flex-shrink: 0;
-            background: white;
-            border: 2px solid #e1e1e1;
-            border-radius: 10px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .checkout-product-card:hover {
-            border-color: #c9a67c;
-            box-shadow: 0 6px 16px rgba(201, 166, 124, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .checkout-product-image {
-            position: relative;
-            width: 100%;
-            padding-top: 100%;
-            overflow: hidden;
-            background: #f8f8f8;
-        }
-
-        .checkout-product-image img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .checkout-product-discount {
-            position: absolute;
-            top: 4px;
-            left: 4px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            color: white;
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-size: 9px;
-            font-weight: 700;
-            box-shadow: 0 2px 6px rgba(255, 107, 107, 0.3);
-            z-index: 2;
-        }
-
-        .checkout-product-quantity {
-            position: absolute;
-            bottom: 4px;
-            right: 4px;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(6px);
-            color: white;
-            padding: 3px 6px;
-            border-radius: 10px;
-            font-size: 9px;
-            font-weight: 700;
-            z-index: 2;
-        }
-
-        .checkout-product-info {
-            padding: 8px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .checkout-product-name {
-            font-size: 10px;
-            font-weight: 700;
-            color: #2c3e50;
-            margin: 0;
-            line-height: 1.2;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis; 
-            min-height: 24px;
-        }
-
-        .checkout-product-prices {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            flex-wrap: wrap;
-        }
-
-        .checkout-product-price-old {
-            font-size: 8px;
-            color: #999;
-            text-decoration: line-through;
-        }
-
-        .checkout-product-price {
-            font-size: 10px;
-            font-weight: 700;
-            color: #c9a67c;
-        }
-
-        .checkout-product-subtotal {
-            display: none;
-        }
-
-        /* Responsive para grid de productos */
-        @media (max-width: 768px) {
-            .checkout-product-card,
-            .checkout-products-more {
-                min-width: 120px;
-                width: 120px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .checkout-products-grid {
-                gap: 6px;
-            }
-            
-            .checkout-product-card,
-            .checkout-products-more {
-                min-width: 100px;
-                width: 100px;
-            }
-        }
-        
-        /* MODO OSCURO - Productos */
-        body.dark-mode .checkout-product-card {
-            background: #2a2a2a;
-            border-color: #3a3a3a;
-        }
-        
-        body.dark-mode .checkout-product-card:hover {
-            border-color: #c9a67c;
-            box-shadow: 0 6px 16px rgba(201, 166, 124, 0.3);
-        }
-        
-        body.dark-mode .checkout-product-name {
-            color: #e0e0e0;
-        }
-        
-        body.dark-mode .checkout-product-image {
-            background: #1a1a1a;
-        }
-        
-        body.dark-mode .checkout-products-grid::-webkit-scrollbar-track {
-            background: #2a2a2a;
-        }
-        
-        body.dark-mode .checkout-products-grid::-webkit-scrollbar-thumb {
-            background: #c9a67c;
-        }
-
-        /* ============================================
-           MÉTODOS DE PAGO
-           ============================================ */
-        .payment-methods-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 16px;
-            margin-top: 20px;
-        }
-
-        .payment-method-card {
-            background: white;
-            border: 2px solid #e1e1e1;
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .payment-method-card:hover {
-            border-color: #c9a67c;
-            box-shadow: 0 4px 12px rgba(201, 166, 124, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .payment-method-card.selected {
-            border-color: #c9a67c;
-            background: linear-gradient(135deg, #fffbf5 0%, #fff8ed 100%);
-            box-shadow: 0 4px 12px rgba(201, 166, 124, 0.3);
-        }
-
-        .payment-method-check {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: #e1e1e1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .payment-method-card.selected .payment-method-check {
-            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
-            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
-        }
-
-        .payment-method-card:not(.selected) .payment-method-check {
-            opacity: 0.3;
-        }
-
-        .payment-method-highlight {
-            border-color: #c9a67c;
-            background: linear-gradient(135deg, #fffbf5 0%, #fff8ed 100%);
-        }
-
-        .payment-method-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 700;
-            box-shadow: 0 2px 6px rgba(255, 107, 107, 0.3);
-        }
-
-        .payment-method-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 22px;
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(201, 166, 124, 0.3);
-        }
-
-        .payment-method-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .payment-method-name {
-            font-size: 15px;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 4px;
-        }
-
-        .payment-method-desc {
-            font-size: 12px;
-            color: #666;
-            line-height: 1.4;
-        }
-
-        .payment-method-note {
-            font-size: 11px;
-            color: #999;
-            line-height: 1.4;
-            margin-top: 4px;
-        }
-
-        .payment-method-promo {
-            font-size: 12px;
-            color: #ff6b6b;
-            font-weight: 600;
-            margin-top: 4px;
-        }
-        
-        /* MODO OSCURO - Métodos de Pago */
-        body.dark-mode .payment-method-card {
-            background: #2a2a2a;
-            border-color: #3a3a3a;
-        }
-        
-        body.dark-mode .payment-method-card:hover {
-            border-color: #c9a67c;
-            box-shadow: 0 4px 12px rgba(201, 166, 124, 0.3);
-        }
-        
-        body.dark-mode .payment-method-card.selected {
-            border-color: #c9a67c;
-            background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
-        }
-        
-        body.dark-mode .payment-method-name {
-            color: #e0e0e0;
-        }
-        
-        body.dark-mode .payment-method-desc {
-            color: #a0a0a0;
-        }
-        
-        body.dark-mode .payment-method-note {
-            color: #888;
-        }
-        
-        body.dark-mode .payment-method-check {
-            background: #3a3a3a;
-        }
-
-        /* Responsive para métodos de pago */
-        @media (max-width: 768px) {
-            .payment-methods-grid {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-        }
-        
-        .order-summary {
-            background: white;
-            border: 1px solid #e1e1e1;
-            border-radius: 10px;
-            padding: 25px;
-            position: sticky;
-            top: 20px;
-        }
-        .order-summary h5 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        /* MODO OSCURO - Order Summary */
-        body.dark-mode .order-summary {
-            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
-            border: 2px solid #3a3a3a;
-        }
-        
-        body.dark-mode .order-summary h5 {
-            color: #c9a67c;
-            border-bottom-color: rgba(201, 166, 124, 0.2);
-        }
-        
-        body.dark-mode .order-total-row span {
-            color: #d0d0d0 !important;
-        }
-        
-        body.dark-mode .order-total-row.total span {
-            color: #c9a67c !important;
-        }
-        
-        body.dark-mode .alert {
-            background: #2a2a2a;
-            border-color: #3a3a3a;
-            color: #d0d0d0;
-        }
-        .order-item {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .order-item:last-child {
-            border-bottom: none;
-        }
-        .order-item img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-        .order-item-info {
-            flex: 1;
-        }
-        .order-item-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: #111;
-            margin-bottom: 5px;
-        }
-        .order-item-details {
-            font-size: 12px;
-            color: #666;
-        }
-        .order-item-price {
-            font-size: 14px;
-            font-weight: 600;
-            color: #ca1515;
-        }
-        
-        .order-totals {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #f0f0f0;
-        }
-        .order-total-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-        .order-total-row.total {
-            font-size: 18px;
-            font-weight: 700;
-            color: #111;
-            padding-top: 12px;
-            border-top: 2px solid #f0f0f0;
-        }
-        
-        .payment-method {
-            border: 2px solid #e1e1e1;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .payment-method:hover {
-            border-color: #ca1515;
-            background: #fff5f5;
-        }
-        .payment-method input[type="radio"] {
-            margin-right: 10px;
-        }
-        .payment-method.selected {
-            border-color: #ca1515;
-            background: #fff5f5;
-        }
-        
-        .btn-place-order {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            border-radius: 50px;
-            width: 100%;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-place-order:hover {
-            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(55, 61, 69, 0.7);
-        }
-        .btn-place-order:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        /* MODO OSCURO - Botones */
-        body.dark-mode .btn-place-order {
-            background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%);
-            color: #1a1a1a;
-            box-shadow: 0 4px 15px rgba(201, 166, 124, 0.3);
-        }
-        
-        body.dark-mode .btn-place-order:hover {
-            background: linear-gradient(135deg, #a08661 0%, #c9a67c 100%);
-            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4);
-        }
-        
-        body.dark-mode .btn-place-order:disabled {
-            background: #3a3a3a;
-            color: #666;
-        }
-        
-        .comprobante-type {
-            border: 2px solid #e1e1e1;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-        .comprobante-type:hover {
-            border-color: #ca1515;
-        }
-        .comprobante-type input[type="radio"] {
-            margin-bottom: 10px;
-        }
-        .comprobante-type.selected {
-            border-color: #ca1515;
-            background: #fff5f5;
-        }
-        .comprobante-icon {
-            font-size: 32px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-        .comprobante-type.selected .comprobante-icon {
-            color: #ca1515;
-        }
-        
-        .alert {
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .alert-danger {
-            background: #ffe5e5;
-            border: 1px solid #ffcccc;
-            color: #cc0000;
-        }
-        .alert-success {
-            background: #e5ffe5;
-            border: 1px solid #ccffcc;
-            color: #00cc00;
-        }
-        .alert-warning {
-            background: #fff5e5;
-            border: 1px solid #ffebcc;
-            color: #cc8800;
-        }
-        
-        /* Header fijo (sticky) */
-        .header {
-            position: sticky !important;
-            top: 0;
-            z-index: 999;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        /* Ajuste para compensar el header fijo */
-        body {
-            padding-top: 0;
-            background-color: #f8f5f2;
-            padding-left: 20px; /* Margen izquierdo para toda la página */
-            overflow-x: hidden; /* Evitar scroll horizontal por el padding */
-        }
-        
-        /* Ocultar scrollbar con estilo (quitar barra celeste/transparente) */
-        body::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        body::-webkit-scrollbar-track {
-            background: transparent; /* Eliminar fondo celeste/transparente */
-        }
-        
-        body::-webkit-scrollbar-thumb {
-            background: #c9a67c;
-            border-radius: 4px;
-        }
-        
-        body::-webkit-scrollbar-thumb:hover {
-            background: #a08661;
-        }
-        
-        /* Para Firefox */
-        body {
-            scrollbar-width: thin;
-            scrollbar-color: #c9a67c transparent;
-        }
-        
-        /* MODO OSCURO - Body y Backgrounds */
-        body.dark-mode {
-            background-color: #1a1a1a;
-            padding-left: 20px; /* Mantener margen izquierdo en modo oscuro */
-        }
-        
-        /* Scrollbar en modo oscuro */
-        body.dark-mode::-webkit-scrollbar-track {
-            background: transparent; /* Eliminar fondo celeste/transparente en modo oscuro */
-        }
-        
-        body.dark-mode::-webkit-scrollbar-thumb {
-            background: #c9a67c;
-        }
-        
-        body.dark-mode::-webkit-scrollbar-thumb:hover {
-            background: #a08661;
-        }
-        
-        body.dark-mode .checkout.spad {
-            background: #1a1a1a;
-        }
-        
-        body.dark-mode .breadcrumb-option {
-            background: #2a2a2a;
-            border-bottom: 1px solid #3a3a3a;
-        }
-        
-        body.dark-mode .breadcrumb__links a,
-        body.dark-mode .breadcrumb__links span {
-            color: #c9a67c;
-        }
-        
-        body.dark-mode .breadcrumb__links a:hover {
-            color: #a08661;
-        }
-        
-        body.dark-mode .checkout-step .step-title {
-            color: #888;
-        }
-        
-        body.dark-mode .checkout-step.active .step-title {
-            color: #c9a67c;
-        }
-        
-        /* Ajustar ancho de los selects de ubigeo */
-        #departamento,
-        #provincia,
-        #distrito {
-            width: 100% !important;
-            max-width: 100% !important;
-            min-width: 0 !important;
-            padding: 10px 35px 10px 15px !important;
-            height: auto !important;
-            min-height: 42px !important;
-            overflow: visible !important;
-            box-sizing: border-box !important;
-            -webkit-appearance: none !important;
-            -moz-appearance: none !important;
-            appearance: none !important;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E") !important;
-            background-repeat: no-repeat !important;
-            background-position: right 12px center !important;
-            background-size: 14px !important;
-            font-size: 14px !important;
-            line-height: 1.5 !important;
-            color: #333 !important;
-        }
-        
-        /* Asegurar que los selects no se corten */
-        .form-control select,
-        select.form-control {
-            width: 100% !important;
-            box-sizing: border-box !important;
-            padding: 10px 35px 10px 15px !important;
-            height: auto !important;
-            min-height: 42px !important;
-            font-size: 14px !important;
-            line-height: 1.5 !important;
-        }
-        
-        /* Ajustar el contenedor de los selects */
-        .form-group select.form-control {
-            display: block !important;
-            width: 100% !important;
-            padding: 10px 35px 10px 15px !important;
-            height: auto !important;
-            min-height: 42px !important;
-            font-size: 14px !important;
-            line-height: 1.5 !important;
-            background-color: #fff !important;
-            background-clip: padding-box !important;
-            border: 1px solid #e1e1e1 !important;
-            border-radius: 5px !important;
-            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
-        }
-        
-        /* Asegurar que las columnas no compriman los selects */
-        .col-md-4 {
-            padding-left: 15px !important;
-            padding-right: 15px !important;
-            flex: 0 0 33.333333% !important;
-            max-width: 33.333333% !important;
-        }
-        
-        /* Asegurar que el row use flexbox correctamente */
-        .form-section .row {
-            display: flex !important;
-            flex-wrap: wrap !important;
-            margin-left: -15px !important;
-            margin-right: -15px !important;
-        }
-        
-        /* Prevenir que form-group comprima el contenido */
-        .form-group {
-            margin-bottom: 1rem !important;
-            width: 100% !important;
-        }
-        
-        /* Mejorar orden summary para que no se superponga con header */
-        .order-summary {
-            top: 20px !important; /* Espacio para el header fijo */
-        }
-
-        /* ============================================
-           FIX: ASEGURAR LAYOUT DE 2 COLUMNAS EN DESKTOP
-           ============================================ */
-        
-        /* Mantener estructura similar a shop.php */
-        @media (min-width: 992px) {
-            .checkout .row {
-                display: flex !important;
-                flex-wrap: nowrap !important;
-            }
-            
-            .checkout .col-lg-8 {
-                flex: 0 0 66.666667% !important;
-                max-width: 66.666667% !important;
-                padding-left: 1.5rem;
-            }
-            
-            .checkout .col-lg-4 {
-                flex: 0 0 33.333333% !important;
-                max-width: 33.333333% !important;
-            }
-        }
-        
-        /* Para tablets medianos */
-        @media (min-width: 768px) and (max-width: 991px) {
-            .checkout .col-md-8 {
-                padding-left: 1rem;
-            }
-        }
-
-        /* ============================================
-           ESTILOS RESPONSIVOS PARA MÓVIL
-           ============================================ */
-
-        /* Imágenes de productos en móvil - ocultas por defecto */
-        .mobile-cart-preview {
-            display: none;
-        }
-
-        /* Footer sticky móvil - oculto por defecto */
-        .mobile-checkout-footer {
-            display: none;
-        }
-
-        /* Solo visible en móvil */
-        @media (max-width: 991px) {
-            /* Ocultar sidebar de resumen en móvil */
-            .order-summary {
-                display: none !important;
-            }
-
-            /* Mostrar vista previa de productos en móvil */
-            .mobile-cart-preview {
-                display: block;
-                background: white;
-                padding: 15px;
-                margin-bottom: 20px;
-                border-radius: 12px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                border: 1px solid #e0e0e0;
-            }
-
-            .mobile-cart-preview__header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 15px;
-                padding-bottom: 12px;
-                border-bottom: 2px solid #f0f0f0;
-            }
-
-            .mobile-cart-preview__title {
-                font-size: 15px;
-                font-weight: 700;
-                color: #333;
-            }
-
-            .mobile-cart-preview__count {
-                background: #ca1515;
-                color: white;
-                padding: 4px 10px;
-                border-radius: 20px;
-                font-size: 12px;
-                font-weight: 700;
-            }
-
-            .mobile-cart-preview__items {
-                display: flex;
-                gap: 10px;
-                overflow-x: auto;
-                padding: 5px 0;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none; /* Firefox */
-            }
-
-            .mobile-cart-preview__items::-webkit-scrollbar {
-                display: none; /* Chrome, Safari */
-            }
-
-            .mobile-cart-preview__item {
-                flex-shrink: 0;
-                position: relative;
-            }
-
-            .mobile-cart-preview__item-image {
-                width: 70px;
-                height: 70px;
-                border-radius: 8px;
-                object-fit: cover;
-                border: 2px solid #e0e0e0;
-            }
-
-            .mobile-cart-preview__item-qty {
-                position: absolute;
-                top: -5px;
-                right: -5px;
-                background: #111;
-                color: white;
-                width: 20px;
-                height: 20px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 11px;
-                font-weight: 700;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            }
-
-            /* Footer sticky móvil */
-            .mobile-checkout-footer {
-                display: block;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: white;
-                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-                z-index: 999;
-                border-top: 1px solid #e0e0e0;
-                backdrop-filter: blur(10px);
-                background: rgba(255, 255, 255, 0.98);
-            }
-
-            .mobile-checkout-footer__content {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 12px 20px;
-                gap: 15px;
-                max-width: 1200px;
-                margin: 0 auto;
-            }
-
-            .mobile-checkout-footer__total {
-                flex: 1;
-                min-width: 0;
-            }
-
-            .mobile-checkout-footer__label {
-                font-size: 11px;
-                color: #666;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                margin-bottom: 2px;
-                font-weight: 500;
-            }
-
-            .mobile-checkout-footer__amount {
-                font-size: 22px;
-                font-weight: 800;
-                color: #111;
-                line-height: 1.2;
-            }
-
-            .mobile-checkout-footer__shipping {
-                font-size: 11px;
-                color: #28a745;
-                font-weight: 600;
-                margin-top: 2px;
-            }
-
-            .mobile-checkout-footer__action {
-                flex-shrink: 0;
-            }
-
-            .mobile-place-order-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                padding: 14px 28px;
-                background: linear-gradient(135deg, #ca1515 0%, #a01010 100%);
-                color: white;
-                border-radius: 50px;
-                font-weight: 700;
-                font-size: 15px;
-                text-decoration: none;
-                box-shadow: 0 4px 15px rgba(202, 21, 21, 0.3);
-                transition: all 0.3s ease;
-                white-space: nowrap;
-                border: none;
-                cursor: pointer;
-            }
-
-            .mobile-place-order-btn:hover {
-                background: linear-gradient(135deg, #a01010 0%, #800c0c 100%);
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(202, 21, 21, 0.4);
-                color: white;
-                text-decoration: none;
-            }
-
-            .mobile-place-order-btn i {
-                font-size: 14px;
-            }
-
-            /* Agregar padding al body para compensar el footer sticky */
-            body {
-                padding-bottom: 80px !important;
-            }
-
-            /* Ajustar sección de checkout */
-            .checkout.spad {
-                padding: 1px 0 100px !important;
-            }
-
-            /* Hacer formulario de ancho completo */
-            .checkout .col-lg-8 {
-                width: 100%;
-                max-width: 100%;
-                flex: 0 0 100%;
-            }
-
-            /* Ajustar steps en móvil */
-            .checkout-steps {
-                margin-bottom: 20px;
-                padding: 15px 0;
-            }
-
-            .step-number {
-                width: 35px;
-                height: 35px;
-                font-size: 14px;
-            }
-
-            .step-title {
-                font-size: 11px;
-            }
-
-            /* Ajustar form sections */
-            .form-section {
-                padding: 20px 15px;
-                margin-bottom: 15px;
-            }
-
-            .form-section h5 {
-                font-size: 16px;
-                margin-bottom: 15px;
-            }
-        }
-
-        /* Móviles pequeños */
-        @media (max-width: 576px) {
-            .mobile-checkout-footer__content {
-                padding: 10px 15px;
-                gap: 12px;
-            }
-
-            .mobile-checkout-footer__label {
-                font-size: 10px;
-            }
-
-            .mobile-checkout-footer__amount {
-                font-size: 20px;
-            }
-
-            .mobile-checkout-footer__shipping {
-                font-size: 10px;
-            }
-
-            .mobile-place-order-btn {
-                padding: 12px 22px;
-                font-size: 14px;
-                gap: 8px;
-            }
-
-            .mobile-place-order-btn span {
-                display: none;
-            }
-
-            .mobile-place-order-btn::after {
-                content: 'Realizar Pedido';
-            }
-
-            body {
-                padding-bottom: 70px !important;
-            }
-
-            /* Steps más compactos */
-            .checkout-steps {
-                padding: 10px 0;
-                margin-bottom: 15px;
-            }
-
-            .step-number {
-                width: 30px;
-                height: 30px;
-                font-size: 13px;
-            }
-
-            .step-title {
-                font-size: 10px;
-            }
-
-            /* Imágenes de productos más pequeñas */
-            .mobile-cart-preview__item-image {
-                width: 60px;
-                height: 60px;
-            }
-
-            .mobile-cart-preview {
-                padding: 12px;
-                margin-bottom: 15px;
-            }
-
-            .mobile-cart-preview__title {
-                font-size: 14px;
-            }
-
-            .mobile-cart-preview__count {
-                font-size: 11px;
-                padding: 3px 8px;
-            }
-        }
-
-        /* Pantallas muy pequeñas */
-        @media (max-width: 400px) {
-            .mobile-checkout-footer__content {
-                padding: 8px 12px;
-                gap: 10px;
-            }
-
-            .mobile-checkout-footer__amount {
-                font-size: 18px;
-            }
-
-            .mobile-place-order-btn {
-                padding: 10px 18px;
-                font-size: 13px;
-            }
-        }
-
-        /* ========================================
-           ESTILOS PARA MÉTODOS DE PAGO - MODO CLARO/OSCURO
-        ======================================== */
-        
-        /* Contenedor principal de métodos de pago */
-        .payment-methods-section {
-            background: white !important;
-            border: 2px solid #dee2e6;
-            overflow: visible !important; /* Importante para que el badge no se corte */
-            position: relative;
-        }
-
-        body.dark-mode .payment-methods-section {
-            background: white !important; /* Mantener blanco en modo oscuro */
-            border: 2px solid #3a3a3a;
-            overflow: visible !important;
-        }
-        
-        /* Badge de Yape - Asegurar visibilidad */
-        .yape-badge {
-            animation: pulse-badge 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse-badge {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 6px 16px rgba(76, 175, 80, 0.7);
-            }
-            50% {
-                transform: scale(1.05);
-                box-shadow: 0 8px 20px rgba(76, 175, 80, 0.9);
-            }
-        }
-
-        /* Texto de seguridad */
-        .payment-security-text {
-            color: #6c757d;
-        }
-
-        body.dark-mode .payment-security-text {
-            color: #888;
-        }
-
-        /* Filas de métodos de pago */
-        .payment-method-row {
-            background: #ffffff;
-            border: 2px solid #dee2e6;
-        }
-
-        body.dark-mode .payment-method-row {
-            background: #1a1a1a;
-            border: 2px solid #3a3a3a;
-        }
-
-        /* Yape tiene borde especial */
-        .payment-method-row.payment-yape {
-            border: 2px solid #e1bee7;
-        }
-
-        body.dark-mode .payment-method-row.payment-yape {
-            border: 2px solid #6a1b9a;
-        }
-
-        /* Hover en métodos de pago */
-        .payment-method-row:hover {
-            transform: translateX(4px);
-            border-color: #c9a67c;
-        }
-
-        body.dark-mode .payment-method-row:hover {
-            border-color: #c9a67c;
-        }
-
-        /* Títulos de métodos de pago */
-        .payment-title {
-            color: #212529;
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-
-        body.dark-mode .payment-title {
-            color: #fff;
-        }
-
-        /* Subtítulos de métodos de pago */
-        .payment-subtitle {
-            color: #6c757d;
-            font-size: 12px;
-        }
-
-        body.dark-mode .payment-subtitle {
-            color: #888;
-        }
-
-        /* Highlight de Yape */
-        .payment-yape-highlight {
-            color: #6a1b9a;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        body.dark-mode .payment-yape-highlight {
-            color: #ba68c8;
-        }
-
-        /* Check de pago */
-        .payment-check {
-            border: 2px solid #dee2e6;
-        }
-
-        body.dark-mode .payment-check {
-            border: 2px solid #3a3a3a;
-        }
-
-        /* Método de pago seleccionado */
-        .payment-method-row.selected {
-            border-color: #c9a67c !important;
-            background: rgba(201, 166, 124, 0.1) !important;
-        }
-
-        .payment-method-row.selected .payment-check {
-            border-color: #c9a67c !important;
-            background: linear-gradient(135deg, #c9a67c 0%, #a8865e 100%) !important;
-        }
-
-        .payment-method-row.selected .payment-check i {
-            color: white !important;
-        }
-
-        /* ========================================
-           NUEVAS CARDS DE PAGO - DISEÑO INTUITIVO V2.0
-        ======================================== */
-        
-        .payment-card-new {
-            position: relative;
-            overflow: visible !important; /* Cambiar de hidden a visible para que el badge se muestre */
-        }
-        
-        /* Card de Yape con badge - overflow visible */
-        .payment-card-featured {
-            overflow: visible !important;
-        }
-        
-        .payment-card-new::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(135deg, transparent, transparent);
-            border-radius: 16px;
-            opacity: 0;
-            transition: all 0.3s ease;
-            z-index: -1;
-        }
-        
-        .payment-card-new:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(201, 166, 124, 0.2) !important;
-            border-color: #c9a67c !important;
-        }
-        
-        .payment-card-new.selected {
-            border-color: #c9a67c !important;
-            background: linear-gradient(135deg, rgba(201, 166, 124, 0.08) 0%, #ffffff 100%) !important;
-            box-shadow: 0 8px 24px rgba(201, 166, 124, 0.25) !important;
-            transform: translateY(-2px);
-        }
-        
-        body.dark-mode .payment-card-new {
-            background: linear-gradient(135deg, #2a2a2a 0%, #252525 100%) !important;
-            border-color: #3a3a3a !important;
-        }
-        
-        body.dark-mode .payment-card-new:hover {
-            border-color: #c9a67c !important;
-            background: linear-gradient(135deg, #333333 0%, #2d2d2d 100%) !important;
-            box-shadow: 0 4px 16px rgba(201, 166, 124, 0.3) !important;
-        }
-        
-        body.dark-mode .payment-card-new.selected {
-            border-color: #c9a67c !important;
-            background: linear-gradient(135deg, #2a2a2a 0%, #252525 100%) !important;
-            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.5), 
-                        inset 0 0 30px rgba(201, 166, 124, 0.1) !important;
-        }
-        
-        body.dark-mode .payment-card-new h6 {
-            color: #e0e0e0 !important;
-        }
-        
-        body.dark-mode .payment-card-new p {
-            color: #a0a0a0 !important;
-        }
-        
-        /* Radio button en dark mode */
-        body.dark-mode .payment-card-new div[style*="border: 3px solid"] {
-            border-color: #3a3a3a !important;
-        }
-        
-        body.dark-mode .payment-card-new.selected div[style*="border: 3px solid"] {
-            border-color: #c9a67c !important;
-        }
-        
-        /* Sección de pagos en modo oscuro */
-        body.dark-mode .payment-methods-section {
-            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%) !important;
-            border: 2px solid #3a3a3a !important;
-        }
-        
-        /* Texto de seguridad en dark mode */
-        body.dark-mode .payment-security-text {
-            color: #a0a0a0 !important;
-        }
-        
-        /* Título de la sección en dark mode */
-        body.dark-mode .payment-methods-section h5 {
-            color: #c9a67c !important;
-        }
-        
-        /* Iconos dentro de las payment cards en dark mode */
-        body.dark-mode .payment-card-new svg rect,
-        body.dark-mode .payment-card-new svg circle {
-            opacity: 0.9;
-        }
-        
-        /* Bordes de los contenedores de iconos en dark mode */
-        body.dark-mode .payment-card-new > div[style*="border: 2px solid"] {
-            border-color: #4a4a4a !important;
-            background: #1a1a1a !important;
-        }
-        
-        /* Badge de Yape en dark mode */
-        body.dark-mode .yape-badge {
-            border-color: #3a3a3a !important;
-        }
-        
-        /* Mensaje de error en dark mode */
-        body.dark-mode #payment-method-error {
-            background: linear-gradient(135deg, #3a2f1f 0%, #2a2419 100%) !important;
-            border-left-color: #c9a67c !important;
-        }
-        
-        body.dark-mode #payment-method-error p {
-            color: #f0d9b5 !important;
-        }
-        
-        /* Radio button en las cards - Actualizado para estructura horizontal */
-        .payment-card-new .payment-radio-inner {
-            transition: all 0.3s ease;
-        }
-        
-        /* Cuando la card está seleccionada */
-        .payment-card-new.selected {
-            border-color: #c9a67c !important;
-            background: #f9f9f9 !important;
-            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.3) !important;
-        }
-        
-        /* Card seleccionada en dark mode - sobrescribir fondo claro */
-        body.dark-mode .payment-card-new.selected {
-            background: linear-gradient(135deg, #2d2d2d 0%, #282828 100%) !important;
-            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.5), 
-                        inset 0 0 30px rgba(201, 166, 124, 0.15) !important;
-        }
-        
-        /* Radio button seleccionado (buscar el div con el círculo) */
-        .payment-card-new.selected > div > div.payment-radio-inner,
-        .payment-card-new.selected div[style*="border-radius: 50%"] .payment-radio-inner {
-            background: #c9a67c !important;
-            box-shadow: 0 0 0 3px rgba(201, 166, 124, 0.2);
-        }
-        
-        /* Borde del radio button cuando está seleccionado */
-        .payment-card-new.selected div[style*="width: 24px"] {
-            border-color: #c9a67c !important;
-        }
-        
-        /* Animación shake */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-        
-        /* Responsive para cards de pago - FILA HORIZONTAL EN DESKTOP */
-        .payment-methods-row {
-            display: flex;
-            gap: 16px;
-            overflow: visible !important; /* Permitir que el badge se vea completo */
-            position: relative;
-        }
-        
-        @media (min-width: 769px) {
-            .payment-methods-row {
-                flex-direction: row; /* Forzar fila horizontal en desktop */
-                overflow: visible !important;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .payment-methods-row {
-                flex-direction: column; /* Stack vertical en móvil */
-                overflow: visible !important;
-            }
-            
-            body {
-                padding-left: 10px; /* Reducir margen izquierdo en móvil */
-            }
-            
-            body.dark-mode {
-                padding-left: 10px;
-            }
-            
-            /* Ocultar sección de productos en móviles (ya se muestra en el preview superior) */
-            .checkout-products-section {
-                display: none !important;
-            }
-            
-            /* ========================================
-               MEJORAR SECCIÓN DE DIRECCIÓN EN MÓVILES
-            ======================================== */
-            .checkout-address-section {
-                padding: 14px !important;
-                margin-bottom: 18px !important;
-            }
-            
-            /* Header de la dirección (título + botón al costado como icono) */
-            .address-header-section {
-                flex-direction: row !important;
-                gap: 8px;
-                align-items: center !important;
-                justify-content: space-between !important;
-            }
-            
-            .checkout-address-section h5 {
-                font-size: 15px !important;
-                flex: 1;
-            }
-            
-            /* Botón cambiar dirección - pequeño icono al costado */
-            .btn-change-address {
-                width: auto !important;
-                padding: 8px 12px !important;
-                font-size: 13px !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                gap: 6px;
-                white-space: nowrap;
-            }
-            
-            /* Card de preview de dirección - más compacto */
-            .address-preview-card {
-                padding: 12px !important;
-                border-radius: 8px !important;
-            }
-            
-            /* Grid de campos - dos columnas compactas */
-            .address-grid {
-                grid-template-columns: 1fr 1fr !important;
-                gap: 10px 8px !important;
-                font-size: 13px !important;
-            }
-            
-            /* Cada campo de dirección - sin bordes para compactar */
-            .address-field {
-                padding: 0;
-            }
-            
-            /* Campos que ocupan ancho completo */
-            .address-field-full {
-                grid-column: 1 / -1 !important;
-            }
-            
-            /* Labels de los campos - más pequeños */
-            .address-label {
-                font-size: 10px !important;
-                color: #c9a67c !important;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                font-weight: 600 !important;
-                margin-bottom: 3px !important;
-                display: block;
-            }
-            
-            /* Valores de los campos - compactos */
-            .address-value,
-            .address-value-ref {
-                font-size: 13px !important;
-                display: block;
-                line-height: 1.4;
-                color: #333333;
-                font-weight: 500;
-            }
-            
-            /* Dark mode para valores */
-            body.dark-mode .address-value,
-            body.dark-mode .address-value-ref {
-                color: #e0e0e0;
-            }
-        }
-
-        /* ========================================
-           ESTILOS PARA RESUMEN DEL PEDIDO - MODO CLARO/OSCURO
-        ======================================== */
-        
-        /* Contenedor del resumen */
-        .checkout-summary {
-            background: #ffffff;
-            border: 2px solid #e1e1e1;
-        }
-
-        body.dark-mode .checkout-summary {
-            background: #1a1a1a;
-            border: 2px solid #3a3a3a;
-        }
-
-        /* Título del resumen */
-        .summary-title {
-            color: #c9a67c;
-            border-bottom: 2px solid #e1e1e1;
-        }
-
-        body.dark-mode .summary-title {
-            color: #c9a67c;
-            border-bottom: 2px solid #3a3a3a;
-        }
-
-        /* Filas del resumen */
-        .summary-row {
-            border-bottom: 1px solid #e1e1e1;
-        }
-
-        body.dark-mode .summary-row {
-            border-bottom: 1px solid #3a3a3a;
-        }
-
-        /* Labels y valores del resumen */
-        .summary-label {
-            color: #333;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        body.dark-mode .summary-label {
-            color: #e0e0e0;
-        }
-
-        .summary-value {
-            color: #333;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        body.dark-mode .summary-value {
-            color: #e0e0e0;
-        }
-
-        /* Total destacado */
-        .summary-total {
-            background: rgba(201, 166, 124, 0.1);
-        }
-
-        body.dark-mode .summary-total {
-            background: rgba(201, 166, 124, 0.15);
-        }
-
-        .summary-total span {
-            color: #c9a67c;
-        }
-
-        body.dark-mode .summary-total span {
-            color: #c9a67c;
-        }
-
-        /* ========================================
-           ESTILOS PARA SECCIONES DE CHECKOUT - MODO CLARO/OSCURO
-        ======================================== */
-        
-        /* Sección de dirección */
-        .checkout-address-section {
-            background: #ffffff;
-            border: 2px solid #e1e1e1;
-        }
-
-        body.dark-mode .checkout-address-section {
-            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
-            border: 2px solid #3a3a3a;
-        }
-
-        /* Sección de productos */
-        .checkout-products-section {
-            background: #ffffff;
-            border: 2px solid #e1e1e1;
-        }
-
-        body.dark-mode .checkout-products-section {
-            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
-            border: 2px solid #3a3a3a;
-        }
-
-        /* Botón cambiar dirección */
-        .btn-change-address {
-            background: #c9a67c;
-            color: #1a1a1a;
-        }
-
-        body.dark-mode .btn-change-address {
-            background: #c9a67c;
-            color: #1a1a1a;
-        }
-
-        /* Card de preview de dirección */
-        .address-preview-card {
-            background: rgba(201, 166, 124, 0.1);
-        }
-
-        body.dark-mode .address-preview-card {
-            background: rgba(201, 166, 124, 0.1);
-        }
-
-        /* Labels de dirección */
-        .address-label {
-            color: #c9a67c;
-        }
-
-        body.dark-mode .address-label {
-            color: #c9a67c;
-        }
-
-        /* Valores de dirección */
-        .address-value {
-            color: #333;
-        }
-
-        body.dark-mode .address-value {
-            color: #d0d0d0;
-        }
-
-        /* Referencia (estilo especial) */
-        .address-value-ref {
-            font-style: italic;
-            color: #6c757d;
-        }
-
-        body.dark-mode .address-value-ref {
-            font-style: italic;
-            color: #a0a0a0;
-        }
-
-        /* ========================================
-           ESTILOS PARA MODAL DE DIRECCIÓN - MODO CLARO/OSCURO
-        ======================================== */
-        
-        /* Contenido del modal */
-        .address-modal-content {
-            background: #ffffff;
-        }
-
-        body.dark-mode .address-modal-content {
-            background: #1a1a1a;
-        }
-
-        /* Body del modal */
-        .address-modal-body {
-            background: #ffffff;
-        }
-
-        body.dark-mode .address-modal-body {
-            background: #1a1a1a;
-        }
-
-        /* Footer del modal */
-        .address-modal-footer {
-            background: #f8f9fa;
-        }
-
-        body.dark-mode .address-modal-footer {
-            background: #1a1a1a;
-        }
-
-        /* Opciones de dirección */
-        .address-option {
-            background: #f8f9fa;
-            border: 2px solid #e1e1e1;
-        }
-
-        body.dark-mode .address-option {
-            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
-            border: 2px solid #3a3a3a;
-        }
-
-        .address-option:hover {
-            border-color: #c9a67c !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(201, 166, 124, 0.2);
-        }
-
-        /* Nombre en la opción */
-        .address-option-name {
-            color: #c9a67c;
-        }
-
-        body.dark-mode .address-option-name {
-            color: #c9a67c;
-        }
-
-        /* Detalles de dirección */
-        .address-option-details {
-            color: #333;
-        }
-
-        body.dark-mode .address-option-details {
-            color: #d0d0d0;
-        }
-
-        /* Teléfono */
-        .address-option-phone {
-            color: #6c757d;
-        }
-
-        body.dark-mode .address-option-phone {
-            color: #a0a0a0;
-        }
-
-        /* Estado vacío */
-        .address-empty-state {
-            color: #6c757d;
-        }
-
-        body.dark-mode .address-empty-state {
-            color: #888;
-        }
-
-        /* Botón agregar dirección */
-        .btn-add-address {
-            background: #3a3a3a;
-            border: 1px solid #4a4a4a;
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .btn-add-address {
-            background: #3a3a3a;
-            border: 1px solid #4a4a4a;
-            color: #e0e0e0;
-        }
-
-        .btn-add-address:hover {
-            background: #c9a67c;
-            border: 1px solid #c9a67c;
-            color: #1a1a1a;
-        }
-
-        /* ========================================
-           PREVENIR MOVIMIENTO DE PÁGINA CON MODAL
-        ======================================== */
-        
-        /* Mantener scroll visible cuando modal está abierto */
-        body.modal-open {
-            overflow: auto !important;
-        }
-
-        /* ========================================
-           ESTILOS DEL SCROLLBAR GLOBAL
-        ======================================== */
-        
-        /* Scrollbar principal del body */
-        body::-webkit-scrollbar {
-            width: 12px;
-        }
-
-        body::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        body.dark-mode::-webkit-scrollbar-track {
-            background: #1a1a1a;
-        }
-
-        body::-webkit-scrollbar-thumb {
-            background: #c9a67c;
-            border-radius: 6px;
-        }
-
-        body::-webkit-scrollbar-thumb:hover {
-            background: #a08661;
-        }
-
-        /* Firefox scrollbar */
-        body {
-            scrollbar-width: thin;
-            scrollbar-color: #c9a67c #f1f1f1;
-        }
-
-        body.dark-mode {
-            scrollbar-color: #c9a67c #1a1a1a;
-        }
-    </style>
+   
 </head>
 
 <body class="checkout-page">
@@ -2231,21 +217,8 @@ try {
 
     <?php include 'includes/header-section.php'; ?>
 
-    <!-- Breadcrumb Begin -->
-    <div class="breadcrumb-option">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="breadcrumb__links">
-                        <a href="./index.php"><i class="fa fa-home"></i> Inicio</a>
-                        <a href="./cart.php">Carrito</a>
-                        <span>Checkout</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Breadcrumb End -->
+    <!-- Breadcrumb -->
+    <?php include 'includes/breadcrumb.php'; ?>
 
     <!-- Checkout Section Begin -->
     <section class="checkout spad">
@@ -2280,81 +253,57 @@ try {
                 </div>
             </div>
 
-            <!-- Vista previa de productos (Solo Móvil) -->
-            <div class="mobile-cart-preview">
-                <div class="mobile-cart-preview__header">
-                    <span class="mobile-cart-preview__title">
-                        <i class="fa fa-shopping-bag"></i> Tu Pedido
-                    </span>
-                    <span class="mobile-cart-preview__count">
-                        <?php echo count($cart_items); ?> <?php echo count($cart_items) == 1 ? 'producto' : 'productos'; ?>
-                    </span>
-                </div>
-                <div class="mobile-cart-preview__items">
-                    <?php foreach($cart_items as $item): ?>
-                    <div class="mobile-cart-preview__item">
-                        <img src="<?php echo htmlspecialchars($item['url_imagen_producto']); ?>" 
-                             alt="<?php echo htmlspecialchars($item['nombre_producto']); ?>"
-                             class="mobile-cart-preview__item-image">
-                        <div class="mobile-cart-preview__item-qty">
-                            <?php echo $item['cantidad_carrito']; ?>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-
             <div class="row" style="align-items: flex-start;">
                 <div class="col-lg-8 col-md-8 col-12 ps-lg-4">
                     <form id="checkoutForm" action="app/actions/process_checkout.php" method="POST">
                         
                         <?php if($tiene_direccion_predeterminada): ?>
                         <!-- VISTA SIMPLIFICADA CON DIRECCIÓN PREDETERMINADA -->
-                        <div class="form-section checkout-address-section" style="border-radius: 12px; padding: 24px; margin-bottom: 25px;">
-                            <div class="address-header-section" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                                <h5 style="color: #c9a67c; margin: 0; font-size: 18px; font-weight: 700;">
-                                    <i class="fa fa-map-marker" style="margin-right: 8px;"></i> Dirección de Envío
-                                </h5>
-                                <button type="button" class="btn btn-sm btn-change-address" id="btnChangeAddress" 
-                                        style="border: none; padding: 6px 16px; border-radius: 6px; font-weight: 600; font-size: 13px;">
-                                    <i class="fa fa-edit"></i> Cambiar
-                                </button>
+                        <div class="form-section checkout-address-section">
+                            
+                            <div class="address-preview-card" onclick="openAddressBottomSheet()">
+                                <div class="address-icon-wrapper">
+                                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024" width="1em" height="1em" fill="currentColor" class="address-icon">
+                                        <path d="M512 53.3c229.9 0 416 190.6 416 425.4 0 10.3-0.4 20.6-1.2 31.1l-1.7 17.8-1.1 7.4c-1.1 8.7-2.5 17.3-4.2 26.1l-3 14.4-3.6 14.7c-18.7 70.4-54.7 134.3-103.7 185.4l-10.7 10.7c-71.8 76.5-167 138.5-273.6 186.6l-13.2 5.9-13.1-5.9c-106.5-48-201.9-110-272.7-185.5-55.4-53.6-95.4-121.7-115.3-196.7l-4.3-17.4c-1.8-8.3-3.4-16.7-4.8-25.4l-3.2-22.2c-1.7-16.1-2.6-31.6-2.6-47 0-234.8 186.1-425.4 416-425.4z m0 64c-194.2 0-352 161.6-352 361.4 0 8.6 0.3 17.4 1 26.3l1.4 14.9 1.1 6.9c1 7.5 2.1 14.8 3.4 21.7l2.6 12.4c15.7 69.3 51.1 131.9 102.3 181.6 60.9 64.9 142.1 119.5 233.6 162.9l6.6 3 6.6-3c85-40.4 161.1-90.3 221.1-150l13.5-14c46.8-45.4 80.8-102.9 97.7-165.7l4.1-17.1 2-9.7 1.9-10.9 2.8-19.3c1.5-13.8 2.3-27 2.3-40 0-199.8-157.8-361.4-352-361.4z m0 238.7c67.6 0 122.4 54.7 122.4 122.3 0 67.5-54.8 122.3-122.4 122.3-67.6 0-122.4-54.8-122.4-122.3 0-67.6 54.8-122.3 122.4-122.3z m0 64c-32.2 0-58.4 26.1-58.4 58.3 0 32.2 26.1 58.3 58.4 58.3 32.2 0 58.4-26.1 58.4-58.3 0-32.2-26.1-58.3-58.4-58.3z"></path>
+                                    </svg>
+                                </div>
+                                
+                                <div class="address-content-wrapper">
+                                    <div class="address-line-1">
+                                        <span class="address-name" id="preview_nombre"><?php echo htmlspecialchars($direccion_predeterminada['nombre_cliente_direccion']); ?></span>
+                                        <span class="address-phone" id="preview_telefono"><?php echo htmlspecialchars($direccion_predeterminada['telefono_direccion']); ?></span>
+                                    </div>
+                                    
+                                    <div class="address-line-2">
+                                        <span class="address-street" id="preview_direccion"><?php echo htmlspecialchars($direccion_predeterminada['direccion_completa_direccion']); ?></span>
+                                    </div>
+                                    
+                                    <div class="address-line-3">
+                                        <span id="preview_distrito"><?php echo htmlspecialchars($direccion_predeterminada['distrito'] ?? ''); ?></span>
+                                        <?php if(!empty($direccion_predeterminada['codigo_postal'])): ?>
+                                        <span>, </span>
+                                        <span id="preview_postal"><?php echo htmlspecialchars($direccion_predeterminada['codigo_postal']); ?></span>
+                                        <?php endif; ?>
+                                        <span>, </span>
+                                        <span id="preview_provincia"><?php echo htmlspecialchars($direccion_predeterminada['provincia'] ?? 'Lima'); ?></span>
+                                        <span>, </span>
+                                        <span id="preview_departamento"><?php echo htmlspecialchars($direccion_predeterminada['departamento'] ?? 'Lima'); ?></span>
+                                        <span>, Perú</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="address-arrow-wrapper">
+                                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024" width="1em" height="1em" fill="currentColor" class="arrow-icon">
+                                        <path d="M320 215.8c-18.2-18.9-17.6-49 1.3-67.2 17-16.4 43.1-17.5 61.5-3.8l5.8 5.1 315.4 328.7c15.7 16.3 17.4 41.1 5.3 59.3l-5.2 6.5-315.5 329.6c-18.2 19-48.3 19.6-67.2 1.5-17.1-16.3-19.3-42.4-6.4-61.2l4.9-6 284-296.6-283.9-295.9z"></path>
+                                    </svg>
+                                </div>
                             </div>
                             
-                            <div class="address-preview-card" style="border-radius: 8px; padding: 16px; border-left: 4px solid #c9a67c;">
-                                <div class="address-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 14px;">
-                                    <div class="address-field">
-                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">Nombre</strong>
-                                        <span class="address-value" id="preview_nombre"><?php echo htmlspecialchars($direccion_predeterminada['nombre_cliente_direccion']); ?></span>
-                                    </div>
-                                    <div class="address-field">
-                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">Teléfono</strong>
-                                        <span class="address-value" id="preview_telefono"><?php echo htmlspecialchars($direccion_predeterminada['telefono_direccion']); ?></span>
-                                    </div>
-                                    <div class="address-field">
-                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">DNI/RUC</strong>
-                                        <span class="address-value" id="preview_dni"><?php echo htmlspecialchars($direccion_predeterminada['dni_ruc_direccion'] ?? 'No especificado'); ?></span>
-                                    </div>
-                                    <div class="address-field">
-                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">Tipo</strong>
-                                        <span class="address-value" id="preview_tipo">
-                                            <?php 
-                                            $dni_length = strlen($direccion_predeterminada['dni_ruc_direccion'] ?? '');
-                                            echo $dni_length === 11 ? 'Factura' : 'Boleta';
-                                            ?>
-                                        </span>
-                                    </div>
-                                    <div class="address-field address-field-full" style="grid-column: 1 / -1;">
-                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">Dirección</strong>
-                                        <span class="address-value" id="preview_direccion"><?php echo htmlspecialchars($direccion_predeterminada['direccion_completa_direccion']); ?></span>
-                                    </div>
-                                    <?php if(!empty($direccion_predeterminada['referencia_direccion'])): ?>
-                                    <div class="address-field address-field-full" style="grid-column: 1 / -1;">
-                                        <strong class="address-label" style="display: block; margin-bottom: 4px;">Referencia</strong>
-                                        <span class="address-value-ref" id="preview_referencia"><?php echo htmlspecialchars($direccion_predeterminada['referencia_direccion']); ?></span>
-                                    </div>
-                                    <?php endif; ?>
-                                </div>
+                            <!-- Campos ocultos para compatibilidad -->
+                            <div style="display: none;">
+                                <span id="preview_dni"><?php echo htmlspecialchars($direccion_predeterminada['dni_ruc_direccion'] ?? ''); ?></span>
+                                <span id="preview_tipo"><?php echo strlen($direccion_predeterminada['dni_ruc_direccion'] ?? '') === 11 ? 'Factura' : 'Boleta'; ?></span>
+                                <span id="preview_referencia"><?php echo htmlspecialchars($direccion_predeterminada['referencia_direccion'] ?? ''); ?></span>
                             </div>
                             
                             <!-- Campos Ocultos con TODOS los datos de la dirección predeterminada -->
@@ -2392,63 +341,68 @@ try {
                         </div>
                         </div>
 
-                        <!-- Productos Seleccionados (Vista Simplificada) -->
-                        <div class="form-section checkout-products-section" style="border-radius: 12px; padding: 24px; margin-bottom: 25px;">
-                            <h5 style="color: #c9a67c; margin-bottom: 16px; font-size: 18px; font-weight: 700;">
-                                <i class="fa fa-shopping-bag"></i> Productos en tu pedido (<?php echo count($cart_items); ?>)
-                            </h5>
-                            <div class="checkout-products-grid">
-                                <?php 
-                                $max_visible_products = 5; // Mostrar 5 productos
-                                $total_products = count($cart_items);
-                                $products_to_show = array_slice($cart_items, 0, $max_visible_products);
-                                $remaining_products = $total_products - $max_visible_products;
-                                
-                                foreach($products_to_show as $item): 
-                                    $precio_original = $item['precio_producto'];
-                                    $precio_con_descuento = $precio_original;
-                                    
-                                    if($item['descuento_porcentaje_producto'] > 0) {
-                                        $precio_con_descuento = $precio_original - ($precio_original * $item['descuento_porcentaje_producto'] / 100);
-                                    }
-                                    
-                                    $subtotal_item = $precio_con_descuento * $item['cantidad_carrito'];
-                                ?>
-                                <div class="checkout-product-card">
-                                    <div class="checkout-product-image">
-                                        <img src="<?php echo htmlspecialchars($item['url_imagen_producto']); ?>" 
-                                             alt="<?php echo htmlspecialchars($item['nombre_producto']); ?>">
-                                        <?php if($item['descuento_porcentaje_producto'] > 0): ?>
-                                        <div class="checkout-product-discount">
-                                            -<?php echo $item['descuento_porcentaje_producto']; ?>%
-                                        </div>
-                                        <?php endif; ?>
-                                        <div class="checkout-product-quantity">
-                                            × <?php echo $item['cantidad_carrito']; ?>
-                                        </div>
+                        <!-- Productos Seleccionados (Estilo Temu) -->
+                        <div class="temu-products-section">
+                            <div class="temu-section-header" onclick="openProductsBottomSheet()">
+                                <div class="temu-header-left">
+                                    <div class="temu-header-title">
+                                        <span class="temu-title-text">Envío gratis</span>
                                     </div>
-                                    <div class="checkout-product-info">
-                                        <h6 class="checkout-product-name"><?php echo htmlspecialchars($item['nombre_producto']); ?></h6>
-                                        <div class="checkout-product-prices">
-                                            <?php if($item['descuento_porcentaje_producto'] > 0): ?>
-                                            <span class="checkout-product-price-old">S/ <?php echo number_format($precio_original, 2); ?></span>
-                                            <?php endif; ?>
-                                            <span class="checkout-product-price">S/ <?php echo number_format($precio_con_descuento, 2); ?></span>
-                                        </div>
-                                        <div class="checkout-product-subtotal">
-                                            Subtotal: <strong>S/ <?php echo number_format($subtotal_item, 2); ?></strong>
-                                        </div>
+                                    <div class="temu-header-count">
+                                        <span>(<?php echo count($cart_items); ?>)</span>
                                     </div>
                                 </div>
-                                <?php endforeach; ?>
-                                
-                                <?php if($remaining_products > 0): ?>
-                                <div class="checkout-products-more">
-                                    <div class="checkout-products-more-count">+<?php echo $remaining_products; ?></div>
-                                    <div class="checkout-products-more-text">Más</div>
+                                <div class="temu-header-right">
+                                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024" width="1em" height="1em" fill="currentColor" class="temu-arrow">
+                                        <path d="M320 215.8c-18.2-18.9-17.6-49 1.3-67.2 17-16.4 43.1-17.5 61.5-3.8l5.8 5.1 315.4 328.7c15.7 16.3 17.4 41.1 5.3 59.3l-5.2 6.5-315.5 329.6c-18.2 19-48.3 19.6-67.2 1.5-17.1-16.3-19.3-42.4-6.4-61.2l4.9-6 284-296.6-283.9-295.9z"></path>
+                                    </svg>
                                 </div>
-                                <?php endif; ?>
                             </div>
+                            
+                            <div class="temu-products-scroll-container">
+                                <div class="temu-products-scroll-wrapper">
+                                    <?php foreach($cart_items as $item): 
+                                        $precio_original = $item['precio_producto'];
+                                        $precio_con_descuento = $precio_original;
+                                        $tiene_descuento = $item['descuento_porcentaje_producto'] > 0;
+                                        
+                                        if($tiene_descuento) {
+                                            $precio_con_descuento = $precio_original - ($precio_original * $item['descuento_porcentaje_producto'] / 100);
+                                        }
+                                    ?>
+                                    <div class="temu-product-item">
+                                        <div class="temu-product-image-wrapper">
+                                            <img src="<?php echo htmlspecialchars($item['url_imagen_producto']); ?>" 
+                                                 alt="<?php echo htmlspecialchars($item['nombre_producto']); ?>"
+                                                 class="temu-product-image">
+                                            
+                                            <?php if($tiene_descuento): ?>
+                                            <div class="temu-discount-badge" style="background-color:#FB7701">
+                                                <span>-<?php echo $item['descuento_porcentaje_producto']; ?>%</span>
+                                            </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        
+                                        <div class="temu-product-price-container">
+                                            <div class="temu-product-price">
+                                                <span class="temu-price-symbol">S/ </span>
+                                                <span class="temu-price-value"><?php echo number_format($precio_con_descuento, 2); ?></span>
+                                                <?php if($item['cantidad_carrito'] > 1): ?>
+                                                <span class="temu-price-quantity">×<?php echo $item['cantidad_carrito']; ?></span>
+                                                <?php endif; ?>
+                                            </div>
+                                            <?php if($tiene_descuento): ?>
+                                            <div class="temu-product-original-price">
+                                                <span><?php echo number_format($precio_original, 2); ?></span>
+                                            </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            
+                            
                         </div>
 
                         <!-- Métodos de Pago - EN FILA HORIZONTAL -->
@@ -3280,6 +1234,164 @@ try {
     </div>
     <!-- Modal para Seleccionar Dirección End -->
 
+    <!-- Bottom Sheet para Seleccionar Dirección (Mobile-First) -->
+    <div id="addressBottomSheet" class="address-bottom-sheet">
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <div class="bottom-sheet-handle"></div>
+                <h3 class="bottom-sheet-title">Direcciones de Envío</h3>
+                <button type="button" class="bottom-sheet-close" onclick="closeAddressBottomSheet()">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="bottom-sheet-body">
+                <?php if(!empty($todas_direcciones)): ?>
+                    <div class="address-list">
+                        <?php foreach($todas_direcciones as $dir): ?>
+                        <div class="address-card" onclick="selectAddress(<?php echo $dir['id_direccion']; ?>)">
+                            <div class="address-card-header">
+                                <div class="address-icon-circle">
+                                    <i class="fa fa-map-marker-alt"></i>
+                                </div>
+                                <div class="address-card-info">
+                                    <div class="address-card-name"><?php echo htmlspecialchars($dir['nombre_cliente_direccion']); ?></div>
+                                    <div class="address-card-phone"><?php echo htmlspecialchars($dir['telefono_direccion']); ?></div>
+                                </div>
+                                <?php if($dir['es_principal'] == 1): ?>
+                                <div class="address-default-badge">
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <div class="address-card-details">
+                                <div class="address-card-street"><?php echo htmlspecialchars($dir['direccion_completa_direccion']); ?></div>
+                                <div class="address-card-location">
+                                    <?php echo htmlspecialchars($dir['distrito_direccion']); ?><?php if(!empty($dir['codigo_postal'])): ?>, <?php echo htmlspecialchars($dir['codigo_postal']); ?><?php endif; ?> <?php echo htmlspecialchars($dir['provincia_direccion']); ?>, <?php echo htmlspecialchars($dir['departamento_direccion']); ?>, Perú
+                                </div>
+                            </div>
+                            
+                            <!-- Datos ocultos para JavaScript -->
+                            <input type="hidden" class="addr-nombre" value="<?php echo htmlspecialchars($dir['nombre_cliente_direccion']); ?>">
+                            <input type="hidden" class="addr-email" value="<?php echo htmlspecialchars($usuario_logueado['email_usuario']); ?>">
+                            <input type="hidden" class="addr-telefono" value="<?php echo htmlspecialchars($dir['telefono_direccion']); ?>">
+                            <input type="hidden" class="addr-direccion" value="<?php echo htmlspecialchars($dir['direccion_completa_direccion']); ?>">
+                            <input type="hidden" class="addr-departamento" value="<?php echo htmlspecialchars($dir['departamento_direccion']); ?>">
+                            <input type="hidden" class="addr-provincia" value="<?php echo htmlspecialchars($dir['provincia_direccion']); ?>">
+                            <input type="hidden" class="addr-distrito" value="<?php echo htmlspecialchars($dir['distrito_direccion']); ?>">
+                            <input type="hidden" class="addr-referencia" value="<?php echo htmlspecialchars($dir['referencia_direccion'] ?? ''); ?>">
+                            <input type="hidden" class="addr-metodo-pago" value="<?php echo htmlspecialchars($dir['metodo_pago_favorito'] ?? ''); ?>">
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="address-empty-state">
+                        <i class="fa fa-map-marker-alt"></i>
+                        <p>No tienes direcciones guardadas</p>
+                        <button class="btn-add-first-address" onclick="window.location.href='profile.php#direcciones'">
+                            <i class="fa fa-plus"></i> Agregar dirección
+                        </button>
+                    </div>
+                <?php endif; ?>
+            </div>
+            
+            <?php if(!empty($todas_direcciones)): ?>
+            <div class="bottom-sheet-footer">
+                <button type="button" class="btn-add-new-address" onclick="window.location.href='profile.php#direcciones'">
+                    <i class="fa fa-plus-circle"></i> Agregar nueva dirección
+                </button>
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+    <!-- Bottom Sheet End -->
+
+    <!-- Bottom Sheet para Ver Productos Completos -->
+    <div id="productsBottomSheet" class="address-bottom-sheet">
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <div class="bottom-sheet-handle"></div>
+                <h3 class="bottom-sheet-title">Productos en tu pedido (<?php echo count($cart_items); ?>)</h3>
+                <button type="button" class="bottom-sheet-close" onclick="closeProductsBottomSheet()">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="bottom-sheet-body">
+                <div class="products-detail-list">
+                    <?php foreach($cart_items as $item): 
+                        $precio_original = $item['precio_producto'];
+                        $precio_con_descuento = $precio_original;
+                        $tiene_descuento = $item['descuento_porcentaje_producto'] > 0;
+                        
+                        if($tiene_descuento) {
+                            $precio_con_descuento = $precio_original - ($precio_original * $item['descuento_porcentaje_producto'] / 100);
+                        }
+                        
+                        $subtotal = $precio_con_descuento * $item['cantidad_carrito'];
+                    ?>
+                    <div class="product-detail-card">
+                        <div class="product-detail-image">
+                            <img src="<?php echo htmlspecialchars($item['url_imagen_producto']); ?>" 
+                                 alt="<?php echo htmlspecialchars($item['nombre_producto']); ?>">
+                            <?php if($tiene_descuento): ?>
+                            <div class="product-detail-badge" style="background:#FB7701">
+                                -<?php echo $item['descuento_porcentaje_producto']; ?>%
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="product-detail-info">
+                            <h4 class="product-detail-name"><?php echo htmlspecialchars($item['nombre_producto']); ?></h4>
+                            
+                            <div class="product-detail-prices">
+                                <div class="product-price-row">
+                                    <span class="product-price-label">Precio unitario:</span>
+                                    <div class="product-price-values">
+                                        <?php if($tiene_descuento): ?>
+                                        <span class="product-price-old">S/ <?php echo number_format($precio_original, 2); ?></span>
+                                        <?php endif; ?>
+                                        <span class="product-price-current">S/ <?php echo number_format($precio_con_descuento, 2); ?></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="product-quantity-row">
+                                    <span class="product-quantity-label">Cantidad:</span>
+                                    <span class="product-quantity-value">×<?php echo $item['cantidad_carrito']; ?></span>
+                                </div>
+                                
+                                <div class="product-subtotal-row">
+                                    <span class="product-subtotal-label">Subtotal:</span>
+                                    <span class="product-subtotal-value">S/ <?php echo number_format($subtotal, 2); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            
+            <div class="bottom-sheet-footer">
+                <div class="products-total-summary">
+                    <span class="total-label">Total de productos:</span>
+                    <span class="total-value">S/ <?php 
+                        $total_productos = 0;
+                        foreach($cart_items as $item) {
+                            $precio = $item['precio_producto'];
+                            if($item['descuento_porcentaje_producto'] > 0) {
+                                $precio = $precio - ($precio * $item['descuento_porcentaje_producto'] / 100);
+                            }
+                            $total_productos += $precio * $item['cantidad_carrito'];
+                        }
+                        echo number_format($total_productos, 2);
+                    ?></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bottom Sheet Productos End -->
+
     <!-- Footer -->
     <?php include 'includes/footer.php'; ?>
 
@@ -3812,8 +1924,8 @@ try {
         // MODAL DE DIRECCIÓN PREDETERMINADA
         // ========================================
         
+        
         <?php if($tiene_direccion_predeterminada): ?>
-        // Datos de la dirección predeterminada
         const defaultAddress = {
             nombre: '<?php echo addslashes($direccion_predeterminada["nombre_cliente_direccion"] ?? ""); ?>',
             telefono: '<?php echo addslashes($direccion_predeterminada["telefono_direccion"] ?? ""); ?>',
@@ -3973,6 +2085,10 @@ try {
         $.fn.modal.Constructor.prototype._setScrollbar = function() {};
         $.fn.modal.Constructor.prototype._resetScrollbar = function() {};
         
+        // ========================================
+        // SELECTOR DE DIRECCIÓN (MODAL LEGACY)
+        // ========================================
+        
         // Seleccionar una dirección del modal
         $('.address-option').on('click', function() {
             // Obtener todos los datos de la dirección seleccionada
@@ -4025,7 +2141,7 @@ try {
 
     <!-- Global Offcanvas Menu JavaScript -->
     <script src="public/assets/js/offcanvas-menu.js"></script>
-
+    
     <?php if($usuario_logueado): ?>
     <?php include 'includes/user-account-modal.php'; ?>
     <?php include 'includes/favorites-modal.php'; ?>
@@ -4035,6 +2151,9 @@ try {
     <!-- Chatbot Widget -->
     <?php include 'includes/chatbot-widget.php'; ?>
 </body>
+   <!-- Swipe Gestures - Para cerrar filtros con gestos táctiles -->
+    <script src="public/assets/js/swipe-gestures.js"></script>
+    
 </html>
 
 

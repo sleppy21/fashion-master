@@ -539,7 +539,7 @@ body[class*="shop"] .breadcrumb-option,
 /* Checkout - menos espacio */
 body[class*="checkout"] .breadcrumb-option,
 .checkout-page .breadcrumb-option {
-    padding-bottom: 10px !important;
+    padding-bottom: 30px !important;
 }
 
 /* Cart page */

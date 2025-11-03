@@ -1399,4 +1399,7 @@ try {
     <!-- Chatbot Widget -->
     <?php include 'includes/chatbot-widget.php'; ?>
 </body>
+   <!-- Swipe Gestures - Para cerrar filtros con gestos táctiles -->
+    <script src="public/assets/js/swipe-gestures.js"></script>
+    
 </html>
