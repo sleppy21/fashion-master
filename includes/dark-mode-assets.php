@@ -24,9 +24,9 @@
 })();
 </script>
 
-<!-- Dark Mode CSS -->
-<link rel="stylesheet" href="public/assets/css/themes/dark-mode.css?v=<?php echo time(); ?>" type="text/css">
-<link rel="stylesheet" href="public/assets/css/modals-dark-mode.css?v=<?php echo time(); ?>" type="text/css">
 
-<!-- Dark Mode JavaScript (con cache busting para forzar actualización) -->
-<script src="public/assets/js/dark-mode.js?v=<?php echo time(); ?>"></script>
+<!-- Dark Mode CSS Unificado -->
+<link rel="stylesheet" href="public/assets/css/dark-mode/dark-mode.css?v=<?php echo time(); ?>" type="text/css">
+
+<!-- Dark Mode JavaScript (nueva ubicación) -->
+<script src="public/assets/js/dark-mode/dark-mode.js?v=<?php echo time(); ?>"></script>

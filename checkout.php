@@ -173,47 +173,16 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $page_title; ?> - SleppyStore</title>
 
-    <!-- Google Font -->
+   <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- Css Styles -->
-    <link rel="stylesheet" href="public/assets/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/font-awesome.min.css" type="text/css">
-    
-    <!-- Font Awesome 6.4.0 (Iconos modernos - Misma versión que cart.php) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="public/assets/css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/jquery-ui.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/magnific-popup.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/dark-mode.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/modals-dark-mode.css" type="text/css">
-    
-    <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
-    <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
-    
-    <!-- Breadcrumb Modern - Global (Debe cargarse DESPUÉS para tener prioridad) -->
-    <link rel="stylesheet" href="public/assets/css/breadcrumb-modern.css?v=2.1">
-    
-    <!-- Global Responsive Styles - TODO EL PROYECTO -->
-    <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
     
     <!-- Modern Styles -->
-    <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="public/assets/css/notifications-modal.css">
     <link rel="stylesheet" href="public/assets/css/checkout/checkout.css?v=6.6" type="text/css">
 
-   
 </head>
-
 <body class="checkout-page">
-    <?php include 'includes/offcanvas-menu.php'; ?>
+    <?php include 'includes/modern-libraries.php'; ?>
 
     <?php include 'includes/header-section.php'; ?>
 
@@ -1392,9 +1361,6 @@ try {
     </div>
     <!-- Bottom Sheet Productos End -->
 
-    <!-- Footer -->
-    <?php include 'includes/footer.php'; ?>
-
     <!-- Js Plugins -->
     <script>
         // BASE URL para peticiones AJAX - Compatible con ngrok y cualquier dominio
@@ -1424,23 +1390,6 @@ try {
             window.BASE_URL = baseUrlFromPHP;
         })();
     </script>
-    <script src="public/assets/js/jquery-3.3.1.min.js"></script>
-    <script src="public/assets/js/bootstrap.min.js"></script>
-    <script src="public/assets/js/jquery.slicknav.js"></script>
-    <script src="public/assets/js/main.js"></script>
-    
-    <!-- Header Handler - Actualización en tiempo real de contadores -->
-    <script src="public/assets/js/header-handler.js?v=1.0"></script>
-    
-    <!-- Sistema Global de Contadores -->
-    <script src="public/assets/js/global-counters.js"></script>
-    
-    <!-- Real-time Updates System - DEBE IR ANTES que cart-favorites-handler -->
-    <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
-    
-    <script src="public/assets/js/cart-favorites-handler.js"></script>
-    <script src="public/assets/js/user-account-modal.js"></script>
-    <!-- ❌ REMOVIDO: dark-mode.js (ya se carga desde dark-mode-assets.php en modern-libraries.php) -->
 
     <script>
         // ========================================
@@ -2138,21 +2087,7 @@ try {
         
         <?php endif; ?>
     </script>
-
-    <!-- Global Offcanvas Menu JavaScript -->
-    <script src="public/assets/js/offcanvas-menu.js"></script>
-    
-    <?php if($usuario_logueado): ?>
-    <?php include 'includes/user-account-modal.php'; ?>
-    <?php include 'includes/favorites-modal.php'; ?>
-    <?php include 'includes/notifications-modal.php'; ?>
-    <?php endif; ?>
-
-    <!-- Chatbot Widget -->
-    <?php include 'includes/chatbot-widget.php'; ?>
 </body>
-   <!-- Swipe Gestures - Para cerrar filtros con gestos táctiles -->
-    <script src="public/assets/js/swipe-gestures.js"></script>
     
 </html>
 

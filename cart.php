@@ -135,34 +135,11 @@ try {
     <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- ========================================
-         ARQUITECTURA CSS UNIFICADA - ORDEN CRÍTICO
-         ======================================== -->
-    
-    <!-- 1. CORE: Base del sistema -->
-    <link rel="stylesheet" href="public/assets/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/jquery-ui.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/core/variables.css" type="text/css">
-    
-    <!-- 2. COMPONENTS: Header y Modales -->
-    <link rel="stylesheet" href="public/assets/css/components/modals.css" type="text/css">
-
-    <!-- 4. THEMES: Dark mode y animaciones -->
-    <link rel="stylesheet" href="public/assets/css/themes/dark-mode.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/themes/animations.css" type="text/css">
-        
     <!-- 6. SPECIFIC: Estilos específicos de página -->
-    <link rel="stylesheet" href="public/assets/css/offcanvas-mobile.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/cart-improvements.css?v=<?= time() ?>" type="text/css">
     
     <?php include 'includes/modern-libraries.php'; ?>
     
-    <!-- Breadcrumb Modern - Global (Debe cargarse DESPUÉS para tener prioridad) -->
-    <link rel="stylesheet" href="public/assets/css/breadcrumb-modern.css?v=2.1">
-
     <!-- Estilos específicos del carrito -->
     <link rel="stylesheet" href="public/assets/css/cart/cart.css?v=<?= time() ?>" type="text/css">
     
@@ -172,7 +149,6 @@ try {
 </head>
 
 <body class="cart-page">
-    <?php include 'includes/offcanvas-menu.php'; ?>
 
     <!-- Header Section Begin -->
     <?php include 'includes/header-section.php'; ?>
@@ -492,14 +468,6 @@ try {
                                     <button type="submit" class="btn-apply-discount">Aplicar</button>
                                 </div>
                             </form>
-                            <!-- 
-                            Cupones de prueba disponibles:
-                            DESCUENTO10 = 10% de descuento
-                            DESCUENTO20 = 20% de descuento
-                            BIENVENIDO = 15% de descuento
-                            VERANO25 = 25% de descuento
-                            PROMO30 = 30% de descuento
-                            -->
                         </div>
 
                     <!-- Mensaje de cupón fuera del sidebar -->
@@ -647,17 +615,6 @@ try {
         </div>
     </div>
     <?php endif; ?>
-    <!-- Footer Sticky Móvil End -->
-
-    <!-- Footer Section Begin -->
-    <?php include 'includes/footer.php'; ?>
-    <!-- Footer Section End -->
-
-    <?php 
-    include 'includes/user-account-modal.php';
-    include 'includes/favorites-modal.php';
-    include 'includes/notifications-modal.php';
-    ?>
 
     <!-- Js Plugins -->
     <script>
@@ -688,36 +645,10 @@ try {
             window.BASE_URL = baseUrlFromPHP;
         })();
     </script>
-    <script src="public/assets/js/jquery-3.3.1.min.js"></script>
-    
-    <!-- Fetch API Handler Moderno - Reemplaza AJAX/jQuery -->
-    <script src="public/assets/js/fetch-api-handler.js"></script>
-    
-    <script src="public/assets/js/bootstrap.min.js"></script>
-    <script src="public/assets/js/jquery-ui.min.js"></script>
-    <script src="public/assets/js/jquery.slicknav.js"></script>
-    <script src="public/assets/js/main.js"></script>
-    
+
     <!-- Masonry Layout para productos relacionados -->
     <script src="public/assets/js/shop/masonry-layout.js?v=1.1"></script>
-    
-    <!-- Header Handler - Actualización en tiempo real de contadores -->
-    <script src="public/assets/js/header-handler.js?v=1.0"></script>
-    
-    <!-- Sistema Global de Contadores -->
-    <script src="public/assets/js/global-counters.js"></script>
-    
-    <!-- Real-time Updates System - DEBE IR ANTES que cart-favorites-handler -->
-    <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
-    
-    <script src="public/assets/js/user-account-modal.js"></script>
-    <script src="public/assets/js/cart-favorites-handler.js"></script>
-    
-    <!-- ❌ REMOVIDO: Dark Mode Script (ya se carga desde dark-mode-assets.php en modern-libraries.php) -->
-    
-    <!-- Offcanvas Menu Global JS -->
-    <script src="public/assets/js/offcanvas-menu.js"></script>
-    
+                
     <script>
     // Variable global para almacenar descuento de cupón aplicado
     let appliedDiscount = 0;
@@ -1195,7 +1126,6 @@ try {
         
         updateCartTotals();
 
-        // El manejo del offcanvas ahora está en offcanvas-menu.js
     });
 
     // ======== MANEJO DE CHECKBOXES DE SELECCIÓN ========
@@ -1383,23 +1313,7 @@ try {
         });
     }
     
-    // Debug: Verificar que showNotification está disponible
-    $(document).ready(function() {
-        
-        // Test automático después de 1 segundo (solo para debug, puedes comentarlo después)
-        // setTimeout(function() {
-        //     if (typeof window.showNotification === 'function') {
-        //         window.showNotification('Sistema de notificaciones cargado correctamente', 'success');
-        //     }
-        // }, 1000);
-    });
-    
     </script>
-    
-    <!-- Chatbot Widget -->
-    <?php include 'includes/chatbot-widget.php'; ?>
 </body>
-   <!-- Swipe Gestures - Para cerrar filtros con gestos táctiles -->
-    <script src="public/assets/js/swipe-gestures.js"></script>
     
 </html>

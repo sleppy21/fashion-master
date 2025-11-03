@@ -852,8 +852,29 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
         </div>
     </section>
     
-    <!-- Avatar Crop Modal -->
-    <?php include 'includes/avatar-crop-modal.php'; ?>
+    <!-- Avatar Crop Modal (inline) -->
+    <div id="avatar-crop-modal" class="avatar-crop-modal hidden">
+        <div class="avatar-crop-overlay"></div>
+        <div class="avatar-crop-content">
+            <button class="avatar-crop-close" id="closeCropModal">
+                <i class="fa fa-times"></i>
+            </button>
+            <div class="avatar-crop-body">
+                <!-- Área de recorte -->
+                <div class="crop-container">
+                    <div id="crop-image"></div>
+                </div>
+            </div>
+            <div class="avatar-crop-footer">
+                <button type="button" class="btn btn-cancel">
+                    <i class="fa fa-times"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-upload">
+                    <i class="fa fa-upload"></i> Subir Avatar
+                </button>
+            </div>
+        </div>
+    </div>
     
     <!-- Modal para Agregar/Editar Dirección -->
     <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel" aria-hidden="true">
@@ -1455,5 +1476,69 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
     
     <!-- Chatbot Widget -->
     <?php include 'includes/chatbot-widget.php'; ?>
+
+    <!-- Avatar Crop Modal JS (inline) -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mostrar modal al hacer click en el botón de cambiar avatar
+        const openBtn = document.querySelector('.btn-change-avatar');
+        const modal = document.getElementById('avatar-crop-modal');
+        const closeBtn = document.getElementById('closeCropModal');
+        const cancelBtn = modal ? modal.querySelector('.btn-cancel') : null;
+        const uploadBtn = modal ? modal.querySelector('.btn-upload') : null;
+        let croppieInstance = null;
+
+        if (openBtn && modal) {
+            openBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                modal.classList.remove('hidden');
+                // Inicializar Croppie si no existe
+                if (!croppieInstance) {
+                    croppieInstance = new Croppie(document.getElementById('crop-image'), {
+                        viewport: { width: 200, height: 200, type: 'circle' },
+                        boundary: { width: 300, height: 300 },
+                        enableOrientation: true
+                    });
+                }
+            });
+        }
+
+        // Cerrar modal
+        function closeModal() {
+            modal.classList.add('hidden');
+            // Opcional: croppieInstance.destroy(); croppieInstance = null;
+        }
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+        // Subir avatar (ejemplo básico, debes adaptar a tu backend)
+        if (uploadBtn) {
+            uploadBtn.addEventListener('click', function() {
+                if (croppieInstance) {
+                    uploadBtn.disabled = true;
+                    croppieInstance.result({ type: 'base64', size: 'viewport', format: 'png' }).then(function(base64) {
+                        // Aquí puedes hacer un fetch/ajax para subir la imagen
+                        // Ejemplo:
+                        fetch('public/assets/js/avatar-upload.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ avatar: base64 })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            // Actualizar avatar en la página si es necesario
+                            if (data.success && data.avatar_url) {
+                                document.querySelector('.avatar-image').src = data.avatar_url;
+                                closeModal();
+                            }
+                        })
+                        .catch(() => {})
+                        .finally(() => { uploadBtn.disabled = false; });
+                    });
+                }
+            });
+        }
+    });
+    </script>
 </body>
 </html>

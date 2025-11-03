@@ -75,28 +75,28 @@
           FASHION STORE CSS - ARQUITECTURA MODULAR V2.0
           Sistema optimizado y consolidado
           ======================================== -->
-    
-    <!-- CORE: Base del sistema -->
-    <link rel="stylesheet" href="public/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="public/assets/css/core/variables.css?v=<?php echo time(); ?>">
-    
-    <!-- COMPONENTS: Componentes reutilizables -->
+    <!-- 1. CORE: Base del sistema -->
+    <link rel="stylesheet" href="public/assets/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/core/variables.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/owl.carousel.min.css" type="text/css">
+
+    <!-- Components: Header y Modales -->
+    <link rel="stylesheet" href="public/assets/css/core/variables.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/components/modals.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/components/header.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="public/assets/css/components/modals.css?v=<?php echo time(); ?>">
-    
-    <!-- LAYOUTS: Estructuras de página -->
-    <link rel="stylesheet" href="public/assets/css/layouts/shop.css?v=<?php echo time(); ?>">
-    
+
     <!-- THEMES: Temas y animaciones -->
     <link rel="stylesheet" href="public/assets/css/themes/dark-mode.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="public/assets/css/themes/animations.css?v=<?php echo time(); ?>">
     
-    <!-- LEGACY: Archivos originales necesarios (style.css principal) -->
-    <link rel="stylesheet" href="public/assets/css/style.css">
-    
     <!-- ESPECÍFICOS: Archivos que aún no se han consolidado -->
     <link rel="stylesheet" href="public/assets/css/offcanvas-mobile.css?v=<?php echo time(); ?>">
 
+    <!-- Breadcrumb Modern - Global (Debe cargarse DESPUÉS para tener prioridad) -->
+    <link rel="stylesheet" href="public/assets/css/breadcrumb-modern.css?v=2.1">
+    
 </head>
 <body>
     
@@ -763,10 +763,7 @@ if(isset($usuario_logueado) && $usuario_logueado):
     if ($is_https) {
         $secure_base_url = str_replace('http://', 'https://', $secure_base_url);
     }
-    
-    // DESHABILITADO: ajax-counters.js - real-time-updates.js maneja los contadores
-    // echo '<script src="' . $secure_base_url . '/public/assets/js/ajax-counters.js?v=' . time() . '"></script>';
-    
+        
     // Script para colores dinámicos de avatar (shadow extraction)
     echo '<script src="' . $secure_base_url . '/public/assets/js/image-color-extractor.js?v=' . time() . '"></script>';
     
@@ -774,12 +771,6 @@ if(isset($usuario_logueado) && $usuario_logueado):
     echo '<script src="' . $secure_base_url . '/public/assets/js/header-avatar-shadow.js?v=' . time() . '"></script>';
 endif;
 ?>
-
-<!-- Script para header responsive (siempre cargado) -->
-<script src="public/assets/js/header-responsive.js?v=<?php echo time(); ?>"></script>
-
-<!-- Script para búsqueda global (siempre cargado) -->
-<script src="public/assets/js/global-search.js?v=<?php echo time(); ?>"></script>
 
 <!-- Script completo para offcanvas menu con swipe -->
 <script>
@@ -984,6 +975,23 @@ endif;
     
 })();
 </script>
+<!-- jQuery (debe ser lo primero) -->
+<script src="public/assets/js/header-globals/jquery-3.3.1.min.js"></script>
 
-<!-- Script para shop-filters-mobile con OffcanvasManager -->
-<script src="public/assets/js/shop-filters-mobile.js?v=<?= time() ?>"></script>
+<!-- Swipe Gestures - Para cerrar filtros con gestos táctiles -->
+<script src="public/assets/js/header-globals/swipe-gestures.js"></script>
+
+<!-- Chatbot Widget -->
+<?php include 'includes/chatbot-widget.php'; ?>
+
+<!-- Real-time Updates System -->
+<script src="public/assets/js/header-globals/real-time-updates.js?v=<?= time() ?>"></script>
+    
+<!-- Script para header responsive (siempre cargado) -->
+<script src="public/assets/js/header-globals/header-responsive.js?v=<?php echo time(); ?>"></script>
+
+<!-- Script para búsqueda global (siempre cargado) -->
+<script src="public/assets/js/header-globals/global-search.js?v=<?php echo time(); ?>"></script>
+
+<!-- Botstrap -->
+<script src="public/assets/js/header-globals/bootstrap.min.js"></script>
