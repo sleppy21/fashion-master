@@ -2,9 +2,17 @@
 <script>
 (function() {
     // Aplicar tema INMEDIATAMENTE antes de que se renderice la página
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const isDarkMode = savedTheme === 'dark' || (!savedTheme && prefersDark);
+    let savedTheme = localStorage.getItem('theme');
+    
+    // Si no hay tema guardado, establecer 'light' como predeterminado
+    if (!savedTheme) {
+        savedTheme = 'light';
+        localStorage.setItem('theme', 'light');
+    }
+    
+    // CORREGIDO: Solo activar dark mode si el usuario lo eligió explícitamente
+    // No usar preferencia del sistema para evitar cambios automáticos
+    const isDarkMode = savedTheme === 'dark';
     
     if (isDarkMode) {
         document.documentElement.classList.add('dark-mode');

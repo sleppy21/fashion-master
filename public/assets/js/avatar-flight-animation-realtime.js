@@ -232,72 +232,67 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
             const $headerAvatar = $headerContainer.find('.avatar-image');
             const newImageUrl = avatarUrl + '?t=' + Date.now();
             
+            // Actualizar src DESPUÉS de que el clon haya desaparecido
+            $headerAvatar.attr('src', newImageUrl);
+            if ($headerAvatar[0] && $headerAvatar[0].complete) {
+                $headerAvatar.trigger('load');
+            }
+            
+            // NO aplicar shadow aquí - ya se aplicó desde avatarShadowUpdated
+            // Solo asegurarnos de que tenga el data-shadow-color
+            if (shadowColorRGB && $headerAvatar[0] && !$headerAvatar[0].dataset.shadowColor) {
+                const r = shadowColorRGB.r;
+                const g = shadowColorRGB.g;
+                const b = shadowColorRGB.b;
                 
-                // NO aplicar shadow aquí - ya se aplicó desde avatarShadowUpdated
-                // Solo asegurarnos de que tenga el data-shadow-color
-                if (shadowColorRGB && !this.dataset.shadowColor) {
+                $headerAvatar[0].dataset.shadowColor = `${r}, ${g}, ${b}`;
+                $headerAvatar[0].dataset.shadowApplied = 'true';
+            }
+            
+            // ACTUALIZAR TAMBIÉN EL AVATAR DEL MODAL CON SU SHADOW
+            const $modalAvatar = $('#user-account-modal .modal-avatar-img');
+            if ($modalAvatar.length > 0) {
+                $modalAvatar.attr('src', newImageUrl);
+                
+                // Aplicar shadow al modal también
+                if (shadowColorRGB) {
+                    const $modalContainer = $('#modal-user-avatar');
                     const r = shadowColorRGB.r;
                     const g = shadowColorRGB.g;
                     const b = shadowColorRGB.b;
                     
-                    this.dataset.shadowColor = `${r}, ${g}, ${b}`;
-                    this.dataset.shadowApplied = 'true';
-                    
+                    $modalContainer.css({
+                        'box-shadow': `0 8px 24px rgba(${r}, ${g}, ${b}, 0.35)`
+                    });
                 }
-                
-                // ACTUALIZAR TAMBIÉN EL AVATAR DEL MODAL CON SU SHADOW
-                const $modalAvatar = $('#user-account-modal .modal-avatar-img');
-                if ($modalAvatar.length > 0) {
-                    $modalAvatar.attr('src', newImageUrl);
-                    
-                    // Aplicar shadow al modal también
-                    if (shadowColorRGB) {
-                        const $modalContainer = $('#modal-user-avatar');
-                        const r = shadowColorRGB.r;
-                        const g = shadowColorRGB.g;
-                        const b = shadowColorRGB.b;
-                        
-                        $modalContainer.css({
-                            'box-shadow': `0 8px 24px rgba(${r}, ${g}, ${b}, 0.35)`
-                        });
-                        
+            }
+            
+            // Disparar evento de confirmación
+            if (shadowColorRGB) {
+                const event = new CustomEvent('avatarColorUpdated', {
+                    detail: { 
+                        r: shadowColorRGB.r, 
+                        g: shadowColorRGB.g, 
+                        b: shadowColorRGB.b 
                     }
-                }
-                
-                // Disparar evento de confirmación
-                if (shadowColorRGB) {
-                    const event = new CustomEvent('avatarColorUpdated', {
-                        detail: { 
-                            r: shadowColorRGB.r, 
-                            g: shadowColorRGB.g, 
-                            b: shadowColorRGB.b 
-                        }
-                    });
-                    document.dispatchEvent(event);
-                }
-                
-                // Efectos finales header (sin sombras de colores)
-                $headerContainer.css({
-                    animation: 'none',
-                    transform: 'scale(1.15)',
-                    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
                 });
-                
-                setTimeout(() => {
-                    $headerContainer.css({
-                        transform: 'scale(1)'
-                    });
-                }, 400);
-                
-                
-                if (callback) callback();
+                document.dispatchEvent(event);
+            }
+            
+            // Efectos finales header (sin sombras de colores)
+            $headerContainer.css({
+                animation: 'none',
+                transform: 'scale(1.15)',
+                transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
             });
             
-            // Actualizar src DESPUÉS de que el clon haya desaparecido
-            $headerAvatar.attr('src', newImageUrl);
-            if ($headerAvatar[0].complete) {
-                $headerAvatar.trigger('load');
-            }
+            setTimeout(() => {
+                $headerContainer.css({
+                    transform: 'scale(1)'
+                });
+            }, 400);
+            
+            if (callback) callback();
             
             // Remover avatar volador
             $flyingAvatar.remove();
@@ -317,7 +312,7 @@ window.flyAvatarToHeaderRealTime = function(avatarUrl, callback) {
 // CSS PARA ANIMACIÓN
 if (!$('#avatar-realtime-flight-css').length) {
     $('head').append(`
-        <style id="avatar-realtime-flight-css">se
+        <style id="avatar-realtime-flight-css">
             @keyframes pulse-header {
                 0%, 100% { 
                     transform: scale(1); 

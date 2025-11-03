@@ -187,7 +187,9 @@
         }
     });
 
-    // Detectar cambios en la preferencia del sistema
+    // ❌ DESACTIVADO: Listener de preferencia del sistema
+    // Ya no usamos la preferencia del sistema para evitar cambios automáticos
+    /*
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
         if (!localStorage.getItem('theme')) {
             if (e.matches) {
@@ -202,5 +204,6 @@
             }
         }
     });
+    */
 
 })();

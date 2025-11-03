@@ -1,3 +1,728 @@
+
+        /* ============================================
+           FONDO DEL BODY
+           ============================================ */
+        body {
+            background-color: #f8f5f2 !important;
+        }
+        
+        /* ELIMINAR BARRA LATERAL AL ABRIR MODALES (sin romper el diseño) */
+        html {
+            overflow-x: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        body {
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            /* Asegurar scroll en móvil */
+            -webkit-overflow-scrolling: touch !important;
+            min-height: 100vh;
+        }
+        
+        /* Ocultar scrollbar horizontal */
+        *::-webkit-scrollbar:horizontal {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+        
+        /* Evitar que el body se estire cuando se abren modales */
+        body.modal-open {
+            overflow: hidden !important;
+            padding-right: 0 !important;
+        }
+        
+        /* Dark mode */
+        body.dark-mode {
+            background-color: #1a1a1a !important;
+        }
+        
+        /* ============================================
+           CONTENEDOR PRINCIPAL
+           ============================================ */
+        .profile-page .container {
+            max-width: 1400px;
+        }
+        
+        /* ============================================
+           AVATAR Y PERFIL
+           ============================================ */
+        .avatar-wrapper {
+            cursor: pointer;
+        }
+        
+        #avatar-file-input {
+            display: none;
+        }
+        
+        /* ============================================
+           ENLACES DE SECCIÓN RÁPIDOS
+           ============================================ */
+        .quick-section-links {
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-top: 1px solid rgba(201, 166, 124, 0.1);
+        }
+        
+        .quick-section-links > p {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .quick-section-links > div {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .quick-section-links a {
+            font-size: 13px;
+            color: #c9a67c;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            padding: 4px 0;
+        }
+        
+        .quick-section-links a i {
+            font-size: 10px;
+            margin-right: 8px;
+            opacity: 0.5;
+        }
+        
+        .quick-section-links a span {
+            border-bottom: 1px solid transparent;
+        }
+        
+        /* ============================================
+           ENLACES DE SECCIÓN SUTILES - HOVER EFFECT
+           ============================================ */
+        .quick-section-links a:hover {
+            padding-left: 6px !important;
+        }
+        
+        .quick-section-links a:hover i {
+            opacity: 1 !important;
+        }
+        
+        .quick-section-links a:hover span {
+            border-bottom-color: #c9a67c !important;
+        }
+        
+        /* ============================================
+           FORM ACTIONS
+           ============================================ */
+        .form-actions {
+            display: none;
+        }
+        
+        /* ============================================
+           EMPTY STATE - DIRECCIONES
+           ============================================ */
+        .addresses-empty-state {
+            padding: 80px 40px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(201,166,124,0.05) 0%, rgba(201,166,124,0.02) 100%);
+            border-radius: 16px;
+            border: 2px dashed rgba(201,166,124,0.3);
+        }
+        
+        .addresses-empty-state > div:first-child {
+            margin-bottom: 24px;
+        }
+        
+        .addresses-empty-state i {
+            font-size: 72px;
+            color: #c9a67c;
+            opacity: 0.4;
+        }
+        
+        .addresses-empty-state h4 {
+            color: #c9a67c;
+            margin-bottom: 16px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .addresses-empty-state p {
+            color: #777;
+            margin-bottom: 32px;
+            font-size: 15px;
+            line-height: 1.6;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .addresses-empty-state #btn-add-first-address {
+            padding: 14px 36px;
+            font-size: 15px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #c9a67c 0%, #a08661 100%);
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(201,166,124,0.3);
+        }
+        
+        .addresses-empty-state #btn-add-first-address i {
+            margin-right: 8px;
+            font-size: inherit;
+            color: inherit;
+            opacity: 1;
+        }
+        
+        /* ============================================
+           CONFIGURACIÓN
+           ============================================ */
+        #configuracion p.subtitle {
+            font-size: 13px;
+            color: #666;
+            margin: 8px 0 0 0;
+        }
+        
+        #settings-form {
+            padding: 25px;
+        }
+        
+        #settings-form select[name="language"],
+        #settings-form select[name="currency"] {
+            max-width: 200px;
+        }
+        
+        .settings-actions {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+        
+        .settings-actions > p {
+            margin: 0 0 15px 0;
+            color: #2ecc71;
+            font-size: 0.95rem;
+        }
+        
+        /* ============================================
+           MEJORAS PARA SECCIÓN DE DIRECCIONES
+           ============================================ */
+        /* Reducir altura del botón "Agregar Dirección" */
+        #addresses .card-header .btn-edit {
+            padding: 8px 16px !important;
+            font-size: 13px !important;
+            height: auto !important;
+            line-height: 1.4 !important;
+        }
+        
+        /* Hover para botón "Agregar Primera Dirección" */
+        #btn-add-first-address:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4);
+        }
+        
+        /* ============================================
+           MODAL DE DIRECCIÓN - ESTRUCTURA
+           ============================================ */
+        #addressModal .modal-dialog {
+            max-width: 700px !important;
+            margin: 1.75rem auto !important;
+        }
+        
+        #addressModal .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+        
+        /* ============================================
+           HEADER DEL MODAL - SÚPER MODERNO
+           ============================================ */
+        #addressModal .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-bottom: none;
+            padding: 28px 32px;
+            position: relative;
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.25);
+        }
+        
+        /* Efecto de overlay decorativo */
+        #addressModal .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            border-radius: 16px 16px 0 0;
+            opacity: 0.5;
+        }
+        
+        #addressModal .modal-title {
+            font-weight: 700;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: white;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        #addressModal .modal-title i {
+            font-size: 28px;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 10px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        #addressModal .modal-header .close {
+            color: white;
+            opacity: 0.9;
+            text-shadow: none;
+            font-size: 32px;
+            font-weight: 300;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+        }
+        
+        #addressModal .modal-header .close:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        body.dark-mode #addressModal .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* ============================================
+           BODY DEL MODAL
+           ============================================ */
+        #addressModal .modal-body {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            padding: 20px 12px;
+        }
+        
+        #addressModal .modal-footer {
+            border-top: 1px solid #e2e8f0;
+            padding: 16px 24px;
+            background: #f8f9fa;
+            border-radius: 0 0 16px 16px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        body.dark-mode #addressModal .modal-footer {
+            background: #1f1f1f;
+            border-top-color: #374151;
+        }
+        
+        /* ============================================
+           MODAL DE DIRECCIÓN - FORMULARIO
+           ============================================ */
+        #addressModal label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        #addressModal label i {
+            margin-right: 6px;
+            color: #667eea;
+            width: 16px;
+            text-align: center;
+        }
+        
+        /* Estilos básicos - sobrescritos más abajo con !important */
+        #addressModal .form-control {
+            border-radius: 8px;
+            border: 2px solid #e0e4e8;
+            padding: 10px 12px; /* Reducido para uniformidad */
+            font-size: 14px;
+            transition: all 0.3s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        #addressModal .form-text {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        
+        #addressModal #address_reference {
+            resize: none;
+            overflow: hidden;
+            min-height: 42px;
+        }
+        
+        #razon-social-group {
+            display: none;
+        }
+        
+        /* ============================================
+           MODAL DE DIRECCIÓN - INTERACCIONES
+           ============================================ */
+        /* Estilos mejorados para inputs del modal de dirección */
+        #addressModal .form-control:focus {
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15) !important;
+        }
+        
+        #addressModal .form-control:hover:not(:disabled) {
+            border-color: #b8c0e0;
+        }
+        
+        /* ============================================
+           MODAL DE DIRECCIÓN - BOTONES
+           ============================================ */
+        #addressModal .modal-footer .btn {
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            min-width: 140px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        #addressModal .btn-secondary {
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #4a5568;
+        }
+        
+        #addressModal .btn-secondary:hover {
+            background: #f7fafc;
+            border-color: #cbd5e0;
+            color: #2d3748;
+        }
+        
+        #addressModal #saveAddressBtn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+        }
+        
+        #addressModal #saveAddressBtn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        body.dark-mode #addressModal .btn-secondary {
+            background: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode #addressModal .btn-secondary:hover {
+            background: #374151;
+            border-color: #6b7280;
+        }
+        
+        /* ============================================
+           RESPONSIVE - MODAL
+           ============================================ */
+        /* Modal de pantalla completa en móvil */
+        @media (max-width: 768px) {
+            /* El modal ocupa toda la pantalla */
+            #addressModal .modal-dialog {
+                max-width: 100% !important;
+                width: 100% !important;
+                height: 100% !important;
+                margin: 0 !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+            }
+            
+            #addressModal .modal-content {
+                height: 100% !important;
+                border-radius: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            /* Header del modal - Respeta el header-section de la página (64px) */
+            #addressModal .modal-header {
+                position: fixed !important;
+                top: 64px !important; /* Altura exacta del header-section */
+                left: 0 !important;
+                right: 0 !important;
+                z-index: 1050 !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+                background: #f5f5f5 !important; /* Gris claro en móvil también */
+                border-bottom: 1px solid #e0e0e0 !important;
+            }
+            
+            /* Body del modal - Ajustado para compensar el header fijo */
+            #addressModal .modal-body {
+                flex: 1 !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                padding: 16px 12px !important; /* 12px lateral en móvil */
+                margin-top: 132px !important; /* 64px header-section + 68px modal-header */
+                margin-bottom: 70px !important; /* Espacio para el footer */
+                max-height: none !important;
+            }
+            
+            /* Footer del modal - Fijo en la parte inferior */
+            #addressModal .modal-footer {
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                z-index: 1050 !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
+                box-shadow: 0 -2px 8px rgba(0,0,0,0.1) !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                gap: 10px !important;
+                padding: 12px !important;
+            }
+            
+            /* Botones del footer - Tamaño normal en móvil */
+            #addressModal .modal-footer .btn {
+                flex: 1 !important;
+                min-width: 0 !important;
+                font-size: 14px !important;
+                padding: 12px 16px !important;
+                border-radius: 8px !important;
+                font-weight: 600 !important;
+            }
+            
+            /* Selects de ubigeo - Compactos y sin salirse - FORZADO */
+            #addressModal select.form-control,
+            #addressModal select#address_departamento,
+            #addressModal select#address_provincia,
+            #addressModal select#address_distrito {
+                font-size: 12px !important;
+                padding: 6px 28px 6px 10px !important;
+                min-height: 36px !important;
+                max-height: 36px !important;
+                height: 36px !important;
+                line-height: 1.2 !important;
+                background-size: 12px !important;
+                background-position: right 8px center !important;
+            }
+            
+            /* Opciones de los selects - Más pequeñas y compactas */
+            #addressModal select.form-control option,
+            #addressModal select#address_departamento option,
+            #addressModal select#address_provincia option,
+            #addressModal select#address_distrito option {
+                font-size: 12px !important;
+                padding: 6px 10px !important;
+                line-height: 1.3 !important;
+                min-height: 30px !important;
+            }
+            
+            /* Labels más pequeños en móvil */
+            #addressModal label {
+                font-size: 12px !important;
+                margin-bottom: 4px !important;
+            }
+            
+            #addressModal label i {
+                font-size: 11px !important;
+            }
+            
+            /* Limitar altura del dropdown */
+            #addressModal select.form-control[size] {
+                max-height: 180px !important;
+            }
+            
+            /* Título del modal más compacto */
+            #addressModal .modal-title {
+                font-size: 20px !important;
+                color: #2d3436 !important;
+            }
+            
+            #addressModal .modal-title i {
+                font-size: 24px !important;
+            }
+            
+            /* Botón cerrar más visible */
+            #addressModal .modal-header .close {
+                font-size: 32px !important;
+                padding: 0 !important;
+                margin: -8px -4px -8px auto !important;
+            }
+            
+            /* Formulario optimizado para móvil */
+            #addressModal .form-group {
+                margin-bottom: 16px !important;
+            }
+            
+            #addressModal label {
+                font-size: 13px !important;
+                margin-bottom: 6px !important;
+            }
+            
+            #addressModal .form-control {
+                font-size: 16px !important; /* Evita zoom en iOS */
+                padding: 10px 12px !important; /* Uniforme con desktop */
+            }
+            
+            #addressModal .form-text {
+                font-size: 11px !important;
+            }
+            
+            /* Padding de columnas en móvil - 5px cada lado */
+            #addressModal .modal-body .row {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+            
+            #addressModal .modal-body .row > [class*="col-"] {
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+            }
+            
+            /* Campos de una sola columna también con 5px lateral */
+            #addressModal .modal-body > .form-group {
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+            }
+        }
+        
+        /* Ajuste fino para móviles muy pequeños */
+        @media (max-width: 576px) {
+            #addressModal .modal-header {
+                padding: 16px 12px !important;
+            }
+            
+            #addressModal .modal-title {
+                font-size: 16px !important;
+            }
+            
+            #addressModal .modal-footer .btn {
+                padding: 10px 12px !important;
+            }
+        }
+        
+        /* ============================================
+           MODAL BACKDROP - RESPONSIVE
+           ============================================ */
+        /* Ajustar el backdrop del modal en móvil para respetar el header */
+        @media (max-width: 768px) {
+            /* Backdrop del modal que respeta el header */
+            #addressModal.show ~ .modal-backdrop,
+            .modal-backdrop.show {
+                top: 64px !important; /* Altura exacta del header-section */
+                height: calc(100% - 64px) !important;
+            }
+            
+            /* Asegurar que el modal esté encima del backdrop */
+            #addressModal {
+                z-index: 1055 !important;
+            }
+            
+            /* El backdrop debe estar debajo del header pero encima del contenido */
+            .modal-backdrop {
+                z-index: 1040 !important;
+            }
+        }
+        
+        
+        /* ============================================
+           VALIDACIÓN DE FORMULARIOS
+           ============================================ */
+        /* Estilos para validación de campos */
+        .form-control.is-invalid {
+            border-color: #dc3545 !important;
+            padding-right: calc(1.5em + .75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(.375em + .1875rem) center;
+            background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+        }
+        
+        .form-control.is-valid {
+            border-color: #28a745 !important;
+            padding-right: calc(1.5em + .75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(.375em + .1875rem) center;
+            background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+        }
+        
+        .form-control.is-valid:focus {
+            border-color: #28a745 !important;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+        
+        .form-control.is-invalid:focus {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        
+        /* Estilos para selects válidos/inválidos */
+        select.form-control.is-valid {
+            background-position: right .75rem center, center right 2.25rem;
+            background-size: 16px 12px, calc(.75em + .375rem) calc(.75em + .375rem);
+        }
+        
+        select.form-control.is-invalid {
+            background-position: right .75rem center, center right 2.25rem;
+            background-size: 16px 12px, calc(.75em + .375rem) calc(.75em + .375rem);
+        }
+        
+        /* Campo readonly con estilo diferenciado */
+        .form-control[readonly] {
+            background-color: #f5f5f5 !important;
+            cursor: not-allowed !important;
+            opacity: 0.8;
+        }
+        
+        body.dark-mode .form-control[readonly] {
+            background-color: #2a2a2a !important;
+            color: #888 !important;
+        }
 /* Tabs en una sola fila y scroll en móvil */
 .profile-tabs {
     display: flex !important;
@@ -26,23 +751,106 @@
     padding: 10px 8px !important;
     font-size: 15px !important;
     font-weight: 500 !important;
-    transition: background 0.2s, color 0.2s !important;
+    transition: all 0.3s ease !important;
     display: flex !important;
     align-items: center !important;
+    justify-content: center !important;
     gap: 6px !important;
 }
+
+.profile-tabs .tab-btn i {
+    flex-shrink: 0 !important;
+}
+
+.profile-tabs .tab-btn .tab-text {
+    display: inline !important;
+}
+
 .profile-tabs .tab-btn.active {
     background: #c9a67c !important;
     color: #fff !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 8px rgba(201, 166, 124, 0.3) !important;
 }
 @media (max-width: 768px) {
     .profile-tabs {
-        gap: 4px !important;
+        gap: 6px !important;
         margin-bottom: 12px !important;
+        padding: 10px 12px !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        background: white !important;
+        border-radius: 14px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+        display: flex !important;
+        justify-content: space-around !important;
     }
+    
+    .profile-tabs::-webkit-scrollbar {
+        display: none !important;
+    }
+    
     .profile-tabs .tab-btn {
-        font-size: 13px !important;
-        padding: 8px 4px !important;
+        padding: 12px 8px !important;
+        flex-shrink: 0 !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 4px !important;
+        min-width: 0 !important;
+        border-radius: 10px !important;
+        position: relative !important;
+    }
+    
+    /* Ocultar texto completo en móvil */
+    .profile-tabs .tab-btn .tab-text {
+        display: none !important;
+    }
+    
+    .profile-tabs .tab-btn i {
+        font-size: 20px !important;
+        margin: 0 !important;
+    }
+    
+    /* Mostrar label pequeño debajo del icono */
+    .profile-tabs .tab-btn::after {
+        content: attr(data-label) !important;
+        font-size: 9px !important;
+        font-weight: 600 !important;
+        margin-top: 2px !important;
+        opacity: 0.7 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.3px !important;
+        display: block !important;
+    }
+    
+    .profile-tabs .tab-btn.active::after {
+        opacity: 1 !important;
+    }
+}
+
+/* Versión más compacta para móviles pequeños */
+@media (max-width: 576px) {
+    .profile-tabs {
+        padding: 8px 10px !important;
+        gap: 4px !important;
+        border-radius: 12px !important;
+    }
+    
+    .profile-tabs .tab-btn {
+        padding: 10px 6px !important;
+    }
+    
+    .profile-tabs .tab-btn i {
+        font-size: 18px !important;
+    }
+    
+    .profile-tabs .tab-btn::after {
+        font-size: 8px !important;
+        letter-spacing: 0.2px !important;
     }
 }
 /* Dark mode tabs */
@@ -63,7 +871,6 @@
 
 /* Profile Section */
 .profile-section {
-    padding: 100px 0 60px;
     background: #f8f9fa;
     min-height: 100vh;
     display: flex;
@@ -87,26 +894,32 @@
     position: relative;
 }
 
-/* Profile Sidebar - COMPLETAMENTE INMÓVIL */
+/* Profile Sidebar - Base Styles */
 .profile-sidebar {
     background: white;
     border-radius: 16px;
     padding: 30px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    position: fixed;
-    top: 100px;
-    width: 380px; /* Ancho aumentado para col-lg-4 */
-    max-height: calc(100vh - 120px);
-    overflow-y: auto;
-    overflow-x: hidden;
-    z-index: 100;
     /* Scroll suave */
     scroll-behavior: smooth;
     /* Scrollbar INVISIBLE pero funcional */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
-    /* Prevenir movimiento durante interacciones */
-    will-change: auto;
+}
+
+/* Sidebar FIJO solo en DESKTOP (pantallas grandes) */
+@media (min-width: 992px) {
+    .profile-sidebar {
+        position: fixed;
+        top: 100px;
+        width: 380px; /* Ancho aumentado para col-lg-4 */
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        z-index: 100;
+        /* Prevenir movimiento durante interacciones */
+        will-change: auto;
+    }
 }
 
 /* Ocultar scrollbar en Webkit (Chrome, Safari, Edge) */
@@ -123,32 +936,34 @@
     }
 }
 
-@media (max-width: 991px) {
-    .profile-sidebar {
-        position: relative;
-        width: 100%;
-        top: 0;
-    }
-}
-
 /* Dark mode para sidebar fijo */
 body.dark-mode .profile-sidebar {
     background: #2d3748;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Avatar Section */
-.profile-avatar-section {
-    text-align: center;
-    padding-bottom: 25px;
-    border-bottom: 1px solid #e9ecef;
-    margin-bottom: 25px;
+/* Avatar Section - Solo Desktop */
+@media (min-width: 769px) {
+    .profile-avatar-section {
+        text-align: center;
+        padding-bottom: 25px;
+        border-bottom: 1px solid #e9ecef;
+        margin-bottom: 25px;
+    }
 }
 
+/* Avatar wrapper - Solo Desktop */
+@media (min-width: 769px) {
+    .avatar-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+}
+
+/* Avatar wrapper - Base (mobile) */
 .avatar-wrapper {
     position: relative;
-    display: inline-block;
-    margin-bottom: 20px;
 }
 
 .avatar-circle {
@@ -236,34 +1051,37 @@ body.dark-mode .profile-sidebar {
     transform: scale(1.1);
 }
 
-.profile-name {
-    font-size: 22px;
-    font-weight: 700;
-    color: #000000;
-    margin: 0 0 10px 0;
-}
+/* Profile info - Solo Desktop */
+@media (min-width: 769px) {
+    .profile-name {
+        font-size: 22px;
+        font-weight: 700;
+        color: #000000;
+        margin: 0 0 10px 0;
+    }
 
-.profile-role-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 12px;
-    color: white;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 12px;
-}
+    .profile-role-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 12px;
+        color: white;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
 
-.profile-email {
-    color: #6c757d;
-    font-size: 14px;
-    margin: 0;
-}
+    .profile-email {
+        color: #6c757d;
+        font-size: 14px;
+        margin: 0;
+    }
 
-.profile-email i {
-    margin-right: 6px;
-    color: #3498db;
+    .profile-email i {
+        margin-right: 6px;
+        color: #3498db;
+    }
 }
 
 /* Profile Stats */
@@ -459,7 +1277,7 @@ body.dark-mode .profile-sidebar {
 .profile-card {
     background: white;
     border-radius: 16px;
-    padding: 30px;
+    padding: 5px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     margin-bottom: 25px;
 }
@@ -496,16 +1314,7 @@ body.dark-mode .profile-sidebar {
     background: #c9a67c;
     color: #fff;
 }
-@media (max-width: 768px) {
-    .profile-tabs {
-        gap: 4px;
-        margin-bottom: 12px;
-    }
-    .profile-tabs .tab-btn {
-        font-size: 13px;
-        padding: 8px 4px;
-    }
-}
+
 /* Dark mode tabs */
 .dark-mode .profile-tabs {
     background: #232323;
@@ -517,7 +1326,6 @@ body.dark-mode .profile-sidebar {
 .dark-mode .profile-tabs .tab-btn.active {
     background: #c9a67c;
     color: #232323;
-}
 }
 
 .card-header {
@@ -1093,43 +1901,6 @@ body.dark-mode .profile-sidebar {
     }
 }
 
-@media (max-width: 767px) {
-    .profile-section {
-        padding: 80px 0 40px;
-    }
-    
-    .profile-sidebar {
-        padding: 20px;
-    }
-    
-    .avatar-circle {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .avatar-initial {
-        font-size: 40px;
-    }
-    
-    .profile-name {
-        font-size: 18px;
-    }
-    
-    .profile-card {
-        padding: 20px;
-    }
-    
-    .card-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-    
-    .form-actions {
-        flex-direction: column;
-    }
-}
-
 /* ============================================
    LIGHT MODE - REFUERZO DE COLORES
    ============================================ */
@@ -1381,60 +2152,9 @@ body.dark-mode .btn-delete-address:hover {
     padding-right: 0 !important;
 }
 
-#addressModal .modal-content {
-    border-radius: 20px !important;
-    border: none !important;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2) !important;
-    overflow: hidden !important;
-    max-height: calc(100vh - 3.5rem) !important;
-    display: flex !important;
-    flex-direction: column !important;
-}
-
-#addressModal .modal-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    color: white !important;
-    padding: 25px 30px !important;
-    border-bottom: none !important;
-    flex-shrink: 0 !important;
-}
-
-#addressModal .modal-title {
-    font-weight: 700 !important;
-    font-size: 20px !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 12px !important;
-    color: white !important;
-}
-
-#addressModal .modal-title i {
-    font-size: 24px !important;
-    opacity: 0.95 !important;
-    color: white !important;
-}
-
-#addressModal .close {
-    color: white !important;
-    opacity: 0.9 !important;
-    text-shadow: none !important;
-    font-size: 32px !important;
-    font-weight: 300 !important;
-    transition: all 0.3s ease !important;
-}
-
-#addressModal .close:hover {
-    opacity: 1 !important;
-    transform: rotate(90deg) !important;
-}
-
-#addressModal .modal-body {
-    padding: 35px 30px !important;
-    background: #f8f9fa !important;
-    overflow-y: auto !important;
-    max-height: calc(100vh - 250px) !important;
-    flex: 1 1 auto !important;
-}
+/* ============================================
+   ESTILOS MEJORADOS DEL MODAL (SIN DUPLICADOS)
+   ============================================ */
 
 /* Labels mejoradas */
 #addressModal label {
@@ -1458,10 +2178,20 @@ body.dark-mode .btn-delete-address:hover {
 #addressModal .form-control {
     border-radius: 12px !important;
     border: 2px solid #e9ecef !important;
-    padding: 12px 16px !important;
+    padding: 10px 12px !important;
     font-size: 14px !important;
     transition: all 0.3s ease !important;
     background: white !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important; /* Evita overflow en columnas */
+}
+
+#addressModal select.form-control,
+#addressModal input.form-control,
+#addressModal textarea.form-control {
+    width: 100% !important;
+    max-width: 100% !important;
 }
 
 #addressModal .form-control:hover {
@@ -1480,19 +2210,38 @@ body.dark-mode .btn-delete-address:hover {
     font-size: 13px !important;
 }
 
-/* Form group spacing */
+/* Form group spacing - Reducido para campos más compactos */
 #addressModal .form-group {
-    margin-bottom: 20px !important;
+    margin-bottom: 16px !important;
+    width: 100% !important;
+}
+
+/* Ajustar padding de las columnas para espacio uniforme */
+#addressModal .modal-body .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+#addressModal .modal-body .row > [class*="col-"] {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+/* Asegurar que los campos de una sola columna también tengan padding */
+#addressModal .modal-body > .form-group {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
 }
 
 /* Form text mejorado */
 #addressModal .form-text {
-    font-size: 12px !important;
+    font-size: 11px !important;
     color: #718096 !important;
-    margin-top: 6px !important;
+    margin-top: 4px !important;
     display: flex !important;
     align-items: center !important;
-    gap: 6px !important;
+    gap: 4px !important;
+    padding-left: 2px !important;
 }
 
 #addressModal .form-text::before {
@@ -1515,43 +2264,6 @@ body.dark-mode .btn-delete-address:hover {
     gap: 12px !important;
     display: flex !important;
     justify-content: flex-end !important;
-}
-
-#addressModal .btn {
-    border-radius: 10px !important;
-    padding: 12px 24px !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-    transition: all 0.3s ease !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    border: none !important;
-}
-
-#addressModal .btn i {
-    font-size: 16px !important;
-}
-
-#addressModal .btn-secondary {
-    background: #6c757d !important;
-    color: white !important;
-}
-
-#addressModal .btn-secondary:hover {
-    background: #5a6268 !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3) !important;
-}
-
-#addressModal .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    color: white !important;
-}
-
-#addressModal .btn-primary:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
 }
 
 /* ============================================
@@ -1892,36 +2604,6 @@ body.dark-mode .form-control {
     color: #f0f0f0;
 }
 
-/* Responsive Settings */
-@media (max-width: 768px) {
-    .setting-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-    
-    .setting-label {
-        padding-right: 0;
-    }
-    
-    .theme-selector {
-        width: 100%;
-    }
-    
-    .color-picker-grid {
-        width: 100%;
-    }
-    
-    .settings-actions {
-        flex-direction: column;
-    }
-    
-    .btn-save-settings,
-    .btn-reset-settings {
-        width: 100%;
-    }
-}
-
 /* ============================================
    SELECT IMPROVEMENTS - MEJOR LEGIBILIDAD
    ============================================ */
@@ -2026,6 +2708,10 @@ body.dark-mode select.form-control:disabled {
 #addressModal select.form-control {
     color: #2c3e50 !important;
     background-color: white !important;
+    font-size: 14px !important;
+    height: auto !important;
+    min-height: 44px !important;
+    padding: 10px 32px 10px 12px !important;
 }
 
 body.dark-mode #addressModal select.form-control {
@@ -2033,14 +2719,47 @@ body.dark-mode #addressModal select.form-control {
     background-color: #2d3748 !important;
 }
 
+/* Optimización de selects de ubigeo para móvil */
+@media (max-width: 768px) {
+    #addressModal select.form-control {
+        font-size: 14px !important;
+        min-height: 42px !important;
+        padding: 8px 28px 8px 10px !important;
+        background-size: 14px !important;
+        background-position: right 8px center !important;
+    }
+    
+    /* Hacer las opciones del select más pequeñas y legibles */
+    #addressModal select.form-control option {
+        font-size: 13px !important;
+        padding: 8px 10px !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* Reducir espacio entre los selects de ubigeo en móvil */
+    #addressModal .row .col-md-4 {
+        margin-bottom: 12px !important;
+    }
+}
+
 /* ============================================
    DISEÑO MÓVIL MEJORADO - DESDE CERO
    ============================================ */
 
 @media (max-width: 768px) {
+    /* ========== FORZAR RESET DE ESTILOS BASE ========== */
+    * {
+        box-sizing: border-box;
+    }
+    
+    /* Forzar que nada centre el contenido del avatar-section */
+    .profile-sidebar > * {
+        text-align: left !important;
+    }
+    
     /* ========== SECCIÓN PRINCIPAL ========== */
     .profile-section {
-        padding: 15px 0 !important;
+        padding: 20px 0 40px !important;
         background: transparent !important;
     }
     
@@ -2048,116 +2767,149 @@ body.dark-mode #addressModal select.form-control {
         padding: 0 12px !important;
     }
     
-    /* ========== SIDEBAR - COMPACTO Y MODERNO ========== */
+    /* ========================================
+       SIDEBAR MÓVIL - HORIZONTAL (DESDE CERO)
+       ======================================== */
+    
+    /* Contenedor del sidebar */
     .profile-sidebar {
+        position: relative;
+        width: 100%;
         background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-        border-radius: 16px !important;
-        padding: 20px 16px !important;
-        margin-bottom: 16px !important;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        padding: 10px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     }
     
     body.dark-mode .profile-sidebar {
         background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3) !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     }
     
-    /* Avatar más pequeño y centrado */
-    .profile-avatar-section {
-        text-align: center;
-        margin-bottom: 16px !important;
+    /* Avatar Section - Layout Horizontal */
+    .profile-sidebar .profile-avatar-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        padding: 0;
+        margin: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
     }
     
-    .profile-avatar {
-        width: 80px !important;
-        height: 80px !important;
-        margin: 0 auto !important;
+    /* Avatar Wrapper - A la izquierda */
+    .profile-sidebar .avatar-wrapper {
+        flex-shrink: 0;
+        position: relative;
+        margin: 0;
+        padding: 0;
     }
     
-    .avatar-image {
-        width: 80px !important;
-        height: 80px !important;
+    .profile-sidebar .profile-avatar {
+        width: 45px;
+        height: 45px;
+        margin: 0;
     }
     
-    .avatar-overlay {
-        font-size: 11px !important;
+    .profile-sidebar .avatar-image {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        object-fit: cover;
     }
     
-    /* Info de usuario compacta */
-    .profile-info {
-        text-align: center;
-        padding: 0 !important;
-        margin-bottom: 12px !important;
+    /* Botón de cambiar avatar */
+    .profile-sidebar .btn-change-avatar {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #667eea;
+        border: 2px solid white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     
-    .profile-name {
-        font-size: 18px !important;
-        margin-bottom: 4px !important;
+    body.dark-mode .profile-sidebar .btn-change-avatar {
+        border-color: #2a2a2a;
     }
     
-    .profile-email {
-        font-size: 12px !important;
-        margin-bottom: 8px !important;
+    .profile-sidebar .btn-change-avatar i {
+        font-size: 9px;
+        color: white;
     }
     
-    .profile-role-badge {
-        font-size: 11px !important;
-        padding: 4px 12px !important;
-        display: inline-block !important;
+    /* Info Wrapper - A la derecha */
+    .profile-sidebar .profile-info-wrapper {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
     }
     
-    /* Stats en una fila compacta */
-    .profile-stats {
-        display: flex !important;
-        justify-content: space-around !important;
-        gap: 8px !important;
-        margin: 16px 0 !important;
-        padding: 12px 8px !important;
-        border-radius: 10px !important;
+    /* Badge de rol */
+    .profile-sidebar .profile-role-badge {
+        font-size: 9px;
+        padding: 2px 6px;
+        border-radius: 3px;
+        display: inline-block;
+        align-self: flex-start;
+        margin: 0 0 3px 0;
+        font-weight: 500;
+        line-height: 1;
     }
     
-    .stat-item {
-        flex: 1 !important;
-        text-align: center !important;
-        padding: 0 !important;
+    /* Nombre */
+    .profile-sidebar .profile-name {
+        font-size: 13px;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.2;
+        color: #2d3748;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
-    .stat-value {
-        font-size: 16px !important;
-        margin-bottom: 2px !important;
+    body.dark-mode .profile-sidebar .profile-name {
+        color: #e0e0e0;
     }
     
-    .stat-label {
-        font-size: 10px !important;
+    /* Email */
+    .profile-sidebar .profile-email {
+        font-size: 10px;
+        margin: 0;
+        line-height: 1.2;
+        color: #718096;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
-    /* Menú de navegación horizontal con scroll */
-    .profile-menu {
-        display: flex !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        gap: 6px !important;
-        padding: 8px 0 !important;
-        margin: 0 -16px !important;
-        padding-left: 16px !important;
-        padding-right: 16px !important;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
+    body.dark-mode .profile-sidebar .profile-email {
+        color: #a0aec0;
     }
     
-    .profile-menu::-webkit-scrollbar {
+    .profile-sidebar .profile-email i {
+        font-size: 9px;
+        margin-right: 3px;
+    }
+    
+    /* Ocultar elementos innecesarios */
+    .profile-sidebar .profile-stats,
+    .profile-sidebar .profile-menu,
+    .profile-sidebar .quick-actions,
+    .profile-sidebar .quick-section-links {
         display: none;
-    }
-    
-    .menu-item {
-        flex-shrink: 0 !important;
-        padding: 10px 16px !important;
-        font-size: 13px !important;
-        border-radius: 10px !important;
-        white-space: nowrap !important;
-        min-width: auto !important;
-        border: none !important;
-        background: rgba(0, 0, 0, 0.03) !important;
     }
     
     .menu-item.active {
@@ -2385,17 +3137,58 @@ body.dark-mode #addressModal select.form-control {
     }
 }
 
-/* ========== MÓVILES PEQUEÑOS (< 576px) ========== */
-@media (max-width: 576px) {
-    .profile-section .container {
-        padding: 0 10px !important;
+/* ========== TABLETS (768px - 991px) ========== */
+@media (min-width: 768px) and (max-width: 991px) {
+    .profile-section {
+        padding: 90px 0 50px !important;
     }
     
-    .profile-sidebar,
-    .profile-content {
-        border-radius: 12px !important;
-        padding: 14px !important;
+    .profile-sidebar {
+        position: relative !important;
+        width: 100% !important;
+        max-width: 600px !important;
+        margin: 0 auto 30px !important;
+        padding: 26px !important;
     }
+    
+    .profile-tabs {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        gap: 10px !important;
+        padding: 10px !important;
+    }
+    
+    .profile-tabs .tab-btn {
+        flex: 0 0 auto !important;
+        font-size: 15px !important;
+        padding: 12px 20px !important;
+        white-space: nowrap !important;
+    }
+    
+    .profile-card {
+        padding: 26px !important;
+        margin-bottom: 24px !important;
+    }
+    
+    .card-header h4 {
+        font-size: 20px !important;
+    }
+    
+    .address-card {
+        padding: 22px !important;
+    }
+    
+    .form-control {
+        font-size: 15px !important;
+        padding: 12px 16px !important;
+    }
+}
+
+/* ========== MÓVILES PEQUEÑOS (< 576px) ========== */
+@media (max-width: 576px) {
+
+
     
     .profile-avatar {
         width: 70px !important;
@@ -2422,5 +3215,62 @@ body.dark-mode #addressModal select.form-control {
         bottom: 60px !important;
         right: 12px !important;
     }
+    
+    /* Direcciones en móviles pequeños */
+    .address-card {
+        padding: 16px !important;
+        margin-bottom: 16px !important;
+        border-radius: 10px !important;
+    }
+    
+    .address-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .address-title {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        font-size: 14px !important;
+    }
+    
+    .address-title strong {
+        font-size: 15px !important;
+    }
+    
+    .address-actions {
+        width: 100% !important;
+        justify-content: flex-end !important;
+        gap: 10px !important;
+    }
+    
+    .btn-action {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 16px !important;
+    }
+    
+    .address-body p {
+        font-size: 13px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .address-details {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    
+    .detail-item {
+        font-size: 12px !important;
+        padding: 6px 10px !important;
+    }
+    
+    .badge-default {
+        font-size: 11px !important;
+        padding: 4px 10px !important;
+    }
 }
+
 

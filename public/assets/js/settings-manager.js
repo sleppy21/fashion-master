@@ -133,8 +133,24 @@
 
     // Cargar configuraciones guardadas del localStorage
     function loadSettings() {
+        // SINCRONIZAR: Si existe 'theme', usarlo para theme_mode
+        const currentTheme = localStorage.getItem('theme');
+        let themeMode = localStorage.getItem('theme_mode');
+        
+        // Si hay 'theme' pero no 'theme_mode', sincronizar
+        if (currentTheme && !themeMode) {
+            themeMode = currentTheme === 'dark' ? 'dark' : 'light';
+            localStorage.setItem('theme_mode', themeMode);
+        }
+        // Si no hay ninguno, usar 'light' por defecto
+        if (!themeMode) {
+            themeMode = 'light';
+            localStorage.setItem('theme_mode', 'light');
+            localStorage.setItem('theme', 'light');
+        }
+        
         const settings = {
-            theme_mode: localStorage.getItem('theme_mode') || 'light',
+            theme_mode: themeMode,
             push_notifications: localStorage.getItem('push_notifications') !== 'false',
             email_notifications: localStorage.getItem('email_notifications') !== 'false',
             promo_notifications: localStorage.getItem('promo_notifications') !== 'false',
@@ -171,29 +187,27 @@
 
     // Aplicar tema y guardar
     function applyTheme(themeMode) {
+        // SINCRONIZAR: Guardar en ambas keys
         localStorage.setItem('theme_mode', themeMode);
+        localStorage.setItem('theme', themeMode); // ✅ Sincronizar con dark-mode.js
         
         if (themeMode === 'dark') {
             document.body.classList.add('dark-mode');
             document.documentElement.classList.add('dark-mode');
-            localStorage.setItem('theme', 'dark');
             updateHeaderIcon('dark');
-        } else if (themeMode === 'light') {
+        } else {
+            // Cualquier otro valor (light, auto, etc) = modo claro
             document.body.classList.remove('dark-mode');
             document.documentElement.classList.remove('dark-mode');
-            localStorage.setItem('theme', 'light');
             updateHeaderIcon('light');
-        } else if (themeMode === 'auto') {
-            // Modo dinámico: usa modo oscuro pero con color del avatar
-            document.body.classList.add('dark-mode');
-            document.documentElement.classList.add('dark-mode');
-            localStorage.setItem('theme', 'dark');
-            updateHeaderIcon('auto');
             
-            // Aplicar color dinámico del avatar
-            const avatarColor = extractAvatarColor();
-            applyDynamicColor(avatarColor);
-            localStorage.setItem('dynamic_color', avatarColor);
+            // Si es 'auto', también aplicar color dinámico
+            if (themeMode === 'auto') {
+                const avatarColor = extractAvatarColor();
+                applyDynamicColor(avatarColor);
+                localStorage.setItem('dynamic_color', avatarColor);
+                updateHeaderIcon('auto');
+            }
         }
     }
 
@@ -252,6 +266,9 @@
         Object.keys(defaults).forEach(key => {
             localStorage.setItem(key, defaults[key]);
         });
+        
+        // SINCRONIZAR: También establecer 'theme' en 'light'
+        localStorage.setItem('theme', 'light');
 
         // Limpiar color dinámico
         localStorage.removeItem('dynamic_color');

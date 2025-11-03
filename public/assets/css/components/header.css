@@ -573,8 +573,8 @@ body.cart-page .shop-cart {
 
 @media (max-width: 767px) {
     .breadcrumb-option {
-        margin-top: 80px !important;
-        padding-bottom: 10px !important;
+        margin-top: 50px !important;
+        padding-bottom: 30px !important;
     }
     
     body.cart-page .breadcrumb-option {

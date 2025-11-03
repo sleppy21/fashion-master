@@ -130,198 +130,27 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
     <!-- Css Styles -->
     <link rel="stylesheet" href="public/assets/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/font-awesome.min.css" type="text/css">
-    
-    <!-- Font Awesome 6.4.0 (Iconos modernos - Misma versión que cart.php) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <link rel="stylesheet" href="public/assets/css/elegant-icons.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/jquery-ui.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
     
-
-    <!-- Modern Libraries -->
+    <!-- Modern Libraries (incluye Font Awesome 6.4.0 y Dark Mode) -->
     <?php include 'includes/modern-libraries.php'; ?>
-    
-    <!-- User Account Modal Styles -->
-    <link rel="stylesheet" href="public/assets/css/user-account-modal.css?v=2.0" type="text/css">
-    
-    <!-- Favorites Modal Styles -->
-    <link rel="stylesheet" href="public/assets/css/favorites-modal.css?v=2.0" type="text/css">
-    
-    <!-- Dark Mode Styles -->
-    <link rel="stylesheet" href="public/assets/css/dark-mode.css?v=2.0" type="text/css">
-    
-    <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
-    <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
-    
-    <!-- Global Responsive Styles - TODO EL PROYECTO -->
-    <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=2.0" type="text/css">
-    
+
     <!-- Avatar Flight Animation -->
     <link rel="stylesheet" href="public/assets/css/avatar-flight-animation.css?v=2.0" type="text/css">
-    
-    <!-- Modern Styles -->
-    <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=2.0">
-    <link rel="stylesheet" href="public/assets/css/notifications-modal.css?v=2.0">
-    
+   
+    <!-- Breadcrumb Styles -->
+    <link rel="stylesheet" href="public/assets/css/breadcrumb-modern.css" type="text/css">
+   
     <!-- Profile Styles -->
-    <link rel="stylesheet" href="public/assets/css/profile.css?v=2.0" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/profile/profile.css?v=10.0" type="text/css">
     
     <!-- Croppie CSS for Avatar Upload -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
     
     <!-- Avatar Crop Modal Styles -->
     <link rel="stylesheet" href="public/assets/css/avatar-crop-modal.css?v=2.0" type="text/css">
-    
-    <style>
-        /* ============================================
-           FONDO DEL BODY
-           ============================================ */
-        body {
-            background-color: #f8f5f2 !important;
-        }
-        
-        /* ELIMINAR BARRA LATERAL AL ABRIR MODALES (sin romper el diseño) */
-        html {
-            overflow-x: hidden !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        
-        body {
-            overflow-x: hidden !important;
-            overflow-y: auto !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            /* Asegurar scroll en móvil */
-            -webkit-overflow-scrolling: touch !important;
-            min-height: 100vh;
-        }
-        
-        /* Ocultar scrollbar horizontal */
-        *::-webkit-scrollbar:horizontal {
-            display: none !important;
-            width: 0 !important;
-            height: 0 !important;
-        }
-        
-        /* Evitar que el body se estire cuando se abren modales */
-        body.modal-open {
-            overflow: hidden !important;
-            padding-right: 0 !important;
-        }
-        
-        /* Dark mode */
-        body.dark-mode {
-            background-color: #1a1a1a !important;
-        }
-        
-        /* ============================================
-           ENLACES DE SECCIÓN SUTILES - HOVER EFFECT
-           ============================================ */
-        .quick-section-links a:hover {
-            padding-left: 6px !important;
-        }
-        
-        .quick-section-links a:hover i {
-            opacity: 1 !important;
-        }
-        
-        .quick-section-links a:hover span {
-            border-bottom-color: #c9a67c !important;
-        }
-        
-        /* ============================================
-           MEJORAS PARA SECCIÓN DE DIRECCIONES
-           ============================================ */
-        /* Reducir altura del botón "Agregar Dirección" */
-        #addresses .card-header .btn-edit {
-            padding: 8px 16px !important;
-            font-size: 13px !important;
-            height: auto !important;
-            line-height: 1.4 !important;
-        }
-        
-        /* Hover para botón "Agregar Primera Dirección" */
-        #btn-add-first-address:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(201, 166, 124, 0.4);
-        }
-        
-        /* Ajustar tamaño del modal de direcciones */
-        #addressModal .modal-dialog {
-            max-width: 700px !important;
-            margin: 1.75rem auto !important;
-        }
-        
-        /* Mejorar espacio del modal en móviles */
-        @media (max-width: 768px) {
-            #addressModal .modal-dialog {
-                max-width: calc(100% - 30px) !important;
-                margin: 1rem auto !important;
-            }
-        }
-        
-        /* Ajustar altura máxima del modal */
-        #addressModal .modal-body {
-            max-height: calc(100vh - 220px);
-            overflow-y: auto;
-        }
-        
-        /* Estilos para validación de campos */
-        .form-control.is-invalid {
-            border-color: #dc3545 !important;
-            padding-right: calc(1.5em + .75rem);
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right calc(.375em + .1875rem) center;
-            background-size: calc(.75em + .375rem) calc(.75em + .375rem);
-        }
-        
-        .form-control.is-valid {
-            border-color: #28a745 !important;
-            padding-right: calc(1.5em + .75rem);
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right calc(.375em + .1875rem) center;
-            background-size: calc(.75em + .375rem) calc(.75em + .375rem);
-            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
-        }
-        
-        .form-control.is-valid:focus {
-            border-color: #28a745 !important;
-            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-        }
-        
-        .form-control.is-invalid:focus {
-            border-color: #dc3545 !important;
-            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-        }
-        
-        /* Estilos para selects válidos/inválidos */
-        select.form-control.is-valid {
-            background-position: right .75rem center, center right 2.25rem;
-            background-size: 16px 12px, calc(.75em + .375rem) calc(.75em + .375rem);
-        }
-        
-        select.form-control.is-invalid {
-            background-position: right .75rem center, center right 2.25rem;
-            background-size: 16px 12px, calc(.75em + .375rem) calc(.75em + .375rem);
-        }
-        
-        /* Campo readonly con estilo diferenciado */
-        .form-control[readonly] {
-            background-color: #f5f5f5 !important;
-            cursor: not-allowed !important;
-            opacity: 0.8;
-        }
-        
-        body.dark-mode .form-control[readonly] {
-            background-color: #2a2a2a !important;
-            color: #888 !important;
-        }
-    </style>
+  
 </head>
 
 <body>
@@ -331,16 +160,30 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
     <!-- Header con modales -->
     <?php include 'includes/header-section.php'; ?>
     
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.php"><i class="fa fa-home"></i> Inicio</a>
+                        <span><i class="fa fa-user"></i> Mi Perfil</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Profile Section -->
-    <section class="profile-section">
-        <div class="container" style="max-width: 1400px;">
+    <section class="profile-section profile-page">
+        <div class="container">
             <div class="row g-4">
                 <!-- Sidebar - Balance mejorado -->
                 <div class="col-lg-4 col-xl-3 mb-4">
                     <div class="profile-sidebar">
                         <!-- Avatar Section -->
                         <div class="profile-avatar-section">
-                            <div class="avatar-wrapper" id="avatar-upload-area" style="cursor: pointer;">
+                            <div class="avatar-wrapper" id="avatar-upload-area">
                                 <?php 
                                 $avatar_path = 'public/assets/img/profiles/default-avatar.png';
                                 if (!empty($usuario_logueado['avatar_usuario'])) {
@@ -362,16 +205,18 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                                 </button>
                             </div>
                             <input type="file" id="avatar-file-input" accept="image/*" style="display: none;">
-                            <h3 class="profile-name">
-                                <?php echo htmlspecialchars($usuario_logueado['nombre_usuario'] . ' ' . $usuario_logueado['apellido_usuario']); ?>
-                            </h3>
-                            <span class="profile-role-badge" style="background: <?php echo $rol_color; ?>">
-                                <i class="fa fa-shield"></i> <?php echo $rol_texto; ?>
-                            </span>
-                            <p class="profile-email">
-                                <i class="fa fa-envelope"></i>
-                                <?php echo htmlspecialchars($usuario_logueado['email_usuario']); ?>
-                            </p>
+                            <div class="profile-info-wrapper">
+                                <h3 class="profile-name">
+                                    <?php echo htmlspecialchars($usuario_logueado['nombre_usuario'] . ' ' . $usuario_logueado['apellido_usuario']); ?>
+                                </h3>
+                                <span class="profile-role-badge" style="background: <?php echo $rol_color; ?>">
+                                    <i class="fa fa-shield"></i> <?php echo $rol_texto; ?>
+                                </span>
+                                <p class="profile-email">
+                                    <i class="fa fa-envelope"></i>
+                                    <?php echo htmlspecialchars($usuario_logueado['email_usuario']); ?>
+                                </p>
+                            </div>
                         </div>
                         
                         <!-- Stats Cards -->
@@ -432,24 +277,24 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                         
                         <!-- Quick Section Links - Sutiles -->
                         <!-- Oculto en móvil -->
-                        <div class="quick-section-links d-none d-md-block" style="margin-top: 20px; padding: 15px 20px; border-top: 1px solid rgba(201, 166, 124, 0.1);">
-                            <p style="font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-weight: 600;">Ir a sección</p>
-                            <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <a href="profile.php?seccion=personal-info" style="font-size: 13px; color: #c9a67c; text-decoration: none; transition: all 0.3s; display: flex; align-items: center; padding: 4px 0;">
-                                    <i class="fa fa-chevron-right" style="font-size: 10px; margin-right: 8px; opacity: 0.5;"></i>
-                                    <span style="border-bottom: 1px solid transparent;">Información Personal</span>
+                        <div class="quick-section-links d-none d-md-block">
+                            <p>Ir a sección</p>
+                            <div>
+                                <a href="profile.php?seccion=personal-info">
+                                    <i class="fa fa-chevron-right"></i>
+                                    <span>Información Personal</span>
                                 </a>
-                                <a href="profile.php?seccion=seguridad" style="font-size: 13px; color: #c9a67c; text-decoration: none; transition: all 0.3s; display: flex; align-items: center; padding: 4px 0;">
-                                    <i class="fa fa-chevron-right" style="font-size: 10px; margin-right: 8px; opacity: 0.5;"></i>
-                                    <span style="border-bottom: 1px solid transparent;">Seguridad</span>
+                                <a href="profile.php?seccion=seguridad">
+                                    <i class="fa fa-chevron-right"></i>
+                                    <span>Seguridad</span>
                                 </a>
-                                <a href="profile.php?seccion=direcciones" style="font-size: 13px; color: #c9a67c; text-decoration: none; transition: all 0.3s; display: flex; align-items: center; padding: 4px 0;">
-                                    <i class="fa fa-chevron-right" style="font-size: 10px; margin-right: 8px; opacity: 0.5;"></i>
-                                    <span style="border-bottom: 1px solid transparent;">Direcciones</span>
+                                <a href="profile.php?seccion=direcciones">
+                                    <i class="fa fa-chevron-right"></i>
+                                    <span>Direcciones</span>
                                 </a>
-                                <a href="profile.php?seccion=configuracion" style="font-size: 13px; color: #c9a67c; text-decoration: none; transition: all 0.3s; display: flex; align-items: center; padding: 4px 0;">
-                                    <i class="fa fa-chevron-right" style="font-size: 10px; margin-right: 8px; opacity: 0.5;"></i>
-                                    <span style="border-bottom: 1px solid transparent;">Configuración</span>
+                                <a href="profile.php?seccion=configuracion">
+                                    <i class="fa fa-chevron-right"></i>
+                                    <span>Configuración</span>
                                 </a>
                             </div>
                         </div>
@@ -460,17 +305,17 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                 <div class="col-lg-8 col-xl-9">
                     <!-- Tabs Navigation -->
                     <div class="profile-tabs">
-                        <button class="tab-btn <?php echo $seccion_activa === 'personal-info' ? 'active' : ''; ?>" data-tab="personal-info">
-                            <i class="fa fa-user"></i> Información Personal
+                        <button class="tab-btn <?php echo $seccion_activa === 'personal-info' ? 'active' : ''; ?>" data-tab="personal-info" data-label="Perfil">
+                            <i class="fa fa-user"></i> <span class="tab-text">Información Personal</span>
                         </button>
-                        <button class="tab-btn <?php echo $seccion_activa === 'seguridad' ? 'active' : ''; ?>" data-tab="security">
-                            <i class="fa fa-lock"></i> Seguridad
+                        <button class="tab-btn <?php echo $seccion_activa === 'seguridad' ? 'active' : ''; ?>" data-tab="security" data-label="Seguridad">
+                            <i class="fa fa-lock"></i> <span class="tab-text">Seguridad</span>
                         </button>
-                        <button class="tab-btn <?php echo $seccion_activa === 'direcciones' ? 'active' : ''; ?>" data-tab="addresses">
-                            <i class="fa fa-map-marker-alt"></i> Direcciones
+                        <button class="tab-btn <?php echo $seccion_activa === 'direcciones' ? 'active' : ''; ?>" data-tab="addresses" data-label="Ubicación">
+                            <i class="fa fa-map-marker-alt"></i> <span class="tab-text">Direcciones</span>
                         </button>
-                        <button class="tab-btn <?php echo $seccion_activa === 'configuracion' ? 'active' : ''; ?>" data-tab="settings">
-                            <i class="fa fa-cog"></i> Configuración
+                        <button class="tab-btn <?php echo $seccion_activa === 'configuracion' ? 'active' : ''; ?>" data-tab="settings" data-label="Config">
+                            <i class="fa fa-cog"></i> <span class="tab-text">Configuración</span>
                         </button>
                     </div>
                     
@@ -844,13 +689,6 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                                                     <span>Oscuro</span>
                                                 </div>
                                             </label>
-                                            <label class="theme-option">
-                                                <input type="radio" name="theme_mode" value="auto">
-                                                <div class="theme-card">
-                                                    <i class="fa fa-palette"></i>
-                                                    <span>Dinámico</span>
-                                                </div>
-                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -1019,7 +857,7 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
     
     <!-- Modal para Agregar/Editar Dirección -->
     <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="margin-top: 2rem; margin-bottom: 2rem;">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addressModalLabel">
@@ -1030,7 +868,7 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" style="max-height: calc(100vh - 180px); overflow-y: auto;">
+                <div class="modal-body">
                     <form id="addressForm">
                         <input type="hidden" id="address_id" name="id_direccion">
                         <!-- Email oculto - se envía automáticamente -->
@@ -1039,7 +877,10 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="address_name">Nombre del Titular *</label>
+                                    <label for="address_name">
+                                        <i class="fa fa-user"></i>
+                                        Nombre del Titular *
+                                    </label>
                                     <input type="text" class="form-control" id="address_name" name="nombre_direccion" 
                                            placeholder="Ej: Juan Pérez García" required minlength="3" maxlength="100"
                                            pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" 
@@ -1049,7 +890,10 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="address_dni">DNI/RUC *</label>
+                                    <label for="address_dni">
+                                        <i class="fa fa-id-card"></i>
+                                        DNI/RUC *
+                                    </label>
                                     <input type="text" class="form-control" id="address_dni" name="dni" 
                                            placeholder="DNI (8) o RUC (11)" required
                                            pattern="[0-9]{8}|[0-9]{11}" 
@@ -1060,7 +904,10 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="address_phone">Teléfono *</label>
+                                    <label for="address_phone">
+                                        <i class="fa fa-phone"></i>
+                                        Teléfono *
+                                    </label>
                                     <input type="tel" class="form-control" id="address_phone" name="telefono" 
                                            placeholder="999 999 999" required
                                            pattern="[0-9]{9}" 
@@ -1073,14 +920,20 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                         
                         <!-- Campo Razón Social - Visible solo cuando es RUC -->
                         <div class="form-group" id="razon-social-group" style="display: none;">
-                            <label for="address_razon_social">Razón Social *</label>
+                            <label for="address_razon_social">
+                                <i class="fa fa-building"></i>
+                                Razón Social *
+                            </label>
                             <input type="text" class="form-control" id="address_razon_social" name="razon_social" 
                                    placeholder="Nombre de la empresa" minlength="3" maxlength="150">
                             <small class="form-text text-muted">Nombre completo de la empresa (requerido para RUC)</small>
                         </div>
 
                         <div class="form-group">
-                            <label for="address_full">Dirección Completa *</label>
+                            <label for="address_full">
+                                <i class="fa fa-map-marked-alt"></i>
+                                Dirección Completa *
+                            </label>
                             <input type="text" class="form-control" id="address_full" name="direccion_completa" 
                                    placeholder="Calle, número, urbanización, piso/dpto" required minlength="10" maxlength="200">
                             <small class="form-text text-muted">Dirección exacta donde se entregará el pedido</small>
@@ -1089,7 +942,10 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="address_departamento">Departamento *</label>
+                                    <label for="address_departamento">
+                                        <i class="fa fa-globe-americas"></i>
+                                        Departamento *
+                                    </label>
                                     <select class="form-control" id="address_departamento" name="departamento" required>
                                         <option value="">Seleccionar departamento</option>
                                     </select>
@@ -1097,7 +953,10 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="address_provincia">Provincia *</label>
+                                    <label for="address_provincia">
+                                        <i class="fa fa-city"></i>
+                                        Provincia *
+                                    </label>
                                     <select class="form-control" id="address_provincia" name="provincia" required disabled>
                                         <option value="">Seleccione departamento primero</option>
                                     </select>
@@ -1105,7 +964,10 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="address_distrito">Distrito *</label>
+                                    <label for="address_distrito">
+                                        <i class="fa fa-map-pin"></i>
+                                        Distrito *
+                                    </label>
                                     <select class="form-control" id="address_distrito" name="distrito" required disabled>
                                         <option value="">Seleccione provincia primero</option>
                                     </select>
@@ -1114,11 +976,13 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
                         </div>
 
                         <div class="form-group">
-                            <label for="address_reference">Referencia (Opcional)</label>
+                            <label for="address_reference">
+                                <i class="fa fa-info-circle"></i>
+                                Referencia (Opcional)
+                            </label>
                             <input type="text" class="form-control" id="address_reference" name="referencia" 
                                    placeholder="Ej: Casa azul con puerta negra, al costado de la bodega" 
-                                   maxlength="150"
-                                   style="resize: none; overflow: hidden; min-height: 42px;">
+                                   maxlength="150">
                             <small class="form-text text-muted">Referencias para ubicar tu dirección más fácilmente</small>
                         </div>
                     </form>
@@ -1174,7 +1038,6 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
     <script src="public/assets/js/bootstrap.min.js"></script>
     <script src="public/assets/js/jquery-ui.min.js"></script>
     <script src="public/assets/js/jquery.slicknav.js"></script>
-    <script src="public/assets/js/main.js"></script>
     
     <!-- Header Handler - Actualización en tiempo real de contadores -->
     <script src="public/assets/js/header-handler.js?v=1.0"></script>
@@ -1487,26 +1350,51 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
     
     <!-- ❌ REMOVIDO: Dark Mode Script (ya se carga desde dark-mode-assets.php en modern-libraries.php) -->
     
-    <!-- Offcanvas Menu Global JS -->
-    <script src="public/assets/js/offcanvas-menu.js"></script>
+    <!-- ❌ REMOVIDO: offcanvas-menu.js (archivo no existe) -->
     
     <!-- Script para conectar botón de favoritos del sidebar con el modal del header -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
             // ============================================
-            // FIX: ELIMINAR BARRA LATERAL AL ABRIR MODALES
+            // FIX: MANEJO DEL MODAL DE DIRECCIONES
             // ============================================
             $('#addressModal').on('show.bs.modal', function() {
-                document.body.style.overflow = 'hidden';
-                document.body.style.paddingRight = '0px';
-                document.documentElement.style.overflow = 'hidden';
+                // Detectar si es móvil
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    // En móvil: No bloquear scroll del body (el modal maneja su propio scroll)
+                    document.body.style.overflow = 'hidden';
+                    document.body.style.paddingRight = '0px';
+                    document.documentElement.style.overflow = 'hidden';
+                    
+                    // Asegurar que el header-section sea visible
+                    const header = document.querySelector('.header-section, header');
+                    if (header) {
+                        header.style.position = 'relative';
+                        header.style.zIndex = '1060';
+                    }
+                } else {
+                    // En desktop: comportamiento normal
+                    document.body.style.overflow = 'hidden';
+                    document.body.style.paddingRight = '0px';
+                    document.documentElement.style.overflow = 'hidden';
+                }
             });
             
             $('#addressModal').on('hidden.bs.modal', function() {
+                // Restaurar estilos
                 document.body.style.overflow = '';
                 document.body.style.paddingRight = '';
                 document.documentElement.style.overflow = '';
+                
+                // Restaurar z-index del header
+                const header = document.querySelector('.header-section, header');
+                if (header) {
+                    header.style.position = '';
+                    header.style.zIndex = '';
+                }
             });
             
             // Auto-abrir modal de agregar dirección si viene de cart.php
