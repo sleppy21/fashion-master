@@ -44,6 +44,10 @@ $page_title = "Tienda";
     <link rel="stylesheet" href="public/assets/css/jquery-ui.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     
+    <!-- Components: Header y Modales -->
+    <link rel="stylesheet" href="public/assets/css/core/variables.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/components/modals.css" type="text/css">
+    
     <?php include 'includes/modern-libraries.php'; ?>
     
     <!-- Shop Styles - Unificados v3.0 -->

@@ -573,17 +573,17 @@ body.cart-page .shop-cart {
 
 @media (max-width: 767px) {
     .breadcrumb-option {
-        margin-top: 50px !important;
+        margin-top: 80px !important;
         padding-bottom: 10px !important;
     }
     
     body.cart-page .breadcrumb-option {
-        padding-top: 105px !important;
-        padding-bottom: 0px !important;
+        padding-top: 90px !important;
+        padding-bottom: 30px !important;
     }
     
     body.cart-page .shop-cart {
-        padding-top: 10px !important;
+        padding-top: 0px !important;
     }
 }
 
@@ -632,9 +632,11 @@ body.cart-page .shop-cart {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
+    object-position: center !important;
     border-radius: 50% !important;
     border: none !important;
     box-shadow: none !important;
+    display: block !important;
 }
 
 .header-user-avatar .avatar-initial {

@@ -208,8 +208,7 @@
                                         <img src="<?php echo $header_avatar_path; ?>" 
                                              alt="Avatar" 
                                              class="avatar-image"
-                                             crossorigin="anonymous"
-                                             style="width: 38px !important; height: 38px !important; border-radius: 50% !important; object-fit: cover !important; object-position: center !important; display: block !important;">
+                                             crossorigin="anonymous">
                                     <?php else: ?>
                                         <div class="avatar-initial">
                                             <?php echo strtoupper(substr($usuario_logueado['nombre_usuario'], 0, 1)); ?>

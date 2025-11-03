@@ -147,26 +147,21 @@ try {
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/core/variables.css" type="text/css">
     
-    <!-- 2. COMPONENTS: Header y Modales completos -->
-    <link rel="stylesheet" href="public/assets/css/components/header.css" type="text/css">
+    <!-- 2. COMPONENTS: Header y Modales -->
     <link rel="stylesheet" href="public/assets/css/components/modals.css" type="text/css">
-    
-    <!-- 3. LAYOUTS: Shop layout (incluye product cards) -->
-    <link rel="stylesheet" href="public/assets/css/layouts/shop.css" type="text/css">
-    
+
     <!-- 4. THEMES: Dark mode y animaciones -->
     <link rel="stylesheet" href="public/assets/css/themes/dark-mode.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/themes/animations.css" type="text/css">
-    
-    <!-- 5. LEGACY: Estilos originales (temporal) -->
-    <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
-    
+        
     <!-- 6. SPECIFIC: Estilos específicos de página -->
     <link rel="stylesheet" href="public/assets/css/offcanvas-mobile.css" type="text/css">
     <link rel="stylesheet" href="public/assets/css/cart-improvements.css?v=<?= time() ?>" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
     
     <?php include 'includes/modern-libraries.php'; ?>
+    
+    <!-- Breadcrumb Modern - Global (Debe cargarse DESPUÉS para tener prioridad) -->
+    <link rel="stylesheet" href="public/assets/css/breadcrumb-modern.css?v=2.1">
     
     <style>
         /* ============================================
