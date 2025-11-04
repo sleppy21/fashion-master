@@ -103,24 +103,24 @@
 
         filtersWrapper.addEventListener('touchend', function(e) {
             if (!isSwiping) return;
-            
             const deltaX = touchCurrentX - touchStartX;
             const swipeDistance = Math.abs(deltaX);
-            
             // Restaurar transición
             filtersWrapper.style.transition = '';
             filtersWrapper.style.transform = '';
-            
             // Si deslizó hacia la izquierda más del threshold, cerrar
             if (deltaX < 0 && swipeDistance > swipeThreshold) {
-                const overlay = document.querySelector('.filters-menu-overlay');
-                
-                filtersWrapper.classList.remove('active');
-                if (overlay) overlay.classList.remove('active');
-                document.body.classList.remove('filters-active');
-                
+                if (window.OffcanvasManager && typeof window.OffcanvasManager.forceClose === 'function') {
+                    window.OffcanvasManager.forceClose('filters');
+                } else {
+                    // Fallback por si no existe el manager
+                    filtersWrapper.classList.remove('active');
+                    const overlay = document.querySelector('.filters-menu-overlay');
+                    if (overlay) overlay.classList.remove('active');
+                    document.body.classList.remove('filters-active');
+                    document.body.style.overflow = '';
+                }
             }
-            
             isSwiping = false;
         }, { passive: true });
     }
@@ -228,6 +228,124 @@
     }
 
     // ============================================
+    // BOTTOM SHEETS DE CHECKOUT: Swipe para cerrar
+    // ============================================
+    function initCheckoutBottomSheets() {
+        // Funciones para abrir los bottom sheets
+        window.openAddressBottomSheet = function() {
+            const sheet = document.getElementById('addressBottomSheet');
+            if (!sheet) return;
+            
+            sheet.classList.add('active');
+            document.body.classList.add('bottom-sheet-open');
+        };
+
+        window.openProductsBottomSheet = function() {
+            const sheet = document.getElementById('productsBottomSheet');
+            if (!sheet) return;
+            
+            sheet.classList.add('active');
+            document.body.classList.add('bottom-sheet-open');
+        };
+
+        window.closeAddressBottomSheet = function() {
+            const sheet = document.getElementById('addressBottomSheet');
+            if (!sheet) return;
+            
+            sheet.classList.remove('active');
+            document.body.classList.remove('bottom-sheet-open');
+        };
+
+        window.closeProductsBottomSheet = function() {
+            const sheet = document.getElementById('productsBottomSheet');
+            if (!sheet) return;
+            
+            sheet.classList.remove('active');
+            document.body.classList.remove('bottom-sheet-open');
+        };
+
+        // Inicializar swipe para ambos bottom sheets
+        const bottomSheets = document.querySelectorAll('.address-bottom-sheet');
+        bottomSheets.forEach(sheet => {
+            if (!sheet) return;
+
+            const content = sheet.querySelector('.bottom-sheet-content');
+            if (!content) return;
+
+            let startY = 0;
+            let currentY = 0;
+            let isDragging = false;
+            let hasMoved = false;
+
+            // Iniciar el drag solo en el handle o área superior
+            content.addEventListener('touchstart', function(e) {
+                const handle = e.target.closest('.bottom-sheet-handle');
+                const header = e.target.closest('.bottom-sheet-header');
+                
+                // Solo permitir swipe en el handle o header
+                if (!handle && !header) return;
+                
+                startY = e.touches[0].clientY;
+                currentY = startY;
+                isDragging = true;
+                hasMoved = false;
+                content.classList.add('dragging');
+                content.style.transition = 'none';
+            }, { passive: true });
+
+            content.addEventListener('touchmove', function(e) {
+                if (!isDragging) return;
+
+                currentY = e.touches[0].clientY;
+                const distance = currentY - startY;
+
+                // Solo permitir deslizar hacia abajo
+                if (distance > 0) {
+                    content.style.transform = `translateY(${distance}px)`;
+                    if (Math.abs(distance) > 5) {
+                        hasMoved = true;
+                    }
+                }
+            }, { passive: true });
+
+            content.addEventListener('touchend', function(e) {
+                if (!isDragging) return;
+
+                const distance = currentY - startY;
+                isDragging = false;
+                content.classList.remove('dragging');
+                content.style.transition = '';
+
+                // Si deslizó hacia abajo más del threshold o con velocidad suficiente
+                if (distance > 100 || (hasMoved && distance > 50)) {
+                    content.style.transform = 'translateY(100%)';
+                    
+                    setTimeout(() => {
+                        sheet.classList.remove('active');
+                        document.body.classList.remove('bottom-sheet-open');
+                        content.style.transform = '';
+                    }, 300);
+                } else {
+                    // Volver a la posición original
+                    content.style.transform = '';
+                }
+
+                hasMoved = false;
+                startY = 0;
+                currentY = 0;
+            }, { passive: true });
+
+            // Cerrar al hacer clic fuera del contenido
+            sheet.addEventListener('click', function(e) {
+                if (e.target === sheet) {
+                    sheet.classList.remove('active');
+                    document.body.classList.remove('bottom-sheet-open');
+                }
+            });
+        });
+    }
+
+    // ============================================
     // INICIALIZAR AL CARGAR
     // ============================================
     if (document.readyState === 'loading') {
@@ -235,11 +353,13 @@
             initOffcanvasSwipe();
             initFiltersSwipe();
             initUserModalSwipe();
+            initCheckoutBottomSheets();
         });
     } else {
         initOffcanvasSwipe();
         initFiltersSwipe();
         initUserModalSwipe();
+        initCheckoutBottomSheets();
     }
 
 })();

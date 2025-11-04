@@ -6,6 +6,7 @@
 
 session_start();
 require_once 'config/conexion.php';
+require_once 'config/config.php'; // <-- Para BASE_URL global
 require_once 'app/views/components/product-card.php';
 
 $page_title = "Carrito de Compras";
@@ -151,6 +152,14 @@ try {
 <body class="cart-page">
 
     <!-- Header Section Begin -->
+
+    <script>
+        // BASE_URL sin barra final para evitar duplicados
+        window.BASE_URL = '<?= rtrim(BASE_URL, "/") ?>';
+        if (window.location.protocol === 'https:' && window.BASE_URL.startsWith('http:')) {
+            window.BASE_URL = window.BASE_URL.replace('http:', 'https:');
+        }
+    </script>
     <?php include 'includes/header-section.php'; ?>
     <!-- Header Section End -->
 
@@ -569,13 +578,11 @@ try {
             <?php else: ?>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="shop__cart__table">
-                        <div class="cart-empty">
-                            <i class="fa fa-shopping-cart"></i>
-                            <h3>Tu carrito está vacío</h3>
-                            <p>¡Agrega productos para comenzar tu compra!</p>
-                            <a href="shop.php" class="btn-continue-shopping">Explorar Productos</a>
-                        </div>
+                    <div class="cart-empty" style="text-align:center; padding: 48px 0 56px 0;">
+                        <i class="fa fa-shopping-cart" style="font-size: 54px; color: #bbb; margin-bottom: 18px;"></i>
+                        <h3 style="font-weight: 700; margin-bottom: 10px;">¡Tu carrito está vacío!</h3>
+                        <p style="color: #666; font-size: 17px; margin-bottom: 24px;">No tienes productos en tu carrito.<br>Descubre las mejores ofertas y encuentra algo para ti.</p>
+                        <a href="shop.php" class="btn-continue-shopping" style="display:inline-block; background: #3a6cf6; color: #fff; font-weight: 600; padding: 12px 32px; border-radius: 30px; font-size: 16px; box-shadow: 0 2px 8px rgba(58,108,246,0.08); transition: background 0.2s;">Ir a la tienda</a>
                     </div>
                 </div>
             </div>

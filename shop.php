@@ -40,7 +40,7 @@ $page_title = "Tienda";
     <link rel="stylesheet" href="public/assets/css/shop/shop.css?v=3.0">
     <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0">
     <link rel="stylesheet" href="public/assets/css/shop/shop-responsive.css?v=3.1">
-    <link rel="stylesheet" href="public/assets/css/layouts/shop.css?v=<?php echo time(); ?>">
+    <!-- <link rel="stylesheet" href="public/assets/css/layouts/shop.css?v=<?php echo time(); ?>"> -->
 
 
     <!-- Config Script -->

@@ -7,6 +7,8 @@
 session_start();
 require_once 'config/conexion.php';
 
+require_once 'config/config.php'; // <-- AÑADIDO PARA BASE_URL
+
 $page_title = "Finalizar Compra";
 
 // Verificar si el usuario está logueado
@@ -172,6 +174,15 @@ try {
     <meta name="description" content="Checkout - SleppyStore">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $page_title; ?> - SleppyStore</title>
+
+    <script>
+        // BASE_URL sin barra final para evitar duplicados
+        window.BASE_URL = '<?= rtrim(BASE_URL, "/") ?>';
+        // Verificar y corregir protocolo si es necesario
+        if (window.location.protocol === 'https:' && window.BASE_URL.startsWith('http:')) {
+            window.BASE_URL = window.BASE_URL.replace('http:', 'https:');
+        }
+    </script>
 
    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
@@ -1360,36 +1371,6 @@ try {
         </div>
     </div>
     <!-- Bottom Sheet Productos End -->
-
-    <!-- Js Plugins -->
-    <script>
-        // BASE URL para peticiones AJAX - Compatible con ngrok y cualquier dominio
-        (function() {
-            var baseUrlFromPHP = '<?php echo defined("BASE_URL") ? BASE_URL : ""; ?>';
-            
-            // Si no hay BASE_URL definida en PHP, calcularla desde JavaScript
-            if (!baseUrlFromPHP || baseUrlFromPHP === '') {
-                var path = window.location.pathname;
-                var pathParts = path.split('/').filter(function(p) { return p !== ''; });
-                
-                // Buscar 'fashion-master' en el path
-                var basePath = '';
-                if (pathParts.includes('fashion-master')) {
-                    var index = pathParts.indexOf('fashion-master');
-                    basePath = '/' + pathParts.slice(0, index + 1).join('/');
-                }
-                
-                baseUrlFromPHP = window.location.origin + basePath;
-            }
-            
-            // CRÍTICO: Si la página está en HTTPS, forzar BASE_URL a HTTPS
-            if (window.location.protocol === 'https:' && baseUrlFromPHP.startsWith('http://')) {
-                baseUrlFromPHP = baseUrlFromPHP.replace('http://', 'https://');
-            }
-            
-            window.BASE_URL = baseUrlFromPHP;
-        })();
-    </script>
 
     <script>
         // ========================================

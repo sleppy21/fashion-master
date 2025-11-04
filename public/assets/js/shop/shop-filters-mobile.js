@@ -48,11 +48,31 @@
         
         // Cerrar un offcanvas específico
         close: function(offcanvasId) {
-            if (this.activeOffcanvas === offcanvasId) {
-                this.activeOffcanvas = null;
+            if (this.activeOffcanvas !== offcanvasId) return;
+            this.activeOffcanvas = null;
+            // Si ya está cerrado, no hacer nada
+            if (offcanvasId === 'filters') {
+                const wrapper = document.querySelector('.filters-menu-wrapper');
+                const overlay = document.querySelector('.filters-menu-overlay');
+                if (wrapper && !wrapper.classList.contains('active')) return;
+                if (wrapper) wrapper.classList.remove('active');
+                if (overlay) overlay.classList.remove('active');
+            } else if (offcanvasId === 'menu') {
+                const wrapper = document.querySelector('.offcanvas-menu-wrapper');
+                const overlay = document.querySelector('.offcanvas-menu-overlay');
+                if (wrapper && !wrapper.classList.contains('active')) return;
+                if (wrapper) wrapper.classList.remove('active');
+                if (overlay) overlay.classList.remove('active');
             }
-            
-            // Cerrar según el tipo
+            document.body.classList.remove('offcanvas-active');
+            document.body.style.overflow = '';
+            console.log('✅ Offcanvas cerrado:', offcanvasId);
+        },
+
+        // Cierre forzado por swipe (sin duplicidad)
+        forceClose: function(offcanvasId) {
+            if (this.activeOffcanvas !== offcanvasId) return;
+            this.activeOffcanvas = null;
             if (offcanvasId === 'filters') {
                 const wrapper = document.querySelector('.filters-menu-wrapper');
                 const overlay = document.querySelector('.filters-menu-overlay');
@@ -64,10 +84,9 @@
                 if (wrapper) wrapper.classList.remove('active');
                 if (overlay) overlay.classList.remove('active');
             }
-            
             document.body.classList.remove('offcanvas-active');
             document.body.style.overflow = '';
-            console.log('✅ Offcanvas cerrado:', offcanvasId);
+            console.log('✅ Offcanvas cerrado por swipe:', offcanvasId);
         },
         
         // Verificar si hay algún offcanvas abierto

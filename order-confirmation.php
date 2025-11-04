@@ -723,7 +723,7 @@ $tipo_comprobante_texto = $tipos_comprobante[$pedido['tipo_comprobante_pedido']]
     <script src="public/assets/js/bootstrap.min.js"></script>
     <script src="public/assets/js/jquery.slicknav.js"></script>
     <script src="public/assets/js/main.js"></script>
-    <script src="public/assets/js/cart-favorites-handler.js"></script>
+
     <script src="public/assets/js/user-account-modal.js"></script>
 
     <?php if($usuario_logueado): ?>

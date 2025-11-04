@@ -84,8 +84,10 @@
             <li><a href="./admin.php"><i class="fa fa-shield"></i> Admin</a></li>
             <?php endif; ?>
             
+            <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
             <!-- Asistente Virtual - Abrir modal del chatbot -->
             <li><a href="#" id="open-chatbot-mobile"><i class="fa fa-comments"></i> Asistente Virtual</a></li>
+            <?php endif; ?>
             
             <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
             <li><a href="logout.php"><i class="fa fa-sign-out"></i> Cerrar Sesión</a></li>

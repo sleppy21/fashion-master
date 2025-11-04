@@ -1,9 +1,6 @@
-/**
- * SHOP FILTERS MODULE
- * Sistema modular de filtros para la tienda
- * @version 2.0 - Modernizado 2025
- */
-
+// shop-filters-products.js
+// SHOP FILTERS MODULE + PRODUCT CARDS (modificado para tap móvil en imagen)
+// @version 2.0 - Modernizado 2025
 (function() {
     'use strict';
     
@@ -130,7 +127,8 @@
                 }
             })
             .catch(error => {
-                
+                showError();
+                console.error('Error al obtener productos filtrados:', error);
             });
     }
     
@@ -249,7 +247,7 @@
         const imagenUrl = product.url_imagen_producto || 'public/assets/img/shop/default-product.jpg';
         const productUrl = `product-details.php?id=${product.id_producto}`;
         
-            col.innerHTML = `
+        col.innerHTML = `
             <div class="product-card-modern" data-product-id="${product.id_producto}" data-aos="fade-up">
                 
                 <!-- Imagen del producto -->
@@ -270,7 +268,7 @@
                     </div>
                     
                     <!-- Hover con botones circulares -->
-                    <ul class="product__hover">
+                    <ul class="product__hover" aria-hidden="true">
                         <li>
                             <a href="${productUrl}" class="view-details-btn" title="Ver detalles">
                                 <span class="icon_search"></span>
@@ -280,7 +278,7 @@
                             <a href="#" 
                                class="add-to-favorites ${esFavorito ? 'active' : ''}" 
                                data-id="${product.id_producto || ''}"
-                               ${!product.id_producto ? 'style="display:none;"' : ''}
+                               ${!product.id_producto ? 'style="display:none;"' : ''} 
                                title="${esFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos'}">
                                 <span class="icon_heart${esFavorito ? '' : '_alt'}"></span>
                             </a>
@@ -289,7 +287,7 @@
                             <a href="#" 
                                class="add-to-cart" 
                                data-id="${product.id_producto || ''}"
-                               ${!product.id_producto ? 'data-disabled="true" style="opacity:0.5;cursor:not-allowed;"' : ''}
+                               ${!product.id_producto ? 'data-disabled="true" style="opacity:0.5;cursor:not-allowed;"' : ''} 
                                ${sinStock ? 'style="opacity:0.5;cursor:not-allowed;" data-disabled="true"' : ''}
                                title="${!product.id_producto ? 'Error: ID no disponible' : (sinStock ? 'Sin stock' : 'Agregar al carrito')}">
                                 <span class="icon_bag_alt"></span>
@@ -340,6 +338,65 @@
                 </div>
             </div>
         `;
+        
+        // --- LÓGICA MÓVIL: TOUCH/TAP PARA MOSTRAR BOTONES Y NAVEGAR EN SEGUNDO TAP ---
+        // Solo para pantallas móviles (≤ 576px)
+        const wrapper = col.querySelector('.product-image-wrapper');
+        const hoverList = col.querySelector('.product__hover');
+        const imageLink = wrapper.querySelector('a');
+        let touchVisible = false;
+        const isMobileMatch = () => window.matchMedia && window.matchMedia('(max-width: 576px)').matches;
+        
+        // Función para mostrar botones con clase que activa animación CSS
+        function showHoverButtons() {
+            const card = col.querySelector('.product-card-modern');
+            if (!card) return;
+            card.classList.add('touch-active');
+            hoverList.setAttribute('aria-hidden', 'false');
+            touchVisible = true;
+        }
+        function hideHoverButtons() {
+            const card = col.querySelector('.product-card-modern');
+            if (!card) return;
+            card.classList.remove('touch-active');
+            hoverList.setAttribute('aria-hidden', 'true');
+            touchVisible = false;
+        }
+        
+        // --- NUEVO: Interceptar el <a> de la imagen para controlar navegación en móvil ---
+        // Prevent navigation on first tap, allow on second.
+        function onImageClick(e) {
+            if (!isMobileMatch()) return; // no interferir en desktop
+            // si el tap proviene de un botón interno (iconos) no hacer nada
+            if (e.target.closest('.product__hover')) return;
+            
+            if (!touchVisible) {
+                // primer tap: evitar navegación y mostrar botones
+                e.preventDefault();
+                e.stopPropagation();
+                showHoverButtons();
+                return false;
+            } else {
+                // segundo tap: permitir navegación (no prevenir)
+                // dejar que el enlace funcione normalmente
+                return true;
+            }
+        }
+        // Algunos navegadores (safari móvil) activan navegación en touchstart -> prevenir ahí en primer tap
+        function onImageTouchStart(e) {
+            if (!isMobileMatch()) return;
+            if (!touchVisible) {
+                e.preventDefault();
+                // no stopPropagation aquí para no romper otros handlers
+            }
+        }
+        
+        imageLink.addEventListener('touchstart', onImageTouchStart, { passive: false });
+        imageLink.addEventListener('click', onImageClick, { passive: false });
+        
+        // Si el usuario toca fuera del card, los botones se ocultan (global handler en init)
+        // Adicional: si toca un botón dentro de product__hover, no cierre ni navegue por el imageLink handler
+        // (los botones tienen sus propios handlers/event-delegation)
         
         return col;
     }
@@ -528,7 +585,6 @@
                     FiltersState.categorias = FiltersState.categorias.filter(id => id !== categoriaId);
                 }
                 
-                
                 // Aplicar filtros
                 aplicarFiltrosAjax();
             });
@@ -615,6 +671,25 @@
                 }, 500); // Esperar 500ms después de que el usuario deje de escribir
             });
         }
+        
+        // GLOBAL: ocultar botones touch cuando se hace click/tap fuera
+        document.addEventListener('click', function(e) {
+            // Si el click está dentro de un product-card-modern que está touch-active, ignorar
+            const activeCards = document.querySelectorAll('.product-card-modern.touch-active');
+            if (!activeCards || activeCards.length === 0) return;
+            
+            // si el click/click touch fue dentro de cualquiera de los activeCards, no ocultar
+            for (let i = 0; i < activeCards.length; i++) {
+                if (activeCards[i].contains(e.target)) return;
+            }
+            
+            // ocultar todos
+            activeCards.forEach(card => card.classList.remove('touch-active'));
+            // además, ocultar aria-hidden
+            document.querySelectorAll('.product__hover[aria-hidden="false"]').forEach(el => {
+                el.setAttribute('aria-hidden', 'true');
+            });
+        }, { passive: true });
         
     }
     

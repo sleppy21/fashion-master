@@ -155,7 +155,7 @@ try {
     <!-- product-modals.js - Funcionalidad integrada directamente en admin.php -->
     
     <!-- Sistema de notificaciones toast -->
-    <script src="public/assets/js/cart-favorites-handler.js"></script>
+
     
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">

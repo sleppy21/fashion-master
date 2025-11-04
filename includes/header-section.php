@@ -125,7 +125,9 @@
             <div class="col-12 col-lg order-3 order-lg-2 d-flex justify-content-center">
                 <nav class="header__menu">
                     <ul class="d-flex justify-content-center align-items-center flex-wrap m-0 p-0 list-unstyled">
+                        <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
                         <li><a href="./index.php">Inicio</a></li>
+                        <?php endif; ?>
                         <li><a href="./shop.php">Tienda</a></li>
                         <li><a href="./contact.php">Contacto</a></li>
                         <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
@@ -145,19 +147,19 @@
             <!-- Right Section - Icons and Avatar -->
             <div class="col-auto order-2 order-lg-3" style="min-width: 200px;">
                 <div class="header__right">
-                    <ul class="header__right__widget d-flex align-items-center justify-content-end m-0 p-0 list-unstyled">
-                        <!-- Búsqueda global - Siempre visible -->
+                    <ul class="header__right__widget d-flex align-items-center<?php echo (!isset($usuario_logueado) || !$usuario_logueado) ? ' justify-content-end' : ' justify-content-end'; ?> m-0 p-0 list-unstyled">
+                        <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
+                        <!-- Usuario logueado - Mostrar todas las opciones -->
+                        <!-- Búsqueda global - Solo visible si está logueado -->
                         <li><span class="icon_search" id="global-search-trigger" style="cursor: pointer;"></span></li>
                         
-                        <!-- Dark Mode Toggle - Siempre visible -->
+                        <!-- Dark Mode Toggle - Solo visible si está logueado -->
                         <li>
                             <a href="#" id="dark-mode-toggle" title="Cambiar tema">
                                 <i class="fa fa-moon"></i>
                             </a>
                         </li>
                         
-                        <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
-                        <!-- Usuario logueado - Mostrar todas las opciones -->
                         <li><a href="#" id="notifications-link" title="Notificaciones">
                             <i class="fa fa-bell"></i>
                             <?php if(isset($notifications_count) && $notifications_count > 0): ?>
@@ -219,21 +221,15 @@
                             </a>
                         </li>
                         <?php else: ?>
-                        <!-- Usuario NO logueado - Mostrar iconos básicos + botones auth -->
-                        <li><a href="login.php" title="Favoritos"><span class="icon_heart_alt"></span></a></li>
-                        <li><a href="cart.php" title="Carrito"><span class="icon_bag_alt"></span></a></li>
-                        
-                        <!-- Separador visual -->
-                        <li class="auth-separator"></li>
-                        
+                        <!-- Usuario NO logueado - Solo botones de registrar y salir -->
                         <!-- Botones de autenticación con iconos -->
                         <li class="auth-buttons-container">
-                            <a href="register.php" class="btn-auth btn-register" title="Crear Cuenta">
+                            <a href="register.php" class="btn-auth btn-register" title="">
                                 <i class="fa fa-user-plus"></i>
                             </a>
                         </li>
                         <li class="auth-buttons-container">
-                            <a href="login.php" class="btn-auth btn-login" title="Iniciar Sesión">
+                            <a href="login.php" class="btn-auth btn-login" title="">
                                 <i class="fa fa-sign-in"></i>
                             </a>
                         </li>
@@ -984,9 +980,9 @@ endif;
 <!-- Chatbot Widget -->
 <?php include 'includes/chatbot-widget.php'; ?>
 
-<!-- Real-time Updates System -->
-<script src="public/assets/js/header-globals/real-time-updates.js?v=<?= time() ?>"></script>
-    
+<!-- Notificación Global Toast -->
+<script src="public/assets/js/header-globals/notificacion-global.js?v=<?= time() ?>"></script>
+
 <!-- Script para header responsive (siempre cargado) -->
 <script src="public/assets/js/header-globals/header-responsive.js?v=<?php echo time(); ?>"></script>
 
@@ -995,3 +991,6 @@ endif;
 
 <!-- Botstrap -->
 <script src="public/assets/js/header-globals/bootstrap.min.js"></script>
+
+<!-- Real-time Updates System -->
+<script src="public/assets/js/header-globals/real-time-updates.js?v=<?= time() ?>"></script>

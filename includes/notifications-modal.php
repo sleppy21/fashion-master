@@ -16,7 +16,6 @@ if($usuario_logueado):
             FROM notificacion
             WHERE id_usuario = ? AND estado_notificacion = 'activo'
             ORDER BY fecha_creacion_notificacion DESC
-            LIMIT 3
         ", [$usuario_logueado['id_usuario']]);
         $notificaciones_usuario = $notificaciones_usuario ? $notificaciones_usuario : [];
     } catch(Exception $e) {
@@ -32,17 +31,19 @@ if($usuario_logueado):
         </button>
         
         <!-- Header -->
-        <div class="notifications-modal-header" style="padding: 15px; flex-shrink: 0;">
-            <h3 style="margin: 0 0 5px 0; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                <i class="fa fa-bell"></i> Notificaciones
-            </h3>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <p class="notifications-count" style="margin: 0; font-size: 12px; font-weight: 500;">
+        <div class="notifications-modal-header">
+            <div class="notifications-modal-title">
+                <i class="fa fa-bell"></i>
+                <span>Notificaciones</span>
+            </div>
+            <div class="notifications-header-meta">
+                <div class="notifications-count">
                     <span class="notif-count-number"><?php echo count($notificaciones_usuario); ?></span> <?php echo count($notificaciones_usuario) == 1 ? 'notificación' : 'notificaciones'; ?>
-                </p>
-                <p class="notifications-update" style="margin: 0; font-size: 11px; opacity: 0.8;">
-                    <i class="fa fa-clock-o" style="margin-right: 4px;"></i>Actualizado ahora
-                </p>
+                </div>
+                <div class="notifications-update">
+                    <i class="fa fa-clock-o"></i>
+                    <span>Actualizado ahora</span>
+                </div>
             </div>
         </div>
 
@@ -50,53 +51,33 @@ if($usuario_logueado):
         <div class="notifications-modal-body" id="notifications-list" style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px; min-height: 0;">
             <?php if(!empty($notificaciones_usuario)): ?>
                 <?php foreach($notificaciones_usuario as $notif): 
-                    // Determinar icono
                     $iconClass = 'fa-bell';
                     if($notif['tipo_notificacion'] == 'pedido') $iconClass = 'fa-shopping-cart';
                     elseif($notif['tipo_notificacion'] == 'promocion') $iconClass = 'fa-tag';
                     elseif($notif['tipo_notificacion'] == 'sistema') $iconClass = 'fa-info-circle';
                     elseif($notif['tipo_notificacion'] == 'alerta') $iconClass = 'fa-exclamation-circle';
-                    
-                    // Determinar color
-                    $iconColor = 'background: #e3f2fd; color: #1976d2;';
-                    if($notif['tipo_notificacion'] == 'promocion') $iconColor = 'background: #fff3e0; color: #f57c00;';
-                    elseif($notif['tipo_notificacion'] == 'sistema') $iconColor = 'background: #f3e5f5; color: #7b1fa2;';
-                    elseif($notif['tipo_notificacion'] == 'alerta') $iconColor = 'background: #ffebee; color: #c62828;';
-                    
+                    $iconType = $notif['tipo_notificacion'];
                     $isUnread = $notif['leida_notificacion'] == 0;
                     $dateStr = date('d/m/Y H:i', strtotime($notif['fecha_creacion_notificacion']));
                     $prioridadBadge = $notif['prioridad_notificacion'] === 'alta' ? 
-                        '<span style="display: inline-block; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: 600; background: #fee; color: #d32f2f; margin-left: 6px;">ALTA</span>' : '';
+                        '<span class="notification-priority-badge">ALTA</span>' : '';
                 ?>
-                <div class="notification-item-wrapper" style="position: relative; margin-bottom: 8px;">
+                <div class="notification-item-wrapper">
                     <!-- Fondo gris izquierdo -->
-                    <div class="notification-delete-bg-left" style="position: absolute; top: 0; left: 0; bottom: 0; width: 80px; background: #f5f5f5; border-radius: 8px 0 0 8px; display: flex; align-items: center; justify-content: flex-start; padding-left: 20px; opacity: 0; transition: opacity 0.2s;">
-                        <i class="fa fa-trash" style="color: #999; font-size: 20px;"></i>
+                    <div class="notification-delete-bg-left">
+                        <i class="fa fa-trash"></i>
                     </div>
-                    
                     <!-- Fondo gris derecho -->
-                    <div class="notification-delete-bg-right" style="position: absolute; top: 0; right: 0; bottom: 0; width: 80px; background: #f5f5f5; border-radius: 0 8px 8px 0; display: flex; align-items: center; justify-content: flex-end; padding-right: 20px; opacity: 0; transition: opacity 0.2s;">
-                        <i class="fa fa-trash" style="color: #999; font-size: 20px;"></i>
+                    <div class="notification-delete-bg-right">
+                        <i class="fa fa-trash"></i>
                     </div>
-                    
                     <!-- Tarjeta de notificación deslizable -->
-                    <div class="notification-item" 
-                         data-id="<?php echo $notif['id_notificacion']; ?>" 
-                         style="position: relative; display: flex; gap: 10px; padding: 10px; border-radius: 8px; border: 1px solid #eee; background: white; cursor: grab; touch-action: pan-y; <?php echo $isUnread ? 'border-left: 3px solid #667eea; background: #f8f9ff;' : ''; ?>">
-                        <div class="notification-icon" 
-                             style="width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; <?php echo $iconColor; ?>">
-                            <i class="fa <?php echo $iconClass; ?>"></i>
-                        </div>
-                        <div class="notification-info" style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                            <h6 style="margin: 0; font-size: 13px; font-weight: 600; line-height: 1.3; color: #2c3e50;">
-                                <?php echo htmlspecialchars($notif['titulo_notificacion'] ?? 'Notificación'); ?><?php echo $prioridadBadge; ?>
-                            </h6>
-                            <p style="margin: 0; font-size: 12px; line-height: 1.4; opacity: 0.8; color: #555;">
-                                <?php echo htmlspecialchars($notif['mensaje_notificacion']); ?>
-                            </p>
-                            <small style="font-size: 10px; margin-top: auto; opacity: 0.6; color: #888;">
-                                <?php echo $dateStr; ?>
-                            </small>
+                    <div class="notification-item<?php echo $isUnread ? ' unread' : ''; ?>" data-id="<?php echo $notif['id_notificacion']; ?>">
+                        
+                        <div class="notification-info">
+                            <h6><?php echo htmlspecialchars($notif['titulo_notificacion'] ?? 'Notificación'); ?><?php echo $prioridadBadge; ?></h6>
+                            <p><?php echo htmlspecialchars($notif['mensaje_notificacion']); ?></p>
+                            <small><?php echo $dateStr; ?></small>
                         </div>
                     </div>
                 </div>
@@ -118,7 +99,7 @@ if($usuario_logueado):
     
     // Función para mostrar toast notifications - USA LA GLOBAL
     function showToast(message, type = 'info') {
-        // Usar la función showNotification de cart-favorites-handler.js
+
         if (typeof window.showNotification === 'function') {
             window.showNotification(message, type);
         } else {
@@ -340,75 +321,16 @@ if($usuario_logueado):
 
     // Eliminar notificación con animación
     function deleteNotification(id, wrapper, item, direction) {
-        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
-        
-        // Animación de salida en la dirección del swipe
-        const translateValue = direction > 0 ? '100%' : '-100%';
-        item.style.transform = `translateX(${translateValue})`;
-        item.style.opacity = '0';
-        
-        fetch(baseUrl + '/app/actions/delete_notification.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: id })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Eliminar del DOM después de la animación
-                setTimeout(() => {
-                    wrapper.remove();
-                    
-                    // Verificar si quedan notificaciones
-                    const remainingItems = document.querySelectorAll('.notification-item');
-                    const remainingCount = remainingItems.length;
-                    
-                    if (remainingCount === 0) {
-                        // Mostrar mensaje de vacío
-                        const container = document.getElementById('notifications-list');
-                        if (container) {
-                            container.innerHTML = `
-                                <div style="text-align: center; padding: 60px 20px;">
-                                    <i class="fa fa-bell-o" style="font-size: 80px; margin-bottom: 20px; opacity: 0.3; color: #ccc;"></i>
-                                    <p style="font-size: 16px; margin-bottom: 20px; color: #666;">No tienes notificaciones</p>
-                                </div>
-                            `;
-                        }
-                    }
-                    
-                    // Actualizar contador en el header del modal
-                    const countEl = document.querySelector('.notifications-count');
-                    if (countEl) {
-                        const countNumber = countEl.querySelector('.notif-count-number');
-                        const countText = remainingCount === 1 ? 'notificación' : 'notificaciones';
-                        
-                        if (countNumber) {
-                            countNumber.textContent = remainingCount;
-                        } else {
-                            countEl.innerHTML = `<span class="notif-count-number">${remainingCount}</span> ${countText}`;
-                        }
-                    }
-                    
-                    // Actualizar contador sin recargar
-                    if (window.updateNotificationCount) {
-                        window.updateNotificationCount();
-                    }
-                }, 300);
-                
-                showToast('Notificación eliminada', 'success');
-            } else {
-                // Revertir animación si falló
-                item.style.transform = 'translateX(0)';
-                item.style.opacity = '1';
-                showToast(data.message || 'Error al eliminar notificación', 'error');
-            }
-        })
-        .catch(error => {
-            item.style.transform = 'translateX(0)';
-            item.style.opacity = '1';
-            showToast('Error al eliminar notificación', 'error');
-            console.error('Error:', error);
-        });
+        // Usar la función global de RealTimeUpdates
+        if (window.RealTimeUpdates && window.RealTimeUpdates.deleteNotification) {
+            // Animar primero
+            const translateValue = direction > 0 ? '100%' : '-100%';
+            item.style.transform = `translateX(${translateValue})`;
+            item.style.opacity = '0';
+            
+            // Llamar a la función global
+            window.RealTimeUpdates.deleteNotification(id, wrapper);
+        }
     }
 
     // Inicializar

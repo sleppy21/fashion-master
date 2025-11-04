@@ -1,3 +1,20 @@
+/* Eliminar outline global de Bootstrap en enlaces y botones */
+a:focus, a:active, button:focus, button:active, [role="button"]:focus, [role="button"]:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
+/* Eliminar outline en iconos/enlaces del header para evitar subrayado visual */
+.header__right__widget li a:focus,
+.header__right__widget li a:active,
+.header__right__widget li span:focus,
+.header__right__widget li span:active,
+.header__right__auth a:focus,
+.header__right__auth a:active,
+.header-avatar-link:focus,
+.header-avatar-link:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
 /**
  * FASHION STORE - HEADER COMPONENT
  * Header unificado con responsive, dark mode y animaciones
@@ -185,7 +202,7 @@
     margin: 0 !important;
     padding: 0 !important;
     gap: 10px !important;
-    display: inline-flex !important;
+    display: flex !important;
     align-items: center !important;
 }
 
@@ -519,6 +536,38 @@ body.dark-mode #notifications-count {
     }
 }
 
+/* === SOLUCIÓN HEADER AUTH === */
+
+/* 1. Arreglar la alineación del contenedor de widgets */
+.header__right {
+    justify-content: flex-end !important;
+}
+
+/* 2. Arreglar el tamaño de los botones de autenticación */
+.header__right__widget li.auth-buttons-container {
+    width: auto !important;
+    height: auto !important;
+}
+
+.header__right__widget li.auth-buttons-container a.btn-auth {
+    width: auto !important;
+    height: auto !important;
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+    border-radius: var(--border-radius-sm) !important;
+}
+
+.header__right__widget li.auth-buttons-container a.btn-auth:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+    transform: translateY(-2px) !important;
+    color: #111111 !important;
+}
+
+body.dark-mode .header__right__widget li.auth-buttons-container a.btn-auth:hover {
+    background: var(--dark-accent-light) !important;
+    color: var(--dark-accent) !important;
+}
+
 /* ========================================
    COMPENSAR ESPACIO DEL HEADER FIXED
    ======================================== */
@@ -578,7 +627,7 @@ body.cart-page .shop-cart {
     }
     
     body.cart-page .breadcrumb-option {
-        padding-top: 90px !important;
+        padding-top: 40px !important;
         padding-bottom: 30px !important;
     }
     
@@ -685,5 +734,27 @@ body.dark-mode .header-user-avatar {
 
 body.dark-mode .header-user-avatar .avatar-status-dot {
     border-color: var(--dark-bg-primary);
+}
+
+/* === FIX HEADER RESPONSIVE MOBILE === */
+@media (max-width: 480px) {
+  .col-auto.order-2.order-lg-3 {
+    min-width: 0 !important;
+    width: auto !important;
+  }
+  .header__right__widget {
+    gap: 4px !important;
+    padding: 0 !important;
+  }
+  .header-user-avatar {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+  }
+  .header__right__widget li.auth-buttons-container a.btn-auth {
+    padding: 6px 8px !important;
+    font-size: 12px !important;
+  }
 }
 

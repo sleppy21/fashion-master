@@ -1,3 +1,0 @@
-[2025-10-10 01:08:39] ERROR: Error al enviar email a spiritboom672@gmail.com: SMTP Error: Could not authenticate.
-[2025-10-10 01:09:14] ERROR: Error al enviar email a spiritboom672@gmail.com: SMTP Error: Could not authenticate.
-[2025-10-10 01:10:02] ERROR: Error al enviar email a spiritboom672@gmail.com: SMTP Error: Could not authenticate.

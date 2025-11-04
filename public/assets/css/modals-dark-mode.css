@@ -30,6 +30,8 @@
 .favorites-modal-content,
 .notifications-modal-content,
 .user-modal-content {
+    background: white; 
+    border-radius: 10px;
     position: relative !important;
     z-index: 999999999999999 !important; /* Contenido aún más alto */
 }

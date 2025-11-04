@@ -21,13 +21,10 @@ const RealTimeUpdates = (function() {
             element.style.transition = 'all 0.3s ease';
         }
 
-        // Crear FormData
-        const formData = new FormData();
-        formData.append('id', id);
-
         fetch(baseUrl + '/app/actions/delete_notification.php', {
             method: 'POST',
-            body: formData
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id })
         })
         .then(response => response.json())
         .then(data => {
@@ -42,7 +39,37 @@ const RealTimeUpdates = (function() {
                     if (element) {
                         element.remove();
                     }
-                    updateNotificationsList();
+                    
+                    // Verificar si quedan notificaciones
+                    const remainingItems = document.querySelectorAll('.notification-item');
+                    const remainingCount = remainingItems.length;
+                    
+                    if (remainingCount === 0) {
+                        // Mostrar mensaje de vacío
+                        const container = document.getElementById('notifications-list');
+                        if (container) {
+                            container.innerHTML = `
+                                <div style="text-align: center; padding: 60px 20px;">
+                                    <i class="fa fa-bell-o" style="font-size: 80px; margin-bottom: 20px; opacity: 0.3; color: #ccc;"></i>
+                                    <p style="font-size: 16px; margin-bottom: 20px; color: #666;">No tienes notificaciones</p>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    // Actualizar contador en el header del modal
+                    const countEl = document.querySelector('.notifications-count');
+                    if (countEl) {
+                        const countNumber = countEl.querySelector('.notif-count-number');
+                        const countText = remainingCount === 1 ? 'notificación' : 'notificaciones';
+                        
+                        if (countNumber) {
+                            countNumber.textContent = remainingCount;
+                        } else {
+                            countEl.innerHTML = `<span class="notif-count-number">${remainingCount}</span> ${countText}`;
+                        }
+                    }
+                    
                 }, 300);
                 
                 showToast('Notificación eliminada', 'success');
@@ -97,7 +124,7 @@ const RealTimeUpdates = (function() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            // console.error('Error:', error);
             showToast('Error al marcar notificación', 'error');
         });
     }
@@ -106,8 +133,9 @@ const RealTimeUpdates = (function() {
     function updateNotificationCountDirectly(count) {
         count = parseInt(count) || 0;
         
-        const countElements = document.querySelectorAll('#notifications-count');
-        countElements.forEach(el => {
+        // Actualizar contador en el header (badge)
+        const headerCountElements = document.querySelectorAll('#notifications-count');
+        headerCountElements.forEach(el => {
             if (count > 0) {
                 el.textContent = count;
                 el.style.display = 'flex';
@@ -115,23 +143,23 @@ const RealTimeUpdates = (function() {
                 el.style.display = 'none';
             }
         });
+
+        // Actualizar contador en el modal
+        const modalCountElements = document.querySelectorAll('.notifications-count .notif-count-number');
+        modalCountElements.forEach(el => {
+            el.textContent = count;
+            const countText = count === 1 ? 'notificación' : 'notificaciones';
+            el.parentElement.innerHTML = `<span class="notif-count-number">${count}</span> ${countText}`;
+        });
     }
 
     function updateNotificationCount() {
         fetch(baseUrl + '/app/actions/get_notifications_count.php')
             .then(response => response.json())
             .then(data => {
-                const countElements = document.querySelectorAll('#notifications-count');
-                countElements.forEach(el => {
-                    if (data.count > 0) {
-                        el.textContent = data.count;
-                        el.style.display = 'flex';
-                    } else {
-                        el.style.display = 'none';
-                    }
-                });
+                updateNotificationCountDirectly(data.count);
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {/* console.error('Error:', error); */});
     }
 
     function updateNotificationsList() {
@@ -150,7 +178,7 @@ const RealTimeUpdates = (function() {
                     `;
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {/* console.error('Error:', error); */});
     }
 
     // ============================================
@@ -447,32 +475,46 @@ const RealTimeUpdates = (function() {
 
     function refreshFavoritesModal() {
         const container = document.querySelector('#favorites-list');
-
-
-
         fetch(baseUrl + '/app/actions/get_favorites.php')
             .then(response => response.json())
             .then(data => {
-                
                 if (data.success) {
                     // Actualizar el HTML del modal usando la respuesta correcta
                     container.innerHTML = data.html;
-                    
                     // Actualizar contador en el header del modal
                     const countEl = document.querySelector('.favorites-count');
                     if (countEl) {
                         const countNumber = countEl.querySelector('.fav-count-number');
                         const countText = data.count === 1 ? 'producto favorito' : 'productos favoritos';
-                        
                         if (countNumber) {
-                            // Si existe el span del número, solo actualizar el número
                             countNumber.textContent = data.count;
                         } else {
-                            // Si no existe, actualizar todo el contenido
                             countEl.innerHTML = `<span class="fav-count-number">${data.count}</span> ${countText}`;
                         }
                     }
-                    
+                    // --- SINCRONIZAR ESTADO DE BOTONES CARRITO EN MODAL FAVORITOS ---
+                    if (Array.isArray(data.cart_ids)) {
+                        // Primero, limpiar todos los botones .btn-favorite-cart
+                        const allCartBtns = container.querySelectorAll('.btn-favorite-cart');
+                        allCartBtns.forEach(btn => {
+                            const pid = btn.dataset.id;
+                            if (data.cart_ids.includes(pid) || data.cart_ids.includes(parseInt(pid))) {
+                                // Marcar como en carrito
+                                btn.classList.add('in-cart');
+                                btn.setAttribute('data-in-cart', 'true');
+                                const icon = btn.querySelector('i');
+                                if (icon) icon.className = 'fa fa-check-circle';
+                                btn.title = 'En carrito - Clic para quitar';
+                            } else {
+                                // Marcar como NO en carrito
+                                btn.classList.remove('in-cart');
+                                btn.setAttribute('data-in-cart', 'false');
+                                const icon = btn.querySelector('i');
+                                if (icon) icon.className = 'fa fa-cart-plus';
+                                btn.title = 'Agregar al carrito';
+                            }
+                        });
+                    }
                 } else {
                     showToast('Error al actualizar favoritos', 'error');
                 }
@@ -545,10 +587,10 @@ const RealTimeUpdates = (function() {
             if (data.success) {
                 // Actualizar contador
                 updateCartCount();
-                
                 // Actualizar TODOS los botones de carrito de este producto
                 updateCartButtons(productId, false);
-                
+                // Forzar refresh del modal de favoritos para sincronizar el estado visual
+                refreshFavoritesModal();
                 showToast('Producto quitado del carrito', 'info');
             } else {
                 showToast(data.message || 'Error al quitar del carrito', 'error');
@@ -681,7 +723,7 @@ const RealTimeUpdates = (function() {
                 }
                 
             })
-            .catch(error => console.error('❌ Error al actualizar contador de carrito:', error));
+            .catch(error => {/* console.error('❌ Error al actualizar contador de carrito:', error); */});
     }
 
     // ============================================
@@ -694,20 +736,7 @@ const RealTimeUpdates = (function() {
     
     function showToast(message, type = 'info') {
 
-        
-        // Usar la función showNotification de cart-favorites-handler.js
-        if (typeof window.showNotification === 'function') {
-            window.showNotification(message, type);
-        } else {
-            // Reintentar después de un pequeño delay
-            setTimeout(function() {
-                if (typeof window.showNotification === 'function') {
-                    window.showNotification(message, type);
-                } else {
-                    alert(message);
-                }
-            }, 100);
-        }
+        window.showNotification(message, type);
     }
 
     // ============================================

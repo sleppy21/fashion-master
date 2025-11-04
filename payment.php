@@ -564,7 +564,7 @@ try {
     <script src="public/assets/js/header-handler.js?v=1.0"></script>
     <script src="public/assets/js/global-counters.js"></script>
     <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
-    <script src="public/assets/js/cart-favorites-handler.js"></script>
+
     <script src="public/assets/js/user-account-modal.js"></script>
     <!-- ❌ REMOVIDO: dark-mode.js (ya se carga desde dark-mode-assets.php) -->
 

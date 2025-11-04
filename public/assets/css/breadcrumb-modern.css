@@ -140,7 +140,7 @@ body.dark-mode .breadcrumb__links span {
 @media (max-width: 767px) {
     .breadcrumb-option {
         padding: 20px 0 !important;
-        margin-top: 60px !important;
+        margin-top: 20px !important;
     }
     
     .breadcrumb__links {

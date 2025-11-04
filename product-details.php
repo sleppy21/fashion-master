@@ -10,7 +10,7 @@ ini_set('display_errors', 1);
 session_start();
 
 require_once 'config/conexion.php';
-require_once 'config/config.php';
+require_once 'config/config.php'; // <-- Para BASE_URL global
 
 // Obtener ID del producto
 $producto_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -211,6 +211,14 @@ $page_title = $producto['nombre_producto'];
 <body>
     <?php include 'includes/offcanvas-menu.php'; ?>
 
+
+    <script>
+        // BASE_URL sin barra final para evitar duplicados
+        window.BASE_URL = '<?= rtrim(BASE_URL, "/") ?>';
+        if (window.location.protocol === 'https:' && window.BASE_URL.startsWith('http:')) {
+            window.BASE_URL = window.BASE_URL.replace('http:', 'https:');
+        }
+    </script>
     <?php 
     // Incluir header reutilizable
     include 'includes/header-section.php'; 
@@ -772,7 +780,7 @@ $page_title = $producto['nombre_producto'];
     <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
     
     <!-- Cart & Favorites Handler -->
-    <script src="public/assets/js/cart-favorites-handler.js"></script>
+
     
     <!-- Image Color Extractor -->
     <script src="public/assets/js/image-color-extractor.js"></script>
@@ -2123,7 +2131,7 @@ $page_title = $producto['nombre_producto'];
         // ============================================
         // FUNCI�N DE NOTIFICACI�N (FALLBACK)
         // ============================================
-        // Esperar un poco para que cart-favorites-handler.js se cargue completamente
+
         setTimeout(function() {
             if (typeof window.showNotification !== 'function') {
                 window.showNotification = function(message, type) {
@@ -2390,7 +2398,7 @@ $page_title = $producto['nombre_producto'];
         }
 
         // ============================================
-        // EXPONER FUNCIONES GLOBALMENTE para cart-favorites-handler.js
+
         // ============================================
         window.actualizarIconosFavoritos = actualizarIconosFavoritos;
         window.actualizarBotonCarritoPagina = actualizarBotonCarritoPagina;

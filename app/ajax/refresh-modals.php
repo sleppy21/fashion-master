@@ -69,7 +69,7 @@ try {
                 <i class="fa fa-times"></i>
             </button>
             
-            <div class="favorites-modal-header" style="padding: 15px; border-bottom: 2px solid; flex-shrink: 0;">
+            <div class="favorites-modal-header" style="padding: 15px;flex-shrink: 0;">
                 <h3 style="margin: 0 0 5px 0; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
                     <i class="fa fa-heart"></i> Mis Favoritos
                 </h3>

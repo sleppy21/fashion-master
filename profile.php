@@ -6,7 +6,7 @@
 
 session_start();
 require_once 'config/conexion.php';
-require_once 'config/config.php';
+require_once 'config/config.php'; // <-- Para BASE_URL global
 
 $page_title = "Mi Perfil";
 
@@ -156,6 +156,14 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
 <body>
     <!-- Offcanvas Menu -->
     <?php include 'includes/offcanvas-menu.php'; ?>
+
+    <script>
+        // BASE_URL sin barra final para evitar duplicados
+        window.BASE_URL = '<?= rtrim(BASE_URL, "/") ?>';
+        if (window.location.protocol === 'https:' && window.BASE_URL.startsWith('http:')) {
+            window.BASE_URL = window.BASE_URL.replace('http:', 'https:');
+        }
+    </script>
     
     <!-- Header con modales -->
     <?php include 'includes/header-section.php'; ?>
@@ -1070,7 +1078,7 @@ $auto_abrir_direccion = ($seccion_activa === 'direcciones' && empty($direcciones
     <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
     
     <script src="public/assets/js/user-account-modal.js"></script>
-    <script src="public/assets/js/cart-favorites-handler.js"></script>
+
     
     <!-- Profile Script (Ya no necesita SweetAlert2 - usa toast nativo) -->
     <script src="public/assets/js/profile.js"></script>

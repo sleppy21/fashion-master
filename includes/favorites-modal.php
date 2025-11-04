@@ -48,15 +48,19 @@ if($usuario_logueado):
         </button>
         
         <!-- Header -->
-        <div class="favorites-modal-header" style="padding: 15px; border-bottom: 2px solid; flex-shrink: 0;">
-            <h3 style="margin: 0 0 5px 0; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;"><i class="fa fa-heart"></i> Mis Favoritos</h3>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <p class="favorites-count" style="margin: 0; font-size: 12px; font-weight: 500;">
+        <div class="favorites-modal-header">
+            <div class="favorites-modal-title">
+                <i class="fa fa-heart"></i>
+                <span>Mis Favoritos</span>
+            </div>
+            <div class="favorites-header-meta">
+                <div class="favorites-count">
                     <span class="fav-count-number"><?php echo count($favoritos_usuario); ?></span> <?php echo count($favoritos_usuario) == 1 ? 'producto favorito' : 'productos favoritos'; ?>
-                </p>
-                <p class="favorites-update" style="margin: 0; font-size: 11px; opacity: 0.8;">
-                    <i class="fa fa-clock-o" style="margin-right: 4px;"></i>Actualizado hoy
-                </p>
+                </div>
+                <div class="favorites-update">
+                    <i class="fa fa-clock-o"></i>
+                    <span>Actualizado hoy</span>
+                </div>
             </div>
         </div>
 
@@ -74,58 +78,51 @@ if($usuario_logueado):
                     $sin_stock = $fav['stock_actual_producto'] <= 0;
                     $en_carrito = in_array($fav['id_producto'], $productos_en_carrito);
                 ?>
-                <div class="favorite-item-wrapper" style="position: relative; margin-bottom: 8px;">
-                    <!-- Fondo gris izquierdo -->
-                    <div class="favorite-delete-bg-left" style="position: absolute; top: 0; left: 0; bottom: 0; width: 80px; background: #ffebee; border-radius: 8px 0 0 8px; display: flex; align-items: center; justify-content: flex-start; padding-left: 20px; opacity: 0; transition: opacity 0.2s;">
-                        <i class="fa fa-heart-broken" style="color: #e57373; font-size: 20px;"></i>
+                <div class="favorite-item-wrapper">
+                    <div class="favorite-delete-bg-left">
+                        <i class="fa fa-heart-broken"></i>
                     </div>
-                    
-                    <!-- Fondo gris derecho -->
-                    <div class="favorite-delete-bg-right" style="position: absolute; top: 0; right: 0; bottom: 0; width: 80px; background: #ffebee; border-radius: 0 8px 8px 0; display: flex; align-items: center; justify-content: flex-end; padding-right: 20px; opacity: 0; transition: opacity 0.2s;">
-                        <i class="fa fa-heart-broken" style="color: #e57373; font-size: 20px;"></i>
+                    <div class="favorite-delete-bg-right">
+                        <i class="fa fa-heart-broken"></i>
                     </div>
-                    
-                    <!-- Tarjeta de favorito deslizable -->
-                    <div class="favorite-item" data-id="<?php echo $fav['id_producto']; ?>" style="position: relative; display: flex; gap: 10px; padding: 10px; border-radius: 8px; margin-bottom: 0; border: 1px solid #eee; background: white; cursor: grab; touch-action: pan-y;">
-                    <div class="favorite-image" 
-                         style="position: relative; width: 70px; height: 70px; flex-shrink: 0; border-radius: 6px; overflow: hidden; cursor: pointer;"
-                         onclick="window.location.href='product-details.php?id=<?php echo $fav['id_producto']; ?>';">
-                        <img src="<?php echo htmlspecialchars($imagen_url); ?>" alt="<?php echo htmlspecialchars($fav['nombre_producto']); ?>" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
-                        <?php if($sin_stock): ?>
-                            <span class="stock-badge out" style="position: absolute; top: 5px; left: 5px; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600;">Sin stock</span>
-                        <?php elseif($tiene_descuento): ?>
-                            <span class="stock-badge sale" style="position: absolute; top: 5px; left: 5px; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600;">-<?php echo round($fav['descuento_porcentaje_producto']); ?>%</span>
-                        <?php endif; ?>
-                    </div>
-                    <div class="favorite-info" style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                        <h6 style="margin: 0; font-size: 13px; font-weight: 600; line-height: 1.3;"><span class="favorite-product-name" style="cursor: pointer;" onclick="window.location.href='product-details.php?id=<?php echo $fav['id_producto']; ?>'"><?php echo htmlspecialchars($fav['nombre_producto']); ?></span></h6>
-                        <div class="favorite-price" style="display: flex; align-items: center; gap: 6px;">
-                            <span class="price-current" style="font-size: 15px; font-weight: 700;">$<?php echo number_format($precio_final, 2); ?></span>
-                            <?php if($tiene_descuento): ?>
-                                <span class="price-old" style="font-size: 12px; text-decoration: line-through;">$<?php echo number_format($precio_original, 2); ?></span>
+                    <div class="favorite-item" data-id="<?php echo $fav['id_producto']; ?>">
+                        <div class="favorite-image" onclick="window.location.href='product-details.php?id=<?php echo $fav['id_producto']; ?>';">
+                            <img src="<?php echo htmlspecialchars($imagen_url); ?>" alt="<?php echo htmlspecialchars($fav['nombre_producto']); ?>">
+                            <?php if($sin_stock): ?>
+                                <span class="stock-badge out">Sin stock</span>
+                            <?php elseif($tiene_descuento): ?>
+                                <span class="stock-badge sale">-<?php echo round($fav['descuento_porcentaje_producto']); ?>%</span>
                             <?php endif; ?>
                         </div>
-                        <small class="favorite-date" style="font-size: 10px; margin-top: auto;">Agregado: <?php echo date('d/m/Y', strtotime($fav['fecha_agregado_favorito'])); ?></small>
+                        <div class="favorite-info">
+                            <h6><span class="favorite-product-name" style="cursor: pointer;" onclick="window.location.href='product-details.php?id=<?php echo $fav['id_producto']; ?>'"><?php echo htmlspecialchars($fav['nombre_producto']); ?></span></h6>
+                            <div class="favorite-price">
+                                <span class="price-current">$<?php echo number_format($precio_final, 2); ?></span>
+                                <?php if($tiene_descuento): ?>
+                                    <span class="price-old">$<?php echo number_format($precio_original, 2); ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <small class="favorite-date">Agregado: <?php echo date('d/m/Y', strtotime($fav['fecha_agregado_favorito'])); ?></small>
+                        </div>
+                        <div class="favorite-actions">
+                            <?php if($sin_stock): ?>
+                                <button class="btn-favorite-cart" disabled title="Sin stock">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </button>
+                            <?php elseif($en_carrito): ?>
+                                <button class="btn-favorite-cart in-cart" data-id="<?php echo $fav['id_producto']; ?>" data-in-cart="true" title="En carrito - Clic para quitar">
+                                    <i class="fa fa-check-circle"></i>
+                                </button>
+                            <?php else: ?>
+                                <button class="btn-favorite-cart" data-id="<?php echo $fav['id_producto']; ?>" data-in-cart="false" title="Agregar al carrito">
+                                    <i class="fa fa-cart-plus"></i>
+                                </button>
+                            <?php endif; ?>
+                            <button class="btn-favorite-remove" data-id="<?php echo $fav['id_producto']; ?>" title="Quitar de favoritos">
+                                <i class="fa fa-heart-broken"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="favorite-actions" style="display: flex; flex-direction: column; gap: 5px; justify-content: center;">
-                        <?php if($sin_stock): ?>
-                            <button class="btn-favorite-cart" disabled style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: not-allowed; display: flex; align-items: center; justify-content: center; font-size: 13px; opacity: 0.5;">
-                                <i class="fa fa-shopping-cart"></i>
-                            </button>
-                        <?php elseif($en_carrito): ?>
-                            <button class="btn-favorite-cart in-cart" data-id="<?php echo $fav['id_producto']; ?>" data-in-cart="true" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.3s ease;" title="En carrito - Clic para quitar">
-                                <i class="fa fa-check-circle"></i>
-                            </button>
-                        <?php else: ?>
-                            <button class="btn-favorite-cart" data-id="<?php echo $fav['id_producto']; ?>" data-in-cart="false" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.3s ease;" title="Agregar al carrito">
-                                <i class="fa fa-cart-plus"></i>
-                            </button>
-                        <?php endif; ?>
-                        <button class="btn-favorite-remove" data-id="<?php echo $fav['id_producto']; ?>" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.3s ease;" title="Quitar de favoritos">
-                            <i class="fa fa-heart-broken"></i>
-                        </button>
-                    </div>
-                </div>
                 </div> <!-- Fin de favorite-item-wrapper -->
                 <?php endforeach; ?>
             <?php else: ?>
