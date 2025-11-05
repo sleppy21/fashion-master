@@ -618,63 +618,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     // La funcionalidad de avatar está manejada por avatar-upload.js
     
-    // ============================================
-    // TOGGLE FAVORITES MODAL
-    // ============================================
-    const toggleFavoritesBtn = document.getElementById('toggle-favorites-btn');
-    
-    if (toggleFavoritesBtn) {
-        toggleFavoritesBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const favoritesModal = document.getElementById('favorites-modal');
-            
-            // Toggle del modal
-            if (favoritesModal.style.display === 'block') {
-                // Cerrar modal
-                favoritesModal.style.display = 'none';
-                document.body.style.overflow = ''; // Restaurar scroll
-            } else {
-                // Abrir modal
-                favoritesModal.style.display = 'block';
-                document.body.style.overflow = 'hidden'; // Prevenir scroll del body
-                
-                // Cargar favoritos si existe la función
-                if (typeof window.loadFavorites === 'function') {
-                    window.loadFavorites();
-                }
-            }
-        });
-    }
-    
-    // Cerrar modal al hacer click en el overlay o botón cerrar
-    const favoritesModal = document.getElementById('favorites-modal');
-    
-    if (favoritesModal) {
-        // Click en el overlay (fuera del contenido)
-        favoritesModal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
-                document.body.style.overflow = '';
-            }
-        });
-        
-        // Click en botón cerrar
-        const closeBtn = favoritesModal.querySelector('.favorites-modal-close');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function() {
-                favoritesModal.style.display = 'none';
-                document.body.style.overflow = '';
-            });
-        }
-        
-        // Cerrar con tecla ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && favoritesModal.style.display === 'block') {
-                favoritesModal.style.display = 'none';
-                document.body.style.overflow = '';
-            }
-        });
-    }
+    // Eliminadas referencias y lógica de apertura/cierre de favoritos-modal. Ahora el control es centralizado en real-time-updates.js
     
 });

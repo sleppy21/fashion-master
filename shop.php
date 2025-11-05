@@ -196,9 +196,6 @@ $page_title = "Tienda";
                             <h1 class="shop-title">
                                 <i class="fa fa-store"></i> Catálogo
                             </h1>
-                            <span class="results-count" id="results-count">
-                                <?= count($productos) ?> producto<?= count($productos) != 1 ? 's' : '' ?> encontrado<?= count($productos) != 1 ? 's' : '' ?>
-                            </span>
                         </div>
                         
                         <div class="topbar-right topbar-right-mobile">
@@ -211,16 +208,18 @@ $page_title = "Tienda";
                                        value="<?= htmlspecialchars($filters['buscar']) ?>">
                                 <i class="fa fa-search"></i>
                             </div>
+                                        <?php include 'includes/categories-navbar.php'; ?>
+    <link rel="stylesheet" href="public/assets/css/components/categories-navbar.css?v=1.0">
                             
                             <!-- Ordenar -->
-                            <div class="sort-dropdown">
+                            <div class="sort-dropdown hide-on-mobile">
                                 <button class="btn-sort" id="btnSort">
                                     <i class="fa fa-sort-amount-down"></i>
                                     <span>Ordenar</span>
                                 </button>
                                 <div class="sort-menu" id="sortMenu">
-                                    <button data-filter-type="ordenar" data-filter-value="newest" 
-                                            class="<?= $filters['ordenar'] == 'newest' ? 'active' : '' ?>">
+                    <button data-filter-type="ordenar" data-filter-value="newest" 
+                        class="<?= (!isset($filters['ordenar']) || $filters['ordenar'] == 'newest') ? 'active' : '' ?>">
                                         <i class="fa fa-clock"></i> Más recientes
                                     </button>
                                     <button data-filter-type="ordenar" data-filter-value="price_asc"
@@ -245,51 +244,7 @@ $page_title = "Tienda";
                     </div>
                     
                     <!-- Grid de productos -->
-                    <div class="products-grid-modern" id="products-container">
-                        <div class="row">
-                            <?php if (count($productos) > 0): ?>
-                                <?php foreach($productos as $producto): ?>
-                                    <?php 
-                                    $is_favorite = in_array($producto['id_producto'], $favoritos_ids);
-                                    $in_cart = in_array($producto['id_producto'], $carrito_ids);
-                                    renderProductCard($producto, $is_favorite, $usuario_logueado !== null, $in_cart); 
-                                    ?>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <div class="col-12">
-                                    <div class="no-products-found" data-aos="fade-up">
-                                        <div class="empty-state-icon">
-                                            <i class="fa fa-shopping-bag"></i>
-                                            <div class="icon-circle"></div>
-                                        </div>
-                                        <h2 class="empty-state-title">No se encontraron productos</h2>
-                                        <p class="empty-state-description">
-                                            Intenta ajustar los filtros o buscar algo diferente.<br>
-                                            Explora nuestro catálogo completo para descubrir productos increíbles.
-                                        </p>
-                                        <div class="empty-state-actions">
-                                            <button class="btn-clear-filters" onclick="limpiarFiltros()">
-                                                <i class="fa fa-redo"></i>
-                                                <span>Limpiar filtros</span>
-                                            </button>
-                                            <a href="shop.php" class="btn-view-all">
-                                                <i class="fa fa-th"></i>
-                                                <span>Ver todos los productos</span>
-                                            </a>
-                                        </div>
-                                        <div class="empty-state-suggestions">
-                                            <p class="suggestions-title">Sugerencias:</p>
-                                            <ul class="suggestions-list">
-                                                <li><i class="fa fa-check-circle"></i> Verifica la ortografía de tu búsqueda</li>
-                                                <li><i class="fa fa-check-circle"></i> Usa términos más generales</li>
-                                                <li><i class="fa fa-check-circle"></i> Prueba con menos filtros activos</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
+                    <div class="products-grid-modern" id="products-container"></div>
                     
                 </main>
                 
@@ -333,6 +288,7 @@ $page_title = "Tienda";
     <script src="public/assets/js/shop/shop-filters.js?v=2.0"></script>
     <script src="public/assets/js/shop/search-live.js?v=2.0"></script>
     <script src="public/assets/js/shop/masonry-layout.js?v=1.1"></script>
+    <script src="public/assets/js/header-globals/categories-navbar.js?v=1.0"></script>
     
     
     <!-- Fix Sidebar Visibility -->

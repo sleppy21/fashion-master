@@ -31,7 +31,7 @@ try {
 
     // Construir query con filtros
     $sql = "
-        SELECT DISTINCT
+        SELECT
             p.id_producto,
             p.nombre_producto,
             p.descripcion_producto,
@@ -185,10 +185,23 @@ try {
         error_log("Producto ID {$producto['id_producto']}: es_favorito = " . ($producto['es_favorito'] ? 'true' : 'false'));
     }
 
-    // Retornar JSON con productos
+
+    // Renderizar HTML de productos usando el mismo componente que shop.php
+    ob_start();
+    echo "<div class='row'>";
+    if (count($productos) > 0) {
+        foreach ($productos as $producto) {
+            include_once __DIR__ . '/../../app/views/components/product-card.php';
+            renderProductCard($producto, $producto['es_favorito'], isset($_SESSION['user_id']), false);
+        }
+    } else {
+        echo '<div class="col-12"><div class="no-products-found"><h2>No se encontraron productos</h2></div></div>';
+    }
+    echo "</div>";
+    $html = ob_get_clean();
     echo json_encode([
         'success' => true,
-        'products' => $productos,
+        'html' => $html,
         'count' => count($productos)
     ]);
 

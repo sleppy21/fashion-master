@@ -149,37 +149,10 @@ try {
 
     <!-- Css Styles -->
     <link rel="stylesheet" href="public/assets/css/bootstrap.min.css" type="text/css">
-    
-    <!-- Font Awesome 6.4.0 - FORZAR CARGA DESDE CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
-    <link rel="stylesheet" href="public/assets/css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/jquery-ui.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/magnific-popup.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/style.css" type="text/css">
-    
-    <!-- AOS Animation -->
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
-    
-    <!-- Modals CSS -->
-    <link rel="stylesheet" href="public/assets/css/user-account-modal.css" type="text/css">
-    <link rel="stylesheet" href="public/assets/css/favorites-modal.css" type="text/css">
-    
-    <!-- Dark Mode CSS -->
-    <link rel="stylesheet" href="public/assets/css/dark-mode.css?v=<?php echo time(); ?>" type="text/css">
-    
-    <!-- ✅ FIX: Eliminar barra blanca al lado del scrollbar -->
-    <link rel="stylesheet" href="public/assets/css/fix-white-bar.css?v=1.0" type="text/css">
-    
-    <!-- Global Responsive CSS -->
-    <link rel="stylesheet" href="public/assets/css/global-responsive.css?v=1.0" type="text/css">
-    
-    <!-- Modern Styles -->
-    <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0">
-    <link rel="stylesheet" href="public/assets/css/modals-animations.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="public/assets/css/notifications-modal.css">
+    <!-- Solo modals.css y dark-mode reales -->
+    <link rel="stylesheet" href="public/assets/css/components/modals.css" type="text/css">
+    <link rel="stylesheet" href="public/assets/css/dark-mode/dark-mode.css" type="text/css">
     
     <style>
         /* Hero Section Moderno */
@@ -629,28 +602,10 @@ try {
     </footer>
 
     <!-- Js Plugins -->
-    <script src="public/assets/js/jquery-3.3.1.min.js"></script>
-    <script src="public/assets/js/bootstrap.min.js"></script>
-    <script src="public/assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="public/assets/js/jquery-ui.min.js"></script>
-    <script src="public/assets/js/mixitup.min.js"></script>
-    <script src="public/assets/js/jquery.countdown.min.js"></script>
-    <script src="public/assets/js/jquery.slicknav.js"></script>
-    <script src="public/assets/js/owl.carousel.min.js"></script>
-    <script src="public/assets/js/jquery.nicescroll.min.js"></script>
-    <script src="public/assets/js/main.js"></script>
-    
-    <!-- Header Handler - Actualización en tiempo real de contadores -->
-    <script src="public/assets/js/header-handler.js?v=1.0"></script>
-    
-    <!-- Sistema Global de Contadores -->
-    <script src="public/assets/js/global-counters.js"></script>
-    
-    <!-- Real-time Updates System - DEBE IR ANTES que cart-favorites-handler -->
-    <script src="public/assets/js/real-time-updates.js?v=<?= time() ?>"></script>
-    
-    <!-- Swipe Gestures - Para cerrar modales y offcanvas con gestos táctiles -->
-    <script src="public/assets/js/swipe-gestures.js"></script>
+    <script src="public/assets/js/header-globals/jquery-3.3.1.min.js"></script>
+    <script src="public/assets/js/header-globals/bootstrap.min.js"></script>
+    <script src="public/assets/js/header-globals/real-time-updates.js"></script>
+    <script src="public/assets/js/header-globals/swipe-gestures.js"></script>
     
     <!-- AOS Animation -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -669,11 +624,7 @@ try {
         
         <!-- Scripts para modales -->
 
-        <script src="public/assets/js/user-account-modal.js"></script>
-        <script src="public/assets/js/image-color-extractor.js"></script>
-        
-        <!-- Fix Modal Scrollbar - PREVENIR BARRA LATERAL -->
-        <script src="public/assets/js/fix-modal-scrollbar.js"></script>
+    <!-- Otros scripts opcionales -->
     <?php endif; ?>
     
     <?php include 'includes/dark-mode-assets.php'; ?>

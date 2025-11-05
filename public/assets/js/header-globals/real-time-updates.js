@@ -332,16 +332,14 @@ const RealTimeUpdates = (function() {
                     const remainingCount = remainingItems.length;
                     
                     if (remainingCount === 0) {
-                        // Mostrar mensaje de vacío inmediatamente
-                        const container = document.querySelector('#favorites-list'); // ID, no clase
+                        // Mostrar mensaje de vacío igual que en PHP
+                        const container = document.querySelector('#favorites-list');
                         if (container) {
                             container.innerHTML = `
-                                <div class="empty-state" style="text-align: center; padding: 60px 20px;">
-                                    <i class="fa fa-heart-o" style="font-size: 80px; margin-bottom: 20px; opacity: 0.3; color: #ccc;"></i>
-                                    <p style="font-size: 16px; margin-bottom: 20px; color: #666;">No tienes productos favoritos</p>
-                                    <a href="shop.php" style="display: inline-block; padding: 10px 24px; background: #2c3e50 !important; color: white; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);">
-                                        <i class="fa fa-shopping-bag" style="margin-right: 8px;"></i>Explorar Productos
-                                    </a>
+                                <div class="favorites-empty">
+                                    <i class="fa fa-heart-o"></i>
+                                    <p>No tienes productos favoritos</p>
+                                    <a href="shop.php" class="btn-shop-now">Explorar productos</a>
                                 </div>
                             `;
                         }
@@ -615,27 +613,19 @@ const RealTimeUpdates = (function() {
             .btn-favorite-cart[data-id="${productId}"],
             .btn-cart[data-id="${productId}"]
         `);
-        
-        
+
         buttons.forEach(btn => {
             const icon = btn.querySelector('i');
             const iconSpan = btn.querySelector('span.icon_bag_alt, span.icon_check');
             const textSpan = btn.querySelector('span:not([class*="icon"])');
-            
-            // NO agregar animación pulse para botones de carrito
-            
+
             if (inCart) {
-                // Marcar como en carrito
                 btn.classList.add('in-cart');
                 btn.setAttribute('data-in-cart', 'true');
                 btn.dataset.inCart = 'true';
-                
-                // Diferenciar comportamiento según el tipo de botón
+
                 if (btn.classList.contains('btn-add-cart-modern')) {
-                    // PRODUCT DETAILS: Mostrar "Ir al Carrito"
                     btn.title = 'Ir al carrito';
-                    
-                    // Actualizar o crear texto
                     if (textSpan) {
                         textSpan.textContent = 'Ir al Carrito';
                     } else {
@@ -643,32 +633,27 @@ const RealTimeUpdates = (function() {
                         newSpan.textContent = 'Ir al Carrito';
                         btn.appendChild(newSpan);
                     }
-                    
-                    // Mantener ícono de carrito (fa)
                     if (icon && icon.classList.contains('fa')) {
                         icon.className = 'fa fa-shopping-cart';
                     }
                 } else {
-                    // SHOP: Mostrar "Quitar del carrito"
                     btn.title = 'Quitar del carrito';
-                    
-                    // Cambiar ícono de bolsa a check
+                    // SHOP: iconos tipo span
                     if (iconSpan && iconSpan.classList.contains('icon_bag_alt')) {
                         iconSpan.className = 'icon_check';
                     }
+                    // MODAL FAVORITOS: iconos tipo <i>
+                    if (btn.classList.contains('btn-favorite-cart') && icon && icon.classList.contains('fa')) {
+                        icon.className = 'fa fa-check-circle';
+                    }
                 }
             } else {
-                // Marcar como no en carrito
                 btn.classList.remove('in-cart');
                 btn.setAttribute('data-in-cart', 'false');
                 btn.dataset.inCart = 'false';
-                
-                // Diferenciar comportamiento según el tipo de botón
+
                 if (btn.classList.contains('btn-add-cart-modern')) {
-                    // PRODUCT DETAILS: Mostrar "Agregar al Carrito"
                     btn.title = 'Agregar al carrito';
-                    
-                    // Actualizar o crear texto
                     if (textSpan) {
                         textSpan.textContent = 'Agregar al Carrito';
                     } else {
@@ -676,24 +661,16 @@ const RealTimeUpdates = (function() {
                         newSpan.textContent = 'Agregar al Carrito';
                         btn.appendChild(newSpan);
                     }
-                    
-                    // Mantener ícono de carrito (fa)
                     if (icon && icon.classList.contains('fa')) {
                         icon.className = 'fa fa-shopping-cart';
                     }
                 } else {
-                    // SHOP: Mostrar "Agregar al carrito"
                     btn.title = 'Agregar al carrito';
-                    
-                    // Restaurar ícono de check a bolsa
                     if (iconSpan && iconSpan.classList.contains('icon_check')) {
                         iconSpan.className = 'icon_bag_alt';
                     }
-                }
-                
-                // Para botones de favoritos
-                if (btn.classList.contains('btn-favorite-cart')) {
-                    if (icon && icon.classList.contains('fa-check-circle')) {
+                    // MODAL FAVORITOS: iconos tipo <i>
+                    if (btn.classList.contains('btn-favorite-cart') && icon && icon.classList.contains('fa')) {
                         icon.className = 'fa fa-cart-plus';
                     }
                 }

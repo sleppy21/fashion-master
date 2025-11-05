@@ -26,9 +26,7 @@ if($usuario_logueado):
 <!-- Notifications Modal Begin -->
 <div id="notifications-modal" class="notifications-modal">
     <div class="notifications-modal-content">
-        <button class="notifications-modal-close" aria-label="Cerrar modal" style="position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border: none; border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; transition: transform 0.3s ease;">
-            <i class="fa fa-times"></i>
-        </button>
+
         
         <!-- Header -->
         <div class="notifications-modal-header">
@@ -48,7 +46,7 @@ if($usuario_logueado):
         </div>
 
         <!-- Body -->
-        <div class="notifications-modal-body" id="notifications-list" style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px; min-height: 0;">
+    <div class="notifications-modal-body" id="notifications-list">
             <?php if(!empty($notificaciones_usuario)): ?>
                 <?php foreach($notificaciones_usuario as $notif): 
                     $iconClass = 'fa-bell';
@@ -83,9 +81,9 @@ if($usuario_logueado):
                 </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div style="text-align: center; padding: 60px 20px;">
-                    <i class="fa fa-bell-o" style="font-size: 80px; margin-bottom: 20px; opacity: 0.3; color: #ccc;"></i>
-                    <p style="font-size: 16px; margin-bottom: 20px; color: #666;">No tienes notificaciones</p>
+                <div class="notifications-empty">
+                    <i class="fa fa-bell-o"></i>
+                    <p>No tienes notificaciones</p>
                 </div>
             <?php endif; ?>
         </div>

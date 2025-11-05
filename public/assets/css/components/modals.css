@@ -1,10 +1,8 @@
 /**
  * FASHION STORE - MODALS COMPONENT
  * Modales unificados: user, notifications, favorites, global-search
- * Consolida: modals-animations, user-account-modal, notifications-modal,
- *            favorites-modal, global-search-modal
- * @version 2.0
- * @date 2025-11-01
+ * @version 2.2 - Unificación de Notifications y Favorites
+ * @date 2025-11-05
  */
 
 /* ========================================
@@ -96,6 +94,42 @@ body.modal-scroll-lock {
     }
 }
 
+/* ✅ Animación de pulso para texto de carga */
+@keyframes pulseText {
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* ✅ Animación de aparición para items de búsqueda */
+@keyframes fadeInItem {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ✅ Animación de spinner con puntos */
+@keyframes bounce-dot {
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+    }
+    30% {
+        transform: translateY(-8px);
+    }
+}
+
+
 /* ========================================
    MODAL BASE - ESTRUCTURA COMÚN
    ======================================== */
@@ -140,6 +174,9 @@ body.modal-scroll-lock {
     transform-origin: top right !important;
     will-change: transform, opacity !important;
     overflow: hidden;
+    /* ✅ Estructura flex para header/body fijo */
+    display: flex;
+    flex-direction: column;
 }
 
 /* User modal - Desktop (arriba derecha) - Z-index específico para cada modal */
@@ -155,6 +192,7 @@ body.modal-scroll-lock {
 .favorites-modal-content {
     z-index: calc(var(--z-notifications) - 1) !important;
 }
+
 
 /* Flechas de los dropdowns */
 .user-modal-content::before,
@@ -362,280 +400,376 @@ body.modal-scroll-lock {
 }
 
 /* ========================================
-   NOTIFICATIONS MODAL
+   ✅ NOTIFICATIONS & FAVORITES - UNIFIED
    ======================================== */
 
-.notifications-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-lg) var(--spacing-xl);
-    border-bottom: 1px solid var(--border-color);
-    flex-shrink: 0 !important;
-}
-
-.notifications-modal-header h3 {
-    margin: 0;
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-bold);
-    color: var(--text-primary);
-}
-
-.notifications-actions {
-    display: flex;
-    gap: var(--spacing-sm);
-}
-
-.notifications-actions button {
-    padding: 6px 12px;
-    background: transparent;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-sm);
-    color: var(--text-secondary);
-    font-size: var(--font-size-xs);
-    cursor: pointer;
-    transition: all var(--transition-base) ease;
-}
-
-.notifications-actions button:hover {
-    background: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-
-.notifications-modal-body {
-    padding: 0;
-    height: 300px; /* ✅ Altura FIJA para exactamente 3 filas */
-    max-height: 300px;
-    min-height: 300px;
-    overflow-y: auto;
-    overflow-x: hidden !important;
-    flex-shrink: 0 !important;
-}
-
-.notification-item {
-    display: flex;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg) var(--spacing-xl);
-    border-bottom: 1px solid var(--border-color);
-    cursor: pointer;
-    transition: background var(--transition-base) ease;
-    position: relative;
-    height: 100px; /* ✅ Altura FIJA para cada notificación */
-    min-height: 100px;
-    max-height: 100px;
-}
-
-.notification-item:hover {
-    background: var(--bg-secondary);
-}
-
-.notification-item.unread {
-    background: var(--primary-light);
-}
-
-.notification-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.notification-content {
-    flex: 1;
-}
-
-.notification-title {
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-primary);
-    margin-bottom: 4px;
-}
-
-.notification-message {
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-    line-height: var(--line-height-normal);
-}
-
-.notification-time {
-    font-size: var(--font-size-xs);
-    color: var(--text-muted);
-    margin-top: 4px;
-}
-
-.notification-delete {
-    position: absolute;
-    top: var(--spacing-md);
-    right: var(--spacing-md);
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    opacity: 0;
-    transition: all var(--transition-base) ease;
-}
-
-.notification-item:hover .notification-delete {
-    opacity: 1;
-}
-
-.notification-delete:hover {
-    background: #ff4444;
-    color: white;
-}
-
-/* Empty state */
-.notifications-empty {
-    padding: var(--spacing-3xl) var(--spacing-xl);
-    text-align: center;
-}
-
-.notifications-empty i {
-    font-size: 48px;
-    color: var(--text-muted);
-    margin-bottom: var(--spacing-lg);
-}
-
-.notifications-empty p {
-    color: var(--text-secondary);
-    font-size: var(--font-size-base);
-}
-
-/* ========================================
-   FAVORITES MODAL
-   ======================================== */
-
+.notifications-modal-header,
 .favorites-modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-lg) var(--spacing-xl);
+    padding-right: 15px;
+    padding-left: 15px; 
+    margin-top: 10px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
-    flex-shrink: 0 !important;
+    flex-shrink: 0;
+    position: relative;
 }
 
-.favorites-modal-header h3 {
-    margin: 0;
+.notifications-modal-title,
+.favorites-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
     color: var(--text-primary);
 }
 
+.notifications-modal-title i,
+.favorites-modal-title i {
+    color: var(--primary-color);
+    font-size: 18px;
+}
+
+.notifications-header-meta,
+.favorites-header-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.notifications-count,
+.favorites-count {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.notifications-update,
+.favorites-update {
+    font-size: 10px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Botón de cerrar (estilos unificados para los botones en PHP) */
+.notifications-modal-close,
+.favorites-modal-close {
+    /* Posición definida en PHP (absolute, top, right) */
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    transition: all var(--transition-base) ease;
+}
+.notifications-modal-close:hover,
+.favorites-modal-close:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: rotate(90deg);
+}
+
+/* Cuerpo del Modal (Contenedor de items) */
+.notifications-modal-body,
 .favorites-modal-body {
-    padding: var(--spacing-lg);
-    height: 300px; /* ✅ Altura FIJA para exactamente 3 filas (igual que notificaciones) */
+    padding: 8px;
+    height: 300px; /* Altura FIJA para 3 filas de 100px (aprox) */
     max-height: 300px;
     min-height: 300px;
     overflow-y: auto;
     overflow-x: hidden !important;
     flex-shrink: 0 !important;
+    background: var(--bg-secondary);
 }
 
+/* Wrapper para Swipe-to-Delete */
+.notification-item-wrapper,
+.favorite-item-wrapper {
+    position: relative;
+    margin-bottom: 8px;
+    overflow: hidden;
+    border-radius: var(--border-radius-md);
+}
+
+/* Fondo de eliminación (Swipe) */
+.notification-delete-bg-left,
+.favorite-delete-bg-left,
+.notification-delete-bg-right,
+.favorite-delete-bg-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    background: #0000001d; /* Rojo para eliminar */
+}
+
+.notification-delete-bg-left,
+.favorite-delete-bg-left {
+    left: 0;
+    justify-content: flex-start;
+    padding-left: 20px;
+    border-top-left-radius: var(--border-radius-md);
+    border-bottom-left-radius: var(--border-radius-md);
+}
+
+.notification-delete-bg-right,
+.favorite-delete-bg-right {
+    right: 0;
+    justify-content: flex-end;
+    padding-right: 20px;
+    border-top-right-radius: var(--border-radius-md);
+    border-bottom-right-radius: var(--border-radius-md);
+}
+
+/* Item individual (Fila) */
+.notification-item,
 .favorite-item {
     display: flex;
     gap: var(--spacing-md);
     padding: var(--spacing-md);
+    background: var(--bg-primary);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
-    margin-bottom: var(--spacing-md);
     transition: all var(--transition-base) ease;
-    height: 88px; /* ✅ Altura FIJA para cada favorito (descontando padding y margin del body) */
-    min-height: 88px;
-    max-height: 88px;
+    position: relative;
+    z-index: 2; /* Sobre el fondo de swipe */
+    cursor: grab;
+    
+    /* --- ✅ UNIFICACIÓN DE ALTURA --- */
+    height: 100px;
+    min-height: 100px;
+    max-height: 100px;
+    box-sizing: border-box; /* Padding no afecta la altura */
 }
 
-.favorite-item:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+/* --- Estilos Específicos de NOTIFICACIONES --- */
+.notification-item.unread {
+    background: white;
 }
 
-.favorite-image {
-    width: 60px; /* ✅ Reducido para caber en altura fija */
-    height: 60px;
-    object-fit: cover;
-    border-radius: var(--border-radius-sm);
-    flex-shrink: 0;
-}
 
-.favorite-info {
+.notification-info {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: visible;
+    min-width: 0;
 }
-
-.favorite-name {
+.notification-info h6 {
+    margin: 0 0 4px 0;
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-semibold);
     color: var(--text-primary);
-    margin-bottom: 4px;
+    display: block;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: initial;
+}
+.notification-info p {
+    margin: 0 0 8px 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+    overflow: visible;
+    text-overflow: initial;
+    display: block;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
+}
+.notification-info small {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-top: auto;
+}
+.notification-priority-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 9px;
+    font-weight: 700;
+    background: #ff4444;
+    color: white;
+    border-radius: var(--border-radius-sm);
+    margin-left: 8px;
+    flex-shrink: 0;
 }
 
+/* --- Estilos Específicos de FAVORITOS --- */
+.favorite-image {
+    width: 68px; /* Altura 100px - (16px*2 padding) = 68px */
+    height: 68px;
+    flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+}
+.favorite-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--border-radius-sm);
+}
+.stock-badge {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    padding: 2px 6px;
+    font-size: 9px;
+    font-weight: 700;
+    color: white;
+    border-radius: var(--border-radius-sm);
+    z-index: 1;
+}
+.stock-badge.out { background: #777; }
+.stock-badge.sale { background: var(--primary-color); }
+
+.favorite-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0; /* Para que text-overflow funcione */
+}
+.favorite-info h6 {
+    margin: 0 0 4px 0;
+}
+.favorite-product-name {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+.favorite-product-name:hover {
+    color: var(--primary-color);
+}
 .favorite-price {
+    margin-bottom: 4px;
+}
+.price-current {
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
     color: var(--primary-color);
-    margin-bottom: var(--spacing-sm);
+}
+.price-old {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    text-decoration: line-through;
+    margin-left: 4px;
+}
+.favorite-date {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-top: auto; /* Empujar al fondo */
 }
 
 .favorite-actions {
     display: flex;
-    gap: var(--spacing-sm);
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    flex-shrink: 0;
 }
-
 .btn-favorite-cart,
 .btn-favorite-remove {
-    padding: 6px 12px;
-    border: none;
-    border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    font-size: var(--font-size-base);
     cursor: pointer;
     transition: all var(--transition-base) ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+/* Botón Agregar/Quitar Carrito */
 .btn-favorite-cart {
+    background: var(--bg-secondary);
+    color: var(--primary-color);
+}
+.btn-favorite-cart:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+.btn-favorite-cart.in-cart {
     background: var(--primary-color);
     color: white;
 }
-
-.btn-favorite-cart:hover {
+.btn-favorite-cart.in-cart:hover {
     background: var(--primary-hover);
-    transform: translateY(-1px);
+}
+.btn-favorite-cart:disabled {
+    background: var(--bg-secondary);
+    color: var(--text-muted);
+    cursor: not-allowed;
 }
 
+/* Botón Quitar Favorito */
 .btn-favorite-remove {
-    background: transparent;
+    background: var(--bg-secondary);
     color: #ff4444;
-    border: 1px solid #ff4444;
 }
-
 .btn-favorite-remove:hover {
     background: #ff4444;
     color: white;
+    border-color: #ff4444;
 }
 
-/* Empty state */
+/* Estado Vacío Unificado */
+.notifications-empty,
 .favorites-empty {
     padding: var(--spacing-3xl) var(--spacing-xl);
     text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
+.notifications-empty i,
 .favorites-empty i {
-    font-size: 48px;
+    font-size: 60px;
     color: var(--text-muted);
     margin-bottom: var(--spacing-lg);
+    opacity: 0.5;
 }
 
+.notifications-empty p,
 .favorites-empty p {
     color: var(--text-secondary);
     font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-lg);
+}
+
+.favorites-empty .btn-shop-now {
+    display: inline-block;
+    padding: 10px 24px;
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 13px;
+    background: var(--primary-color);
+    color: white;
+    transition: all var(--transition-base) ease;
+}
+.favorites-empty .btn-shop-now:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
 }
 
 /* ========================================
@@ -722,8 +856,10 @@ body.modal-scroll-lock {
     max-height: 400px;
     overflow-y: auto;
     overflow-x: hidden;
+    padding: 8px; /* ✅ Añadido padding para dar espacio a los items */
 }
 
+/* === INICIO: MEJORAS DE CARGA === */
 .search-loading {
     display: flex;
     flex-direction: column;
@@ -734,16 +870,47 @@ body.modal-scroll-lock {
 }
 
 .spinner-search {
-    width: 40px;
+    /* Contenedor de los 3 puntos */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: 60px; /* Ancho para 3 puntos */
     height: 40px;
-    border: 3px solid var(--bg-secondary);
-    border-top-color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.spinner-search::before,
+.spinner-search::after {
+    /* Ocultar spinner antiguo si se usa la misma clase */
+    border: none;
+    content: none;
+}
+
+.spinner-search div {
+    /* Cada punto */
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin-bottom: 15px;
+    background-color: var(--primary-color);
+    animation: bounce-dot 1.2s infinite ease-in-out;
+}
+
+/* Delay para cada punto */
+.spinner-search div:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.spinner-search div:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+.spinner-search div:nth-child(3) {
+    animation-delay: 0s;
 }
 
 @keyframes spin {
+    /* Keyframe de fallback si se usa el spinner antiguo */
     to { transform: rotate(360deg); }
 }
 
@@ -751,7 +918,10 @@ body.modal-scroll-lock {
     margin: 0;
     font-size: 14px;
     color: var(--text-muted);
+    animation: pulseText 1.5s infinite ease-in-out; /* ✅ Texto con pulso */
 }
+/* === FIN: MEJORAS DE CARGA === */
+
 
 .search-no-results {
     display: flex;
@@ -778,33 +948,49 @@ body.modal-scroll-lock {
     padding: 0;
 }
 
+/* === INICIO: MEJORAS DE RESULTADOS === */
 .search-product-item {
     display: flex;
     gap: 15px;
-    padding: 15px 20px;
-    border-bottom: 1px solid #f0f0f0;
+    padding: 12px 15px;
+    border: 1px solid #f0f0f0; /* ✅ Borde sutil */
+    border-radius: 8px; /* ✅ Esquinas redondeadas */
+    margin-bottom: 5px; /* ✅ Separación entre items */
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
     text-decoration: none;
     position: relative;
+    
+    /* ✅ Animación de entrada */
+    animation: fadeInItem 0.4s ease-out forwards;
+    opacity: 0; /* Inicia invisible para animar */
 }
 
+/* Staggered delay (opcional, si JS lo soporta, si no, se animan juntos) */
+.search-product-item:nth-child(1) { animation-delay: 0.05s; }
+.search-product-item:nth-child(2) { animation-delay: 0.1s; }
+.search-product-item:nth-child(3) { animation-delay: 0.15s; }
+.search-product-item:nth-child(4) { animation-delay: 0.2s; }
+.search-product-item:nth-child(5) { animation-delay: 0.25s; }
+
+
 .search-product-item:hover {
-    background: linear-gradient(to right, #f8f9fa, #ffffff);
-    border-left: 3px solid var(--primary-color);
-    padding-left: 17px;
-    transform: translateX(2px);
+    background: #f8f9fa;
+    border-color: #eee;
+    transform: scale(1.01); /* ✅ Hover sutil */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    z-index: 10;
 }
 
 .search-product-item:last-child {
-    border-bottom: none;
+    border-bottom: 1px solid #f0f0f0; /* Mantener borde consistente */
 }
 
 .search-product-image {
-    width: 70px;
-    height: 70px;
+    width: 60px; /* ✅ Ligeramente más pequeño */
+    height: 60px;
     object-fit: cover;
-    border-radius: 12px;
+    border-radius: 8px; /* ✅ Menos redondeo, más nítido */
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
@@ -823,8 +1009,8 @@ body.modal-scroll-lock {
 }
 
 .search-product-name {
-    margin: 0 0 6px 0;
-    font-size: 15px;
+    margin: 0 0 4px 0;
+    font-size: 14px; /* ✅ Ligeramente más pequeño */
     font-weight: 600;
     color: #2c3e50;
     white-space: nowrap;
@@ -845,28 +1031,31 @@ body.modal-scroll-lock {
 }
 
 .search-product-category {
-    font-size: 11px;
-    color: #95a5a6;
-    font-weight: 500;
+    font-size: 10px; /* ✅ Más pequeño */
+    color: var(--primary-color); /* ✅ Color de marca */
+    font-weight: 600; /* ✅ Más legible */
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: #f0f0f0;
+    background: var(--primary-light); /* ✅ Color de marca */
     padding: 3px 8px;
-    border-radius: 12px;
+    border-radius: 4px; /* ✅ Más nítido */
 }
 
 .search-product-price {
-    font-size: 17px;
+    font-size: 16px; /* ✅ Ligeramente más pequeño */
     font-weight: 700;
     color: var(--primary-color);
 }
 
 .search-product-old-price {
-    font-size: 14px;
+    font-size: 13px; /* ✅ Ligeramente más pequeño */
     color: #95a5a6;
     text-decoration: line-through;
     font-weight: 400;
+    margin-left: 4px; /* ✅ Espaciado */
 }
+/* === FIN: MEJORAS DE RESULTADOS === */
+
 
 /* ========================================
    DARK MODE - MODALES
@@ -904,51 +1093,99 @@ body.dark-mode .user-stats {
 }
 
 body.dark-mode .user-action-item:hover,
-body.dark-mode .notification-item:hover,
 body.dark-mode .search-product-item:hover {
     background: var(--dark-bg-tertiary);
 }
 
+/* ✅ DARK MODE - Notificaciones y Favoritos */
+body.dark-mode .notifications-modal-close,
+body.dark-mode .favorites-modal-close {
+    background: var(--dark-bg-tertiary);
+    color: var(--dark-text-secondary);
+}
+body.dark-mode .notifications-modal-close:hover,
+body.dark-mode .favorites-modal-close:hover {
+    background: var(--primary-color);
+    color: white;
+}
+body.dark-mode .notifications-modal-body,
+body.dark-mode .favorites-modal-body {
+    background: var(--dark-bg-primary);
+}
+body.dark-mode .notification-item,
+body.dark-mode .favorite-item {
+    background: var(--dark-bg-secondary);
+    border-color: var(--dark-border);
+}
 body.dark-mode .notification-item.unread {
     background: var(--dark-accent-light);
 }
-
-body.dark-mode .favorite-item {
+body.dark-mode .notification-item.unread:hover {
+    background: var(--dark-accent-light);
+}
+body.dark-mode .btn-favorite-cart,
+body.dark-mode .btn-favorite-remove {
+    background: var(--dark-bg-tertiary);
     border-color: var(--dark-border);
-    background: var(--dark-bg-primary);
+}
+body.dark-mode .btn-favorite-cart {
+    color: var(--primary-color);
+}
+body.dark-mode .btn-favorite-cart:hover {
+    background: var(--primary-color);
+    color: white;
+}
+body.dark-mode .btn-favorite-cart.in-cart {
+    background: var(--primary-color);
+    color: white;
+}
+body.dark-mode .btn-favorite-cart.in-cart:hover {
+    background: var(--primary-hover);
+
+}
+body.dark-mode .btn-favorite-remove {
+    color: #ff4444;
+}
+body.dark-mode .btn-favorite-remove:hover {
+    background: #ff4444;
+    color: white;
 }
 
+
+/* ✅ DARK MODE - Búsqueda */
+body.dark-mode .spinner-search div {
+    background-color: var(--dark-accent);
+}
 body.dark-mode .search-input-wrapper input {
     background: var(--dark-bg-tertiary);
     border-color: var(--dark-border);
     color: var(--dark-text-primary);
 }
-
 body.dark-mode .search-input-wrapper input:focus {
     background: var(--dark-bg-secondary);
 }
-
 body.dark-mode .search-product-item {
+    border-color: var(--dark-border);
+    background: var(--dark-bg-secondary);
+}
+body.dark-mode .search-product-item:hover {
+    background: var(--dark-bg-tertiary);
+    border-color: var(--dark-border);
+    box-shadow: none;
+}
+body.dark-mode .search-product-item:last-child {
     border-bottom-color: var(--dark-border);
 }
-
-body.dark-mode .search-product-item:hover {
-    background: linear-gradient(to right, var(--dark-bg-tertiary), var(--dark-bg-secondary));
-}
-
 body.dark-mode .search-product-name {
     color: var(--dark-text-primary);
 }
-
 body.dark-mode .search-product-item:hover .search-product-name {
     color: var(--primary-color);
 }
-
 body.dark-mode .search-product-category {
-    color: var(--dark-text-muted);
-    background: var(--dark-bg-tertiary);
+    color: var(--dark-accent);
+    background: var(--dark-accent-light);
 }
-
 body.dark-mode .search-loading p,
 body.dark-mode .search-no-results p {
     color: var(--dark-text-secondary);
@@ -959,7 +1196,7 @@ body.dark-mode .search-no-results p {
    ======================================== */
 
 @media (max-width: 991px) {
-    /* Solo notificaciones y favoritos en tablet */
+    /* Notificaciones y favoritos en tablet */
     .notifications-modal-content,
     .favorites-modal-content {
         top: 70px !important;
@@ -986,9 +1223,6 @@ body.dark-mode .search-no-results p {
         min-height: auto !important;
         max-height: calc(100vh - 75px) !important; /* Altura disponible bajo el header */
         height: auto !important;
-        overflow: hidden !important;
-        display: flex !important;
-        flex-direction: column !important;
     }
     
     /* ✅ Modal de usuario - DESDE ABAJO (bottom sheet) */
@@ -1048,17 +1282,9 @@ body.dark-mode .search-no-results p {
     }
     
     /* ✅ MÓVIL - Mantener altura FIJA de 3 filas */
-    .notifications-modal-body {
-        height: 300px !important; /* 3 notificaciones de 100px cada una */
-        max-height: 300px !important;
-        min-height: 300px !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        flex-shrink: 0 !important;
-    }
-    
+    .notifications-modal-body,
     .favorites-modal-body {
-        height: 300px !important; /* 3 favoritos (mismo alto que notificaciones) */
+        height: 300px !important; /* 3 items de 100px cada una */
         max-height: 300px !important;
         min-height: 300px !important;
         overflow-y: auto !important;
@@ -1066,6 +1292,7 @@ body.dark-mode .search-no-results p {
         flex-shrink: 0 !important;
     }
     
+    /* Fix para user modal body en móvil (el de arriba lo rompía) */
     .user-account-modal-body {
         flex: 1 !important;
         overflow-y: auto !important;

@@ -35,10 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (isAnimating) return;
         
-        const favoritesModal = document.getElementById('favorites-modal');
-        if (favoritesModal && favoritesModal.style.display === 'block') {
-            favoritesModal.style.display = 'none';
-        }
+        // Eliminada lógica de cierre de favorites-modal. Ahora el control es centralizado en real-time-updates.js
         
         if (modal.style.display === 'block') {
             closeModal();
