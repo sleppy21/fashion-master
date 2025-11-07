@@ -15,7 +15,7 @@
         if (wrapper) wrapper.classList.remove('active');
         if (overlay) overlay.classList.remove('active');
         document.body.classList.remove('offcanvas-active');
-        document.body.style.overflow = '';
+        // NO manipular overflow con inline styles
     }
 "></div>
 <div class="offcanvas-menu-wrapper">

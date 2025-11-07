@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-10-2025 a las 17:46:30
+-- Tiempo de generación: 07-11-2025 a las 16:16:21
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -40,10 +40,11 @@ CREATE TABLE `carrito` (
 --
 
 INSERT INTO `carrito` (`id_carrito`, `id_usuario`, `id_producto`, `cantidad_carrito`, `fecha_agregado_carrito`) VALUES
-(199, 1, 2, 2, '2025-10-21 00:43:56'),
-(200, 1, 11, 2, '2025-10-21 00:46:07'),
-(210, 7, 9, 1, '2025-10-21 14:37:10'),
-(211, 1, 12, 1, '2025-10-21 15:14:04');
+(229, 9, 9, 1, '2025-11-01 21:19:41'),
+(386, 1, 3, 1, '2025-11-07 02:40:31'),
+(388, 1, 6, 5, '2025-11-07 03:23:14'),
+(400, 7, 11, 5, '2025-11-07 05:13:35'),
+(402, 1, 5, 1, '2025-11-07 14:28:38');
 
 -- --------------------------------------------------------
 
@@ -76,8 +77,8 @@ INSERT INTO `categoria` (`id_categoria`, `codigo_categoria`, `nombre_categoria`,
 (5, 'CAT-005', 'Vestidos', 'Vestidos elegantes y casuales', 'default-product.jpg', '/fashion-master/public/assets/img/default-product.jpg', 1, 'activo', '2025-09-30 19:44:29', '2025-10-21 00:25:48'),
 (16, 'dfewrw', 'hola', 'una categoria', 'categoria-1759897392-68e5e730bf141.jpg', '/fashion-master/public/assets/img/categories/categoria-1759897392-68e5e730bf141.jpg', 1, 'activo', '2025-10-08 04:23:12', '2025-10-20 23:36:42'),
 (17, 'fffff', 'pipip', 'hola', 'categoria_68f6c915130f7.jpg', '/fashion-master/public/assets/img/categories/categoria_68f6c915130f7.jpg', 1, 'activo', '2025-10-08 04:25:31', '2025-10-21 00:27:24'),
-(18, 'CAT-006', 'accesorios gucci', 'de chill', 'categoria_68f6c9650aa84.jpg', '/fashion-master/public/assets/img/categories/categoria_68f6c9650aa84.jpg', 1, 'activo', '2025-10-20 23:44:37', '2025-10-21 00:22:23'),
-(19, 'CAT-007', 'prueba', 'hola\r\n', 'categoria_68f6cab04027f.jpg', '/fashion-master/public/assets/img/categories/categoria_68f6cab04027f.jpg', 1, 'activo', '2025-10-20 23:50:08', '2025-10-21 00:25:26');
+(18, 'CAT-006', 'accesorios gucci', 'de chil', 'categoria_68f6c9650aa84.jpg', '/fashion-master/public/assets/img/categories/categoria_68f6c9650aa84.jpg', 1, 'activo', '2025-10-20 23:44:37', '2025-11-01 21:37:33'),
+(19, 'CAT-007', 'prueba', 'hola', 'categoria_68f6cab04027f.jpg', '/fashion-master/public/assets/img/categories/categoria_68f6cab04027f.jpg', 1, 'activo', '2025-10-20 23:50:08', '2025-11-01 21:37:30');
 
 -- --------------------------------------------------------
 
@@ -202,7 +203,20 @@ INSERT INTO `detalle_pedido` (`id_detalle_pedido`, `id_pedido`, `id_producto`, `
 (19, 6, 11, 'producto de prueba', 1, 34.43, 16.00, 28.92, '2025-10-20 04:19:48'),
 (20, 7, 9, 'prenda ejemplo', 1, 1.00, 1.00, 0.99, '2025-10-20 04:45:01'),
 (21, 8, 2, 'Pantalón Jean Levis 501', 5, 90.00, 0.00, 450.00, '2025-10-21 00:38:36'),
-(22, 8, 11, 'producto de prueba', 28, 34.43, 16.00, 809.79, '2025-10-21 00:38:36');
+(22, 8, 11, 'producto de prueba', 28, 34.43, 16.00, 809.79, '2025-10-21 00:38:36'),
+(23, 9, 2, 'Pantalón Jean Levis 501', 2, 90.00, 0.00, 180.00, '2025-11-01 16:11:55'),
+(24, 9, 11, 'producto de prueba', 2, 34.43, 16.00, 57.84, '2025-11-01 16:11:55'),
+(25, 9, 12, 'Pruebita', 1, 12.00, 0.00, 12.00, '2025-11-01 16:11:55'),
+(26, 10, 12, 'Pruebita', 1, 12.00, 0.00, 12.00, '2025-11-03 18:53:03'),
+(27, 10, 11, 'producto de prueba', 1, 34.43, 16.00, 28.92, '2025-11-03 18:53:03'),
+(28, 10, 9, 'prenda ejemplo', 1, 1.00, 1.00, 0.99, '2025-11-03 18:53:03'),
+(29, 10, 10, 'carrito a control remoto :c', 1, 800.00, 15.00, 680.00, '2025-11-03 18:53:03'),
+(30, 11, 4, 'Vestido Casual Zara', 1, 159.90, 20.00, 127.92, '2025-11-07 00:43:51'),
+(31, 11, 6, 'Zapatillas Adidas Stan Smith', 12, 199.90, 5.00, 2278.86, '2025-11-07 00:43:51'),
+(32, 12, 3, 'dos amigues :\'D', 1, 299.90, 15.00, 254.92, '2025-11-07 01:57:11'),
+(33, 12, 5, 'Camisa Formal H&M', 5, 69.90, 50.00, 174.75, '2025-11-07 01:57:11'),
+(34, 12, 12, 'Pruebita', 1, 12.00, 0.00, 12.00, '2025-11-07 01:57:11'),
+(35, 12, 11, 'producto de prueba', 1, 34.43, 16.00, 28.92, '2025-11-07 01:57:11');
 
 -- --------------------------------------------------------
 
@@ -244,7 +258,8 @@ INSERT INTO `direccion` (`id_direccion`, `id_usuario`, `nombre_cliente_direccion
 (8, 1, 'julio', '999999999', 'admin@sleppystore.com', '55555555', '', '564htyuytyt', 'Amazonas', 'Bagua', 'Bagua', '', NULL, 1, 0, '2025-10-20 17:46:02'),
 (9, 1, 'julio', '999999999', 'admin@sleppystore.com', '77777777', '', '54645635643', 'Lima', 'Barranca', 'Barranca', '', NULL, 1, 0, '2025-10-20 17:56:24'),
 (10, 1, 'julio', '999999999', 'admin@sleppystore.com', '56565655', '', '564htyuytyt', 'Áncash', 'Pallasca', 'Pampas', '', NULL, 1, 0, '2025-10-20 17:58:22'),
-(11, 1, 'ryutrurye', '675764575', 'admin@sleppystore.com', '88888888', '', '56465464565', 'Lima', 'Oyón', 'Oyón', '', NULL, 1, 1, '2025-10-20 18:03:30');
+(11, 1, 'ryutrurye', '675764575', 'admin@sleppystore.com', '88888888', '', '56465464565', 'Lima', 'Oyón', 'Oyón', '', NULL, 1, 0, '2025-10-20 18:03:30'),
+(12, 1, 'eerwsdfsdfds', '545354344', 'admin@sleppystore.com', '43243233', '', '23erewsfdsfds', 'Lambayeque', 'Chiclayo', 'Picsi', '', NULL, 1, 1, '2025-11-03 02:59:27');
 
 -- --------------------------------------------------------
 
@@ -264,8 +279,12 @@ CREATE TABLE `favorito` (
 --
 
 INSERT INTO `favorito` (`id_favorito`, `id_usuario`, `id_producto`, `fecha_agregado_favorito`) VALUES
-(1106, 7, 9, '2025-10-21 14:37:15'),
-(1107, 1, 11, '2025-10-21 15:02:59');
+(1126, 7, 11, '2025-11-01 17:28:27'),
+(1127, 7, 12, '2025-11-01 17:28:28'),
+(1129, 7, 3, '2025-11-01 17:53:25'),
+(1135, 7, 10, '2025-11-02 17:05:25'),
+(1274, 1, 11, '2025-11-07 05:06:49'),
+(1275, 1, 5, '2025-11-07 14:27:46');
 
 -- --------------------------------------------------------
 
@@ -418,7 +437,24 @@ INSERT INTO `movimiento_stock` (`id_movimiento`, `id_producto`, `id_usuario`, `t
 (93, 4, NULL, 'entrada', 1, 7, 8, 'Actualización automática de stock', NULL, '2025-10-20 18:15:50', NULL),
 (94, 4, NULL, 'entrada', 1, 8, 9, 'Actualización automática de stock', NULL, '2025-10-21 00:05:17', NULL),
 (95, 2, NULL, 'salida', -5, 13, 8, 'Actualización automática de stock', NULL, '2025-10-21 00:38:36', NULL),
-(96, 11, NULL, 'salida', -28, 107, 79, 'Actualización automática de stock', NULL, '2025-10-21 00:38:36', NULL);
+(96, 11, NULL, 'salida', -28, 107, 79, 'Actualización automática de stock', NULL, '2025-10-21 00:38:36', NULL),
+(97, 2, NULL, 'salida', -2, 8, 6, 'Actualización automática de stock', NULL, '2025-11-01 16:11:55', NULL),
+(98, 11, NULL, 'salida', -2, 79, 77, 'Actualización automática de stock', NULL, '2025-11-01 16:11:55', NULL),
+(99, 12, NULL, 'salida', -1, 10, 9, 'Actualización automática de stock', NULL, '2025-11-01 16:11:55', NULL),
+(100, 1, NULL, 'entrada', 2, 8, 10, 'Actualización automática de stock', NULL, '2025-11-01 18:04:16', NULL),
+(101, 12, NULL, 'salida', -1, 9, 8, 'Actualización automática de stock', NULL, '2025-11-03 18:53:03', NULL),
+(102, 11, NULL, 'salida', -1, 77, 76, 'Actualización automática de stock', NULL, '2025-11-03 18:53:03', NULL),
+(103, 9, NULL, 'salida', -1, 61, 60, 'Actualización automática de stock', NULL, '2025-11-03 18:53:03', NULL),
+(104, 10, NULL, 'salida', -1, 6, 5, 'Actualización automática de stock', NULL, '2025-11-03 18:53:03', NULL),
+(105, 4, NULL, 'salida', -1, 9, 8, 'Actualización automática de stock', NULL, '2025-11-07 00:43:51', NULL),
+(106, 6, NULL, 'salida', -12, 100, 88, 'Actualización automática de stock', NULL, '2025-11-07 00:43:51', NULL),
+(107, 3, NULL, 'salida', -1, 12, 11, 'Actualización automática de stock', NULL, '2025-11-07 01:57:11', NULL),
+(108, 5, NULL, 'salida', -5, 55, 50, 'Actualización automática de stock', NULL, '2025-11-07 01:57:11', NULL),
+(109, 12, NULL, 'salida', -1, 8, 7, 'Actualización automática de stock', NULL, '2025-11-07 01:57:11', NULL),
+(110, 11, NULL, 'salida', -1, 76, 75, 'Actualización automática de stock', NULL, '2025-11-07 01:57:11', NULL),
+(111, 2, NULL, 'entrada', 44, 6, 50, 'Actualización automática de stock', NULL, '2025-11-07 15:02:24', NULL),
+(112, 2, NULL, 'entrada', 9, 50, 59, 'Actualización automática de stock', NULL, '2025-11-07 15:03:38', NULL),
+(113, 2, NULL, 'salida', -8, 59, 51, 'Actualización automática de stock', NULL, '2025-11-07 15:05:17', NULL);
 
 -- --------------------------------------------------------
 
@@ -477,20 +513,20 @@ INSERT INTO `notificacion` (`id_notificacion`, `id_usuario`, `titulo_notificacio
 (31, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 1, '2025-10-14 17:22:54', '2025-10-14 18:31:08', 'baja', 'eliminado'),
 (32, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-14 17:29:16', NULL, 'baja', 'eliminado'),
 (33, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 1, '2025-10-14 17:46:13', '2025-10-14 18:30:23', 'baja', 'eliminado'),
-(34, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-14 20:07:22', NULL, 'baja', 'activo'),
-(35, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 04:26:59', NULL, 'baja', 'activo'),
-(36, 1, '??? Pedido #1 confirmado', '??Gracias por tu compra, Administrador! Tu pedido por $789.53 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=1', 0, '2025-10-15 04:29:46', NULL, 'alta', 'activo'),
+(34, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-14 20:07:22', NULL, 'baja', 'eliminado'),
+(35, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 04:26:59', NULL, 'baja', 'eliminado'),
+(36, 1, '??? Pedido #1 confirmado', '??Gracias por tu compra, Administrador! Tu pedido por $789.53 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=1', 0, '2025-10-15 04:29:46', NULL, 'alta', 'eliminado'),
 (37, 7, '?????? ????ltimas unidades! - producto 1', 'El producto \"producto 1\" que tienes en favoritos solo tiene 5 unidades disponibles. ??Aprovecha antes de que se agote!', 'advertencia', 'product-details.php?id=8', 0, '2025-10-15 04:29:46', NULL, 'alta', 'eliminado'),
-(38, 1, '??? Pedido #2 confirmado', '??Gracias por tu compra, Administrador! Tu pedido por $15.99 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=2', 0, '2025-10-15 04:36:13', NULL, 'alta', 'activo'),
+(38, 1, '??? Pedido #2 confirmado', '??Gracias por tu compra, Administrador! Tu pedido por $15.99 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=2', 0, '2025-10-15 04:36:13', NULL, 'alta', 'eliminado'),
 (39, 7, '👋 Buenos días, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 04:51:05', NULL, 'baja', 'eliminado'),
-(40, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 04:51:18', NULL, 'baja', 'activo'),
+(40, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 04:51:18', NULL, 'baja', 'eliminado'),
 (41, 7, '👋 Buenos días, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 06:59:05', NULL, 'baja', 'eliminado'),
 (42, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 07:05:27', NULL, 'baja', 'eliminado'),
 (43, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 15:28:41', NULL, 'baja', 'eliminado'),
 (44, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 15:34:27', NULL, 'baja', 'eliminado'),
 (45, 7, '??? Pedido #3 confirmado', '??Gracias por tu compra, Julito! Tu pedido por $15.99 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=3', 0, '2025-10-15 16:33:46', NULL, 'alta', 'eliminado'),
 (46, 7, '👋 Buenas noches, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-15 20:17:04', NULL, 'baja', 'eliminado'),
-(47, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-19 20:48:58', NULL, 'baja', 'activo'),
+(47, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-19 20:48:58', NULL, 'baja', 'eliminado'),
 (48, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-19 20:52:51', NULL, 'baja', 'eliminado'),
 (49, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-19 20:55:12', NULL, 'baja', 'eliminado'),
 (50, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-19 21:18:40', NULL, 'baja', 'eliminado'),
@@ -498,17 +534,67 @@ INSERT INTO `notificacion` (`id_notificacion`, `id_usuario`, `titulo_notificacio
 (52, 7, '??? Pedido #4 confirmado', '??Gracias por tu compra, Julito! Tu pedido por $1217.70 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=4', 0, '2025-10-20 03:58:28', NULL, 'alta', 'eliminado'),
 (53, 7, '??? Pedido #5 confirmado', '??Gracias por tu compra, Julito! Tu pedido por $50.94 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=5', 0, '2025-10-20 04:11:27', NULL, 'alta', 'eliminado'),
 (54, 7, '??? Pedido #6 confirmado', '??Gracias por tu compra, Julito! Tu pedido por $43.92 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=6', 0, '2025-10-20 04:19:48', NULL, 'alta', 'eliminado'),
-(55, 7, '??? Pedido #7 confirmado', '??Gracias por tu compra, Julito! Tu pedido por $15.99 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=7', 0, '2025-10-20 04:45:01', NULL, 'alta', 'activo'),
+(55, 7, '??? Pedido #7 confirmado', '??Gracias por tu compra, Julito! Tu pedido por $15.99 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=7', 0, '2025-10-20 04:45:01', NULL, 'alta', 'eliminado'),
 (56, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-20 05:07:12', NULL, 'baja', 'eliminado'),
 (57, 7, '👋 Buenos días, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-20 05:13:40', NULL, 'baja', 'eliminado'),
 (58, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-20 13:20:36', NULL, 'baja', 'eliminado'),
-(59, 1, '??? Pedido #8 confirmado', '??Gracias por tu compra, Administrador! Tu pedido por $1259.79 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=8', 0, '2025-10-21 00:38:36', NULL, 'alta', 'activo'),
-(60, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-21 03:28:56', NULL, 'baja', 'activo'),
-(61, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-21 03:32:17', NULL, 'baja', 'activo'),
-(62, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-21 03:53:09', NULL, 'baja', 'activo'),
+(59, 1, '??? Pedido #8 confirmado', '??Gracias por tu compra, Administrador! Tu pedido por $1259.79 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=8', 0, '2025-10-21 00:38:36', NULL, 'alta', 'eliminado'),
+(60, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-21 03:28:56', NULL, 'baja', 'eliminado'),
+(61, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-21 03:32:17', NULL, 'baja', 'eliminado'),
+(62, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-21 03:53:09', NULL, 'baja', 'eliminado'),
 (63, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-21 13:53:33', NULL, 'baja', 'eliminado'),
 (64, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-21 14:01:04', NULL, 'baja', 'eliminado'),
-(65, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-21 14:54:33', NULL, 'baja', 'activo');
+(65, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-10-21 14:54:33', NULL, 'baja', 'eliminado'),
+(66, 1, '??? Pedido #9 confirmado', '??Gracias por tu compra, Administrador! Tu pedido por $249.84 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=9', 0, '2025-11-01 16:11:55', NULL, 'alta', 'eliminado'),
+(67, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 16:19:07', NULL, 'baja', 'eliminado'),
+(68, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 17:15:49', NULL, 'baja', 'eliminado'),
+(69, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 17:24:27', NULL, 'baja', 'eliminado'),
+(70, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 17:26:59', NULL, 'baja', 'eliminado'),
+(71, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 17:29:27', NULL, 'baja', 'activo'),
+(72, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 17:53:39', NULL, 'baja', 'eliminado'),
+(73, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 18:31:50', NULL, 'baja', 'activo'),
+(74, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 18:38:00', NULL, 'baja', 'eliminado'),
+(75, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 18:41:21', NULL, 'baja', 'activo'),
+(76, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 20:01:45', NULL, 'baja', 'eliminado'),
+(77, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 20:03:05', NULL, 'baja', 'eliminado'),
+(78, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 20:25:15', NULL, 'baja', 'eliminado'),
+(79, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 21:17:04', NULL, 'baja', 'eliminado'),
+(80, 9, '??Bienvenido a SleppyStore! ????', 'Hola Alexsa! Gracias por registrarte en nuestra tienda. Explora nuestros productos, ofertas especiales y disfruta de una experiencia de compra ??nica. ??Estamos aqu?? para ayudarte!', 'info', '/fashion-master/shop.php', 0, '2025-11-01 21:18:24', NULL, 'media', 'activo'),
+(81, 9, '🎉 ¡Bienvenido a SleppyStore!', '¡Hola Alexsa! Gracias por unirte a nuestra familia. Explora nuestros productos y aprovecha las ofertas especiales para nuevos usuarios.', 'info', 'shop.php', 0, '2025-11-01 21:18:24', NULL, 'media', 'activo'),
+(82, 9, '📧 Verifica tu correo electrónico', 'Por favor verifica tu correo electrónico (alexsandraroldan16@gmail.com) para activar todas las funciones de tu cuenta.', 'advertencia', NULL, 0, '2025-11-01 21:18:24', NULL, 'media', 'activo'),
+(83, 9, '👋 Buenas noches, Alexsa!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-01 21:18:42', NULL, 'baja', 'activo'),
+(84, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-02 16:50:41', NULL, 'baja', 'activo'),
+(85, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-02 16:54:26', NULL, 'baja', 'activo'),
+(86, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-02 17:17:53', NULL, 'baja', 'eliminado'),
+(87, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-02 19:42:26', NULL, 'baja', 'eliminado'),
+(88, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-02 21:02:44', NULL, 'baja', 'eliminado'),
+(89, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-02 21:16:26', NULL, 'baja', 'eliminado'),
+(90, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-03 05:04:36', NULL, 'baja', 'eliminado'),
+(91, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-03 16:25:39', NULL, 'baja', 'eliminado'),
+(92, 7, '👋 Buenas tardes, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-03 18:51:12', NULL, 'baja', 'activo'),
+(93, 7, '??? Pedido #10 confirmado', '??Gracias por tu compra, Julito! Tu pedido por $721.91 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=10', 0, '2025-11-03 18:53:03', NULL, 'alta', 'activo'),
+(94, 7, '?????? ????ltimas unidades! - carrito a control remoto :c', 'El producto \"carrito a control remoto :c\" que tienes en favoritos solo tiene 5 unidades disponibles. ??Aprovecha antes de que se agote!', 'advertencia', 'product-details.php?id=10', 0, '2025-11-03 18:53:03', NULL, 'alta', 'activo'),
+(95, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-03 20:34:54', NULL, 'baja', 'eliminado'),
+(96, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-03 20:44:45', NULL, 'baja', 'eliminado'),
+(97, 7, '👋 Buenas noches, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-03 21:10:27', NULL, 'baja', 'activo'),
+(98, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-03 21:10:46', NULL, 'baja', 'eliminado'),
+(99, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-03 22:19:33', NULL, 'baja', 'eliminado'),
+(100, 7, '👋 Buenas noches, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-03 22:26:48', NULL, 'baja', 'eliminado'),
+(101, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-03 22:33:49', NULL, 'baja', 'eliminado'),
+(102, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-04 00:32:59', NULL, 'baja', 'eliminado'),
+(103, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-05 19:04:50', NULL, 'baja', 'eliminado'),
+(104, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-06 16:12:41', NULL, 'baja', 'eliminado'),
+(105, 1, '👋 Buenas noches, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-06 20:54:03', NULL, 'baja', 'eliminado'),
+(106, 1, '??? Pedido #11 confirmado', '??Gracias por tu compra, Administrador! Tu pedido por $2406.78 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=11', 0, '2025-11-07 00:43:51', NULL, 'alta', 'eliminado'),
+(107, 1, '??? Pedido #12 confirmado', '??Gracias por tu compra, Administrador! Tu pedido por $470.59 ha sido confirmado y est?? siendo procesado. Te notificaremos cuando sea enviado.', 'info', 'order-confirmation.php?id=12', 0, '2025-11-07 01:57:11', NULL, 'alta', 'eliminado'),
+(108, 7, '👋 Buenos días, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-07 05:04:19', NULL, 'baja', 'activo'),
+(109, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-07 05:04:48', NULL, 'baja', 'eliminado'),
+(110, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-07 05:05:12', NULL, 'baja', 'eliminado'),
+(111, 7, '👋 Buenos días, Julito!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-07 05:05:35', NULL, 'baja', 'activo'),
+(112, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-07 05:20:54', NULL, 'baja', 'activo'),
+(113, 1, '👋 Buenos días, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-07 05:22:16', NULL, 'baja', 'activo'),
+(114, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-07 14:25:28', NULL, 'baja', 'activo'),
+(115, 1, '👋 Buenas tardes, Administrador!', '¡Nos alegra verte de nuevo! Descubre las novedades y ofertas especiales que tenemos para ti.', 'info', 'shop.php', 0, '2025-11-07 14:26:45', NULL, 'baja', 'activo');
 
 -- --------------------------------------------------------
 
@@ -604,7 +690,11 @@ INSERT INTO `pedido` (`id_pedido`, `id_usuario`, `nombre_cliente_pedido`, `email
 (5, 7, 'Julito sleppy21', 'spiritboom672@gmail.com', '986079838', '12312312', NULL, '231231 (Ref: 23), Campoverde, Coronel Portillo, Ucayali', 'Ucayali', 'Coronel Portillo', 'Campoverde', 'boleta', NULL, 'yape', 35.94, 15.00, 50.94, NULL, 'pendiente', NULL, '2025-10-20 04:11:27', NULL, NULL, NULL, NULL),
 (6, 7, 'Julito sleppy21', 'spiritboom672@gmail.com', '986079838', '12312312', NULL, '231231 (Ref: 23), Campoverde, Coronel Portillo, Ucayali', 'Ucayali', 'Coronel Portillo', 'Campoverde', 'boleta', NULL, 'yape', 28.92, 15.00, 43.92, NULL, 'pendiente', NULL, '2025-10-20 04:19:48', NULL, NULL, NULL, NULL),
 (7, 7, 'Julito sleppy21', 'spiritboom672@gmail.com', '986079838', '12312312', NULL, '231231 (Ref: 23), Campoverde, Coronel Portillo, Ucayali', 'Ucayali', 'Coronel Portillo', 'Campoverde', 'boleta', NULL, 'yape', 0.99, 15.00, 15.99, NULL, 'pendiente', NULL, '2025-10-20 04:45:01', NULL, NULL, NULL, NULL),
-(8, 1, 'ryutrurye', 'admin@sleppystore.com', '675764575', '88888888', NULL, '56465464565, Oyón, Oyón, Lima', 'Lima', 'Oyón', 'Oyón', 'boleta', NULL, 'yape', 1259.79, 0.00, 1259.79, NULL, 'pendiente', NULL, '2025-10-21 00:38:36', NULL, NULL, NULL, NULL);
+(8, 1, 'ryutrurye', 'admin@sleppystore.com', '675764575', '88888888', NULL, '56465464565, Oyón, Oyón, Lima', 'Lima', 'Oyón', 'Oyón', 'boleta', NULL, 'yape', 1259.79, 0.00, 1259.79, NULL, 'pendiente', NULL, '2025-10-21 00:38:36', NULL, NULL, NULL, NULL),
+(9, 1, 'ryutrurye', 'admin@sleppystore.com', '675764575', '88888888', NULL, '56465464565, Oyón, Oyón, Lima', 'Lima', 'Oyón', 'Oyón', 'boleta', NULL, 'yape', 249.84, 0.00, 249.84, NULL, 'pendiente', NULL, '2025-11-01 16:11:55', NULL, NULL, NULL, NULL),
+(10, 7, 'Julito sleppy21', 'spiritboom672@gmail.com', '986079838', '12312312', NULL, '231231 (Ref: 23), Campoverde, Coronel Portillo, Ucayali', 'Ucayali', 'Coronel Portillo', 'Campoverde', 'boleta', NULL, 'yape', 721.91, 0.00, 721.91, NULL, 'pendiente', NULL, '2025-11-03 18:53:03', NULL, NULL, NULL, NULL),
+(11, 1, 'eerwsdfsdfds', 'admin@sleppystore.com', '545354344', '43243233', NULL, '23erewsfdsfds, Picsi, Chiclayo, Lambayeque', 'Lambayeque', 'Chiclayo', 'Picsi', 'boleta', NULL, '', 2406.78, 0.00, 2406.78, NULL, 'pendiente', NULL, '2025-11-07 00:43:51', NULL, NULL, NULL, NULL),
+(12, 1, 'eerwsdfsdfds', 'admin@sleppystore.com', '545354344', '43243233', NULL, '23erewsfdsfds, Picsi, Chiclayo, Lambayeque', 'Lambayeque', 'Chiclayo', 'Picsi', 'boleta', NULL, 'yape', 470.59, 0.00, 470.59, NULL, 'pendiente', NULL, '2025-11-07 01:57:11', NULL, NULL, NULL, NULL);
 
 --
 -- Disparadores `pedido`
@@ -741,17 +831,17 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`id_producto`, `nombre_producto`, `codigo`, `descripcion_producto`, `id_categoria`, `id_marca`, `precio_producto`, `descuento_porcentaje_producto`, `genero_producto`, `en_oferta_producto`, `stock_actual_producto`, `stock_minimo_producto`, `stock_maximo_producto`, `imagen_producto`, `url_imagen_producto`, `status_producto`, `estado`, `fecha_creacion_producto`, `fecha_actualizacion_producto`) VALUES
-(1, 'Camisa Casual Nike', 'CAM-HMX-FFF-001', 'Camisa deportiva de algodón\r\n\r\n\r\n\r\n', 17, 4, 90.00, 0.00, 'F', 0, 8, 20, 300, 'product_68e1d018c5d29.jpg', '/fashion-master/public/assets/img/products/product_68e1d018c5d29.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-21 14:55:23'),
-(2, 'Pantalón Jean Levis 501', 'PAN-LEV-ACC', 'Jean clásico corte recto', 18, 5, 90.00, 0.00, 'Unisex', 0, 8, 20, 300, 'product_68e1d379ba460.jpg', '/fashion-master/public/assets/img/products/product_68e1d379ba460.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-21 14:55:35'),
-(3, 'dos amigues :\'D', 'DOS-HMX-PIP', 'Zapatillas deportivas con cámara de aire', 17, 4, 299.90, 15.00, 'F', 1, 12, 20, 300, 'product_68e9a4892f2a9.jpg', '/fashion-master/public/assets/img/products/product_68e9a4892f2a9.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-21 14:55:25'),
-(4, 'Vestido Casual Zara', 'VES-HMX-PIP', 'Vestido elegante para ocasiones especiales', 17, 4, 159.90, 20.00, 'F', 1, 9, 20, 300, 'product_68ed1f1e21a90.jpg', '/fashion-master/public/assets/img/products/product_68ed1f1e21a90.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-21 14:55:26'),
-(5, 'Camisa Formal H&M', 'CAM-HMX-ACC-001', 'Camisa de vestir para oficina', 4, 4, 69.90, 50.00, 'F', 1, 55, 20, 300, 'product_68ee96914e8d1.jpg', '/fashion-master/public/assets/img/products/product_68ee96914e8d1.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-21 00:22:17'),
-(6, 'Zapatillas Adidas Stan Smith', 'ZAP-ADI-ZAP-001', 'Zapatillas clásicas de tenis', 3, 2, 199.90, 5.00, 'Unisex', 1, 100, 20, 300, 'product_68ee969cc8117.jpg', '/fashion-master/public/assets/img/products/product_68ee969cc8117.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-10-21 00:20:48'),
+(1, 'Camisa Casual Nike', 'CAM-HMX-FFF-001', 'Camisa deportiva de algodón\r\n\r\n\r\n\r\n', 17, 4, 90.00, 0.00, 'F', 0, 10, 20, 300, 'product_68e1d018c5d29.jpg', '/fashion-master/public/assets/img/products/product_68e1d018c5d29.jpg', 1, 'inactivo', '2025-09-30 19:47:49', '2025-11-05 20:36:14'),
+(2, 'Pantalón Jean Levis 501', 'PAN-LEV-PAN-001', 'Jean clásico corte recto', 2, 5, 50.00, 0.00, 'M', 0, 51, 20, 300, 'product_68e1d379ba460.jpg', '/fashion-master/public/assets/img/products/product_68e1d379ba460.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-11-07 15:05:17'),
+(3, 'dos amigues :\'D', 'DOS-HMX-PIP', 'Zapatillas deportivas con cámara de aire', 17, 4, 299.90, 15.00, 'F', 1, 11, 20, 300, 'product_68e9a4892f2a9.jpg', '/fashion-master/public/assets/img/products/product_68e9a4892f2a9.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-11-07 01:57:11'),
+(4, 'Vestido Casual Zara', 'VES-HMX-PIP', 'Vestido elegante para ocasiones especiales', 17, 4, 159.90, 20.00, 'F', 1, 8, 20, 300, 'product_68ed1f1e21a90.jpg', '/fashion-master/public/assets/img/products/product_68ed1f1e21a90.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-11-07 00:43:51'),
+(5, 'Camisa Formal H&M', 'CAM-HMX-ACC-001', 'Camisa de vestir para oficina', 4, 4, 69.90, 50.00, 'F', 1, 50, 20, 300, 'product_68ee96914e8d1.jpg', '/fashion-master/public/assets/img/products/product_68ee96914e8d1.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-11-07 01:57:11'),
+(6, 'Zapatillas Adidas Stan Smith', 'ZAP-ADI-ZAP-001', 'Zapatillas clásicas de tenis', 3, 2, 199.90, 5.00, 'Unisex', 1, 88, 20, 300, 'product_68ee969cc8117.jpg', '/fashion-master/public/assets/img/products/product_68ee969cc8117.jpg', 1, 'activo', '2025-09-30 19:47:49', '2025-11-07 00:43:51'),
 (8, 'producto 1', 'PRO-HMX-ACC', 'nada', 4, 4, 2.00, 100.00, 'Kids', 1, 0, 20, 300, 'product_68e8578c49ec2.jpg', '/fashion-master/public/assets/img/products/product_68e8578c49ec2.jpg', 1, 'activo', '2025-10-03 04:46:28', '2025-10-21 00:16:50'),
-(9, 'prenda ejemplo', '2323', 'prenda comun', 1, 4, 1.00, 1.00, 'Unisex', 0, 61, 20, 300, 'product_68e95d0cf1494.jpg', '/fashion-master/public/assets/img/products/product_68e95d0cf1494.jpg', 1, 'activo', '2025-10-05 21:25:31', '2025-10-20 04:45:01'),
-(10, 'carrito a control remoto :c', 'CAR-ADI-HOL', 'un carrito bonito\r\n-pq si\r\n-me gusta\r\n-no es de geys\r\n-a fucking control remoto :0', 16, 2, 800.00, 15.00, 'Unisex', 0, 6, 20, 300, 'product_68ed2ee63865f.jpg', '/fashion-master/public/assets/img/products/product_68ed2ee63865f.jpg', 1, 'activo', '2025-10-13 16:55:02', '2025-10-20 14:05:40'),
-(11, 'producto de prueba', 'PRO-LEV-HOL', 'un productiño de pruebiña', 16, 5, 34.43, 16.00, 'Unisex', 0, 79, 20, 300, 'product_68ed35cfee743.jpg', '/fashion-master/public/assets/img/products/product_68ed35cfee743.jpg', 1, 'activo', '2025-10-13 17:24:31', '2025-10-21 00:38:36'),
-(12, 'Pruebita', 'PRU-HMX-PIP', 'De chill', 17, 4, 12.00, 0.00, 'Kids', 0, 10, 20, 300, 'product_68f79f2b3f70d.jpg', '/fashion-master/public/assets/img/products/product_68f79f2b3f70d.jpg', 1, 'activo', '2025-10-21 14:56:43', NULL);
+(9, 'prenda ejemplo', '2323', 'prenda comun', 1, 4, 1.00, 1.00, 'Unisex', 0, 60, 20, 300, 'product_68e95d0cf1494.jpg', '/fashion-master/public/assets/img/products/product_68e95d0cf1494.jpg', 1, 'activo', '2025-10-05 21:25:31', '2025-11-03 18:53:03'),
+(10, 'carrito a control remoto :c', 'CAR-ADI-HOL', 'un carrito bonito\r\n-pq si\r\n-me gusta\r\n-no es de geys\r\n-a fucking control remoto :0', 16, 2, 800.00, 15.00, 'Unisex', 0, 5, 20, 300, 'product_68ed2ee63865f.jpg', '/fashion-master/public/assets/img/products/product_68ed2ee63865f.jpg', 1, 'activo', '2025-10-13 16:55:02', '2025-11-03 18:53:03'),
+(11, 'producto de prueba', 'PRO-LEV-HOL', 'un productiño de pruebiña', 16, 5, 34.43, 16.00, 'Unisex', 0, 75, 20, 300, 'product_68ed35cfee743.jpg', '/fashion-master/public/assets/img/products/product_68ed35cfee743.jpg', 1, 'activo', '2025-10-13 17:24:31', '2025-11-07 01:57:11'),
+(12, 'Pruebita', 'PRU-HMX-PIP', 'De chill', 17, 4, 12.00, 0.00, 'Kids', 0, 7, 20, 300, 'product_68f79f2b3f70d.jpg', '/fashion-master/public/assets/img/products/product_68f79f2b3f70d.jpg', 1, 'activo', '2025-10-21 14:56:43', '2025-11-07 01:57:11');
 
 --
 -- Disparadores `producto`
@@ -901,6 +991,8 @@ CREATE TABLE `resena` (
   `comentario` text DEFAULT NULL,
   `verificada` tinyint(1) DEFAULT 0,
   `aprobada` tinyint(1) DEFAULT 0,
+  `likes_count` int(11) DEFAULT 0,
+  `reportes_count` int(11) DEFAULT 0,
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -908,31 +1000,81 @@ CREATE TABLE `resena` (
 -- Volcado de datos para la tabla `resena`
 --
 
-INSERT INTO `resena` (`id_resena`, `id_producto`, `id_usuario`, `id_orden`, `calificacion`, `titulo`, `comentario`, `verificada`, `aprobada`, `fecha_creacion`) VALUES
-(1, 1, 2, NULL, 5, 'Excelente calidad', 'La camisa es de muy buena calidad, el material es suave y cómodo. Muy recomendable.', 1, 1, '2025-10-10 15:39:29'),
-(2, 1, 3, NULL, 4, 'Buena compra', 'Me gustó mucho, aunque el color es un poco diferente a la foto.', 1, 1, '2025-10-10 15:39:29'),
-(3, 1, 6, NULL, 5, 'Perfecta!', 'Justo lo que buscaba, la talla es correcta y llego rapido.', 1, 1, '2025-10-10 15:39:29'),
-(4, 2, 2, NULL, 5, 'Clásico que nunca falla', 'Los Levis 501 son siempre una buena inversión. Calidad garantizada.', 1, 1, '2025-10-10 15:39:29'),
-(5, 2, 3, NULL, 4, 'Buen jean', 'Es un buen producto, aunque el precio es un poco elevado.', 1, 1, '2025-10-10 15:39:29'),
-(6, 2, 4, NULL, 5, 'Me encanta', 'Super cómodo y se ve muy bien. Vale cada peso.', 1, 1, '2025-10-10 15:39:29'),
-(7, 2, 6, NULL, 4, 'Recomendado', 'Buena calidad de tela, aunque tarda un poco en ablandarse.', 1, 1, '2025-10-10 15:39:29'),
-(8, 3, 2, NULL, 5, 'Las mejores zapatillas', 'Súper cómodas para correr y para uso diario. Excelente inversión.', 1, 1, '2025-10-10 15:39:29'),
-(9, 3, 3, NULL, 5, 'Increíbles!', 'Son hermosas y muy cómodas. La suela con aire se siente genial.', 1, 1, '2025-10-10 15:39:29'),
-(10, 3, 4, NULL, 4, 'Muy buenas', 'Me gustan mucho, aunque son un poco grandes. Pedí media talla menos.', 1, 1, '2025-10-10 15:39:29'),
-(11, 3, 5, NULL, 5, 'Perfectas', 'Llegaron rápido y en perfectas condiciones. 100% recomendadas.', 1, 1, '2025-10-10 15:39:29'),
-(12, 3, 6, NULL, 5, 'Love them!', 'Son exactamente como en las fotos. Muy contenta con la compra.', 1, 1, '2025-10-10 15:39:29'),
-(13, 4, 3, NULL, 4, 'Bonito vestido', 'Es muy lindo, la tela es ligera y fresca.', 1, 1, '2025-10-10 15:39:29'),
-(14, 4, 6, NULL, 5, 'Hermoso!', 'Me encantó, es elegante y cómodo a la vez.', 1, 1, '2025-10-10 15:39:29'),
-(15, 5, 2, NULL, 4, 'Buena para la oficina', 'Perfecta para el trabajo, se ve formal y es cómoda.', 1, 1, '2025-10-10 15:39:29'),
-(16, 5, 4, NULL, 3, 'Normal', 'Es una camisa normal, nada especial pero cumple su función.', 1, 1, '2025-10-10 15:39:29'),
-(17, 5, 5, NULL, 4, 'Recomendable', 'Buena relación calidad-precio. La uso frecuentemente.', 1, 1, '2025-10-10 15:39:29'),
-(18, 6, 2, NULL, 5, 'Clásico atemporal', 'Las Stan Smith nunca pasan de moda. Excelente compra.', 1, 1, '2025-10-10 15:39:29'),
-(19, 6, 3, NULL, 5, 'Perfectas', 'Son hermosas y combinan con todo. Muy cómodas.', 1, 1, '2025-10-10 15:39:29'),
-(20, 6, 4, NULL, 4, 'Buenas zapatillas', 'Me gustan mucho, aunque al principio eran un poco duras.', 1, 1, '2025-10-10 15:39:29'),
-(21, 8, 2, NULL, 3, 'Está bien', 'Es un producto básico, cumple lo que promete.', 1, 1, '2025-10-10 15:39:29'),
-(22, 8, 5, NULL, 4, 'Bueno', 'Por el precio está bastante bien.', 1, 1, '2025-10-10 15:39:29'),
-(23, 9, 3, NULL, 4, 'Satisfecho', 'Llegó en buenas condiciones, es como se describe.', 1, 1, '2025-10-10 15:39:29'),
-(24, 9, 6, NULL, 5, 'Genial', 'Me encantó, superó mis expectativas.', 1, 1, '2025-10-10 15:39:29');
+INSERT INTO `resena` (`id_resena`, `id_producto`, `id_usuario`, `id_orden`, `calificacion`, `titulo`, `comentario`, `verificada`, `aprobada`, `likes_count`, `reportes_count`, `fecha_creacion`) VALUES
+(1, 1, 2, NULL, 5, 'Excelente calidad', 'La camisa es de muy buena calidad, el material es suave y cómodo. Muy recomendable.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(2, 1, 3, NULL, 4, 'Buena compra', 'Me gustó mucho, aunque el color es un poco diferente a la foto.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(3, 1, 6, NULL, 5, 'Perfecta!', 'Justo lo que buscaba, la talla es correcta y llego rapido.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(4, 2, 2, NULL, 5, 'Clásico que nunca falla', 'Los Levis 501 son siempre una buena inversión. Calidad garantizada.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(5, 2, 3, NULL, 4, 'Buen jean', 'Es un buen producto, aunque el precio es un poco elevado.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(6, 2, 4, NULL, 5, 'Me encanta', 'Super cómodo y se ve muy bien. Vale cada peso.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(7, 2, 6, NULL, 4, 'Recomendado', 'Buena calidad de tela, aunque tarda un poco en ablandarse.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(8, 3, 2, NULL, 5, 'Las mejores zapatillas', 'Súper cómodas para correr y para uso diario. Excelente inversión.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(9, 3, 3, NULL, 5, 'Increíbles!', 'Son hermosas y muy cómodas. La suela con aire se siente genial.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(10, 3, 4, NULL, 4, 'Muy buenas', 'Me gustan mucho, aunque son un poco grandes. Pedí media talla menos.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(11, 3, 5, NULL, 5, 'Perfectas', 'Llegaron rápido y en perfectas condiciones. 100% recomendadas.', 1, 1, 1, 1, '2025-10-10 15:39:29'),
+(12, 3, 6, NULL, 5, 'Love them!', 'Son exactamente como en las fotos. Muy contenta con la compra.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(13, 4, 3, NULL, 4, 'Bonito vestido', 'Es muy lindo, la tela es ligera y fresca.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(14, 4, 6, NULL, 5, 'Hermoso!', 'Me encantó, es elegante y cómodo a la vez.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(15, 5, 2, NULL, 4, 'Buena para la oficina', 'Perfecta para el trabajo, se ve formal y es cómoda.', 1, 1, 1, 1, '2025-10-10 15:39:29'),
+(16, 5, 4, NULL, 3, 'Normal', 'Es una camisa normal, nada especial pero cumple su función.', 1, 1, 1, 0, '2025-10-10 15:39:29'),
+(17, 5, 5, NULL, 4, 'Recomendable', 'Buena relación calidad-precio. La uso frecuentemente.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(18, 6, 2, NULL, 5, 'Clásico atemporal', 'Las Stan Smith nunca pasan de moda. Excelente compra.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(19, 6, 3, NULL, 5, 'Perfectas', 'Son hermosas y combinan con todo. Muy cómodas.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(20, 6, 4, NULL, 4, 'Buenas zapatillas', 'Me gustan mucho, aunque al principio eran un poco duras.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(21, 8, 2, NULL, 3, 'Está bien', 'Es un producto básico, cumple lo que promete.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(22, 8, 5, NULL, 4, 'Bueno', 'Por el precio está bastante bien.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(23, 9, 3, NULL, 4, 'Satisfecho', 'Llegó en buenas condiciones, es como se describe.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(24, 9, 6, NULL, 5, 'Genial', 'Me encantó, superó mis expectativas.', 1, 1, 0, 0, '2025-10-10 15:39:29'),
+(25, 2, 1, NULL, 3, '', 'hola\nadsadadsadas', 0, 0, 0, 0, '2025-11-07 02:38:38'),
+(26, 3, 1, NULL, 5, '', 'Utgjjgjjgg', 0, 0, 0, 0, '2025-11-07 02:46:30'),
+(28, 6, 1, NULL, 5, 'Yhgc', '2423231332456421 aaaaaa gey el que lo lea', 0, 1, 0, 0, '2025-11-07 03:08:48'),
+(29, 11, 1, NULL, 1, 'Prueba', 'Comentario comentariamente comentado', 0, 1, 2, 0, '2025-11-07 05:10:14');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `resena_likes`
+--
+
+CREATE TABLE `resena_likes` (
+  `id_like` int(11) NOT NULL,
+  `id_resena` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `resena_likes`
+--
+
+INSERT INTO `resena_likes` (`id_like`, `id_resena`, `id_usuario`, `fecha_creacion`) VALUES
+(2, 16, 1, '2025-11-07 01:33:23'),
+(3, 15, 1, '2025-11-07 01:34:16'),
+(4, 11, 1, '2025-11-07 01:46:47'),
+(6, 29, 7, '2025-11-07 05:10:22'),
+(7, 29, 1, '2025-11-07 05:10:23');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `resena_reportes`
+--
+
+CREATE TABLE `resena_reportes` (
+  `id_reporte` int(11) NOT NULL,
+  `id_resena` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `razon` varchar(500) DEFAULT NULL,
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `resena_reportes`
+--
+
+INSERT INTO `resena_reportes` (`id_reporte`, `id_resena`, `id_usuario`, `razon`, `fecha_creacion`) VALUES
+(1, 15, 1, 'Spam o publicidad', '2025-11-07 01:38:46'),
+(2, 11, 1, 'Lenguaje violento o amenazante', '2025-11-07 01:46:55');
 
 -- --------------------------------------------------------
 
@@ -948,6 +1090,58 @@ CREATE TABLE `sesion` (
   `ip_address` varchar(45) DEFAULT NULL,
   `status_sesion` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `subcategoria`
+--
+
+CREATE TABLE `subcategoria` (
+  `id_subcategoria` int(11) NOT NULL,
+  `id_categoria` int(11) NOT NULL,
+  `codigo_subcategoria` varchar(50) DEFAULT NULL,
+  `nombre_subcategoria` varchar(100) NOT NULL,
+  `descripcion_subcategoria` text DEFAULT NULL,
+  `imagen_subcategoria` varchar(255) DEFAULT 'default-subcategory.png',
+  `url_imagen_subcategoria` varchar(500) DEFAULT NULL,
+  `status_subcategoria` tinyint(1) DEFAULT 1,
+  `estado_subcategoria` enum('activo','inactivo') NOT NULL DEFAULT 'activo',
+  `orden_subcategoria` int(11) DEFAULT 0,
+  `fecha_creacion_subcategoria` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_actualizacion_subcategoria` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `subcategoria`
+--
+
+INSERT INTO `subcategoria` (`id_subcategoria`, `id_categoria`, `codigo_subcategoria`, `nombre_subcategoria`, `descripcion_subcategoria`, `imagen_subcategoria`, `url_imagen_subcategoria`, `status_subcategoria`, `estado_subcategoria`, `orden_subcategoria`, `fecha_creacion_subcategoria`, `fecha_actualizacion_subcategoria`) VALUES
+(1, 1, 'SUB-CAM-001', 'Camisas Formales', 'Camisas elegantes para oficina y eventos', 'default-subcategory.png', NULL, 1, 'activo', 1, '2025-11-06 21:06:35', NULL),
+(2, 1, 'SUB-CAM-002', 'Camisas Casuales', 'Camisas informales para el d??a a d??a', 'default-subcategory.png', NULL, 1, 'activo', 2, '2025-11-06 21:06:35', NULL),
+(3, 1, 'SUB-CAM-003', 'Camisas Deportivas', 'Camisas tipo polo y deportivas', 'default-subcategory.png', NULL, 1, 'activo', 3, '2025-11-06 21:06:35', NULL),
+(4, 1, 'SUB-CAM-004', 'Camisas de Vestir', 'Camisas de alta calidad para ocasiones especiales', 'default-subcategory.png', NULL, 1, 'activo', 4, '2025-11-06 21:06:35', NULL),
+(5, 2, 'SUB-PAN-001', 'Jeans', 'Pantalones de mezclilla en diferentes estilos', 'default-subcategory.png', NULL, 1, 'activo', 1, '2025-11-06 21:06:35', NULL),
+(6, 2, 'SUB-PAN-002', 'Pantalones de Vestir', 'Pantalones formales para oficina', 'default-subcategory.png', NULL, 1, 'activo', 2, '2025-11-06 21:06:35', NULL),
+(7, 2, 'SUB-PAN-003', 'Pantalones Deportivos', 'Pantalones para hacer ejercicio y deporte', 'default-subcategory.png', NULL, 1, 'activo', 3, '2025-11-06 21:06:35', NULL),
+(8, 2, 'SUB-PAN-004', 'Shorts', 'Pantalones cortos para verano', 'default-subcategory.png', NULL, 1, 'activo', 4, '2025-11-06 21:06:35', NULL),
+(9, 2, 'SUB-PAN-005', 'Chinos', 'Pantalones chinos casuales', 'default-subcategory.png', NULL, 1, 'activo', 5, '2025-11-06 21:06:35', NULL),
+(10, 3, 'SUB-ZAP-001', 'Zapatos Formales', 'Zapatos de vestir y oficina', 'default-subcategory.png', NULL, 1, 'activo', 1, '2025-11-06 21:06:35', NULL),
+(11, 3, 'SUB-ZAP-002', 'Sneakers', 'Zapatillas deportivas y casuales', 'default-subcategory.png', NULL, 1, 'activo', 2, '2025-11-06 21:06:35', NULL),
+(12, 3, 'SUB-ZAP-003', 'Botas', 'Botas de diferentes estilos', 'default-subcategory.png', NULL, 1, 'activo', 3, '2025-11-06 21:06:35', NULL),
+(13, 3, 'SUB-ZAP-004', 'Sandalias', 'Sandalias y chancletas', 'default-subcategory.png', NULL, 1, 'activo', 4, '2025-11-06 21:06:35', NULL),
+(14, 3, 'SUB-ZAP-005', 'Zapatos Deportivos', 'Calzado para running y deporte', 'default-subcategory.png', NULL, 1, 'activo', 5, '2025-11-06 21:06:35', NULL),
+(15, 4, 'SUB-ACC-001', 'Cinturones', 'Cinturones de cuero y tela', 'default-subcategory.png', NULL, 1, 'activo', 1, '2025-11-06 21:06:35', NULL),
+(16, 4, 'SUB-ACC-002', 'Gorras', 'Gorras y sombreros', 'default-subcategory.png', NULL, 1, 'activo', 2, '2025-11-06 21:06:35', NULL),
+(17, 4, 'SUB-ACC-003', 'Carteras', 'Billeteras y carteras', 'default-subcategory.png', NULL, 1, 'activo', 3, '2025-11-06 21:06:35', NULL),
+(18, 4, 'SUB-ACC-004', 'Relojes', 'Relojes de pulsera', 'default-subcategory.png', NULL, 1, 'activo', 4, '2025-11-06 21:06:35', NULL),
+(19, 4, 'SUB-ACC-005', 'Gafas de Sol', 'Lentes y gafas solares', 'default-subcategory.png', NULL, 1, 'activo', 5, '2025-11-06 21:06:35', NULL),
+(20, 4, 'SUB-ACC-006', 'Bufandas', 'Bufandas y pa??uelos', 'default-subcategory.png', NULL, 1, 'activo', 6, '2025-11-06 21:06:35', NULL),
+(21, 5, 'SUB-VES-001', 'Vestidos de Noche', 'Vestidos elegantes para eventos', 'default-subcategory.png', NULL, 1, 'activo', 1, '2025-11-06 21:06:35', NULL),
+(22, 5, 'SUB-VES-002', 'Vestidos Casuales', 'Vestidos informales para el d??a', 'default-subcategory.png', NULL, 1, 'activo', 2, '2025-11-06 21:06:35', NULL),
+(23, 5, 'SUB-VES-003', 'Vestidos de C??ctel', 'Vestidos semi-formales', 'default-subcategory.png', NULL, 1, 'activo', 3, '2025-11-06 21:06:35', NULL),
+(24, 5, 'SUB-VES-004', 'Vestidos de Verano', 'Vestidos ligeros para clima c??lido', 'default-subcategory.png', NULL, 1, 'activo', 4, '2025-11-06 21:06:35', NULL),
+(25, 5, 'SUB-VES-005', 'Vestidos de Fiesta', 'Vestidos para celebraciones', 'default-subcategory.png', NULL, 1, 'activo', 5, '2025-11-06 21:06:35', NULL);
 
 -- --------------------------------------------------------
 
@@ -979,13 +1173,14 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `username_usuario`, `password_usuario`, `email_usuario`, `nombre_usuario`, `apellido_usuario`, `telefono_usuario`, `fecha_nacimiento`, `genero_usuario`, `avatar_usuario`, `fecha_registro`, `ultimo_acceso`, `status_usuario`, `verificado_usuario`, `rol_usuario`, `estado_usuario`) VALUES
-(1, 'admin', 'admin123', 'admin@sleppystore.com', 'Administrador', 'Principal', '+5198765432122', '1990-01-15', 'M', 'avatar_1_1761756091.jpg', '2025-09-30 19:46:43', '2025-10-29 15:08:08', 1, 1, 'admin', 'activo'),
+(1, 'admin', 'admin123', 'admin@sleppystore.com', 'Administrador', 'Principal', '+5198765432122', '1990-01-15', 'M', 'avatar_1_1762473987.jpg', '2025-09-30 19:46:43', '2025-11-07 14:26:45', 1, 1, 'admin', 'activo'),
 (2, 'juan_perez', 'juan123', 'juan@email.com', 'Juan', 'Pérez', '+51912345678', '1992-03-20', 'M', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
 (3, 'maria_garcia', 'maria123', 'maria@email.com', 'María', 'García', '+51923456789', '1988-07-10', 'F', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
 (4, 'carlos_lopez', 'carlos123', 'carlos@email.com', 'Carlos', 'López', '+51934567890', '1995-11-25', 'M', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 0, 'cliente', 'activo'),
 (5, 'ana_martinez', 'ana123', 'ana@email.com', 'Ana', 'Martínez', '+51945678901', '1993-05-08', 'F', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'vendedor', 'activo'),
 (6, 'sofia_torres', 'sofia123', 'sofia@email.com', 'Sofía', 'Torres', '+51967890123', '1996-02-14', 'F', 'public/assets/img/profiles/default-avatar.png', '2025-09-30 19:46:43', NULL, 1, 1, 'cliente', 'activo'),
-(7, 'julito', '123456', 'spiritboom672@gmail.com', 'Julito', 'sleppy21', '986079838', '2006-04-21', 'M', 'avatar_7_1761056504.jpg', '2025-10-07 18:11:51', '2025-10-21 14:01:04', 1, 0, 'cliente', 'activo');
+(7, 'julito', '123456', 'spiritboom672@gmail.com', 'Julito', 'sleppy21', '986079838', '2006-04-21', 'M', 'avatar_7_1761056504.jpg', '2025-10-07 18:11:51', '2025-11-07 05:05:35', 1, 0, 'cliente', 'activo'),
+(9, 'mochixs', 'alexsa_2005', 'alexsandraroldan16@gmail.com', 'Alexsa', 'Nose', '999999999', '2005-04-16', 'Otro', 'public/assets/img/profiles/default-avatar.png', '2025-11-01 21:18:24', '2025-11-01 21:18:42', 1, 0, 'cliente', 'activo');
 
 --
 -- Disparadores `usuario`
@@ -1182,12 +1377,37 @@ ALTER TABLE `resena`
   ADD KEY `idx_aprobada` (`aprobada`);
 
 --
+-- Indices de la tabla `resena_likes`
+--
+ALTER TABLE `resena_likes`
+  ADD PRIMARY KEY (`id_like`),
+  ADD UNIQUE KEY `unique_user_review` (`id_resena`,`id_usuario`),
+  ADD KEY `idx_resena` (`id_resena`),
+  ADD KEY `idx_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `resena_reportes`
+--
+ALTER TABLE `resena_reportes`
+  ADD PRIMARY KEY (`id_reporte`),
+  ADD UNIQUE KEY `unique_user_review_report` (`id_resena`,`id_usuario`),
+  ADD KEY `idx_resena` (`id_resena`),
+  ADD KEY `idx_usuario` (`id_usuario`);
+
+--
 -- Indices de la tabla `sesion`
 --
 ALTER TABLE `sesion`
   ADD PRIMARY KEY (`id_sesion`),
   ADD KEY `idx_usuario_id_sesion` (`id_usuario`),
   ADD KEY `idx_fecha_expiracion` (`fecha_expiracion`);
+
+--
+-- Indices de la tabla `subcategoria`
+--
+ALTER TABLE `subcategoria`
+  ADD PRIMARY KEY (`id_subcategoria`),
+  ADD KEY `fk_subcategoria_categoria` (`id_categoria`);
 
 --
 -- Indices de la tabla `usuario`
@@ -1209,7 +1429,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `carrito`
 --
 ALTER TABLE `carrito`
-  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=213;
+  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=403;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria`
@@ -1239,19 +1459,19 @@ ALTER TABLE `chatbot_mensaje`
 -- AUTO_INCREMENT de la tabla `detalle_pedido`
 --
 ALTER TABLE `detalle_pedido`
-  MODIFY `id_detalle_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_detalle_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `direccion`
 --
 ALTER TABLE `direccion`
-  MODIFY `id_direccion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_direccion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `favorito`
 --
 ALTER TABLE `favorito`
-  MODIFY `id_favorito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1111;
+  MODIFY `id_favorito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1276;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_pedido`
@@ -1269,13 +1489,13 @@ ALTER TABLE `marca`
 -- AUTO_INCREMENT de la tabla `movimiento_stock`
 --
 ALTER TABLE `movimiento_stock`
-  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 
 --
 -- AUTO_INCREMENT de la tabla `notificacion`
 --
 ALTER TABLE `notificacion`
-  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
 
 --
 -- AUTO_INCREMENT de la tabla `orden`
@@ -1293,7 +1513,7 @@ ALTER TABLE `password_reset_tokens`
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -1305,13 +1525,31 @@ ALTER TABLE `producto`
 -- AUTO_INCREMENT de la tabla `resena`
 --
 ALTER TABLE `resena`
-  MODIFY `id_resena` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_resena` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+--
+-- AUTO_INCREMENT de la tabla `resena_likes`
+--
+ALTER TABLE `resena_likes`
+  MODIFY `id_like` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT de la tabla `resena_reportes`
+--
+ALTER TABLE `resena_reportes`
+  MODIFY `id_reporte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `subcategoria`
+--
+ALTER TABLE `subcategoria`
+  MODIFY `id_subcategoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Restricciones para tablas volcadas
@@ -1411,10 +1649,30 @@ ALTER TABLE `resena`
   ADD CONSTRAINT `resena_ibfk_3` FOREIGN KEY (`id_orden`) REFERENCES `orden` (`id_orden`) ON DELETE SET NULL;
 
 --
+-- Filtros para la tabla `resena_likes`
+--
+ALTER TABLE `resena_likes`
+  ADD CONSTRAINT `resena_likes_ibfk_1` FOREIGN KEY (`id_resena`) REFERENCES `resena` (`id_resena`) ON DELETE CASCADE,
+  ADD CONSTRAINT `resena_likes_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `resena_reportes`
+--
+ALTER TABLE `resena_reportes`
+  ADD CONSTRAINT `resena_reportes_ibfk_1` FOREIGN KEY (`id_resena`) REFERENCES `resena` (`id_resena`) ON DELETE CASCADE,
+  ADD CONSTRAINT `resena_reportes_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE;
+
+--
 -- Filtros para la tabla `sesion`
 --
 ALTER TABLE `sesion`
   ADD CONSTRAINT `sesion_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE SET NULL;
+
+--
+-- Filtros para la tabla `subcategoria`
+--
+ALTER TABLE `subcategoria`
+  ADD CONSTRAINT `fk_subcategoria_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id_categoria`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

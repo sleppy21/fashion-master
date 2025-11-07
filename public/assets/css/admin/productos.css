@@ -1,4 +1,22 @@
-/* ===== BOTONES DE VISTA: PC TABLA, MÓVIL GRID ===== */
+/* ============================================================================
+   PRODUCTOS MODULE - Fashion Store Admin
+   Estilos limpios y optimizados (sin modales)
+   ============================================================================ */
+
+/* ============================================================================
+   VARIABLES
+   ============================================================================ */
+:root {
+    --stock-ok: #10b981;
+    --stock-bajo: #f59e0b;
+    --stock-agotado: #ef4444;
+    --estado-activo: #10b981;
+    --estado-inactivo: #6c757d;
+}
+
+/* ============================================================================
+   UTILIDADES DE VISTA (Desktop/Mobile)
+   ============================================================================ */
 .desktop-only {
     display: inline-flex !important;
 }
@@ -17,958 +35,792 @@
     }
 }
 
-/* ===== FORZAR COLOR BLANCO EN BOTONES DEL HEADER - MÁXIMA PRIORIDAD ===== */
-.module-act#fffffffftn-modern,
-.module-actions .btn-modern.btn-primary,
-.module-actions .btn-modern.btn-secondary,
-.module-actions .btn-modern.btn-info,
-.module-actions button {
-    color: #ffffff !important;
+/* ============================================================================
+   MÓDULO PRINCIPAL
+   ============================================================================ */
+.admin-products-module {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #e9ecef;
 }
 
-.module-actions .btn-modern i,
-.module-actions .btn-modern span,
-.module-actions .btn-modern.btn-primary i,
-.module-actions .btn-modern.btn-primary span,
-.module-actions .btn-modern.btn-secondary i,
-.module-actions .btn-modern.btn-secondary span,
-.module-actions .btn-modern.btn-info i,
-.module-actions .btn-modern.btn-info span,
-.module-actions button i,
-.module-actions button span {
-    color: #ffffff !important;
+/* ============================================================================
+   HEADER DEL MÓDULO
+   ============================================================================ */
+.module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.75rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+    gap: 1.5rem;
+    flex-wrap: wrap;
 }
 
-/* ========================================
-   BOTÓN FLOTANTE DE FILTROS MÓVIL (shop.php style)
-   ======================================== */
-.btn-mobile-filters {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    color: white;
-    border: none;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-    cursor: pointer;
-    z-index: 999;
-    display: none;
+.module-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 250px;
+}
+
+.module-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
-    transition: all 0.3s ease, opacity 0.3s ease, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
+    font-size: 1.5rem;
 }
 
-.btn-mobile-filters:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
-}
-
-.btn-mobile-filters:active {
-    transform: scale(0.95);
-}
-
-/* Animación al ocultar botón */
-.btn-mobile-filters.hidden {
-    opacity: 0 !important;
-    transform: scale(0) rotate(180deg) !important;
-    pointer-events: none !important;
-}
-
-.btn-mobile-filters .filter-count {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: #dc3545;
-    color: white;
-    font-size: 12px;
+.module-name {
+    font-size: 1.625rem;
     font-weight: 700;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    animation: pulse 2s infinite;
+    margin: 0;
+    line-height: 1.2;
 }
 
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
+.module-description {
+    font-size: 0.9375rem;
+    margin: 0.375rem 0 0;
+    opacity: 0.9;
 }
 
-/* ========================================
-   SIDEBAR RESPONSIVE (shop.php style)
-   ======================================== */
-@media (max-width: 768px) {
-    .btn-mobile-filters {
-        display: flex !important;
-    }
-    
-    .modern-sidebar {
-        display: none !important;
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 320px !important;
-        max-width: 85vw !important;
-        height: 100vh !important;
-        max-height: 100vh !important;
-        z-index: 99999 !important;
-        overflow-y: auto !important;
-        transform: translateX(-100%) !important;
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3) !important;
-        background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
-        padding: 1rem !important;
-        will-change: transform !important;
-    }
-    
-    .modern-sidebar.show-mobile {
-        display: block !important;
-        transform: translateX(0) !important;
-    }
-    
-    /* Overlay oscuro cuando sidebar está abierto */
-    .modern-sidebar.show-mobile::before {
-        content: '' !important;
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        background: rgba(0, 0, 0, 0.6) !important;
-        z-index: -1 !important;
-        animation: fadeIn 0.3s ease !important;
-    }
-    
-    /* Botón de cerrar dentro del sidebar */
-    .sidebar-close-btn {
-        position: absolute !important;
-        top: 1rem !important;
-        right: 1rem !important;
-        width: 40px !important;
-        height: 40px !important;
-        border-radius: 50% !important;
-        background: rgba(255, 255, 255, 0.1) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        color: #ffffff !important;
-        font-size: 18px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        cursor: pointer !important;
-        transition: all 0.2s ease !important;
-        z-index: 10 !important;
-    }
-    
-    .sidebar-close-btn:hover {
-        background: rgba(255, 255, 255, 0.2) !important;
-        transform: rotate(90deg) !important;
-    }
-    
-    .sidebar-close-btn:active {
-        transform: rotate(90deg) scale(0.9) !important;
-    }
-    
-    /* Animación del overlay */
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-    
-    /* Mejorar el diseño de los filtros dentro del sidebar */
-    .modern-sidebar .search-container {
-        margin-bottom: 1rem !important;
-    }
-    
-    .modern-sidebar .filters-grid {
-        margin-top: 3rem !important; /* Espacio para el botón de cerrar */
-    }
-    
-    .modern-sidebar .filter-group label {
-        color: #cbd5e1 !important;
-        font-weight: 600 !important;
-    }
-    
-    .modern-sidebar .filter-select {
-        background: rgba(255, 255, 255, 0.05) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        color: #ffffff !important;
-    }
-    
-    .modern-sidebar .filter-select:focus {
-        border-color: #3b82f6 !important;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-    }
-    
-    .module-actions .btn-modern,
-    .module-actions .btn-modern *,
-    .module-actions button,
-    .module-actions button * {
-        color: #ffffff !important;
-    }
-    
-    /* Ocultar botones de vista (tabla/grid) y acciones en lote en móvil */
-    .table-actions {
-        display: none !important;
-    }
+.module-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
 }
 
-/* ===== ESTILOS PARA BOTÓN DE FECHA FLATPICKR - MISMO ESTILO QUE SELECT ===== */
-#filter-fecha,
-#modal-filter-fecha {
-    /* Mismo estilo que .filter-select - fondo oscuro con texto blanco */
-    padding: 0.5rem 1rem;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    background: #0f162b !important; /* Fondo oscuro como los select */
-    color: #ffffff !important; /* Texto blanco */
-    transition: all 0.2s ease-in-out;
-    text-align: left;
-    cursor: pointer;
-    display: block;
-    width: 100%;
-    font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-#filter-fecha:hover,
-#modal-filter-fecha:hover {
-    border-color: #2463eb;
-}
-
-#filter-fecha:focus,
-#modal-filter-fecha:focus,
-#filter-fecha.calendar-open,
-#modal-filter-fecha.calendar-open {
-    outline: none;
-    border-color: #1e40af;
-    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
-}
-
-#filter-fecha-text,
-#modal-filter-fecha-text {
-    font-size: 0.875rem;
-    color: #ffffff !important; /* Texto blanco */
-}
-
-/* ASEGURAR texto blanco en móvil */
-@media (max-width: 768px) {
-    #filter-fecha,
-    #modal-filter-fecha {
-        background: #2c3e50 !important;
-        color: #ffffff !important;
-    }
-    
-    #filter-fecha-text,
-    #modal-filter-fecha-text {
-        color: #ffffff !important;
-    }
-}
-
-/* Indicador de mes con productos - mismo estilo que los días */
-.month-has-products-indicator {
+/* ============================================================================
+   BOTONES MODERNOS
+   ============================================================================ */
+.btn-modern {
     display: inline-flex;
     align-items: center;
-    margin-left: 8px;
-    position: relative;
-}
-
-.month-has-products-indicator .green-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: rgba(182, 185, 16, 0) !important;
-    border-radius: 50%;
-    box-shadow: 0 0 6px rgba(16, 185, 129, 0);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { 
-        opacity: 1;
-        transform: scale(1);
-    }
-    50% { 
-        opacity: 0.7;
-        transform: scale(1.1);
-    }
-}
-
-/* Flatpickr con colores de la paleta del admin */
-.flatpickr-calendar {
-    background: #1e293b;
-    border: 1px solid #334155;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    border-radius: 12px;
-    animation: flatpickrFadeIn 0.3s ease;
-    z-index: 99999 !important; /* Asegurar que aparezca encima de todo */
-}
-
-/* Mejorar posición en móvil - SIN SCROLL HORIZONTAL */
-@media (max-width: 768px) {
-    .flatpickr-calendar {
-        max-width: calc(100vw - 20px) !important; /* 10px de margen a cada lado */
-        width: auto !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        margin-top: 10px;
-    }
-    
-    /* Ajustar header en móvil */
-    .flatpickr-months .flatpickr-prev-month {
-        left: 8px !important;
-        width: 32px !important;
-        height: 32px !important;
-    }
-    
-    .flatpickr-months .flatpickr-next-month {
-        right: 8px !important;
-        width: 32px !important;
-        height: 32px !important;
-    }
-    
-    .flatpickr-current-month {
-        padding: 0 46px 0 42px !important; /* Menos padding en móvil */
-        gap: 6px !important;
-    }
-    
-    .flatpickr-current-month .flatpickr-monthDropdown-months {
-        min-width: 85px !important;
-        width: 85px !important;
-        font-size: 12px !important;
-        padding: 6px 8px !important;
-        margin: 0 4px 0 0 !important;
-    }
-    
-    .flatpickr-current-month .numInputWrapper {
-        min-width: 55px !important;
-        width: 55px !important;
-        font-size: 12px !important;
-        padding: 6px 8px !important;
-    }
-    
-    .flatpickr-calendar.arrowTop::before,
-    .flatpickr-calendar.arrowTop::after {
-        left: 50% !important;
-        transform: translateX(-50%);
-    }
-}
-
-@keyframes flatpickrFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.flatpickr-months {
-    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-    border-radius: 12px 12px 0 0;
-    padding: 12px 16px;
-    position: relative;
-}
-
-/* Contenedor del mes actual */
-.flatpickr-months .flatpickr-month {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: 40px !important;
-    position: relative;
-    width: 100%;
-}
-
-/* Botón flecha IZQUIERDA - Posición absoluta */
-.flatpickr-months .flatpickr-prev-month {
-    position: absolute !important;
-    left: 12px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    padding: 8px !important;
-    cursor: pointer;
-    z-index: 3;
-    width: 36px !important;
-    height: 36px !important;
-}
-
-/* Botón flecha DERECHA - Posición absoluta con más espacio */
-.flatpickr-months .flatpickr-next-month {
-    position: absolute !important;
-    right: 16px !important; /* Más espacio a la derecha */
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    padding: 8px !important;
-    cursor: pointer;
-    z-index: 3;
-    width: 36px !important;
-    height: 36px !important;
-}
-
-/* Contenedor central con mes y año - CENTRADO con más padding derecho */
-.flatpickr-current-month {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 8px !important; /* Separación entre mes y año reducida */
-    width: 100% !important;
-    color: white;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
     font-weight: 600;
-    height: 100%;
-    position: relative;
-    z-index: 2;
-    padding: 0 56px 0 52px !important; /* Más espacio derecho (56px), menos izquierdo (52px) */
-}
-
-/* Dropdown de MES - ancho fijo con más espacio a la derecha */
-.flatpickr-current-month .flatpickr-monthDropdown-months {
-    flex-shrink: 0;
-    margin: 0 8px 0 0 !important; /* 8px de margen derecho */
-    min-width: 100px !important; /* Ancho reducido */
-    width: 100px !important;
-    text-align: center;
-}
-
-/* Input de AÑO - ancho fijo */
-.flatpickr-current-month .numInputWrapper {
-    flex-shrink: 0;
-    margin: 0 !important;
-    min-width: 65px !important; /* Ancho reducido */
-    width: 65px !important;
-}
-
-.flatpickr-weekdays {
-    background: #0f172a;
-    padding: 8px 0;
-}
-
-.flatpickr-weekday {
-    color: rgba(255, 255, 255, 0.5) !important; /* Blanco transparente */
-    font-weight: 600;
-    font-size: 13px;
-}
-
-.flatpickr-days {
-    background: #1e293b;
-}
-
-.flatpickr-day {
-    color: #f1f5f9;
-    border-radius: 6px;
-    border: 1px solid transparent;
+    font-size: 0.9375rem;
+    border: none;
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
-/* OCULTAR días de otros meses */
-.flatpickr-day.prevMonthDay,
-.flatpickr-day.nextMonthDay {
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
+.btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.flatpickr-day:hover:not(.flatpickr-disabled):not(.selected) {
-    background: #334155;
-    border-color: #3b82f6;
+.btn-modern.btn-primary {
+    background: #667eea;
     color: white;
 }
 
-/* Días seleccionados (inicio y fin del rango) */
-.flatpickr-day.selected,
-.flatpickr-day.startRange,
-.flatpickr-day.endRange {
-    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
-    border-color: #3b82f6 !important;
-    color: white !important;
-    font-weight: bold;
+.btn-modern.btn-secondary {
+    background: #6c757d;
+    color: white;
 }
 
-/* Rango intermedio - MEJORADO sin rayas blancas */
-.flatpickr-day.inRange {
-    background: rgba(59, 130, 246, 0.25) !important;
-    border-color: transparent !important;
-    color: #e0e7ff !important;
-    box-shadow: none !important;
+.btn-modern.btn-info {
+    background: #17a2b8;
+    color: white;
 }
 
-/* Hover sobre días en rango */
-.flatpickr-day.inRange:hover {
-    background: rgba(59, 130, 246, 0.35) !important;
+/* ============================================================================
+   FILTROS Y BÚSQUEDA
+   ============================================================================ */
+.module-filters {
+    padding: 1.5rem 2rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
 }
 
-/* Días con productos marcados - Indicador SIEMPRE visible */
-.flatpickr-day.has-products {
+.search-container {
+    margin-bottom: 1.5rem;
+}
+
+.search-input-group {
     position: relative;
+    max-width: 600px;
 }
 
-.flatpickr-day.has-products::after {
-    content: '' !important;
-    position: absolute !important;
-    bottom: 3px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 5px !important;
-    height: 5px !important;
-    background: #10b981 !important;
-    border-radius: 50% !important;
-    z-index: 10 !important;
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 1rem;
 }
 
-/* Si el día con productos está seleccionado, cambiar color del punto a blanco */
-.flatpickr-day.has-products.selected::after,
-.flatpickr-day.has-products.startRange::after,
-.flatpickr-day.has-products.endRange::after {
-    background: #ffffff !important;
-}
-
-/* Si está en el rango, mantener verde pero más visible */
-.flatpickr-day.has-products.inRange::after {
-    background: #10b981 !important;
-    box-shadow: 0 0 4px rgba(16, 185, 129, 0.6) !important;
-}
-
-/* Días deshabilitados */
-.flatpickr-day.flatpickr-disabled {
-    color: #475569;
-    opacity: 0.5;
-}
-
-/* Día de hoy */
-.flatpickr-day.today {
-    border-color: #3b82f6;
-    font-weight: 600;
-}
-
-.flatpickr-day.today:not(.selected) {
-    color: #3b82f6;
-}
-
-/* Botones de navegación - Mejorados con tamaño fijo */
-.flatpickr-prev-month,
-.flatpickr-next-month {
-    fill: white !important;
-    width: 36px !important;
-    height: 36px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 8px !important;
-    transition: all 0.2s ease !important;
-    flex-shrink: 0 !important; /* No se encogen */
-}
-
-.flatpickr-prev-month:hover,
-.flatpickr-next-month:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    fill: #e0e7ff !important;
-}
-
-.flatpickr-prev-month svg,
-.flatpickr-next-month svg {
-    width: 18px !important;
-    height: 18px !important;
-}
-
-/* Dropdown de mes y año - MEJORADO con anchos fijos */
-.flatpickr-monthDropdown-months,
-.numInputWrapper {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 8px !important;
-    padding: 7px 10px !important; /* Padding reducido */
-    font-weight: 600 !important;
-    font-size: 13px !important; /* Tamaño de fuente reducido */
-    transition: all 0.2s ease !important;
-    cursor: pointer !important;
-    text-align: center !important;
-}
-
-/* Input de año con ancho fijo */
-.numInputWrapper {
-    min-width: 65px !important;
-    width: 65px !important;
-}
-
-/* Dropdown de mes con ancho fijo */
-.flatpickr-monthDropdown-months {
-    min-width: 100px !important;
-    width: 100px !important;
-}
-
-.flatpickr-monthDropdown-months:hover,
-.numInputWrapper:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-}
-
-.flatpickr-monthDropdown-months:focus,
-.numInputWrapper:focus {
-    outline: none !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Opciones del dropdown de mes */
-.flatpickr-monthDropdown-months option {
-    background: #1e293b !important;
-    color: white !important;
-    padding: 8px !important;
-    font-size: 13px !important;
-}
-
-/* Opciones con productos - TODO EN VERDE (más simple y efectivo) */
-.flatpickr-monthDropdown-months option[data-has-products="true"] {
-    background: #1e293b !important;
-    color: #10b981 !important; /* Verde */
-    font-weight: 600 !important;
-}
-
-/* Opción seleccionada - fondo azul con texto blanco visible */
-.flatpickr-monthDropdown-months option:checked {
-    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
-    color: white !important;
-    font-weight: 700 !important;
-    -webkit-text-fill-color: white !important;
-}
-
-/* Opción al hacer hover */
-.flatpickr-monthDropdown-months option:hover {
-    background: #334155 !important;
-    color: white !important;
-    -webkit-text-fill-color: white !important;
-}
-
-/* Focus del select - corregir contraste */
-.flatpickr-monthDropdown-months:focus {
-    outline: none !important;
-    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
-    color: white !important;
-    border-color: #60a5fa !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
-}
-
-/* Opciones cuando el select tiene focus */
-.flatpickr-monthDropdown-months:focus option {
-    background: #1e293b !important;
-    color: white !important;
-}
-
-/* Opciones con productos mantienen texto blanco, el emoji 🟢 es naturalmente verde */
-.flatpickr-monthDropdown-months option[data-has-products="true"] {
-    color: white !important;
-    background: #1e293b !important;
-}
-
-/* Input de año - Quitar flechas y hacerlo tipo texto */
-.numInputWrapper {
-    position: relative;
-}
-
-.numInputWrapper input {
-    background: transparent !important;
-    color: white !important;
-    border: none !important;
-    font-weight: 600 !important;
-    -moz-appearance: textfield !important; /* Firefox */
-    appearance: textfield !important;
-}
-
-/* Ocultar flechas en Chrome, Safari, Edge */
-.numInputWrapper input::-webkit-outer-spin-button,
-.numInputWrapper input::-webkit-inner-spin-button {
-    -webkit-appearance: none !important;
-    margin: 0 !important;
-    display: none !important;
-}
-
-/* Ocultar las flechas de Flatpickr */
-.numInputWrapper span.arrowUp,
-.numInputWrapper span.arrowDown {
-    display: none !important;
-}
-
-/* Animación de cierre */
-.flatpickr-calendar.animate.close {
-    animation: flatpickrFadeOut 0.2s ease;
-}
-
-@keyframes flatpickrFadeOut {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-}
-
-/* ===== PREVENIR DOBLE SCROLLBAR ===== */
-.data-table-container:has(.scrollable-table) {
-    overflow: visible !important;
-}
-
-.data-table-wrapper.scrollable-table {
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-}
-
-/* ===== BARRA DE SCROLL PERSONALIZADA PARA LA TABLA ===== */
-.scrollable-table {
-    max-height: calc(100vh - 250px);
-    min-height: 500px;
-    overflow-y: auto;
-    overflow-x: hidden;
+.search-input {
+    width: 100%;
+    padding: 0.875rem 1rem 0.875rem 3rem;
+    border: 2px solid #dee2e6;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    background: #1e293b;
-    position: relative;
-    cursor: default; /* Cursor normal ya que no hay drag horizontal */
+    font-size: 0.9375rem;
+    transition: all 0.2s;
 }
 
-.scrollable-table.dragging {
-    cursor: default; /* Cursor normal */
-    user-select: none; /* Evitar selección de texto */
+.search-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-/* Estilos personalizados para la barra de scroll - SIMPLIFICADO */
-.scrollable-table::-webkit-scrollbar {
-    width: 10px;
-    height: 0; /* Sin scrollbar horizontal */
+.search-clear {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.2s;
 }
 
-.scrollable-table::-webkit-scrollbar-track {
-    background: #0f172a;
-    border-radius: 5px;
+.search-input:not(:placeholder-shown) + .search-clear {
+    opacity: 1;
 }
 
-.scrollable-table::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #475569 0%, #334155 100%);
-    border-radius: 5px;
-    transition: all 0.3s ease;
+.search-clear:hover {
+    color: #495057;
 }
 
-.scrollable-table::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #64748b 0%, #475569 100%);
+.filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
 }
 
-.scrollable-table::-webkit-scrollbar-thumb:active {
-    background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-/* Esquina del scroll */
-.scrollable-table::-webkit-scrollbar-corner {
-    background: #0f172a;
+.filter-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #495057;
 }
 
-/* Ocultar botones de flechas */
-.scrollable-table::-webkit-scrollbar-button {
-    display: none;
-    width: 0;
-    height: 0;
+.filter-select,
+.filter-select-2 {
+    padding: 0.75rem 1rem;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-/* Mejorar la tabla dentro del contenedor con scroll */
-.scrollable-table .data-table {
-    margin: 0;
-    border-radius: 0;
-    box-shadow: none;
-    border-collapse: separate;
-    border-spacing: 0;
+.filter-select:focus,
+.filter-select-2:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.scrollable-table .table-header th:first-child {
-    border-top-left-radius: 8px;
+/* ============================================================================
+   CONTROLES DE TABLA
+   ============================================================================ */
+.table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: white;
+    border-bottom: 1px solid #e9ecef;
 }
 
-.scrollable-table .table-header th:last-child {
-    border-top-right-radius: 8px;
+.table-info {
+    font-size: 0.9375rem;
+    color: #6c757d;
 }
 
-/* Sticky header dentro del scroll */
-.scrollable-table .table-header {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: #1e293b;
+.table-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.view-options {
+    display: flex;
+    gap: 0.5rem;
+    background: #f8f9fa;
+    padding: 0.25rem;
+    border-radius: 8px;
+}
+
+.view-btn {
+    padding: 0.5rem 0.75rem;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #6c757d;
+    transition: all 0.2s;
+}
+
+.view-btn.active {
+    background: white;
+    color: #667eea;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Animación suave del scroll */
-.scrollable-table {
-    scroll-behavior: smooth;
+.view-btn:hover:not(.active) {
+    color: #495057;
 }
 
-/* ===== FORZAR PRIMER PLANO PARA ELEMENTOS FLOTANTES - MÁXIMA PRIORIDAD ===== */
-.animated-floating-container {
-    z-index: 9999999 !important;
-    position: fixed !important;
+/* ============================================================================
+   TABLA DE PRODUCTOS
+   ============================================================================ */
+.data-table-wrapper {
+    overflow-x: auto;
+    max-height: 600px;
+    background: white;
 }
 
-.animated-floating-button {
-    z-index: 10000001 !important;
-    position: fixed !important;
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.animated-center-button {
-    z-index: 10000000 !important;
-    position: fixed !important;
+.data-table thead {
+    background: #f8f9fa;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-.stock-update-bubble {
-    z-index: 1000001 !important;
-    position: relative !important;
+.data-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.delete-confirmation-overlay {
-    z-index: 10000002 !important;
-    position: fixed !important;
+.data-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 0.9375rem;
 }
 
-/* NO aplicar z-index genérico al contenedor */
-.animated-floating-container .animated-center-button {
-    z-index: 10000000 !important;
+.data-table tbody tr:hover {
+    background: #f8f9fa;
 }
 
-.animated-floating-container .animated-floating-button {
-    z-index: 10000001 !important;
+/* Columnas específicas */
+.product-image-cell {
+    width: 80px;
 }
 
-/* Asegurar que los tooltips también estén en primer plano */
-.floating-tooltip {
-    z-index: 10000005 !important;
+.product-image-cell img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
 }
 
-/* Mantener modales en nivel inferior */
-.modal-content,
-.modal-overlay,
-#product-modal-overlay {
-    z-index: 99999 !important;
+.product-name {
+    font-weight: 600;
+    color: #495057;
 }
 
-/* ===== ESTILOS PARA ORDENAMIENTO DE COLUMNAS ===== */
-th.sortable {
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-    transition: all 0.2s ease;
+.product-code {
+    font-size: 0.8125rem;
+    color: #6c757d;
+    font-family: monospace;
 }
 
-th.sortable:hover {
-    background: rgba(36, 99, 235, 0.1);
+.product-price {
+    font-weight: 600;
+    color: #495057;
 }
 
-th.sortable:active {
-    background: rgba(36, 99, 235, 0.2);
-}
-
-th.sortable.sorted {
-    background: rgba(36, 99, 235, 0.15);
-    color: #2463eb;
+.stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8125rem;
     font-weight: 600;
 }
 
-/* Indicador de dirección de ordenamiento (opcional) */
-th.sortable.sorted[data-sort-direction="asc"]::after {
-    content: " ↑";
-    font-size: 0.85rem;
-    opacity: 0.7;
+.stock-badge.ok {
+    background: #d1fae5;
+    color: var(--stock-ok);
 }
 
-th.sortable.sorted[data-sort-direction="desc"]::after {
-    content: " ↓";
-    font-size: 0.85rem;
-    opacity: 0.7;
+.stock-badge.bajo {
+    background: #fed7aa;
+    color: var(--stock-bajo);
 }
 
-/* Animación para filas ordenadas */
-tbody tr {
-    transition: opacity 0.2s ease, transform 0.2s ease;
+.stock-badge.agotado {
+    background: #fee2e2;
+    color: var(--stock-agotado);
 }
 
-tbody tr.sorting {
-    opacity: 0.5;
-}
-
-/* ===== BADGES DE GÉNERO (SOLO COLOR DE TEXTO) ===== */
-.genero-badge {
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8125rem;
     font-weight: 600;
 }
 
-/* Margen inferior en vista grid */
-.product-card-genero {
-    margin-bottom: 10px;
+.status-badge.activo {
+    background: #d1fae5;
+    color: var(--estado-activo);
 }
 
-.genero-masculino {
-    color: #3b82f6;
+.status-badge.inactivo {
+    background: #e9ecef;
+    color: var(--estado-inactivo);
 }
 
-.genero-femenino {
-    color: #ec4899;
-}
-
-.genero-unisex {
-    color: #8b5cf6;
-}
-
-.genero-kids {
-    color: #f59e0b;
-}
-
-.genero-default {
-    color: #6b7280;
-}
-
-/* ===== MENSAJE DE NO HAY RESULTADOS ===== */
-.loading-content.no-data {
+/* Acciones */
+.actions-cell {
     display: flex;
-    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.btn-action {
+    padding: 0.5rem;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #6c757d;
+    transition: all 0.2s;
+    display: flex;
     align-items: center;
     justify-content: center;
-    padding: 60px 20px;
-    color: #94a3b8;
+    width: 32px;
+    height: 32px;
 }
 
-.loading-content.no-data i {
-    font-size: 64px;
-    color: #475569;
-    margin-bottom: 20px;
+.btn-action:hover {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.btn-action.edit:hover {
+    color: #667eea;
+}
+
+.btn-action.delete:hover {
+    color: #ef4444;
+}
+
+/* ============================================================================
+   VISTA GRID (TARJETAS)
+   ============================================================================ */
+.products-grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+    background: #f8f9fa;
+}
+
+.product-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden; /* CRÍTICO - evita que contenido sobresalga */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+    border: 1px solid #e9ecef;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Estilos específicos del admin para el wrapper de imagen global */
+.product-card .product-image-wrapper {
+    padding-top: 100%; /* Aspecto cuadrado 1:1 para grid de admin (override del PHP inline) */
+    background: #f8f9fa;
+}
+
+.product-card .product-image {
+    object-fit: contain; /* CONTAIN - Muestra imagen completa sin recortar */
+    object-position: center; /* Centra la imagen */
+}
+
+.product-card .product-image-wrapper:hover .product-image {
+    transform: scale(1.05); /* Zoom sutil en hover */
+}
+
+/* Badge de estado sobre la imagen */
+.product-card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.product-card-badge.badge-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.product-card-badge.badge-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.product-card-body {
+    padding: 1.25rem;
+}
+
+.product-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+    margin: 0 0 0.5rem;
+    line-height: 1.4;
+}
+
+.product-card-code {
+    font-size: 0.75rem;
+    color: #6c757d;
+    font-family: monospace;
+    margin-bottom: 0.75rem;
+}
+
+.product-card-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+.product-card-footer {
+    display: flex;
+    gap: 0.5rem;
+    border-top: 1px solid #e9ecef;
+    padding-top: 1rem;
+}
+
+/* ============================================================================
+   PAGINACIÓN
+   ============================================================================ */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: white;
+    border-top: 1px solid #e9ecef;
+}
+
+.pagination-info {
+    font-size: 0.9375rem;
+    color: #6c757d;
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.pagination-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dee2e6;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #495057;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-numbers {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.page-number {
+    min-width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dee2e6;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.page-number:hover {
+    background: #f8f9fa;
+}
+
+.page-number.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+/* ============================================================================
+   ESTADOS VACÍOS
+   ============================================================================ */
+.no-products-found {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6c757d;
+}
+
+.no-products-found i {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
     opacity: 0.5;
 }
 
-.loading-content.no-data span {
-    font-size: 18px;
-    font-weight: 500;
-    color: #cbd5e0;
-    margin-bottom: 8px;
+.no-products-found h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #495057;
 }
 
-.loading-content.no-data small {
-    font-size: 14px;
-    color: #64748b;
+.no-products-found p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ============================================================================
+   LOADING
+   ============================================================================ */
+.loading-cell {
     text-align: center;
+    padding: 3rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ============================================================================
+   RESPONSIVE - TABLET
+   ============================================================================ */
+@media (max-width: 1024px) {
+    .module-header {
+        padding: 1.5rem 1.5rem;
+    }
+    
+    .module-filters {
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .table-controls {
+        padding: 1rem 1.5rem;
+    }
+    
+    .filters-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+/* ============================================================================
+   RESPONSIVE - MÓVIL
+   ============================================================================ */
+@media (max-width: 768px) {
+    .module-header {
+        padding: 1.25rem 1rem;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    /* Ocultar título y descripción en móvil */
+    .module-title {
+        display: none !important;
+    }
+    
+    .module-actions {
+        width: 100%;
+        justify-content: space-around;
+    }
+    
+    .btn-text-mobile-hide {
+        display: none;
+    }
+    
+    /* Ocultar filtros completos en móvil */
+    .module-filters {
+        display: none !important;
+    }
+    
+    .table-controls {
+        display: none !important;
+    }
+    
+    /* 🔥 FORZAR: Ocultar tabla y mostrar grid en móvil */
+    .data-table-wrapper {
+        display: none !important;
+    }
+    
+    #productos-grid-container,
+    .products-grid-view {
+        display: grid !important;
+    }
+    
+    /* Botón flotante de filtros en móvil */
+    .btn-mobile-filters {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4), 
+                    0 2px 4px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 998;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 1.25rem;
+    }
+    
+    .btn-mobile-filters:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5), 
+                    0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn-mobile-filters:active {
+        transform: scale(0.95);
+    }
+    
+    .btn-mobile-filters i {
+        pointer-events: none;
+    }
+    
+    .filters-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .products-grid-view {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+    
+    .product-card-body {
+        padding: 1rem;
+    }
+    
+    .product-card-title {
+        font-size: 0.875rem;
+    }
+    
+    .product-card-price {
+        font-size: 1.125rem;
+    }
+    
+    /* Ocultar paginación en móvil */
+    .pagination-container {
+        display: none !important;
+    }
+}
+
+/* ============================================================================
+   RESPONSIVE - MÓVIL PEQUEÑO
+   ============================================================================ */
+@media (max-width: 480px) {
+    .module-header {
+        padding: 1rem 0.75rem;
+    }
+    
+    .module-name {
+        font-size: 1.25rem;
+    }
+    
+    .module-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.25rem;
+    }
+    
+    .module-filters {
+        padding: 0.75rem;
+    }
+    
+    .products-grid-view {
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+    
+    .product-card-body {
+        padding: 0.75rem;
+    }
 }

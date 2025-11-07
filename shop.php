@@ -90,7 +90,7 @@ $page_title = "Tienda";
     
     <!-- Main Shop Section -->
     <section class="shop-modern spad">
-        <div class="container-fluid px-lg-5">
+        <div class="container-fluid px-lg-5" style="max-width: 1600px;">
             <div class="row">
                 
                 <!-- ========== SIDEBAR - FILTROS ========== -->
@@ -284,11 +284,30 @@ $page_title = "Tienda";
         })();
     </script>
 
-    <!-- Shop Scripts -->
-    <script src="public/assets/js/shop/shop-filters.js?v=2.0"></script>
+    <!-- Shop Scripts - ARQUITECTURA V3.0 OPTIMIZADA -->
+    
+    <!-- 0. Image Adapter: PRIMERO - Ajusta altura de tarjetas (GLOBAL) -->
+    <script src="public/assets/js/components/product-image-adapter.js?v=1.0"></script>
+    
+    <!-- 0.5. Masonry Layout: ANTES del product loader para estar listo -->
+    <script src="public/assets/js/shop/masonry-layout.js?v=1.3"></script>
+    
+    <!-- 1. Product Loader: Carga productos (ÚNICO responsable) -->
+    <script src="public/assets/js/shop/product-loader.js?v=3.1"></script>
+    
+    <!-- 2. Categories Navbar: Maneja navbar, actualiza estado -->
+    <script src="public/assets/js/header-globals/categories-navbar.js?v=3.0"></script>
+    
+    <!-- 3. Shop Filters: Maneja sidebar, actualiza estado -->
+    <script src="public/assets/js/shop/shop-filters.js?v=3.0"></script>
+    <script src="public/assets/js/shop/shop-filters-mobile.js?v=3.0"></script>
+
+    
+    <!-- 4. Otros scripts auxiliares -->
     <script src="public/assets/js/shop/search-live.js?v=2.0"></script>
-    <script src="public/assets/js/shop/masonry-layout.js?v=1.1"></script>
-    <script src="public/assets/js/header-globals/categories-navbar.js?v=1.0"></script>
+    
+    <!-- 5. Touch handler para móviles (GLOBAL) -->
+    <script src="public/assets/js/components/product-touch-handler.js?v=1.0"></script>
     
     
     <!-- Fix Sidebar Visibility -->
@@ -378,7 +397,6 @@ $page_title = "Tienda";
     </script>
 </body>
 
-<!-- Script para shop-filters-mobile con OffcanvasManager -->
-<script src="public/assets/js/shop/shop-filters-mobile.js?v=<?= time() ?>"></script>
+
 </html>
 

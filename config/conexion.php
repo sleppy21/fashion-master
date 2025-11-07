@@ -5,12 +5,9 @@
  * Compatible con XAMPP MySQL
  */
 
-// Definir BASE_URL si no está definido
+// Incluir configuración unificada si no está cargada
 if (!defined('BASE_URL')) {
-    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'];
-    $path = '/fashion-master/';
-    define('BASE_URL', $protocol . '://' . $host . $path);
+    require_once __DIR__ . '/unified_config.php';
 }
 
 class Database {

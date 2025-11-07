@@ -20,8 +20,8 @@ function renderProductCard($product, $is_favorite = false, $user_logged = false,
     $sin_stock = $stock <= 0;
     $stock_bajo = $stock > 0 && $stock <= 5;
     
-    // Determinar si es nuevo (últimos 30 días)
-    $es_nuevo = (time() - strtotime($product['fecha_creacion'] ?? 'now')) < (30 * 24 * 60 * 60);
+    // Determinar si es nuevo (deshabilitado temporalmente - falta campo fecha_creacion en BD)
+    $es_nuevo = false;
     
     // Rating
     $rating = floatval($product['calificacion_promedio'] ?? 0);
@@ -33,19 +33,48 @@ function renderProductCard($product, $is_favorite = false, $user_logged = false,
         ? $product['url_imagen_producto'] 
         : 'public/assets/img/shop/default-product.jpg';
     
+    // Calcular aspect ratio de la imagen para evitar layout shift
+    $aspect_ratio_padding = '125%'; // Default vertical (4:5)
+    $debug_info = '';
+    
+    // Construir ruta absoluta del archivo de imagen
+    $project_root = dirname(dirname(dirname(__DIR__))); // c:\xampp\htdocs\fashion-master
+    
+    // Detectar diferentes formatos de URL
+    $image_path = null;
+    
+    if (strpos($image_url, '/fashion-master/public/') !== false) {
+        // URL absoluta: /fashion-master/public/assets/...
+        $image_path = $project_root . str_replace('/fashion-master/', '/', $image_url);
+        $debug_info = "Ruta absoluta detectada";
+    } elseif (strpos($image_url, 'public/') === 0) {
+        // URL relativa: public/assets/...
+        $image_path = $project_root . '/' . $image_url;
+        $debug_info = "Ruta relativa detectada";
+    }
+    
+    // Si encontramos una ruta válida, calcular dimensiones
+    if ($image_path && file_exists($image_path)) {
+        $image_size = @getimagesize($image_path);
+        if ($image_size && $image_size[0] > 0) {
+            // Calcular padding-top basado en aspect ratio real
+            $aspect_ratio_padding = round(($image_size[1] / $image_size[0] * 100), 2) . '%';
+            error_log("✅ PHP: {$debug_info} | {$image_url} = {$image_size[0]}x{$image_size[1]} → {$aspect_ratio_padding}");
+        }
+    } else {
+        error_log("⚠️ PHP: No se pudo calcular - URL: {$image_url} | Path probado: " . ($image_path ?: 'null'));
+    }
+    
     ?>
     <div class="col-lg-3 col-md-4 col-6">
         <div class="product-card-modern" data-product-id="<?= $product['id_producto'] ?>" data-aos="fade-up">
             
             <!-- Imagen del producto -->
-            <div class="product-image-wrapper">
-                <a href="<?= $product_url ?>">
-                    <img src="<?= htmlspecialchars($image_url) ?>" 
-                         alt="<?= htmlspecialchars($product['nombre_producto']) ?>"
-                         loading="lazy"
-                         class="product-image"
-                         crossorigin="anonymous">
-                </a>
+            <div class="product-image-wrapper" style="padding-top: <?= $aspect_ratio_padding ?>;">
+                <img src="<?= htmlspecialchars($image_url) ?>" 
+                     alt="<?= htmlspecialchars($product['nombre_producto']) ?>"
+                     class="product-image"
+                     crossorigin="anonymous">
                 
                 <!-- Badges superiores -->
                 <div class="product-badges">
@@ -100,6 +129,11 @@ function renderProductCard($product, $is_favorite = false, $user_logged = false,
                 <div class="product-category">
                     <?= strtoupper(htmlspecialchars($product['nombre_categoria'] ?? 'GENERAL')) ?>
                 </div>
+                <?php if (!empty($product['nombre_subcategoria'])): ?>
+                <div class="product-subcategory" style="margin-left: 18px; display: inline-block; font-size: 0.95em; color: #888; letter-spacing: 1px; vertical-align: middle;">
+                    <?= strtoupper(htmlspecialchars($product['nombre_subcategoria'])) ?>
+                </div>
+                <?php endif; ?>
                 
                 <!-- Nombre del producto -->
                 <h3 class="product-name">

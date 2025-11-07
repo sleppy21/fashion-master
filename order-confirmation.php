@@ -726,11 +726,7 @@ $tipo_comprobante_texto = $tipos_comprobante[$pedido['tipo_comprobante_pedido']]
 
     <script src="public/assets/js/user-account-modal.js"></script>
 
-    <?php if($usuario_logueado): ?>
-    <?php include 'includes/user-account-modal.php'; ?>
-    <?php include 'includes/favorites-modal.php'; ?>
-    <?php include 'includes/notifications-modal.php'; ?>
-    <?php endif; ?>
+    <!-- Modales ya incluidos en header-section.php - NO duplicar -->
 
     <!-- Chatbot Widget -->
     <?php include 'includes/chatbot-widget.php'; ?>

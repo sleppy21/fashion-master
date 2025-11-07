@@ -6,14 +6,20 @@
  */
 
 /* ========================================
-   BLOQUEO DE SCROLL - Para modal de usuario en móvil
+   BLOQUEO DE SCROLL - Para modales y offcanvas
    ======================================== */
 
-body.modal-scroll-lock {
+body.modal-scroll-lock,
+body.offcanvas-active {
     overflow: hidden !important;
-    position: fixed !important;
-    width: 100% !important;
-    height: 100% !important;
+    /* NO usar position: fixed - causa desplazamiento del header */
+    /* position: fixed !important; */
+    /* width: 100% !important; */
+    /* height: 100% !important; */
+    
+    /* Prevenir scroll en móvil sin desplazar contenido */
+    touch-action: none !important;
+    -webkit-overflow-scrolling: auto !important;
 }
 
 /* ========================================
@@ -145,7 +151,7 @@ body.modal-scroll-lock {
     left: 0;
     width: 0;
     height: 0;
-    z-index: var(--z-modal);
+    z-index: 99999999999999 !important;
     pointer-events: none;
 }
 
@@ -155,6 +161,7 @@ body.modal-scroll-lock {
     width: 0 !important;
     height: 0 !important;
     pointer-events: auto;
+    z-index: 99999999999999 !important;
 }
 
 /* Modal content wrapper */
@@ -170,7 +177,7 @@ body.modal-scroll-lock {
     background: var(--bg-primary);
     border-radius: var(--modal-border-radius);
     box-shadow: var(--modal-shadow);
-    z-index: var(--z-modal);
+    z-index: 999999999999999 !important;
     transform-origin: top right !important;
     will-change: transform, opacity !important;
     overflow: hidden;
@@ -182,15 +189,15 @@ body.modal-scroll-lock {
 /* User modal - Desktop (arriba derecha) - Z-index específico para cada modal */
 .user-modal-content,
 .user-account-modal-content {
-    z-index: var(--z-user-modal) !important;
+    z-index: 999999999999999 !important;
 }
 
 .notifications-modal-content {
-    z-index: var(--z-notifications) !important;
+    z-index: 999999999999998 !important;
 }
 
 .favorites-modal-content {
-    z-index: calc(var(--z-notifications) - 1) !important;
+    z-index: 999999999999997 !important;
 }
 
 
@@ -254,6 +261,7 @@ body.modal-scroll-lock {
         width: 100% !important;
         border-radius: var(--modal-border-radius) var(--modal-border-radius) 0 0 !important;
         transform-origin: bottom center !important;
+        z-index: 999999999999999 !important;
     }
     
     /* Ocultar flecha del dropdown en móvil */
@@ -1223,6 +1231,7 @@ body.dark-mode .search-no-results p {
         min-height: auto !important;
         max-height: calc(100vh - 75px) !important; /* Altura disponible bajo el header */
         height: auto !important;
+        z-index: 999999999999999 !important;
     }
     
     /* ✅ Modal de usuario - DESDE ABAJO (bottom sheet) */
@@ -1243,6 +1252,7 @@ body.dark-mode .search-no-results p {
         transform-origin: bottom center !important; /* Animación desde abajo */
         touch-action: pan-y !important; /* ✅ Permitir swipe vertical */
         will-change: transform; /* ✅ Optimizar para animaciones */
+        z-index: 999999999999999 !important;
     }
     
     /* ✅ Cuando está siendo arrastrado - permitir movimiento con transform */

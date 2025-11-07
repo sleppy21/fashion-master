@@ -78,6 +78,18 @@ try {
     error_log("Error al obtener carrito: " . $e->getMessage());
 }
 
+// Obtener categorías para el navbar
+$categorias = [];
+try {
+    $categorias = executeQuery("SELECT id_categoria, nombre_categoria FROM categoria WHERE status_categoria = 1 ORDER BY nombre_categoria ASC");
+    if (!$categorias) {
+        $categorias = [];
+    }
+} catch(Exception $e) {
+    error_log("Error al obtener categorías: " . $e->getMessage());
+    $categorias = [];
+}
+
 // Verificar si el usuario tiene dirección predeterminada
 $tiene_direccion_predeterminada = false;
 try {
@@ -104,15 +116,6 @@ try {
     $notifications_count = ($notifications && count($notifications) > 0) ? ($notifications[0]['total'] ?? 0) : 0;
 } catch(Exception $e) {
     error_log("Error al obtener favoritos/notificaciones: " . $e->getMessage());
-}
-
-// Obtener categorías para el menú
-$categorias = [];
-try {
-    $categorias_resultado = executeQuery("SELECT id_categoria, nombre_categoria FROM categoria WHERE status_categoria = 1 ORDER BY id_categoria ASC LIMIT 5");
-    $categorias = $categorias_resultado ? $categorias_resultado : [];
-} catch(Exception $e) {
-    error_log("Error al obtener categorías: " . $e->getMessage());
 }
 
 // Obtener marcas para el menú
@@ -146,6 +149,9 @@ try {
     
     <!-- Estilos de tarjetas de productos (productos relacionados) -->
     <link rel="stylesheet" href="public/assets/css/shop/product-cards-modern.css?v=3.0" type="text/css">
+    
+    <!-- Estilos del navbar de categorías -->
+    <link rel="stylesheet" href="public/assets/css/components/categories-navbar.css?v=3.0" type="text/css">
 
 </head>
 
@@ -250,9 +256,9 @@ try {
                                         </div>
                                     </td>
                                     <td class="cart__total">$<?php echo number_format($subtotal, 2); ?></td>
-                                    <td class="cart__close" style="text-align: center;">
-                                        <button class="remove-cart-item" data-id="<?php echo $item['id_carrito']; ?>" style="background: #fee; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center;">
-                                            <i class="fa fa-trash" style="color: #dc3545; font-size: 14px;"></i>
+                                    <td class="cart__close" style="text-align: center; position: relative; z-index: 10;">
+                                        <button class="remove-cart-item" data-id="<?php echo $item['id_carrito']; ?>" style="background: #fee; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; position: relative; z-index: 10;">
+                                            <i class="fa fa-trash" style="color: #dc3545; font-size: 14px; pointer-events: none;"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -423,45 +429,37 @@ try {
                         
                         $related_products = executeQuery($random_query, $product_ids_in_cart);
                     }
-                    
-                    if(!empty($related_products)):
                     ?>
                     
-                    <div style="margin-top: 30px;">
-                        <div class="section-title">
-                            <h4>Productos que tal vez quieras agregar</h4>
+                    <!-- Sección de Productos Relacionados -->
+                    <div class="related-products-section" style="margin-top: 23px;">
+                        <!-- Header de la sección -->
+                        <div class="related-products-header">
+                            <div class="header-content">
+                                <div class="header-icon">
+                                    <i class="fa fa-shopping-bag"></i>
+                                </div>
+                                <div class="header-text">
+                                    <h3>Completa tu compra</h3>
+                                    <p>Productos que podrían interesarte</p>
+                                </div>
+                            </div>
+                            <div class="header-decoration"></div>
                         </div>
                         
-                        <div class="products-grid-modern">
+                        <!-- Navbar de categorías -->
+                        <?php 
+                        // Pasar variables necesarias para el navbar
+                        $filters = ['categorias' => []]; // Sin filtros activos inicialmente
+                        include 'includes/categories-navbar.php'; 
+                        ?>
+                        
+                        <div class="products-grid-modern" id="products-container">
                             <div class="row">
-                                <?php 
-                                // Obtener favoritos del usuario si está logueado
-                                $favoritos = [];
-                                $productos_en_carrito = [];
-                                
-                                if($usuario_logueado) {
-                                    $fav_result = executeQuery("SELECT id_producto FROM favorito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
-                                    if($fav_result) {
-                                        $favoritos = array_column($fav_result, 'id_producto');
-                                    }
-                                    
-                                    $cart_result = executeQuery("SELECT id_producto FROM carrito WHERE id_usuario = ?", [$usuario_logueado['id_usuario']]);
-                                    if($cart_result) {
-                                        $productos_en_carrito = array_column($cart_result, 'id_producto');
-                                    }
-                                }
-                                
-                                foreach($related_products as $product): 
-                                    $is_favorite = in_array($product['id_producto'], $favoritos);
-                                    $in_cart = in_array($product['id_producto'], $productos_en_carrito);
-                                    renderProductCard($product, $is_favorite, true, $in_cart);
-                                endforeach; 
-                                ?>
+                                <!-- Los productos se cargarán aquí mediante AJAX -->
                             </div>
                         </div>
                     </div>
-                    
-                    <?php endif; ?>
                 </div>
 
                 <!-- Resumen del Carrito (Derecha) -->
@@ -653,8 +651,32 @@ try {
         })();
     </script>
 
+    <!-- Image Adapter: PRIMERO - Ajusta altura de tarjetas (GLOBAL) -->
+    <script src="public/assets/js/components/product-image-adapter.js?v=1.0"></script>
+
     <!-- Masonry Layout para productos relacionados -->
-    <script src="public/assets/js/shop/masonry-layout.js?v=1.1"></script>
+    <script src="public/assets/js/shop/masonry-layout.js?v=1.2"></script>
+    
+    <!-- Sistema de productos con filtros -->
+    <script src="public/assets/js/shop/product-loader.js?v=3.0"></script>
+    <script src="public/assets/js/header-globals/categories-navbar.js?v=3.0"></script>
+    
+    <!-- Touch handler para móviles (GLOBAL) -->
+    <script src="public/assets/js/components/product-touch-handler.js?v=1.0"></script>
+    
+    <!-- Desactivar Masonry en cart.php para evitar problemas de layout -->
+    <script>
+        // Prevenir que Masonry se ejecute en cart.php
+        if (window.productMasonry) {
+            window.productMasonry = null;
+        }
+        window.refreshMasonry = function() {
+            // No hacer nada en cart.php
+        };
+        window.reinitMasonry = function() {
+            // No hacer nada en cart.php
+        };
+    </script>
                 
     <script>
     // Variable global para almacenar descuento de cupón aplicado

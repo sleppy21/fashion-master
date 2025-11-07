@@ -616,15 +616,12 @@ try {
         });
     </script>
     
-    <?php if($usuario_logueado): ?>
-        <!-- Modales (AL FINAL para evitar conflictos) -->
-        <?php include 'includes/user-account-modal.php'; ?>
-        <?php include 'includes/favorites-modal.php'; ?>
-        <?php include 'includes/notifications-modal.php'; ?>
+    <!-- Modales ya incluidos en header-section.php - NO duplicar -->
         
         <!-- Scripts para modales -->
 
     <!-- Otros scripts opcionales -->
+    <?php if($usuario_logueado): ?>
     <?php endif; ?>
     
     <?php include 'includes/dark-mode-assets.php'; ?>

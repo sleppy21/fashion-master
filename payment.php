@@ -624,11 +624,7 @@ try {
     <!-- Global Offcanvas Menu JavaScript -->
     <script src="public/assets/js/offcanvas-menu.js"></script>
 
-    <?php if($usuario_logueado): ?>
-    <?php include 'includes/user-account-modal.php'; ?>
-    <?php include 'includes/favorites-modal.php'; ?>
-    <?php include 'includes/notifications-modal.php'; ?>
-    <?php endif; ?>
+    <!-- Modales ya incluidos en header-section.php - NO duplicar -->
 
     <!-- Chatbot Widget -->
     <?php include 'includes/chatbot-widget.php'; ?>

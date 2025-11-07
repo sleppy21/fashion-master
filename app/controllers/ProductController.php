@@ -1,6 +1,8 @@
 ﻿<?php
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0); // Desactivar para no romper el JSON
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/../../logs/php_errors.log');
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
@@ -118,6 +120,9 @@ try {
             break;
         case 'get_categories':
             getCategorias($conn);
+            break;
+        case 'get_subcategories':
+            getSubcategorias($conn);
             break;
         case 'get_brands':
         case 'get_marcas': // Alias para compatibilidad
@@ -285,13 +290,16 @@ function listProductos($conn) {
             p.fecha_creacion_producto,
             p.imagen_producto,
             p.url_imagen_producto,
+            p.id_subcategoria,
             c.nombre_categoria,
             c.id_categoria,
             m.nombre_marca,
-            m.id_marca
+            m.id_marca,
+            sc.nombre_subcategoria
         FROM producto p
         LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
         LEFT JOIN marca m ON p.id_marca = m.id_marca
+        LEFT JOIN subcategoria sc ON p.id_subcategoria = sc.id_subcategoria
         $where_clause
         ORDER BY p.id_producto ASC 
         LIMIT $limit OFFSET $offset
@@ -306,6 +314,13 @@ function listProductos($conn) {
         $producto['precio_formato'] = '$' . number_format($producto['precio_producto'], 2);
         $producto['estado_texto'] = $producto['estado'] === 'activo' ? 'Activo' : 'Inactivo';
         $producto['fecha_creacion_formato'] = date('d/m/Y', strtotime($producto['fecha_creacion_producto']));
+        
+        // ✅ Agregar campos con nombres alternativos para compatibilidad con frontend
+        $producto['categoria_nombre'] = $producto['nombre_categoria'] ?? 'Sin categoría';
+        $producto['marca_nombre'] = $producto['nombre_marca'] ?? 'Sin marca';
+        $producto['stock_producto'] = $producto['stock_actual_producto'] ?? 0;
+        $producto['codigo_producto'] = $producto['codigo'] ?? 'N/A';
+        $producto['estado_producto'] = $producto['estado'] === 'activo' ? '1' : '0';
         
         // ✅ Usar función centralizada para calcular estado del stock
         $producto['estado_stock'] = calcularEstadoStock($producto);
@@ -397,6 +412,41 @@ function getCategorias($conn) {
     }
 }
 
+function getSubcategorias($conn) {
+    try {
+        $id_categoria = (int)($_GET['id_categoria'] ?? 0);
+        
+        if (!$id_categoria) {
+            echo json_encode([
+                'success' => false,
+                'error' => 'ID de categoría requerido'
+            ]);
+            return;
+        }
+        
+        $query = "SELECT id_subcategoria, nombre_subcategoria 
+                  FROM subcategoria 
+                  WHERE id_categoria = ? 
+                  AND status_subcategoria = 1 
+                  AND estado_subcategoria = 'activo'
+                  ORDER BY orden_subcategoria, nombre_subcategoria";
+        
+        $stmt = $conn->prepare($query);
+        $stmt->execute([$id_categoria]);
+        $subcategorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo json_encode([
+            'success' => true,
+            'data' => $subcategorias
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'error' => 'Error al obtener subcategorías: ' . $e->getMessage()
+        ]);
+    }
+}
+
 function getProducto($conn) {
     $id = (int)($_GET['id'] ?? 0);
     
@@ -413,10 +463,12 @@ function getProducto($conn) {
             SELECT 
                 p.*,
                 c.nombre_categoria,
-                m.nombre_marca
+                m.nombre_marca,
+                sc.nombre_subcategoria
             FROM producto p
             LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
             LEFT JOIN marca m ON p.id_marca = m.id_marca
+            LEFT JOIN subcategoria sc ON p.id_subcategoria = sc.id_subcategoria
             WHERE p.id_producto = ?
         ";
         
@@ -490,6 +542,7 @@ function createProducto($conn) {
         $nombre = $_POST['nombre_producto'] ?? '';
         $precio = $_POST['precio_producto'] ?? '';
         $categoria_id = $_POST['id_categoria'] ?? '';
+        $subcategoria_id = $_POST['id_subcategoria'] ?? null; // ID de subcategoría (puede ser NULL)
         $marca_id = $_POST['id_marca'] ?? null; // ID de marca (puede ser NULL)
         $descripcion = $_POST['descripcion_producto'] ?? '';
         $stock = $_POST['stock_actual_producto'] ?? 0;
@@ -559,8 +612,8 @@ function createProducto($conn) {
             INSERT INTO producto (
                 nombre_producto, codigo, descripcion_producto, precio_producto,
                 descuento_porcentaje_producto, stock_actual_producto, stock_minimo_producto, stock_maximo_producto,
-                id_categoria, id_marca, genero_producto, imagen_producto, url_imagen_producto, status_producto, estado, en_oferta_producto, fecha_creacion_producto
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                id_categoria, id_subcategoria, id_marca, genero_producto, imagen_producto, url_imagen_producto, status_producto, estado, en_oferta_producto, fecha_creacion_producto
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
         ";
         
         $stmt = $conn->prepare($query);
@@ -575,6 +628,7 @@ function createProducto($conn) {
             (int)$stock_minimo,
             (int)$stock_maximo,
             (int)$categoria_id,
+            $subcategoria_id ? (int)$subcategoria_id : null,
             $marca_id ? (int)$marca_id : null,
             $genero,
             $imagen_nombre,
@@ -643,6 +697,7 @@ function updateProducto($conn) {
         $nombre = $_POST['nombre_producto'] ?? '';
         $precio = $_POST['precio_producto'] ?? '';
         $categoria_id = $_POST['id_categoria'] ?? '';
+        $subcategoria_id = $_POST['id_subcategoria'] ?? null; // ID de subcategoría (puede ser NULL)
         $marca_id = $_POST['id_marca'] ?? null; // ID de marca (puede ser NULL)
         $descripcion = $_POST['descripcion_producto'] ?? '';
         $stock = $_POST['stock_actual_producto'] ?? 0;
@@ -711,23 +766,10 @@ function updateProducto($conn) {
         
         // Verificar si hay un archivo de imagen válido en el momento del submit
         if (isset($_FILES['imagen_producto']) && $_FILES['imagen_producto']['error'] === UPLOAD_ERR_OK) {
-            // Eliminar imagen anterior si no es la default y existe físicamente
-            if ($imagen_nombre && $imagen_nombre !== 'default-product.png' && $imagen_nombre !== 'default-product.jpg') {
-                $old_path = $_SERVER['DOCUMENT_ROOT'] . '/fashion-master/public/assets/img/products/' . $imagen_nombre;
-                if (file_exists($old_path)) {
-                    unlink($old_path);
-                }
-                
-                // Eliminar también la versión _shop si existe
-                $shop_version = str_replace('.', '_shop.', $imagen_nombre);
-                $old_shop_path = $_SERVER['DOCUMENT_ROOT'] . '/fashion-master/public/assets/img/products/' . $shop_version;
-                if (file_exists($old_shop_path)) {
-                    unlink($old_shop_path);
-                }
-            }
+            // 🎯 OPTIMIZACIÓN: Reutilizar el mismo ID si ya existe una imagen
+            // Esto elimina la imagen anterior y crea la nueva con el MISMO nombre base
+            $imagen_nombre = handleImageUpload($_FILES['imagen_producto'], $imagen_nombre);
             
-            // Generar nombre único y subir archivo
-            $imagen_nombre = handleImageUpload($_FILES['imagen_producto']);
             // ESTANDARIZAR: Siempre usar ruta absoluta desde raíz web
             $url_imagen = '/fashion-master/public/assets/img/products/' . $imagen_nombre;
         }
@@ -742,7 +784,8 @@ function updateProducto($conn) {
             stock_actual_producto = ?, 
             stock_minimo_producto = ?,
             stock_maximo_producto = ?,
-            id_categoria = ?, 
+            id_categoria = ?,
+            id_subcategoria = ?, 
             id_marca = ?,
             genero_producto = ?,
             imagen_producto = ?,
@@ -765,6 +808,7 @@ function updateProducto($conn) {
             (int)$stock_minimo,
             (int)$stock_maximo,
             (int)$categoria_id,
+            $subcategoria_id ? (int)$subcategoria_id : null,
             $marca_id ? (int)$marca_id : null,
             $genero,
             $imagen_nombre,
@@ -830,19 +874,34 @@ function deleteProducto($conn) {
 }
 
 function toggleProductStatus($conn) {
-    $id = (int)($_POST['id'] ?? 0);
-    $status = (int)($_POST['status'] ?? 1);
+    $id = (int)($_GET['id'] ?? $_POST['id'] ?? 0);
     
     if (!$id) {
-        echo json_encode(['success' => false, 'error' => 'ID requerido']);
+        echo json_encode(['success' => false, 'message' => 'ID requerido']);
         return;
     }
     
     try {
-        $query = "UPDATE producto SET status_producto = ? WHERE id_producto = ?";
+        // Primero obtener el estado actual
+        $getCurrentQuery = "SELECT estado FROM producto WHERE id_producto = ?";
+        $getCurrentStmt = $conn->prepare($getCurrentQuery);
+        $getCurrentStmt->execute([$id]);
+        $currentProduct = $getCurrentStmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$currentProduct) {
+            echo json_encode(['success' => false, 'message' => 'Producto no encontrado']);
+            return;
+        }
+        
+        // Alternar estado: si es 'activo' -> 'inactivo', si es 'inactivo' -> 'activo'
+        $currentEstado = $currentProduct['estado'];
+        $newEstado = ($currentEstado === 'activo') ? 'inactivo' : 'activo';
+        
+        // Actualizar estado
+        $query = "UPDATE producto SET estado = ? WHERE id_producto = ?";
         $stmt = $conn->prepare($query);
         
-        if ($stmt->execute([$status, $id])) {
+        if ($stmt->execute([$newEstado, $id])) {
             // Obtener el producto completo con todos los joins
             $getQuery = "
                 SELECT 
@@ -861,14 +920,15 @@ function toggleProductStatus($conn) {
             
             echo json_encode([
                 'success' => true,
-                'message' => 'Estado actualizado',
+                'message' => 'Estado actualizado correctamente',
+                'new_estado' => $newEstado,
                 'product' => $fullProduct // Devolver producto completo para actualización suave
             ]);
         } else {
             throw new Exception('Error al actualizar estado');
         }
     } catch (Exception $e) {
-        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
 }
 
@@ -977,8 +1037,14 @@ function changeProductEstado($conn) {
     }
 }
 
-// Función para manejar subida de imágenes
-function handleImageUpload($file) {
+/**
+ * Maneja la subida de imágenes de productos
+ * @param array $file - Archivo $_FILES
+ * @param string|null $existing_filename - Nombre de archivo existente para reutilizar ID
+ * @param string|null $upload_dir_override - Directorio personalizado (opcional)
+ * @return string - Nombre del archivo subido
+ */
+function handleImageUpload($file, $existing_filename = null, $upload_dir_override = null) {
     $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
     $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     
@@ -991,13 +1057,33 @@ function handleImageUpload($file) {
         throw new Exception('El archivo es demasiado grande. Tamaño máximo: 5MB');
     }
     
-    $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/fashion-master/public/assets/img/products/';
+    $upload_dir = $upload_dir_override ?? ($_SERVER['DOCUMENT_ROOT'] . '/fashion-master/public/assets/img/products/');
     
     if (!file_exists($upload_dir)) {
         mkdir($upload_dir, 0777, true);
     }
     
-    $unique_name = 'product_' . uniqid() . '.' . $file_extension;
+    // 🎯 OPTIMIZACIÓN: Reutilizar ID si existe imagen previa
+    if ($existing_filename && 
+        $existing_filename !== 'default-product.jpg' && 
+        $existing_filename !== 'default-product.png' &&
+        strpos($existing_filename, 'product_') === 0) {
+        
+        // Extraer el ID único de la imagen existente (product_xxxxx)
+        // Ejemplo: product_6733a1b2c4567.jpg -> product_6733a1b2c4567
+        $base_name = pathinfo($existing_filename, PATHINFO_FILENAME);
+        
+        // Reutilizar el mismo ID con la nueva extensión
+        $unique_name = $base_name . '.' . $file_extension;
+        
+        // 🗑️ Eliminar imagen anterior si existe (puede tener diferente extensión)
+        deleteProductImage($existing_filename, $upload_dir);
+        
+    } else {
+        // 🆕 Generar nuevo ID único para producto nuevo o sin imagen previa
+        $unique_name = 'product_' . uniqid() . '.' . $file_extension;
+    }
+    
     $upload_path = $upload_dir . $unique_name;
     
     if (!move_uploaded_file($file['tmp_name'], $upload_path)) {
@@ -1005,6 +1091,51 @@ function handleImageUpload($file) {
     }
     
     return $unique_name;
+}
+
+/**
+ * Elimina una imagen de producto y su versión _shop del servidor
+ * @param string $filename - Nombre del archivo a eliminar
+ * @param string|null $upload_dir_override - Directorio personalizado (opcional)
+ * @return bool - True si se eliminó correctamente
+ */
+function deleteProductImage($filename, $upload_dir_override = null) {
+    if (empty($filename) || 
+        $filename === 'default-product.jpg' || 
+        $filename === 'default-product.png') {
+        return false; // No eliminar imágenes por defecto
+    }
+    
+    $upload_dir = $upload_dir_override ?? ($_SERVER['DOCUMENT_ROOT'] . '/fashion-master/public/assets/img/products/');
+    
+    $deleted = false;
+    
+    // Eliminar imagen principal
+    $main_path = $upload_dir . $filename;
+    if (file_exists($main_path)) {
+        unlink($main_path);
+        $deleted = true;
+    }
+    
+    // Eliminar versión _shop si existe
+    $base_name = pathinfo($filename, PATHINFO_FILENAME);
+    $extension = pathinfo($filename, PATHINFO_EXTENSION);
+    $shop_filename = $base_name . '_shop.' . $extension;
+    $shop_path = $upload_dir . $shop_filename;
+    
+    if (file_exists($shop_path)) {
+        unlink($shop_path);
+    }
+    
+    // También buscar versión PNG del _shop (convertida desde JPG)
+    $shop_png = $base_name . '_shop.png';
+    $shop_png_path = $upload_dir . $shop_png;
+    
+    if (file_exists($shop_png_path)) {
+        unlink($shop_png_path);
+    }
+    
+    return $deleted;
 }
 
 // Función para crear versión de imagen para tienda con fondo difuminado

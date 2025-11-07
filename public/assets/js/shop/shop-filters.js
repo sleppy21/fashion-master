@@ -1,703 +1,255 @@
-// shop-filters-products.js
-// SHOP FILTERS MODULE + PRODUCT CARDS (modificado para tap móvil en imagen)
-// @version 2.0 - Modernizado 2025
+/**
+ * SHOP FILTERS - Maneja filtros del sidebar
+ * @version 3.0
+ * 
+ * RESPONSABILIDAD: Detectar cambios en filtros del sidebar y actualizar ProductFilters
+ * NO carga productos directamente, solo actualiza estado
+ */
+
 (function() {
     'use strict';
     
-    // Estado global de filtros
-    const FiltersState = {
-        categorias: [], // CAMBIADO: ahora es array para múltiples categorías
-        genero: null,
-        marca: null,
-        precio_min: 0,
-        precio_max: 10000,
-        buscar: '',
-        ordenar: 'newest'
-    };
+    // =============================================
+    // EVENT LISTENERS: FILTROS DEL SIDEBAR
+    // =============================================
     
-    /**
-     * Inicializar filtros desde URL
-     */
-    function initFiltersFromURL() {
-        const urlParams = new URLSearchParams(window.location.search);
+    // Filtros de categoría (multi-select con chips)
+    document.addEventListener('click', function(e) {
+        const chip = e.target.closest('[data-filter-type="categoria"]');
+        if (!chip) return;
         
-        // Manejar múltiples categorías (c[]=1&c[]=2 o c=1,2,3)
-        const categoriasParam = urlParams.getAll('c[]');
-        if (categoriasParam.length > 0) {
-            FiltersState.categorias = categoriasParam;
+        const multiSelect = chip.getAttribute('data-multi-select') === 'true';
+        if (!multiSelect) return;
+        
+        e.preventDefault();
+        const catId = chip.getAttribute('data-filter-value');
+        
+        // Toggle categoría en el array
+        const currentCats = window.ProductFilters.categorias || [];
+        const index = currentCats.indexOf(catId);
+        
+        if (index > -1) {
+            // Remover
+            currentCats.splice(index, 1);
+            chip.classList.remove('active');
         } else {
-            const categoriasString = urlParams.get('c') || urlParams.get('categoria');
-            FiltersState.categorias = categoriasString ? categoriasString.split(',') : [];
+            // Agregar
+            currentCats.push(catId);
+            chip.classList.add('active');
         }
         
-        FiltersState.genero = urlParams.get('g') || urlParams.get('genero') || null;
-        FiltersState.marca = urlParams.get('m') || urlParams.get('marca') || null;
-        FiltersState.precio_min = parseFloat(urlParams.get('pmin') || urlParams.get('precio_min') || 0);
-        FiltersState.precio_max = parseFloat(urlParams.get('pmax') || urlParams.get('precio_max') || 10000);
-        FiltersState.buscar = urlParams.get('q') || urlParams.get('buscar') || '';
-        FiltersState.ordenar = urlParams.get('sort') || 'newest';
+        window.ProductFilters.categorias = currentCats;
         
-    }
+        // Disparar evento y cargar
+        document.dispatchEvent(new Event('filtersChanged'));
+        if (window.loadProducts) {
+            window.loadProducts();
+        }
+    });
     
-    /**
-     * Aplicar filtro específico
-     * @param {string} tipo - Tipo de filtro (categoria, genero, marca, etc)
-     * @param {any} valor - Valor del filtro
-     */
-    window.aplicarFiltro = function(tipo, valor) {
+    // Filtros de género
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('[data-filter-type="genero"]');
+        if (!btn) return;
+        
+        // Verificar que no sea multi-select
+        const multiSelect = btn.getAttribute('data-multi-select') === 'true';
+        if (multiSelect) return;
+        
+        e.preventDefault();
+        const genero = btn.getAttribute('data-filter-value');
         
         // Actualizar estado
-        FiltersState[tipo] = valor;
+        window.ProductFilters.genero = genero === 'all' ? null : genero;
         
         // Actualizar UI
-        actualizarBotonesActivos(tipo, valor);
-        
-        // Aplicar filtros con AJAX
-        aplicarFiltrosAjax();
-    };
-    
-    /**
-     * Actualizar botones activos visualmente
-     * @param {string} tipo - Tipo de filtro
-     * @param {any} valor - Valor seleccionado
-     */
-    function actualizarBotonesActivos(tipo, valor) {
-        const botones = document.querySelectorAll(`[data-filter-type="${tipo}"]`);
-        
-        botones.forEach(boton => {
-            const botonValor = boton.getAttribute('data-filter-value');
-            
-            if (botonValor == valor) {
-                boton.classList.add('active');
-            } else {
-                boton.classList.remove('active');
-            }
+        document.querySelectorAll('[data-filter-type="genero"]').forEach(b => {
+            b.classList.remove('active');
         });
-    }
+        btn.classList.add('active');
+        
+        // Disparar evento y cargar
+        document.dispatchEvent(new Event('filtersChanged'));
+        if (window.loadProducts) {
+            window.loadProducts();
+        }
+    });
     
-    /**
-     * Aplicar filtros con AJAX y actualizar productos
-     */
-    function aplicarFiltrosAjax() {
+    // Filtros de marca
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('[data-filter-type="marca"]');
+        if (!btn) return;
         
-        // Construir parámetros de URL
-        const params = new URLSearchParams();
+        // Verificar que no sea multi-select
+        const multiSelect = btn.getAttribute('data-multi-select') === 'true';
+        if (multiSelect) return;
         
-        // Agregar categorías (múltiples)
-        if (FiltersState.categorias && FiltersState.categorias.length > 0) {
-            FiltersState.categorias.forEach(cat => {
-                params.append('c[]', cat);
-            });
-        }
+        e.preventDefault();
+        const marcaId = btn.getAttribute('data-filter-value');
         
-        if (FiltersState.genero) params.append('g', FiltersState.genero);
-        if (FiltersState.marca) params.append('m', FiltersState.marca);
-        if (FiltersState.precio_min > 0) params.append('pmin', FiltersState.precio_min);
-        if (FiltersState.precio_max < 10000) params.append('pmax', FiltersState.precio_max);
-        if (FiltersState.buscar) params.append('q', FiltersState.buscar);
-        params.append('sort', FiltersState.ordenar);
+        // Actualizar estado
+        window.ProductFilters.marca = marcaId === '0' ? null : parseInt(marcaId);
         
-        // Actualizar URL sin recargar página
-        const newUrl = `${window.location.pathname}?${params.toString()}`;
-        window.history.pushState({}, '', newUrl);
-        
-        // Mostrar loading
-        const productsContainer = document.getElementById('products-container');
-        if (productsContainer) {
-            productsContainer.innerHTML = `
-                <div class="col-12">
-                    <div class="loading-products">
-                        <div class="spinner-modern"></div>
-                        <p>Cargando productos...</p>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Hacer petición AJAX
-        const baseUrl = (window.BASE_URL || '').replace(/\/+$/, '');
-        fetch(`${baseUrl}/app/actions/get_products_filtered.php?${params.toString()}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    renderProducts(data.products);
-                    updateResultsCount(data.products.length);
-                } else {
-                    showNoResults();
-                }
-            })
-            .catch(error => {
-                showError();
-                console.error('Error al obtener productos filtrados:', error);
-            });
-    }
-    
-    /**
-     * Renderizar productos en el DOM
-     * @param {Array} products - Array de productos
-     */
-    function renderProducts(products) {
-        const productsContainer = document.getElementById('products-container');
-        if (!productsContainer) return;
-        
-        if (products.length === 0) {
-            showNoResults();
-            return;
-        }
-        
-        // Limpiar el contenedor y crear nueva row
-        productsContainer.innerHTML = '<div class="row"></div>';
-        const row = productsContainer.querySelector('.row');
-        
-        products.forEach((product, index) => {
-            const productCard = createProductCard(product, index);
-            // Solo agregar si el card se creó correctamente (no null)
-            if (productCard) {
-                row.appendChild(productCard);
-            }
+        // Actualizar UI
+        document.querySelectorAll('[data-filter-type="marca"]').forEach(b => {
+            b.classList.remove('active');
         });
+        btn.classList.add('active');
         
-        // Re-inicializar event handlers de carrito y favoritos
-        reinitializeProductHandlers();
-        
-        // Re-inicializar AOS animations
-        if (typeof AOS !== 'undefined') {
-            AOS.refresh();
+        // Disparar evento y cargar
+        document.dispatchEvent(new Event('filtersChanged'));
+        if (window.loadProducts) {
+            window.loadProducts();
         }
-        
-        // Disparar evento para reinicializar Masonry después de que todo esté renderizado
-        setTimeout(() => {
-            document.dispatchEvent(new Event('productsUpdated'));
-            
-            // También llamar directamente por si acaso
-            if (typeof window.reinitMasonry === 'function') {
-                window.reinitMasonry();
-            }
-        }, 300);
-    }
+    });
     
-    /**
-     * Reinicializar event handlers después de renderizar productos
-     * ✅ FIX: NO agregar event listeners directos para evitar duplicación
-     * Los event listeners se manejan con EVENT DELEGATION en real-time-updates.js
-     */
-    function reinitializeProductHandlers() {
-        // ✅ NO agregar listeners aquí - ya están manejados con delegation
-        // Event delegation en real-time-updates.js maneja:
-        // - Clicks en favoritos (.add-to-favorites)
-        // - Clicks en carrito (.add-to-cart)
-        // - Clicks en botones del modal
+    // Ordenamiento
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('[data-filter-type="ordenar"]');
+        if (!btn) return;
         
-        // SOLO re-inicializar AOS animations
-        if (typeof AOS !== 'undefined') {
-            AOS.refresh();
+        e.preventDefault();
+        const sortValue = btn.getAttribute('data-filter-value');
+        
+        // Actualizar estado
+        window.ProductFilters.ordenar = sortValue;
+        
+        // Actualizar UI
+        document.querySelectorAll('[data-filter-type="ordenar"]').forEach(b => {
+            b.classList.remove('active');
+        });
+        btn.classList.add('active');
+        
+        // Cargar productos
+        if (window.loadProducts) {
+            window.loadProducts();
         }
-    }
+    });
     
-    /**
-     * Crear elemento de tarjeta de producto
-     * @param {Object} product - Datos del producto
-     * @param {number} index - Índice para animación
-     * @returns {HTMLElement}
-     */
-    function createProductCard(product, index) {
-        // VALIDACIÓN: Asegurar que el producto tenga ID
-        if (!product || !product.id_producto) {
-            return null;
-        }
-        
-        const col = document.createElement('div');
-        col.className = 'col-lg-3 col-md-4 col-6';
-        
-        // Calcular precio con descuento
-        const precioOriginal = parseFloat(product.precio_producto);
-        const descuento = parseFloat(product.descuento_porcentaje_producto || 0);
-        const precioFinal = precioOriginal - (precioOriginal * descuento / 100);
-        const tieneDescuento = descuento > 0;
-        
-        // Stock
-        const stock = parseInt(product.stock_actual_producto || 0);
-        const sinStock = stock <= 0;
-        const stockBajo = stock > 0 && stock <= 5;
-        
-        // Favorito
-        const esFavorito = product.es_favorito || false;
-        
-        // Rating
-        const rating = parseFloat(product.calificacion_promedio || 0);
-        const totalResenas = parseInt(product.total_resenas || 0);
-        const fullStars = Math.floor(rating);
-        const hasHalf = (rating - fullStars) >= 0.5;
-        const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
-        
-        let starsHtml = '';
-        for (let i = 0; i < fullStars; i++) {
-            starsHtml += '<i class="fa fa-star star"></i>';
-        }
-        if (hasHalf) {
-            starsHtml += '<i class="fa fa-star-half-o star"></i>';
-        }
-        for (let i = 0; i < emptyStars; i++) {
-            starsHtml += '<i class="fa fa-star-o star empty"></i>';
-        }
-        
-        // Determinar si es nuevo (últimos 30 días)
-        const esNuevo = product.es_nuevo || false;
-        
-        const imagenUrl = product.url_imagen_producto || 'public/assets/img/shop/default-product.jpg';
-        const productUrl = `product-details.php?id=${product.id_producto}`;
-        
-        col.innerHTML = `
-            <div class="product-card-modern" data-product-id="${product.id_producto}" data-aos="fade-up">
-                
-                <!-- Imagen del producto -->
-                <div class="product-image-wrapper">
-                    <a href="${productUrl}">
-                        <img src="${imagenUrl}" 
-                             alt="${product.nombre_producto}"
-                             loading="lazy"
-                             class="product-image"
-                             crossorigin="anonymous">
-                    </a>
-                    
-                    <!-- Badges superiores -->
-                    <div class="product-badges">
-                        ${sinStock ? '<span class="badge-modern badge-out-of-stock">AGOTADO</span>' : ''}
-                        ${!sinStock && tieneDescuento ? `<span class="badge-modern badge-sale">-${Math.round(descuento)}%</span>` : ''}
-                        ${!sinStock && !tieneDescuento && esNuevo ? '<span class="badge-modern badge-new">NUEVO</span>' : ''}
-                    </div>
-                    
-                    <!-- Hover con botones circulares -->
-                    <ul class="product__hover" aria-hidden="true">
-                        <li>
-                            <a href="${productUrl}" class="view-details-btn" title="Ver detalles">
-                                <span class="icon_search"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" 
-                               class="add-to-favorites ${esFavorito ? 'active' : ''}" 
-                               data-id="${product.id_producto || ''}"
-                               ${!product.id_producto ? 'style="display:none;"' : ''} 
-                               title="${esFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos'}">
-                                <span class="icon_heart${esFavorito ? '' : '_alt'}"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" 
-                               class="add-to-cart" 
-                               data-id="${product.id_producto || ''}"
-                               ${!product.id_producto ? 'data-disabled="true" style="opacity:0.5;cursor:not-allowed;"' : ''} 
-                               ${sinStock ? 'style="opacity:0.5;cursor:not-allowed;" data-disabled="true"' : ''}
-                               title="${!product.id_producto ? 'Error: ID no disponible' : (sinStock ? 'Sin stock' : 'Agregar al carrito')}">
-                                <span class="icon_bag_alt"></span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                
-                <!-- Información del producto -->
-                <div class="product-info">
-                    <!-- Categoría -->
-                    <div class="product-category">
-                        ${(product.nombre_categoria || 'GENERAL').toUpperCase()}
-                    </div>
-                    
-                    <!-- Nombre del producto -->
-                    <h3 class="product-name">
-                        <a href="${productUrl}">
-                            ${product.nombre_producto}
-                        </a>
-                    </h3>
-                    
-                    <!-- Rating -->
-                    ${totalResenas > 0 ? `
-                        <div class="product-rating">
-                            <div class="stars">
-                                ${starsHtml}
-                            </div>
-                            <span class="rating-count">(${totalResenas})</span>
-                        </div>
-                    ` : ''}
-                    
-                    <!-- Precio -->
-                    <div class="product-price">
-                        <span class="price-current">S/ ${precioFinal.toFixed(2)}</span>
-                        ${tieneDescuento ? `
-                            <span class="price-original">S/ ${precioOriginal.toFixed(2)}</span>
-                        ` : ''}
-                    </div>
-                    
-                    <!-- Warning de stock bajo -->
-                    ${stockBajo && !sinStock ? `
-                        <div class="stock-warning">
-                            <i class="fa fa-exclamation-circle"></i>
-                            ¡Solo quedan ${stock}!
-                        </div>
-                    ` : ''}
-                </div>
-            </div>
-        `;
-        
-        // --- LÓGICA MÓVIL: TOUCH/TAP PARA MOSTRAR BOTONES Y NAVEGAR EN SEGUNDO TAP ---
-        // Solo para pantallas móviles (≤ 576px)
-        const wrapper = col.querySelector('.product-image-wrapper');
-        const hoverList = col.querySelector('.product__hover');
-        const imageLink = wrapper.querySelector('a');
-        let touchVisible = false;
-        const isMobileMatch = () => window.matchMedia && window.matchMedia('(max-width: 576px)').matches;
-        
-        // Función para mostrar botones con clase que activa animación CSS
-        function showHoverButtons() {
-            const card = col.querySelector('.product-card-modern');
-            if (!card) return;
-            card.classList.add('touch-active');
-            hoverList.setAttribute('aria-hidden', 'false');
-            touchVisible = true;
-        }
-        function hideHoverButtons() {
-            const card = col.querySelector('.product-card-modern');
-            if (!card) return;
-            card.classList.remove('touch-active');
-            hoverList.setAttribute('aria-hidden', 'true');
-            touchVisible = false;
-        }
-        
-        // --- NUEVO: Interceptar el <a> de la imagen para controlar navegación en móvil ---
-        // Prevent navigation on first tap, allow on second.
-        function onImageClick(e) {
-            if (!isMobileMatch()) return; // no interferir en desktop
-            // si el tap proviene de un botón interno (iconos) no hacer nada
-            if (e.target.closest('.product__hover')) return;
-            
-            if (!touchVisible) {
-                // primer tap: evitar navegación y mostrar botones
-                e.preventDefault();
-                e.stopPropagation();
-                showHoverButtons();
-                return false;
-            } else {
-                // segundo tap: permitir navegación (no prevenir)
-                // dejar que el enlace funcione normalmente
-                return true;
-            }
-        }
-        // Algunos navegadores (safari móvil) activan navegación en touchstart -> prevenir ahí en primer tap
-        function onImageTouchStart(e) {
-            if (!isMobileMatch()) return;
-            if (!touchVisible) {
-                e.preventDefault();
-                // no stopPropagation aquí para no romper otros handlers
-            }
-        }
-        
-        imageLink.addEventListener('touchstart', onImageTouchStart, { passive: false });
-        imageLink.addEventListener('click', onImageClick, { passive: false });
-        
-        // Si el usuario toca fuera del card, los botones se ocultan (global handler en init)
-        // Adicional: si toca un botón dentro de product__hover, no cierre ni navegue por el imageLink handler
-        // (los botones tienen sus propios handlers/event-delegation)
-        
-        return col;
-    }
+    // =============================================
+    // LIMPIAR FILTROS
+    // =============================================
     
-    /**
-     * Mostrar mensaje de sin resultados
-     */
-    function showNoResults() {
-        const productsContainer = document.getElementById('products-container');
-        if (productsContainer) {
-            productsContainer.innerHTML = `
-                <div class="col-12">
-                    <div class="no-products-found" data-aos="fade-up">
-                        <div class="empty-state-icon">
-                            <i class="fa fa-shopping-bag"></i>
-                            <div class="icon-circle"></div>
-                        </div>
-                        <h2 class="empty-state-title">No se encontraron productos</h2>
-                        <p class="empty-state-description">
-                            Intenta ajustar los filtros o buscar algo diferente.<br>
-                            Explora nuestro catálogo completo para descubrir productos increíbles.
-                        </p>
-                        <div class="empty-state-actions">
-                            <button class="btn-clear-filters" onclick="limpiarFiltros()">
-                                <i class="fa fa-redo"></i>
-                                <span>Limpiar filtros</span>
-                            </button>
-                            <a href="shop.php" class="btn-view-all">
-                                <i class="fa fa-th"></i>
-                                <span>Ver todos los productos</span>
-                            </a>
-                        </div>
-                        <div class="empty-state-suggestions">
-                            <p class="suggestions-title">Sugerencias:</p>
-                            <ul class="suggestions-list">
-                                <li><i class="fa fa-check-circle"></i> Verifica la ortografía de tu búsqueda</li>
-                                <li><i class="fa fa-check-circle"></i> Usa términos más generales</li>
-                                <li><i class="fa fa-check-circle"></i> Prueba con menos filtros activos</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // Re-inicializar AOS si existe
-            if (typeof AOS !== 'undefined') {
-                AOS.refresh();
-            }
-        }
-    }
-    
-    /**
-     * Mostrar mensaje de error
-     */
-    function showError() {
-        const productsContainer = document.getElementById('products-container');
-        if (productsContainer) {
-            productsContainer.innerHTML = `
-                <div class="col-12">
-                    <div class="error-message">
-                        <i class="fa fa-exclamation-triangle"></i>
-                        <h3>Error al cargar productos</h3>
-                        <p>Por favor, intenta de nuevo más tarde</p>
-                    </div>
-                </div>
-            `;
-        }
-    }
-    
-    /**
-     * Actualizar contador de resultados
-     * @param {number} count - Número de productos
-     */
-    function updateResultsCount(count) {
-        const counter = document.getElementById('results-count');
-        if (counter) {
-            counter.textContent = `${count} producto${count !== 1 ? 's' : ''} encontrado${count !== 1 ? 's' : ''}`;
-        }
-    }
-    
-    /**
-     * Limpiar todos los filtros
-     */
     window.limpiarFiltros = function() {
+        // Resetear estado
+        window.ProductFilters = {
+            categorias: [],
+            genero: null,
+            marca: null,
+            precio_min: 0,
+            precio_max: 10000,
+            buscar: '',
+            ordenar: 'newest'
+        };
         
-        // Resetear estado - Categorías vacías significa "TODAS"
-        FiltersState.categorias = [];
-        FiltersState.genero = null;
-        FiltersState.marca = null;
-        FiltersState.precio_min = 0;
-        FiltersState.precio_max = 10000;
-        FiltersState.buscar = '';
-        FiltersState.ordenar = 'newest';
-        
-        // Resetear UI - checkboxes y chips de categorías
-        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
-            checkbox.checked = false;
+        // Resetear UI de chips
+        document.querySelectorAll('.filter-chip.active').forEach(chip => {
+            chip.classList.remove('active');
         });
         
-        document.querySelectorAll('.filter-chip.active, .filter-btn.active').forEach(btn => {
-            btn.classList.remove('active');
+        // Resetear checkboxes
+        document.querySelectorAll('.filter-checkbox').forEach(cb => {
+            cb.checked = false;
         });
         
-        // Resetear lista de filtros
-        document.querySelectorAll('.filter-list-item.active').forEach(item => {
-            item.classList.remove('active');
-        });
+        // Activar botones por defecto
+        const todosGenero = document.querySelector('[data-filter-type="genero"][data-filter-value="all"]');
+        if (todosGenero) todosGenero.classList.add('active');
         
-        // Resetear botones de ordenamiento
-        document.querySelectorAll('#sortMenu button').forEach(btn => {
-            btn.classList.remove('active');
-            // Activar "Más recientes" por defecto
-            if (btn.dataset.filterValue === 'newest') {
-                btn.classList.add('active');
-            }
-        });
+        const todasMarcas = document.querySelector('[data-filter-type="marca"][data-filter-value="0"]');
+        if (todasMarcas) todasMarcas.classList.add('active');
         
-        // Resetear inputs
-        const searchInput = document.getElementById('search-input');
-        if (searchInput) searchInput.value = '';
+        const newestSort = document.querySelector('[data-filter-type="ordenar"][data-filter-value="newest"]');
+        if (newestSort) newestSort.classList.add('active');
         
-        // Limpiar búsqueda en vivo si existe
-        if (window.LiveSearch && typeof window.LiveSearch.clear === 'function') {
-            window.LiveSearch.clear();
+        // Disparar evento y cargar
+        document.dispatchEvent(new Event('filtersChanged'));
+        if (window.loadProducts) {
+            window.loadProducts();
         }
-        
-        // Resetear slider de precio si existe
-        if (window.PriceSlider && typeof window.PriceSlider.reset === 'function') {
-            window.PriceSlider.reset();
-        }
-        
-        // Limpiar URL sin recargar
-        const newUrl = window.location.pathname;
-        window.history.replaceState({}, '', newUrl);
-        
-        // Aplicar filtros (array vacío de categorías = TODAS las categorías)
-        aplicarFiltrosAjax();
     };
     
-    /**
-     * Inicializar módulo
-     */
-    function init() {
-        initFiltersFromURL();
-        
-        // Event delegation para filtros de botones
-        document.addEventListener('click', function(e) {
-            const filterBtn = e.target.closest('[data-filter-type]');
-            if (filterBtn && !filterBtn.classList.contains('filter-checkbox')) {
-                e.preventDefault();
-                const tipo = filterBtn.getAttribute('data-filter-type');
-                const valor = filterBtn.getAttribute('data-filter-value');
-                const multiSelect = filterBtn.getAttribute('data-multi-select') === 'true';
-                
-                // Si es multi-selección (categorías)
-                if (multiSelect && tipo === 'categoria') {
-                    if (filterBtn.classList.contains('active')) {
-                        filterBtn.classList.remove('active');
-                        FiltersState.categorias = FiltersState.categorias.filter(cat => cat != valor);
-                    } else {
-                        filterBtn.classList.add('active');
-                        if (!FiltersState.categorias.includes(valor)) {
-                            FiltersState.categorias.push(valor);
-                        }
-                    }
-                    aplicarFiltrosAjax();
-                } else {
-                    // Selección única (género, marca, etc.)
-                    aplicarFiltro(tipo, valor);
-                }
-            }
+    // Botón de limpiar filtros
+    const btnClearFilters = document.getElementById('clearFilters');
+    if (btnClearFilters) {
+        btnClearFilters.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.limpiarFiltros();
         });
-        
-        // Event listener para checkboxes de categorías (múltiple selección)
-        document.querySelectorAll('.filter-checkbox[data-filter-type="categoria"]').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const categoriaId = this.getAttribute('data-filter-value');
-                
-                if (this.checked) {
-                    // Agregar categoría al array
-                    if (!FiltersState.categorias.includes(categoriaId)) {
-                        FiltersState.categorias.push(categoriaId);
-                    }
-                } else {
-                    // Quitar categoría del array
-                    FiltersState.categorias = FiltersState.categorias.filter(id => id !== categoriaId);
-                }
-                
-                // Aplicar filtros
-                aplicarFiltrosAjax();
-            });
-        });
-        
-        // Botón flotante de filtros móvil
-        const btnMobileFilters = document.getElementById('btnMobileFilters');
-        const sidebar = document.querySelector('.modern-sidebar');
-        
-        if (btnMobileFilters && sidebar) {
-            btnMobileFilters.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Toggle sidebar en móvil - SIN AFECTAR SCROLLBAR
-                if (sidebar.classList.contains('show-mobile')) {
-                    sidebar.classList.remove('show-mobile');
-                    // NO modificar overflow del body
-                } else {
-                    sidebar.classList.add('show-mobile');
-                    // NO modificar overflow del body
-                }
-            });
-            
-            // Cerrar al hacer click fuera
-            document.addEventListener('click', function(e) {
-                if (sidebar.classList.contains('show-mobile') && 
-                    !sidebar.contains(e.target) && 
-                    !btnMobileFilters.contains(e.target)) {
-                    sidebar.classList.remove('show-mobile');
-                    // NO modificar overflow del body
-                }
-            });
-        }
-        
-        // Botón de ordenar (dropdown)
-        const btnSort = document.getElementById('btnSort');
-        const sortMenu = document.getElementById('sortMenu');
-        
-        console.log('[Sort Button] Elementos encontrados:', { btnSort: !!btnSort, sortMenu: !!sortMenu });
-        
-        if (btnSort && sortMenu) {
-            console.log('[Sort Button] ✅ Agregando event listeners...');
-            
-            btnSort.addEventListener('click', function(e) {
-                console.log('[Sort Button] 🖱️ Click detectado!', e);
-                e.preventDefault();
-                e.stopPropagation();
-                sortMenu.classList.toggle('show');
-                console.log('[Sort Button] Menu toggled. Show:', sortMenu.classList.contains('show'));
-            });
-            
-            // Cerrar al hacer click fuera
-            document.addEventListener('click', function(e) {
-                if (!btnSort.contains(e.target) && !sortMenu.contains(e.target)) {
-                    sortMenu.classList.remove('show');
-                }
-            });
-            
-            // Aplicar ordenamiento al hacer click en opción
-            sortMenu.querySelectorAll('button[data-filter-type="ordenar"]').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const valor = this.getAttribute('data-filter-value');
-                    aplicarFiltro('ordenar', valor);
-                    sortMenu.classList.remove('show');
-                });
-            });
-            
-            console.log('[Sort Button] ✅ Event listeners agregados correctamente');
-        } else {
-            console.error('[Sort Button] ❌ No se encontraron los elementos btnSort o sortMenu');
-        }
-        
-        // Búsqueda en tiempo real (con debounce)
-        const searchInput = document.getElementById('search-input');
-        if (searchInput) {
-            let searchTimeout;
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    FiltersState.buscar = this.value.trim();
-                    aplicarFiltrosAjax();
-                }, 500); // Esperar 500ms después de que el usuario deje de escribir
-            });
-        }
-        
-        // GLOBAL: ocultar botones touch cuando se hace click/tap fuera
-        document.addEventListener('click', function(e) {
-            // Si el click está dentro de un product-card-modern que está touch-active, ignorar
-            const activeCards = document.querySelectorAll('.product-card-modern.touch-active');
-            if (!activeCards || activeCards.length === 0) return;
-            
-            // si el click/click touch fue dentro de cualquiera de los activeCards, no ocultar
-            for (let i = 0; i < activeCards.length; i++) {
-                if (activeCards[i].contains(e.target)) return;
-            }
-            
-            // ocultar todos
-            activeCards.forEach(card => card.classList.remove('touch-active'));
-            // además, ocultar aria-hidden
-            document.querySelectorAll('.product__hover[aria-hidden="false"]').forEach(el => {
-                el.setAttribute('aria-hidden', 'true');
-            });
-        }, { passive: true });
-        
     }
     
-    // Iniciar cuando DOM esté listo
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
+    // =============================================
+    // BÚSQUEDA EN TIEMPO REAL
+    // =============================================
+    
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        let searchTimeout;
+        
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            
+            searchTimeout = setTimeout(() => {
+                const query = this.value.trim();
+                window.ProductFilters.buscar = query;
+                
+                if (window.loadProducts) {
+                    window.loadProducts();
+                }
+            }, 500); // Debounce de 500ms
+        });
     }
+    
+    // =============================================
+    // SINCRONIZAR ESTADO INICIAL DESDE URL
+    // =============================================
+    
+    function syncInitialState() {
+        // Sincronizar categorías
+        const categorias = window.ProductFilters.categorias || [];
+        document.querySelectorAll('[data-filter-type="categoria"]').forEach(chip => {
+            const chipValue = chip.getAttribute('data-filter-value');
+            if (categorias.includes(chipValue)) {
+                chip.classList.add('active');
+            }
+        });
+        
+        // Sincronizar género
+        if (window.ProductFilters.genero) {
+            const generoBtn = document.querySelector(`[data-filter-type="genero"][data-filter-value="${window.ProductFilters.genero}"]`);
+            if (generoBtn) {
+                document.querySelectorAll('[data-filter-type="genero"]').forEach(b => b.classList.remove('active'));
+                generoBtn.classList.add('active');
+            }
+        }
+        
+        // Sincronizar marca
+        if (window.ProductFilters.marca) {
+            const marcaBtn = document.querySelector(`[data-filter-type="marca"][data-filter-value="${window.ProductFilters.marca}"]`);
+            if (marcaBtn) {
+                document.querySelectorAll('[data-filter-type="marca"]').forEach(b => b.classList.remove('active'));
+                marcaBtn.classList.add('active');
+            }
+        }
+        
+        // Sincronizar ordenamiento
+        const sortBtn = document.querySelector(`[data-filter-type="ordenar"][data-filter-value="${window.ProductFilters.ordenar}"]`);
+        if (sortBtn) {
+            document.querySelectorAll('[data-filter-type="ordenar"]').forEach(b => b.classList.remove('active'));
+            sortBtn.classList.add('active');
+        }
+    }
+    
+    // =============================================
+    // INICIALIZACIÓN
+    // =============================================
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', syncInitialState);
+    } else {
+        syncInitialState();
+    }
+    
+    console.log('✅ Shop Filters inicializado');
     
 })();

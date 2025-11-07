@@ -1,0 +1,877 @@
+/* ============================================================================
+   MODAL DE PRODUCTO - FULLSCREEN
+   ============================================================================ */
+
+/* Overlay del Modal */
+.product-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-modal-overlay.show {
+    opacity: 1;
+}
+
+/* Container del Modal - Desktop */
+.product-modal-container {
+    position: fixed;
+    top: var(--header-height, 60px);
+    left: var(--sidebar-width, 280px);
+    right: 0;
+    bottom: 0;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -4px 0 32px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    overflow: hidden;
+}
+
+.product-modal-overlay.show .product-modal-container {
+    transform: translateX(0);
+}
+
+/* Header del Modal */
+.product-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.75rem 2.5rem;
+    background-color: #ffffff00;
+    color: rgba(0, 0, 0, 0.682);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+    position: relative;
+}
+
+.product-modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.product-modal-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    position: relative;
+    z-index: 1;
+}
+
+.product-modal-icon {
+    font-size: 2rem;
+    opacity: 0.95;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.product-modal-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product-modal-close {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1.4rem;
+    position: relative;
+    z-index: 1;
+    backdrop-filter: blur(10px);
+}
+
+.product-modal-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.product-modal-close:active {
+    transform: rotate(90deg) scale(0.95);
+}
+
+/* Body del Modal */
+.product-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 2.5rem;
+    background: #f8f9fa;
+}
+
+.product-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.product-modal-body::-webkit-scrollbar-track {
+    background: #e9ecef;
+}
+
+.product-modal-body::-webkit-scrollbar-thumb {
+    background: #adb5bd;
+    border-radius: 4px;
+}
+
+.product-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #868e96;
+}
+
+/* Footer del Modal */
+/* ============================================================================
+   FOOTER - Botones en 1 fila mejorados
+   ============================================================================ */
+.product-modal-footer {
+    padding: 1.75rem 2.5rem;
+    background: #ffffff;
+    border-top: 2px solid #e9ecef;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    align-items: center;
+    flex-shrink: 0;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Botones del footer */
+.product-modal-footer .btn-modern {
+    min-width: 140px;
+    padding: 0.875rem 1.75rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0.3px;
+}
+
+.product-modal-footer .btn-cancel {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+}
+
+.product-modal-footer .btn-cancel:hover {
+    background: linear-gradient(135deg, #5a6268, #495057);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+}
+
+.product-modal-footer .btn-save {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.product-modal-footer .btn-save:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.product-modal-footer .btn-modern i {
+    font-size: 1rem;
+}
+
+/* ============================================================================
+   PREVISUALIZACIÓN DE IMAGEN - Más grande y destacada
+   ============================================================================ */
+.product-preview-large {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    max-width: 420px;
+    width: 100%;
+}
+
+.product-preview-large .product-card-modern {
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.product-preview-large .product-card-modern:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
+}
+
+/* Botones de upload - Mejorados */
+.product-image-upload-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.product-image-upload-actions .btn-modern {
+    min-width: 180px;
+    padding: 0.875rem 1.75rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    border: none;
+    cursor: pointer;
+    text-transform: none;
+}
+
+.btn-upload {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-upload:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.35);
+}
+
+.btn-remove {
+    background: linear-gradient(135deg, #dc3545, #bd2130);
+    color: white;
+}
+
+.btn-remove:hover {
+    background: linear-gradient(135deg, #c82333, #a71d2a);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.35);
+}
+
+.product-image-upload-actions .btn-modern i {
+    font-size: 1.125rem;
+}
+
+.product-image-help-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin: 0;
+    font-style: normal;
+    text-align: center;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid #667eea;
+}
+
+.product-image-help-text i {
+    margin-right: 0.5rem;
+    color: #667eea;
+}
+
+/* ============================================================================
+   RESPONSIVE - TABLET
+   ============================================================================ */
+
+@media (max-width: 1024px) {
+    .product-modal-container {
+        left: 0;
+        top: var(--header-height, 60px);
+    }
+    
+    .product-modal-header {
+        padding: 1.5rem 2rem;
+    }
+    
+    .product-modal-title {
+        font-size: 1.5rem;
+    }
+    
+    .product-modal-icon {
+        font-size: 1.75rem;
+    }
+    
+    .product-modal-body {
+        padding: 2rem;
+    }
+    
+    .product-modal-footer {
+        padding: 1.5rem 2rem;
+    }
+}
+
+/* ============================================================================
+   RESPONSIVE - MÓVIL
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    /* El modal respeta el header incluso en móvil */
+    .product-modal-container {
+        left: 0;
+        top: var(--header-height-mobile, 65px);
+        right: 0;
+        bottom: 0;
+    }
+    
+    .product-modal-header {
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .product-modal-title-wrapper {
+        gap: 1rem;
+    }
+    
+    .product-modal-icon {
+        font-size: 1.5rem;
+    }
+    
+    .product-modal-title {
+        font-size: 1.25rem;
+    }
+    
+    .product-modal-close {
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+    }
+    
+    .product-modal-body {
+        padding: 1.5rem;
+    }
+    
+    .product-modal-footer {
+        padding: 1.25rem 1.5rem;
+        gap: 0.75rem;
+    }
+    
+    .product-modal-footer .btn-modern {
+        flex: 1;
+        min-width: unset;
+        padding: 0.875rem 1.25rem;
+        font-size: 0.875rem;
+    }
+    
+    .product-preview-large {
+        max-width: 100%;
+    }
+    
+    .product-image-upload-actions {
+        flex-direction: column;
+    }
+    
+    .product-image-upload-actions .btn-modern {
+        width: 100%;
+        min-width: unset;
+    }
+}
+
+/* ============================================================================
+   RESPONSIVE - MÓVIL PEQUEÑO
+   ============================================================================ */
+
+@media (max-width: 480px) {
+    .product-modal-header {
+        padding: 1rem 1.25rem;
+    }
+    
+    .product-modal-title {
+        font-size: 1.1rem;
+    }
+    
+    .product-modal-icon {
+        font-size: 1.35rem;
+    }
+    
+    .product-modal-close {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+    }
+    
+    .product-modal-body {
+        padding: 0rem;
+    }
+    
+    .product-modal-footer {
+        padding: 1rem 1.25rem;
+    }
+    
+    .product-modal-footer .btn-modern {
+        padding: 0.75rem 1rem;
+        font-size: 0.8125rem;
+    }
+    
+    .product-modal-footer .btn-modern span {
+        display: none;
+    }
+    
+    .product-modal-footer .btn-modern i {
+        margin: 0;
+        font-size: 1.25rem;
+    }
+}
+
+/* ============================================================================
+   ANIMACIONES
+   ============================================================================ */
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Animación inicial al abrir */
+.product-modal-overlay.show {
+    animation: modalFadeIn 0.3s ease;
+}
+
+.product-modal-overlay.show .product-modal-container {
+    animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================================
+   ESTADOS Y UTILIDADES
+   ============================================================================ */
+
+/* Prevenir scroll en body cuando el modal está abierto */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Focus trap para accesibilidad */
+.product-modal-overlay:focus {
+    outline: none;
+}
+
+/* Mejora de performance */
+.product-modal-container {
+    will-change: transform;
+    transform: translateX(100%);
+}
+
+.product-modal-overlay.show .product-modal-container {
+    will-change: auto;
+}
+
+/* ============================================================================
+   FORMULARIO DEL PRODUCTO
+   ============================================================================ */
+
+.product-form {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Secciones del Formulario */
+.product-form-section {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+}
+
+.product-form-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #495057;
+    margin: 0 0 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.product-form-section-title i {
+    color: #667eea;
+    font-size: 1.35rem;
+}
+
+/* Grid del Formulario */
+.product-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+/* Grupos de Formulario */
+.product-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.product-form-group-full {
+    grid-column: 1 / -1;
+}
+
+/* Labels */
+.product-form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.product-form-label .required {
+    color: #dc3545;
+    font-size: 1rem;
+}
+
+/* Inputs */
+.product-form-input,
+.product-form-select,
+.product-form-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    background: white;
+    color: #495057;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.product-form-input:focus,
+.product-form-select:focus,
+.product-form-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.product-form-input::placeholder,
+.product-form-textarea::placeholder {
+    color: #adb5bd;
+}
+
+/* Textarea */
+.product-form-textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.5;
+}
+
+/* Input con prefijo */
+.product-form-input-group {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.product-form-input-prefix {
+    position: absolute;
+    left: 1rem;
+    font-weight: 600;
+    color: #6c757d;
+    z-index: 1;
+}
+
+.product-form-input-suffix {
+    position: absolute;
+    right: 1rem;
+    font-weight: 600;
+    color: #6c757d;
+    z-index: 1;
+}
+
+.product-form-input-with-prefix {
+    padding-left: 2.25rem;
+}
+
+.product-form-input-with-suffix {
+    padding-right: 2.5rem;
+}
+
+/* Mensajes de Error */
+.product-form-error {
+    font-size: 0.8125rem;
+    color: #dc3545;
+    display: none;
+    margin-top: 0.25rem;
+}
+
+.product-form-group.has-error .product-form-error {
+    display: block;
+}
+
+.product-form-group.has-error .product-form-input,
+.product-form-group.has-error .product-form-select,
+.product-form-group.has-error .product-form-textarea {
+    border-color: #dc3545;
+}
+
+/* ============================================================================
+   TOGGLE DE ESTADO - Botón circular animado
+   ============================================================================ */
+.product-estado-toggle-wrapper {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.product-estado-toggle-wrapper .product-form-select {
+    flex: 1;
+}
+
+.btn-estado-toggle {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.35rem;
+    color: white;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.1);
+    will-change: transform, box-shadow;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-estado-toggle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-estado-toggle:active::before {
+    width: 100%;
+    height: 100%;
+}
+
+/* Estado Activo - Verde */
+.btn-estado-toggle.activo {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.btn-estado-toggle.activo:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: scale(1.08) rotate(5deg);
+    box-shadow: 0 6px 24px rgba(16, 185, 129, 0.4), 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* Estado Inactivo - Rojo */
+.btn-estado-toggle.inactivo {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.btn-estado-toggle.inactivo:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: scale(1.08) rotate(-5deg);
+    box-shadow: 0 6px 24px rgba(239, 68, 68, 0.4), 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.btn-estado-toggle:active {
+    transform: scale(0.95) rotate(0deg);
+}
+
+.btn-estado-toggle i {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.btn-estado-toggle:hover i {
+    transform: scale(1.2);
+}
+
+/* ============================================================================
+   BADGES DE ESTADO EN PREVISUALIZACIÓN
+   ============================================================================ */
+.badge-estado {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.375rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.badge-estado i {
+    font-size: 0.875rem;
+}
+
+.badge-activo {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+}
+
+.badge-inactivo {
+    background: linear-gradient(135deg, #6c757d, #5a6268) !important;
+}
+
+/* Container de Imagen */
+.product-image-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* PREVISUALIZACIÓN - Sin estilos propios, usa product-cards-modern.css */
+/* La tarjeta de previsualización usa los estilos globales de shop */
+
+/* Solo ocultamos los botones hover que no funcionan en admin */
+#imagePreviewWrapper .product__hover {
+    display: none !important;
+}
+
+/* Ajustar el contenedor de la columna para que no dependa de Bootstrap grid */
+#imagePreviewWrapper .col-lg-3,
+#imagePreviewWrapper .col-md-4,
+#imagePreviewWrapper .col-6 {
+    width: 100%;
+    max-width: 350px;
+    padding: 0;
+    margin: 0;
+}
+
+.product-image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: #adb5bd;
+    text-align: center;
+    padding: 2rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    background: #f8f9fa;
+}
+
+.product-image-placeholder i {
+    font-size: 3rem;
+}
+
+.product-image-placeholder p {
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* ============================================================================
+   RESPONSIVE - FORMULARIO
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .product-form-section {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+    }
+    
+    .product-form-section-title {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+    }
+    
+    .product-form-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+    
+    .product-form-group-full {
+        grid-column: 1 / -1;
+    }
+    
+    .product-image-preview {
+        max-width: 100%;
+    }
+    
+    /* Toggle de estado responsive */
+    .btn-estado-toggle {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-form-section {
+        padding: 1.25rem;
+        border-radius: 6px;
+    }
+    
+    .product-form-section-title {
+        font-size: 1rem;
+    }
+    
+    .product-form-grid {
+        gap: 1rem;
+    }
+    
+    .product-form-input,
+    .product-form-select,
+    .product-form-textarea {
+        padding: 0.625rem 0.875rem;
+        font-size: 0.875rem;
+    }
+    
+    /* Toggle de estado más pequeño en móvil */
+    .btn-estado-toggle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        font-size: 1.1rem;
+    }
+    
+    .product-estado-toggle-wrapper {
+        gap: 0.5rem;
+    }
+}

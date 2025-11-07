@@ -157,6 +157,8 @@ a:focus, a:active, button:focus, button:active, [role="button"]:focus, [role="bu
     padding: 0 20px 0 0 !important;
     position: relative !important;
     justify-content: flex-end !important;
+    min-width: 250px !important; /* Asegurar ancho mínimo fijo */
+    flex-shrink: 0 !important; /* Evitar que se encoja */
 }
 
 /* Auth buttons */
@@ -204,6 +206,8 @@ a:focus, a:active, button:focus, button:active, [role="button"]:focus, [role="bu
     gap: 10px !important;
     display: flex !important;
     align-items: center !important;
+    flex-shrink: 0 !important; /* Evitar que se encoja */
+    min-width: fit-content !important; /* Mantener ancho del contenido */
 }
 
 .header__right__widget li {
@@ -324,6 +328,8 @@ a:focus, a:active, button:focus, button:active, [role="button"]:focus, [role="bu
     cursor: pointer;
     padding: var(--spacing-sm);
     transition: color var(--transition-base) ease;
+    align-items: center;
+    justify-content: center;
 }
 
 .canvas__open:hover {
@@ -429,8 +435,20 @@ body.dark-mode #notifications-count {
     
     /* Mostrar botón hamburguesa */
     .canvas__open {
-        display: block;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         margin-right: 12px !important;
+        padding: 8px !important;
+        height: 40px !important;
+        width: 40px !important;
+    }
+    
+    .canvas__open i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
     }
     
     /* Ocultar logo en móvil */
@@ -490,7 +508,42 @@ body.dark-mode #notifications-count {
         font-size: 19px !important;
     }
     
-    /* Avatar separado - sin margen extra */
+    /* Avatar separado con línea divisoria sutil */
+    .header__right__widget li.user-avatar-btn-container {
+        margin-left: 12px !important;
+        padding-left: 12px !important;
+        position: relative !important;
+    }
+    
+    /* Línea divisoria sutil antes del avatar */
+    .header__right__widget li.user-avatar-btn-container::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 24px;
+        background: linear-gradient(
+            to bottom,
+            transparent,
+            rgba(0, 0, 0, 0.1) 20%,
+            rgba(0, 0, 0, 0.1) 80%,
+            transparent
+        );
+    }
+    
+    /* Línea divisoria en dark mode */
+    body.dark-mode .header__right__widget li.user-avatar-btn-container::before {
+        background: linear-gradient(
+            to bottom,
+            transparent,
+            rgba(255, 255, 255, 0.15) 20%,
+            rgba(255, 255, 255, 0.15) 80%,
+            transparent
+        );
+    }
+    
     .header-user-avatar {
         width: 36px !important;
         height: 36px !important;
@@ -533,6 +586,14 @@ body.dark-mode #notifications-count {
     
     .header__menu ul li a {
         white-space: nowrap;
+    }
+    
+    /* Botón hamburguesa más pequeño en móviles pequeños */
+    .canvas__open {
+        height: 36px !important;
+        width: 36px !important;
+        padding: 6px !important;
+        margin-right: 8px !important;
     }
 }
 
@@ -745,6 +806,17 @@ body.dark-mode .header-user-avatar .avatar-status-dot {
     gap: 4px !important;
     padding: 0 !important;
   }
+  
+  /* Avatar con separación ajustada */
+  .header__right__widget li.user-avatar-btn-container {
+    margin-left: 10px !important;
+    padding-left: 10px !important;
+  }
+  
+  .header__right__widget li.user-avatar-btn-container::before {
+    height: 20px;
+  }
+  
   .header-user-avatar {
     width: 28px !important;
     height: 28px !important;
@@ -755,5 +827,116 @@ body.dark-mode .header-user-avatar .avatar-status-dot {
     padding: 6px 8px !important;
     font-size: 12px !important;
   }
+}
+
+/* ========================================
+   ELIMINAR EFECTOS VISUALES NO DESEADOS EN MÓVIL
+   ======================================== */
+
+/* Eliminar tap highlight en todos los elementos del header */
+.header,
+.header *,
+.header a,
+.header button,
+.header span,
+.header i,
+.header__right__widget li,
+.header__right__widget li a,
+.header__right__widget li span,
+.header__right__auth a,
+.header-avatar-link,
+.header-user-avatar,
+.canvas__open,
+.header__menu ul li a {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    user-select: none !important;
+}
+
+/* Eliminar subrayado y outline en TODOS los estados */
+.header a,
+.header button,
+.header span[role="button"],
+.header [role="button"],
+.header__right__widget li a,
+.header__right__widget li span,
+.header__right__auth a,
+.header-avatar-link,
+.canvas__open,
+.header__menu ul li a {
+    text-decoration: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border: none;
+}
+
+/* Estados focus, active, hover - sin efectos */
+.header a:focus,
+.header a:active,
+.header a:hover,
+.header button:focus,
+.header button:active,
+.header button:hover,
+.header span:focus,
+.header span:active,
+.header span:hover,
+.header__right__widget li a:focus,
+.header__right__widget li a:active,
+.header__right__widget li a:hover,
+.header__right__widget li span:focus,
+.header__right__widget li span:active,
+.header__right__widget li span:hover,
+.header__right__auth a:focus,
+.header__right__auth a:active,
+.header__right__auth a:hover,
+.header-avatar-link:focus,
+.header-avatar-link:active,
+.header-avatar-link:hover,
+.canvas__open:focus,
+.canvas__open:active,
+.canvas__open:hover,
+.header__menu ul li a:focus,
+.header__menu ul li a:active,
+.header__menu ul li a:hover {
+    text-decoration: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    background-color: transparent;
+}
+
+/* Iconos dentro de enlaces - sin efectos */
+.header__right__widget li a i,
+.header__right__widget li span i,
+.header__right__auth a i,
+.canvas__open i {
+    -webkit-tap-highlight-color: transparent !important;
+    pointer-events: none !important;
+    user-select: none !important;
+}
+
+/* Específico para móvil - máxima prioridad */
+@media (max-width: 767px) {
+    .header *,
+    .header a,
+    .header button,
+    .header span {
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-touch-callout: none !important;
+        user-select: none !important;
+        text-decoration: none !important;
+    }
+    
+    .header a:focus,
+    .header a:active,
+    .header a:hover,
+    .header button:focus,
+    .header button:active,
+    .header button:hover {
+        outline: none !important;
+        box-shadow: none !important;
+        text-decoration: none !important;
+        border: none !important;
+    }
 }
 

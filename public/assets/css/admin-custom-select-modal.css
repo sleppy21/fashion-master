@@ -1,0 +1,460 @@
+/* ========================================
+   CUSTOM SELECT MODAL - Admin
+   Modales personalizados para selects
+   ======================================== */
+
+/* Contenedor del custom select */
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Input que reemplaza al select visual */
+.custom-select-trigger {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--border-radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-gray-900);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.custom-select-trigger:hover {
+    border-color: var(--color-gray-400);
+    background: var(--color-gray-50);
+}
+
+.custom-select-trigger:focus,
+.custom-select-trigger.active {
+    outline: none;
+    border-color: var(--color-black);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.custom-select-trigger.has-value {
+    color: var(--color-black);
+}
+
+.custom-select-trigger.empty {
+    color: var(--color-gray-500);
+}
+
+/* Icono del trigger */
+.custom-select-trigger-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.875rem;
+    color: var(--color-gray-500);
+    transition: transform var(--transition-base);
+    pointer-events: none;
+}
+
+.custom-select-trigger.active .custom-select-trigger-icon {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Select oculto (mantener para formulario) */
+.custom-select-wrapper select {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+}
+
+/* ========================================
+   MODAL DE SELECCIÓN
+   ======================================== */
+.select-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.select-modal-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+/* Contenedor del modal */
+.select-modal-container {
+    background: var(--color-white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    max-width: 400px;
+    width: 100%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.95);
+    transition: transform var(--transition-base);
+}
+
+.select-modal-overlay.show .select-modal-container {
+    transform: scale(1);
+}
+
+/* Header del modal */
+.select-modal-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--color-gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--color-gray-50);
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.select-modal-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.select-modal-title i {
+    font-size: 1.125rem;
+    color: var(--color-gray-600);
+}
+
+.select-modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--border-radius-md);
+    background: transparent;
+    border: none;
+    color: var(--color-gray-500);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.select-modal-close:hover {
+    background: var(--color-gray-200);
+    color: var(--color-gray-900);
+}
+
+/* Búsqueda (opcional) */
+.select-modal-search {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.select-modal-search-input {
+    width: 100%;
+    padding: 0.625rem 1rem 0.625rem 2.5rem;
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--border-radius-md);
+    font-size: 0.875rem;
+    color: var(--color-gray-900);
+    background: var(--color-white);
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.select-modal-search-wrapper {
+    position: relative;
+}
+
+.select-modal-search-icon {
+    position: absolute;
+    left: 0.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-gray-400);
+    font-size: 0.875rem;
+    pointer-events: none;
+}
+
+.select-modal-search-input:focus {
+    outline: none;
+    border-color: var(--color-black);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Body del modal - Lista de opciones */
+.select-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+    max-height: 400px;
+}
+
+.select-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.select-modal-body::-webkit-scrollbar-track {
+    background: var(--color-gray-100);
+    border-radius: var(--border-radius-md);
+}
+
+.select-modal-body::-webkit-scrollbar-thumb {
+    background: var(--color-gray-300);
+    border-radius: var(--border-radius-md);
+}
+
+.select-modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gray-400);
+}
+
+/* Lista de opciones */
+.select-options-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Item de opción */
+.select-option-item {
+    padding: 0.875rem 1rem;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    border: 1px solid transparent;
+}
+
+.select-option-item:hover {
+    background: var(--color-gray-50);
+    border-color: var(--color-gray-200);
+}
+
+.select-option-item.selected {
+    background: var(--color-black);
+    color: var(--color-white);
+    font-weight: 600;
+    border-color: var(--color-black);
+}
+
+.select-option-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Contenido de la opción */
+.select-option-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.select-option-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--border-radius-full);
+    background: var(--color-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    color: var(--color-gray-600);
+    flex-shrink: 0;
+}
+
+.select-option-item.selected .select-option-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--color-white);
+}
+
+.select-option-text {
+    flex: 1;
+}
+
+.select-option-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: inherit;
+    margin: 0;
+}
+
+.select-option-description {
+    font-size: 0.75rem;
+    color: var(--color-gray-500);
+    margin: 0;
+    margin-top: 0.125rem;
+}
+
+.select-option-item.selected .select-option-description {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Check icon */
+.select-option-check {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--border-radius-full);
+    background: transparent;
+    border: 2px solid var(--color-gray-300);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: transparent;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.select-option-item:hover .select-option-check {
+    border-color: var(--color-gray-400);
+}
+
+.select-option-item.selected .select-option-check {
+    background: var(--color-white);
+    border-color: var(--color-white);
+    color: var(--color-black);
+}
+
+/* Empty state */
+.select-options-empty {
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--color-gray-500);
+}
+
+.select-options-empty i {
+    font-size: 3rem;
+    color: var(--color-gray-300);
+    margin-bottom: 1rem;
+}
+
+.select-options-empty p {
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* Footer (opcional) */
+.select-modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--color-gray-200);
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    background: var(--color-gray-50);
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+}
+
+.select-modal-btn {
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--border-radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.select-modal-btn-cancel {
+    background: var(--color-white);
+    color: var(--color-gray-700);
+    border-color: var(--color-gray-300);
+}
+
+.select-modal-btn-cancel:hover {
+    background: var(--color-gray-100);
+}
+
+.select-modal-btn-confirm {
+    background: var(--color-black);
+    color: var(--color-white);
+}
+
+.select-modal-btn-confirm:hover {
+    background: var(--color-gray-800);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 480px) {
+    .select-modal-container {
+        max-width: 100%;
+        margin: 0.5rem;
+        max-height: 90vh;
+    }
+    
+    .select-modal-header,
+    .select-modal-search,
+    .select-modal-footer {
+        padding: 1rem;
+    }
+    
+    .select-modal-body {
+        max-height: 60vh;
+    }
+    
+    .select-option-item {
+        padding: 0.75rem;
+    }
+    
+    .select-option-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+}
+
+/* ========================================
+   ANIMACIONES
+   ======================================== */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalSlideUp {
+    from {
+        transform: translateY(20px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.select-modal-overlay.show {
+    animation: modalFadeIn 200ms ease-out;
+}
+
+.select-modal-overlay.show .select-modal-container {
+    animation: modalSlideUp 250ms ease-out;
+}

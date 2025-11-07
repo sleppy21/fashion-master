@@ -36,20 +36,6 @@ $rol = htmlspecialchars($_SESSION['rol'] ?? 'admin');
 // Usamos un parámetro URL simple. Si no existe, mostramos 'dashboard'.
 $current_tab = $_GET['tab'] ?? 'dashboard';
 
-// 5. VARIABLES PARA EL DASHBOARD
-// El archivo 'admin_dashboard.php' original esperaba estas variables.
-// Las definimos como 0 para evitar errores en ese 'include'.
-// Puedes volver a agregar las consultas SQL aquí si lo deseas.
-$total_productos = 0;
-$total_usuarios = 0;
-$total_categorias = 0;
-$total_marcas = 0;
-$productos_stock_bajo = 0;
-$productos_sin_stock = 0;
-$valor_inventario = 0;
-$porcentaje_productos = 0;
-$porcentaje_categorias = 0;
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -61,6 +47,7 @@ $porcentaje_categorias = 0;
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <link href="public/assets/css/admin-styles.css" rel="stylesheet">
+    <link href="public/assets/css/admin-custom-select-modal.css" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
@@ -150,8 +137,6 @@ $porcentaje_categorias = 0;
                 <?php
                 switch ($current_tab) {
                     case 'productos':
-                        // Este archivo (admin_productos.php) ahora debe contener
-                        // todo su HTML y lógica, ya no puede depender de JS global.
                         include 'app/views/admin/admin_productos.php';
                         break;
 
@@ -202,4 +187,5 @@ $porcentaje_categorias = 0;
 
 </body>
 <script src="public/assets/js/admin/admin.js"></script>
+<script src="public/assets/js/admin/custom-select-modal.js"></script>
 </html>

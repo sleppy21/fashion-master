@@ -6,100 +6,13 @@ siempre al inisiar sesion de debe guardar en local cokies
 
 
 
--cuando no hay sesion iniciada y estoy en index.. el boton <li class="auth-buttons-container">
-                            <a href="register.php" class="btn-auth btn-register" title="Crear Cuenta">
-                                <i class="fa fa-user-plus"></i>
-                            </a>
-                        </li> debe llevarme la pagina de login
-y este boton <a href="login.php" class="btn-auth btn-login" title="Iniciar Sesión">
-                                <i class="fa fa-sign-in"></i>
-                            </a> debe llevarme a register
-cada icono debe representar la accion.. 
-
-
-
-
-
-
 -cuando no hay sesion inisiada.. en vista celular solo debe estar en el header el boton hamburguesa y los dos botones de auth el de login y register
-
-
-
-
-
--el asistente virtual solo debe estar disponible cuando hay sesion iniciada
-
-
-
-
-
-
--reemplazar esta seccion en shop <div class="shop-topbar modern-topbar">
-                        <div class="topbar-left topbar-left-mobile">
-                            <h1 class="shop-title">
-                                <i class="fa fa-store"></i> Catálogo
-                            </h1>
-                            <span class="results-count" id="results-count">
-                                9 productos encontrados                            </span>
-                        </div>
-                        
-                        <div class="topbar-right topbar-right-mobile">
-                            <!-- Búsqueda -->
-                            <div class="search-box-modern">
-                                <input type="text" id="search-input" class="search-input" placeholder="Buscar productos..." value="">
-                                <i class="fa fa-search"></i>
-                            <div id="search-suggestions" class="search-suggestions" style="position: absolute; top: 100%; left: 0px; right: 0px; background: white; border-radius: 12px; box-shadow: rgba(0, 0, 0, 0.15) 0px 8px 32px; max-height: 400px; overflow-y: auto; z-index: 1000; margin-top: 8px; display: none;"></div></div>
-                            
-                            <!-- Ordenar -->
-                            <div class="sort-dropdown">
-                                <button class="btn-sort" id="btnSort">
-                                    <i class="fa fa-sort-amount-down"></i>
-                                    <span>Ordenar</span>
-                                </button>
-                                <div class="sort-menu" id="sortMenu">
-                                    <button data-filter-type="ordenar" data-filter-value="newest" class="active">
-                                        <i class="fa fa-clock"></i> Más recientes
-                                    </button>
-                                    <button data-filter-type="ordenar" data-filter-value="price_asc" class="">
-                                        <i class="fa fa-arrow-up"></i> Precio: Menor a Mayor
-                                    </button>
-                                    <button data-filter-type="ordenar" data-filter-value="price_desc" class="">
-                                        <i class="fa fa-arrow-down"></i> Precio: Mayor a Menor
-                                    </button>
-                                    <button data-filter-type="ordenar" data-filter-value="name_asc" class="">
-                                        <i class="fa fa-sort-alpha-down"></i> Nombre: A-Z
-                                    </button>
-                                    <button data-filter-type="ordenar" data-filter-value="rating" class="">
-                                        <i class="fa fa-star"></i> Mejor valorados
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-por un navbar con efecto carouser con todas las categorias.. 
-
-
-
-
-
-
-
--en shop.. hacer mas compacto el info de las tarjetas de los productos
-
-
-
--en las tarjetas de shop.. las imagenes no deben tener un tamaño fijo.. al momento de subir un producto.. si la imagen es ancha la tarjeta del producto debe ser ancha sin crear espacio de relleno.. si muy alta y con poco grosor.. se debe recortar la altura hasta que pueda entrar en el ancho limite de la tarjeta..
-
-
 
 
 -cambiar el offcanvas de filtros para mostrar categorias y subcategorias.. agregar a la bd el campo subcategoria..
 
 
+-enviar notificaciones de reseñas reportadas.. de si alguien manrco una reseña como util de otro usuario que le llegue una notificacion diciendo que x personas han marcado como util tu reseña..  
 
 
-
--cambias esta seccion <div class="section-title">
-                            <h4>Productos que tal vez quieras agregar</h4>
-                        </div>  por el mismo navbar de shop carousel donde muestra las categorias.. (DEBE SER UN INCLUDE QUE FUNCIONE EN AMBOS ARCHIVOS)
-
+-manejar mejor todas las notificaciones push y en el modal

@@ -569,12 +569,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_contacto'])) {
     </div>
     <!-- Search End -->
 
-    <!-- Modals del usuario -->
-    <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
-        <?php include 'includes/user-account-modal.php'; ?>
-        <?php include 'includes/favorites-modal.php'; ?>
-        <?php include 'includes/notifications-modal.php'; ?>
-    <?php endif; ?>
+    <!-- Modales ya incluidos en header-section.php - NO duplicar -->
 
     <!-- Dark Mode Assets -->
     <?php include 'includes/dark-mode-assets.php'; ?>

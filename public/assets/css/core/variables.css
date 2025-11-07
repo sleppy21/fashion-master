@@ -113,8 +113,8 @@
     --z-popover: 1060;
     --z-tooltip: 1070;
     --z-header: 999999;
-    --z-notifications: 100001;
-    --z-user-modal: 100002;
+    --z-notifications: 10000000001; /* Mayor que btn-mobile-filters */
+    --z-user-modal: 10000000002; /* Mayor que notifications */
     
     /* ========================================
        HEADER

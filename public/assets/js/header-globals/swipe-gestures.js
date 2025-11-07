@@ -346,6 +346,121 @@
     }
 
     // ============================================
+    // REVIEW BOTTOM SHEET: Swipe abajo para cerrar
+    // ============================================
+    function initReviewBottomSheet() {
+        const bottomSheet = document.getElementById('reviewBottomSheet');
+        if (!bottomSheet) return;
+
+        const content = bottomSheet.querySelector('.bottom-sheet-content');
+        if (!content) return;
+
+        let startY = 0;
+        let currentY = 0;
+        let isDragging = false;
+        let hasMoved = false;
+        let isScrolling = false;
+
+        // Detectar si el usuario está scrolleando el contenido
+        const body = content.querySelector('.bottom-sheet-body');
+        if (body) {
+            body.addEventListener('touchstart', function(e) {
+                if (body.scrollHeight > body.clientHeight && body.scrollTop > 0) {
+                    isScrolling = true;
+                }
+            }, { passive: true });
+        }
+
+        content.addEventListener('touchstart', function(e) {
+            // No permitir drag si está scrolleando contenido
+            if (isScrolling) return;
+            
+            // Solo permitir drag desde el header
+            const header = e.target.closest('.bottom-sheet-header');
+            if (!header) return;
+            
+            startY = e.touches[0].clientY;
+            currentY = startY;
+            isDragging = true;
+            hasMoved = false;
+            content.classList.add('dragging');
+            content.style.transition = 'none';
+        }, { passive: true });
+
+        content.addEventListener('touchmove', function(e) {
+            if (!isDragging) return;
+
+            currentY = e.touches[0].clientY;
+            const distance = currentY - startY;
+
+            // Solo permitir deslizar hacia abajo
+            if (distance > 0) {
+                // Aplicar resistencia al deslizamiento
+                const resistance = 0.7; // Hacer que se sienta más pesado
+                const adjustedDistance = distance * resistance;
+                
+                content.style.transform = `translateY(${adjustedDistance}px)`;
+                
+                if (Math.abs(distance) > 5) {
+                    hasMoved = true;
+                }
+            }
+        }, { passive: true });
+
+        content.addEventListener('touchend', function(e) {
+            if (!isDragging) return;
+
+            const distance = currentY - startY;
+            isDragging = false;
+            isScrolling = false;
+            content.classList.remove('dragging');
+            content.style.transition = '';
+
+            // Si deslizó hacia abajo más del threshold, cerrar
+            if (distance > 120 || (hasMoved && distance > 80)) {
+                // Animar hacia abajo
+                content.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                content.style.transform = 'translateY(100%)';
+                
+                setTimeout(() => {
+                    bottomSheet.classList.remove('show');
+                    document.body.style.overflow = 'auto';
+                    
+                    // Limpiar formulario
+                    const ratingInputs = bottomSheet.querySelectorAll('input[name="rating"]');
+                    ratingInputs.forEach(input => input.checked = false);
+                    
+                    const titleInput = bottomSheet.querySelector('#reviewTitle');
+                    const commentTextarea = bottomSheet.querySelector('#reviewComment');
+                    if (titleInput) titleInput.value = '';
+                    if (commentTextarea) commentTextarea.value = '';
+                    
+                    // Resetear transform
+                    content.style.transform = '';
+                    content.style.transition = '';
+                }, 300);
+            } else {
+                // Volver a la posición original
+                content.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                content.style.transform = '';
+            }
+
+            hasMoved = false;
+            startY = 0;
+            currentY = 0;
+        }, { passive: true });
+
+        // Cerrar al hacer clic en el backdrop
+        const backdrop = bottomSheet.querySelector('.bottom-sheet-backdrop');
+        if (backdrop) {
+            backdrop.addEventListener('click', function() {
+                bottomSheet.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            });
+        }
+    }
+
+    // ============================================
     // INICIALIZAR AL CARGAR
     // ============================================
     if (document.readyState === 'loading') {
@@ -354,12 +469,14 @@
             initFiltersSwipe();
             initUserModalSwipe();
             initCheckoutBottomSheets();
+            initReviewBottomSheet();
         });
     } else {
         initOffcanvasSwipe();
         initFiltersSwipe();
         initUserModalSwipe();
         initCheckoutBottomSheets();
+        initReviewBottomSheet();
     }
 
 })();

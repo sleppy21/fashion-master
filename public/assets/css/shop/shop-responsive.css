@@ -172,21 +172,6 @@
     
     /* ✅ TODOS LOS ESTILOS DE TARJETAS MOVIDOS A product-cards-modern.css
        Este archivo solo maneja filtros móviles y offcanvas */
-    
-    /* Empty state móvil */
-    .no-products-found {
-        padding: 60px 20px;
-        min-height: 400px;
-    }
-    
-    .empty-state-icon {
-        width: 120px;
-        height: 120px;
-    }
-    
-    .empty-state-title {
-        font-size: 24px;
-    }
 }
 
 /* ========================================
@@ -209,7 +194,7 @@
         outline: none !important;
         box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
         cursor: pointer;
-        z-index: 9999999999 !important; /* Alto z-index pero menor que el offcanvas */
+        z-index: 9999 !important; /* MENOR que los modales para que aparezcan por encima */
         display: flex !important;
         align-items: center;
         justify-content: center;
@@ -752,6 +737,10 @@
    ========================================== */
 body.offcanvas-active {
     overflow: hidden !important;
+    /* Forzar altura de viewport para que el overflow hidden no afecte el ancho */
+    position: fixed !important;
+    width: 100% !important;
+    height: 100vh !important;
 }
 
 /* Solo bloquear el contenido principal de shop, NO el header */

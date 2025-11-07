@@ -546,9 +546,7 @@ $metodos_pago = [
     <!-- Footer Section -->
     <?php include 'includes/footer-section.php'; ?>
 
-    <!-- Modales del sistema -->
-    <?php include 'includes/user-account-modal.php'; ?>
-    <?php include 'includes/favorites-modal.php'; ?>
+    <!-- Modales ya incluidos en header-section.php - NO duplicar -->
 
     <!-- Js Plugins -->
     <script src="public/assets/js/jquery-3.3.1.min.js"></script>

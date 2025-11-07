@@ -122,7 +122,7 @@
             </div>
             
             <!-- Menu Section - Centrado y responsive -->
-            <div class="col-12 col-lg order-3 order-lg-2 d-flex justify-content-center">
+            <div class="col-12 col-lg order-3 order-lg-2 d-none d-lg-flex justify-content-center">
                 <nav class="header__menu">
                     <ul class="d-flex justify-content-center align-items-center flex-wrap m-0 p-0 list-unstyled">
                         <?php if(isset($usuario_logueado) && $usuario_logueado): ?>
@@ -224,13 +224,13 @@
                         <!-- Usuario NO logueado - Solo botones de registrar y salir -->
                         <!-- Botones de autenticación con iconos -->
                         <li class="auth-buttons-container">
-                            <a href="register.php" class="btn-auth btn-register" title="">
+                            <a href="register.php" class="btn-auth btn-register" title="Registrarse">
                                 <i class="fa fa-user-plus"></i>
                             </a>
                         </li>
                         <li class="auth-buttons-container">
-                            <a href="login.php" class="btn-auth btn-login" title="">
-                                <i class="fa fa-sign-in"></i>
+                            <a href="login.php" class="btn-auth btn-login" title="Iniciar Sesión">
+                                <i class="fa fa-user"></i>
                             </a>
                         </li>
                         <?php endif; ?>
@@ -405,6 +405,11 @@
 
         // Add open class
         modal.classList.add('modal-open');
+        
+        // BLOQUEAR SCROLL si es el modal de usuario
+        if (modalId === 'user-account-modal') {
+            document.body.classList.add('modal-scroll-lock');
+        }
 
         // If a trigger element is provided, mark it as active so CSS can use it as parent
             if (triggerElement && triggerElement.classList) {
@@ -431,6 +436,11 @@
 
         modal.classList.add('modal-closing');
         modal.classList.remove('modal-open');
+        
+        // RESTAURAR SCROLL si es el modal de usuario
+        if (modalId === 'user-account-modal') {
+            document.body.classList.remove('modal-scroll-lock');
+        }
 
         // Remove active class from last trigger if present
         if (lastModalTrigger && lastModalTrigger.classList) {
@@ -465,6 +475,9 @@
                 modal.classList.remove('modal-open', 'modal-closing');
             }
         });
+        
+        // Restaurar scroll cuando se cierran todos los modales
+        document.body.classList.remove('modal-scroll-lock');
     }
     
     // Cerrar todos los modales con animación
@@ -795,7 +808,7 @@ endif;
         wrapper.classList.add('active');
         overlay.classList.add('active');
         document.body.classList.add('offcanvas-active');
-        document.body.style.overflow = 'hidden';
+        // NO manipular overflow con inline styles - usar clase CSS
         if (footer) footer.style.display = 'none';
     }
     
@@ -810,7 +823,7 @@ endif;
         wrapper.classList.remove('active');
         overlay.classList.remove('active');
         document.body.classList.remove('offcanvas-active');
-        document.body.style.overflow = '';
+        // NO manipular overflow con inline styles
         if (footer) footer.style.display = '';
     }
     

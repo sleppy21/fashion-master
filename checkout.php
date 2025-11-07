@@ -67,6 +67,20 @@ try {
         }
         $subtotal += $precio * $item['cantidad_carrito'];
     }
+    
+    // Calcular descuento total y precio original total
+    $precio_original_total = 0;
+    $descuento_total = 0;
+    foreach($cart_items as $item) {
+        $precio_original = $item['precio_producto'] * $item['cantidad_carrito'];
+        $precio_original_total += $precio_original;
+        
+        if($item['descuento_porcentaje_producto'] > 0) {
+            $precio_con_descuento = $item['precio_producto'] - ($item['precio_producto'] * $item['descuento_porcentaje_producto'] / 100);
+            $precio_final = $precio_con_descuento * $item['cantidad_carrito'];
+            $descuento_total += ($precio_original - $precio_final);
+        }
+    }
 } catch(Exception $e) {
     error_log("Error al obtener carrito: " . $e->getMessage());
     header('Location: cart.php');
@@ -357,7 +371,7 @@ try {
                                                  class="temu-product-image">
                                             
                                             <?php if($tiene_descuento): ?>
-                                            <div class="temu-discount-badge" style="background-color:#FB7701">
+                                            <div class="temu-discount-badge" style="background-color:#000000a1; color:#ffffff;">
                                                 <span>-<?php echo $item['descuento_porcentaje_producto']; ?>%</span>
                                             </div>
                                             <?php endif; ?>
@@ -385,81 +399,146 @@ try {
                             
                         </div>
 
-                        <!-- Métodos de Pago - EN FILA HORIZONTAL -->
-                        <div class="form-section payment-methods-section" style="border-radius: 12px; padding: 24px 24px 20px 24px; margin-bottom: 25px; background: white; overflow: visible; position: relative;">
-                            <p class="payment-security-text" style="font-size: 13px; margin: 0 0 12px 0; color: #888; text-align: center;">
-                                <i class="fa fa-shield" style="color: #4caf50;"></i> Pago 100% seguro y encriptado
-                            </p>
-                            <h5 style="color: #c9a67c; margin-bottom: 24px; font-size: 18px; font-weight: 700; text-align: center;">
-                                <i class="fa fa-credit-card"></i> Selecciona tu método de pago
-                            </h5>
+                        <!-- Métodos de Pago - Estilo Temu -->
+                        <div class="payment-container-temu">
+                            <div class="payment-title-wrap">
+                                <h2 class="payment-title">
+                                    <div class="payment-security-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024" width="1em" height="1em" fill="currentColor">
+                                            <path d="M462.4 85.2c27.7-11.1 58.7-11.3 86.5-0.4l324.9 125.6c29 11.2 47.8 39.5 46.9 70.6l-6.5 214.4c-4.2 137.7-72.5 265.5-184.7 345.4l-85.3 60.8c-81.8 58.2-191.5 58.2-273.2 0l-80.5-57.3c-114.3-81.4-183-212.4-184.9-352.7l-2.8-212c-0.4-30.3 17.9-57.8 46.1-69.1z m64.3 56.9c-13.4-5.2-28.2-5.1-41.5 0.2l-313.5 125.3c-4.6 1.8-7.5 6.3-7.5 11.1l2.9 212.1c1.6 120.8 60.7 233.5 159.1 303.5l80.4 57.2c60.4 43 141.5 43 201.9 0l85.4-60.8c96.5-68.8 155.3-178.7 158.9-297.1l6.5-214.5c0.1-5-2.9-9.6-7.6-11.4z m169.1 261.2l3.8 3.3c12 12 12 31.4 0 43.4l-188.3 188.3c-12 12-31.4 12-43.4 0l-115.9-115.9c-12-12-12-31.4 0-43.4 12-12 31.4-12 43.5 0l94.1 94.1 166.6-166.5c10.8-10.8 27.6-11.9 39.6-3.3z"></path>
+                                        </svg>
+                                    </div>
+                                    Métodos de pago
+                                </h2>
+                            </div>
                             
-                            <!-- Campo oculto para guardar el método seleccionado -->
+                            <!-- Campo oculto -->
                             <input type="hidden" id="metodo_pago" name="metodo_pago" value="" required>
                             
-                            <!-- MÉTODOS DE PAGO EN FILA HORIZONTAL -->
-                            <div class="payment-methods-row" style="display: flex; gap: 16px; margin-bottom: 20px; margin-top: 20px; position: relative;">
+                            <div class="payment-methods-list">
                                 
-                                <!-- Card Tarjeta - HORIZONTAL -->
-                                <div class="payment-card-new" data-payment-method="tarjeta" style="flex: 1; position: relative; border: 3px solid #e1e1e1; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s ease; background: white; display: flex; align-items: center; gap: 16px; min-height: 80px;">
-                                    <div style="flex-shrink: 0; width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                                        <i class="fa fa-credit-card" style="font-size: 24px; color: white;"></i>
-                                    </div>
-                                    <div style="flex: 1;">
-                                        <h6 style="font-size: 15px; font-weight: 700; color: #2c3e50; margin: 0 0 4px 0;">Tarjeta</h6>
-                                        <p style="font-size: 12px; color: #666; margin: 0;">Crédito o Débito</p>
-                                    </div>
-                                    <div style="position: absolute; top: 50%; right: 16px; transform: translateY(-50%); width: 24px; height: 24px; border: 3px solid #e1e1e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
-                                        <div class="payment-radio-inner" style="width: 12px; height: 12px; border-radius: 50%; background: transparent; transition: all 0.3s ease;"></div>
-                                    </div>
-                                </div>
-
-                                <!-- Card PagoEfectivo - HORIZONTAL -->
-                                <div class="payment-card-new" data-payment-method="pagoefectivo" style="flex: 1; position: relative; border: 3px solid #e1e1e1; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s ease; background: white; display: flex; align-items: center; gap: 16px; min-height: 80px;">
-                                    <div style="flex-shrink: 0; width: 50px; height: 50px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 2px solid #FF6B35;">
-                                        <!-- Logo PagoEfectivo simplificado -->
-                                        <svg width="36" height="36" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="100" cy="100" r="95" fill="#FF6B35"/>
-                                            <path d="M60 60 L60 140 L100 140 C120 140 130 130 130 110 C130 90 120 80 100 80 L60 80 Z M75 75 L100 75 C115 75 120 85 120 100 C120 115 115 125 100 125 L75 125 Z" fill="white"/>
-                                        </svg>
-                                    </div>
-                                    <div style="flex: 1;">
-                                        <h6 style="font-size: 15px; font-weight: 700; color: #2c3e50; margin: 0 0 4px 0;">PagoEfectivo</h6>
-                                        <p style="font-size: 12px; color: #666; margin: 0;">Agentes y banca</p>
-                                    </div>
-                                    <div style="position: absolute; top: 50%; right: 16px; transform: translateY(-50%); width: 24px; height: 24px; border: 3px solid #e1e1e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
-                                        <div class="payment-radio-inner" style="width: 12px; height: 12px; border-radius: 50%; background: transparent; transition: all 0.3s ease;"></div>
+                                <!-- Tarjeta -->
+                                <div class="pay-item-container" data-payment-method="tarjeta">
+                                    <div class="pay-detail">
+                                        <div class="pay-info">
+                                            <div class="pay-check-btn"></div>
+                                            <div class="pay-icon">
+                                                <img src="https://aimg.kwcdn.com/upload_aimg/temu/ebeb26a5-1ac2-4101-862e-efdbc11544f3.png.slim.png?imageView2/2/w/100/q/60/format/webp" alt="Tarjeta">
+                                            </div>
+                                            <div class="pay-info-right">
+                                                <div class="pay-content">
+                                                    <span class="pay-name">Tarjeta</span>
+                                                </div>
+                                                <div class="pay-subcontent">Paga ahora o paga mensualmente</div>
+                                            </div>
+                                        </div>
+                                        <div class="pay-info-bottom">
+                                            <div class="card-brands-list">
+                                                <img src="https://aimg.kwcdn.com/upload_aimg/temu/da7f463a-916f-4d91-bcbb-047317a1c35e.png.slim.png?imageView2/2/w/100/q/60/format/webp" alt="Visa">
+                                                <img src="https://aimg.kwcdn.com/upload_aimg/temu/b79a2dc3-b089-4cf8-a907-015a25ca12f2.png.slim.png?imageView2/2/w/100/q/60/format/webp" alt="Mastercard">
+                                                <img src="https://aimg.kwcdn.com/upload_aimg/temu/fb599a1d-6d42-49f2-ba7a-64b16d01b226.png.slim.png?imageView2/2/w/100/q/60/format/webp" alt="Amex">
+                                                <img src="https://aimg.kwcdn.com/upload_aimg/temu/936bf9dc-9bb2-4935-9c5a-a70b800d4cf1.png.slim.png?imageView2/2/w/100/q/60/format/webp" alt="Discover">
+                                            </div>
+                                            <div class="payment-security-text">
+                                                <svg width="12" height="12" viewBox="0 0 12 12" fill="#0A8800"><path d="M6 0l5 2v4c0 3-2 5-5 6-3-1-5-3-5-6V2z"/></svg>
+                                                <span>Temu protege la información de tu tarjeta</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- Card Yape - HORIZONTAL CON BADGE -->
-                                <div class="payment-card-new payment-card-featured" data-payment-method="yape" style="flex: 1; position: relative; border: 3px solid #e1e1e1; border-radius: 12px; padding: 20px 20px 20px 20px; cursor: pointer; transition: all 0.3s ease; background: white; display: flex; align-items: center; gap: 16px; min-height: 80px; overflow: visible;">
-                                    <!-- Badge de descuento - SÚPER VISIBLE -->
-                                    <div class="yape-badge" style="position: absolute; top: -14px; right: 20px; background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%); color: white; padding: 7px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; box-shadow: 0 6px 16px rgba(76, 175, 80, 0.7); z-index: 100; letter-spacing: 0.5px; white-space: nowrap; border: 2px solid white;">
-                                        <i class="fa fa-tag"></i> S/4 DESCUENTO
+                                <!-- PagoEfectivo -->
+                                <div class="pay-item-container selected" data-payment-method="pagoefectivo">
+                                    <div class="pay-detail">
+                                        <div class="pay-info">
+                                            <div class="pay-check-btn checked"></div>
+                                            <div class="pay-icon">
+                                                <img src="https://aimg.kwcdn.com/upload_aimg/payment/a69c0d07-aa4c-4a07-8495-2bcf924988b7.png?imageView2/2/w/100/q/60/format/webp" alt="PagoEfectivo">
+                                            </div>
+                                            <div class="pay-info-right">
+                                                <div class="pay-content">
+                                                    <span class="pay-name">PagoEfectivo</span>
+                                                </div>
+                                                <div class="pay-subcontent">Por favor pague dentro de 2 días</div>
+                                            </div>
+                                        </div>
+                                        <div class="pay-info-bottom selected-content">
+                                            Paga desde tu banca móvil, billetera QR o en efectivo en agentes antes de que expire el código.
+                                        </div>
                                     </div>
-                                    
-                                    <div style="flex-shrink: 0; width: 50px; height: 50px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 2px solid #6A1B9A;">
-                                        <!-- Logo Yape simplificado -->
-                                        <svg width="40" height="40" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <rect width="200" height="200" rx="40" fill="#6A1B9A"/>
-                                            <path d="M100 40 L140 100 L115 100 L115 160 L85 160 L85 100 L60 100 Z" fill="white"/>
-                                        </svg>
+                                </div>
+
+                                <!-- Yape -->
+                                <div class="pay-item-container" data-payment-method="yape">
+                                    <div class="pay-detail">
+                                        <div class="pay-info">
+                                            <div class="pay-check-btn"></div>
+                                            <div class="pay-icon">
+                                                <img src="https://aimg.kwcdn.com/upload_aimg/payment/5b2f2fe5-0120-403f-8e20-c323ad7fd328.png.slim.png?imageView2/2/w/100/q/60/format/webp" alt="Yape">
+                                            </div>
+                                            <div class="pay-info-right">
+                                                <div class="pay-content">
+                                                    <span class="pay-name">Yape</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div style="flex: 1;">
-                                        <h6 style="font-size: 15px; font-weight: 700; color: #2c3e50; margin: 0 0 4px 0;">Yape</h6>
-                                        <p style="font-size: 12px; color: #6a1b9a; margin: 0; font-weight: 600;">Pago instantáneo</p>
-                                    </div>
-                                    <div style="position: absolute; top: 50%; right: 16px; transform: translateY(-50%); width: 24px; height: 24px; border: 3px solid #e1e1e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
-                                        <div class="payment-radio-inner" style="width: 12px; height: 12px; border-radius: 50%; background: transparent; transition: all 0.3s ease;"></div>
-                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <!-- Mensaje de error -->
+                            <div id="payment-method-error" class="payment-error-message">
+                                <p><i class="fa fa-exclamation-triangle"></i> Por favor selecciona un método de pago</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Resumen de Totales -->
+                        <div class="amount-container-temu">
+                            
+                            <!-- Descuento de artículos -->
+                            <?php if ($descuento_total > 0): ?>
+                            <div class="amount-row">
+                                <div class="amount-desc">
+                                    <span>Descuento aplicado:</span>
+                                </div>
+                                <div class="amount-value">
+                                    <span class="price-discount">-S/ <?php echo number_format($descuento_total, 2); ?></span>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+                            
+                            <!-- Subtotal -->
+                            <div class="amount-row">
+                                <div class="amount-desc">
+                                    <span>Subtotal:</span>
+                                </div>
+                                <div class="amount-value">
+                                    <span class="price-regular">S/ <?php echo number_format($subtotal, 2); ?></span>
                                 </div>
                             </div>
                             
-                            <!-- Mensaje de validación -->
-                            <div id="payment-method-error" style="display: none; margin-top: 0; padding: 14px 18px; background: linear-gradient(135deg, #fff3cd 0%, #fffbf0 100%); border-left: 4px solid #ffc107; border-radius: 8px; animation: shake 0.5s;">
-                                <p style="color: #856404; font-size: 13px; margin: 0; font-weight: 600;">
-                                    <i class="fa fa-exclamation-triangle" style="margin-right: 8px;"></i> Por favor selecciona un método de pago
+                            <!-- Total del pedido -->
+                            <div class="amount-row amount-total">
+                                <div class="amount-desc">
+                                    <span class="total-label">Total a pagar</span>
+                                </div>
+                                <div class="amount-value">
+                                    <span class="total-price">
+                                        <span class="currency">S/</span>
+                                        <span class="amount"><?php echo number_format(floor($total), 0); ?></span>
+                                        <span class="decimals">.<?php echo sprintf('%02d', ($total - floor($total)) * 100); ?></span>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Términos y condiciones -->
+                            <div class="amount-row-terms">
+                                <p>
+                                    Al finalizar la compra, aceptas nuestros 
+                                    <a href="#" class="terms-link">Términos de uso</a> 
+                                    y 
+                                    <a href="#" class="terms-link">Política de privacidad</a>
                                 </p>
                             </div>
                         </div>
@@ -1220,9 +1299,6 @@ try {
             <div class="bottom-sheet-header">
                 <div class="bottom-sheet-handle"></div>
                 <h3 class="bottom-sheet-title">Direcciones de Envío</h3>
-                <button type="button" class="bottom-sheet-close" onclick="closeAddressBottomSheet()">
-                    <i class="fa fa-times"></i>
-                </button>
             </div>
             
             <div class="bottom-sheet-body">
@@ -1293,9 +1369,6 @@ try {
             <div class="bottom-sheet-header">
                 <div class="bottom-sheet-handle"></div>
                 <h3 class="bottom-sheet-title">Productos en tu pedido (<?php echo count($cart_items); ?>)</h3>
-                <button type="button" class="bottom-sheet-close" onclick="closeProductsBottomSheet()">
-                    <i class="fa fa-times"></i>
-                </button>
             </div>
             
             <div class="bottom-sheet-body">
@@ -1512,18 +1585,18 @@ try {
         }
         
         // ========================================
-        // SELECCIÓN DE MÉTODO DE PAGO - NUEVAS CARDS V2.0
+        // SELECCIÓN DE MÉTODO DE PAGO - ESTILO TEMU
         // ========================================
-        document.querySelectorAll('.payment-method-card, .payment-method-row, .payment-card-new').forEach(card => {
+        document.querySelectorAll('.pay-item-container, .payment-method-card, .payment-method-row, .payment-card-new').forEach(card => {
             card.addEventListener('click', function() {
-                // Remover selección de todas las tarjetas/filas/cards
-                document.querySelectorAll('.payment-method-card, .payment-method-row, .payment-card-new').forEach(c => {
+                // Remover selección de todas las tarjetas
+                document.querySelectorAll('.pay-item-container, .payment-method-card, .payment-method-row, .payment-card-new').forEach(c => {
                     c.classList.remove('selected');
-                    // Remover estilos inline para que los CSS del modo tomen control
+                    // Remover estilos inline
                     c.style.border = '';
                     c.style.background = '';
                     
-                    // Resetear el check (para el diseño anterior)
+                    // Resetear checks anteriores
                     const check = c.querySelector('.payment-check');
                     if(check) {
                         check.style.background = '';
@@ -1531,19 +1604,31 @@ try {
                         const checkIcon = check.querySelector('i');
                         if(checkIcon) checkIcon.style.color = 'transparent';
                     }
+                    
+                    // Resetear check buttons de Temu
+                    const checkBtn = c.querySelector('.pay-check-btn');
+                    if(checkBtn) {
+                        checkBtn.classList.remove('checked');
+                    }
                 });
                 
-                // Agregar selección a la tarjeta/fila/card clickeada
+                // Agregar selección a la tarjeta clickeada
                 this.classList.add('selected');
                 
-                // Actualizar el check (los estilos CSS manejan el color según el modo)
+                // Actualizar check button de Temu
+                const checkBtn = this.querySelector('.pay-check-btn');
+                if(checkBtn) {
+                    checkBtn.classList.add('checked');
+                }
+                
+                // Actualizar checks anteriores
                 const check = this.querySelector('.payment-check, .payment-method-check');
                 if(check) {
                     const checkIcon = check.querySelector('i');
                     if(checkIcon) checkIcon.style.color = 'white';
                 }
                 
-                // Guardar el método seleccionado en AMBOS campos ocultos (si existen)
+                // Guardar el método seleccionado
                 const metodoPago = this.dataset.paymentMethod;
                 
                 const metodoPagoField = document.getElementById('metodo_pago');

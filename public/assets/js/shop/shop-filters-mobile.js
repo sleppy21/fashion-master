@@ -29,7 +29,7 @@
                     wrapper.classList.add('active');
                     overlay.classList.add('active');
                     document.body.classList.add('offcanvas-active');
-                    document.body.style.overflow = 'hidden';
+                    // NO modificar overflow inline, usar solo clase CSS
                 }
             } else if (offcanvasId === 'menu') {
                 const wrapper = document.querySelector('.offcanvas-menu-wrapper');
@@ -38,7 +38,7 @@
                     wrapper.classList.add('active');
                     overlay.classList.add('active');
                     document.body.classList.add('offcanvas-active');
-                    document.body.style.overflow = 'hidden';
+                    // NO modificar overflow inline, usar solo clase CSS
                 }
             }
             
@@ -65,7 +65,7 @@
                 if (overlay) overlay.classList.remove('active');
             }
             document.body.classList.remove('offcanvas-active');
-            document.body.style.overflow = '';
+            // NO resetear overflow inline, mantener el scroll del CSS
             console.log('✅ Offcanvas cerrado:', offcanvasId);
         },
 
@@ -85,7 +85,7 @@
                 if (overlay) overlay.classList.remove('active');
             }
             document.body.classList.remove('offcanvas-active');
-            document.body.style.overflow = '';
+            // NO resetear overflow inline, mantener el scroll del CSS
             console.log('✅ Offcanvas cerrado por swipe:', offcanvasId);
         },
         

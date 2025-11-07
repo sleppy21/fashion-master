@@ -1,3 +1,9 @@
+<!-- CSS específico de productos -->
+<link href="public/assets/css/admin/productos.css" rel="stylesheet">
+<link href="public/assets/css/admin/product-modal.css" rel="stylesheet">
+
+<!-- CSS de tarjetas de productos de la tienda (para previsualización) -->
+<link href="public/assets/css/shop/product-cards-modern.css" rel="stylesheet">
 
 <div class="admin-module admin-products-module">
     <!-- Header del módulo -->
@@ -12,7 +18,7 @@
             </div>
         </div>
         <div class="module-actions">
-            <button class="btn-modern btn-primary" onclick="closeStockBubble(); window.showCreateProductModal();" style="color: white !important;">
+            <button class="btn-modern btn-primary" onclick="ProductModal.open();" style="color: white !important;">
                 <i class="fas fa-plus" style="color: white !important;"></i>
                 <span style="color: white !important;">Nuevo <span class="btn-text-mobile-hide">Producto</span></span>
             </button>
@@ -207,4 +213,21 @@
     <i class="fa fa-filter"></i>
 </button>
 
-<script src="public/assets/js/admin/admin_productos.js?v=1.0"></script>
+<?php include __DIR__ . '/modals/product-modal.php'; ?>
+
+<!-- Configuración PHP para JavaScript -->
+<script>
+    // Inyectar configuración de PHP a JavaScript
+    window.PHP_CONFIG = {
+        baseUrl: '<?php echo rtrim(BASE_URL, '/'); ?>',
+        apiProductController: '<?php echo rtrim(BASE_URL, '/'); ?>/app/controllers/ProductController.php',
+        assetsUrl: '<?php echo rtrim(BASE_URL, '/'); ?>/public/assets',
+        imagesUrl: '<?php echo rtrim(BASE_URL, '/'); ?>/public/assets/img/products'
+    };
+    console.log('PHP_CONFIG cargado:', window.PHP_CONFIG);
+</script>
+
+<!-- Scripts del módulo de productos -->
+<script src="public/assets/js/components/product-image-adapter.js?v=1.0"></script>
+<script src="public/assets/js/admin/product-modal.js?v=1.0"></script>
+<script src="public/assets/js/admin/admin_productos.js?v=1.1"></script>

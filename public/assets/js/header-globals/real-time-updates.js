@@ -931,3 +931,15 @@ window.updateFavoritesList = function() {
         RealTimeUpdates.updateFavoritesList();
     }
 };
+
+window.updateCartCount = function() {
+    if (RealTimeUpdates && RealTimeUpdates.updateCartCount) {
+        RealTimeUpdates.updateCartCount();
+    }
+};
+
+window.updateFavoritesCount = function() {
+    if (RealTimeUpdates && RealTimeUpdates.updateFavoritesCount) {
+        RealTimeUpdates.updateFavoritesCount();
+    }
+};

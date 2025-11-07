@@ -4,6 +4,11 @@
  * Evita el refresh completo de la página
  */
 
+// Capturar errores fatales
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // NO mostrar errores en output
+ini_set('log_errors', 1);
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -155,52 +160,56 @@ try {
     }
 
     $productos = executeQuery($sql, $params);
+    
+    // Verificar que la consulta no falló
+    if ($productos === false) {
+        throw new Exception("Error al ejecutar la consulta de productos");
+    }
+    
+    // Asegurar que sea un array
+    if (!is_array($productos)) {
+        $productos = [];
+    }
 
     // Obtener favoritos del usuario si está logueado
     $favoritos_ids = [];
     if (isset($_SESSION['user_id'])) {
-        error_log("=== GET_PRODUCTS_FILTERED DEBUG ===");
-        error_log("Usuario logueado ID: " . $_SESSION['user_id']);
-        
         $favoritos = executeQuery("
             SELECT id_producto 
             FROM favorito 
             WHERE id_usuario = ?
         ", [$_SESSION['user_id']]);
         
-        error_log("Favoritos encontrados: " . count($favoritos));
-        
         if ($favoritos && !empty($favoritos)) {
             $favoritos_ids = array_column($favoritos, 'id_producto');
-            error_log("IDs de favoritos: " . implode(', ', $favoritos_ids));
         }
-    } else {
-        error_log("=== GET_PRODUCTS_FILTERED DEBUG ===");
-        error_log("⚠️ Usuario NO logueado - SESSION user_id no existe");
     }
 
     // Agregar favorito flag a cada producto
     foreach($productos as &$producto) {
         $producto['es_favorito'] = in_array($producto['id_producto'], $favoritos_ids);
-        error_log("Producto ID {$producto['id_producto']}: es_favorito = " . ($producto['es_favorito'] ? 'true' : 'false'));
     }
+    // 🔧 CRÍTICO: Destruir la referencia para evitar bugs en foreach posteriores
+    unset($producto);
 
 
     // Renderizar HTML de productos usando el mismo componente que shop.php
+    // Incluir el componente UNA SOLA VEZ antes del loop
+    include_once __DIR__ . '/../../app/views/components/product-card.php';
+    
     ob_start();
     echo "<div class='row'>";
     if (count($productos) > 0) {
-        foreach ($productos as $producto) {
-            include_once __DIR__ . '/../../app/views/components/product-card.php';
+        foreach ($productos as $index => $producto) {
+            // Solo llamar la función, no incluir el archivo en cada iteración
             renderProductCard($producto, $producto['es_favorito'], isset($_SESSION['user_id']), false);
         }
-    } else {
-        echo '<div class="col-12"><div class="no-products-found"><h2>No se encontraron productos</h2></div></div>';
     }
+    // Si no hay productos, dejar vacío - JavaScript mostrará la animación
     echo "</div>";
     $html = ob_get_clean();
     echo json_encode([
-        'success' => true,
+        'success' => count($productos) > 0, // false si no hay productos
         'html' => $html,
         'count' => count($productos)
     ]);
