@@ -192,25 +192,27 @@ class ShopController {
      * Obtener productos filtrados
      */
     private static function getFilteredProducts($filters) {
-        $query = "
-            SELECT p.id_producto, p.nombre_producto, p.precio_producto,
-                   p.codigo, p.descripcion_producto,
-                   COALESCE(p.descuento_porcentaje_producto, 0) as descuento_porcentaje_producto,
-                   p.genero_producto, p.en_oferta_producto, p.stock_actual_producto,
-                   p.url_imagen_producto,
-                   COALESCE(m.nombre_marca, 'Sin marca') as nombre_marca, 
-                   COALESCE(c.nombre_categoria, 'General') as nombre_categoria,
-                   c.id_categoria, m.id_marca,
-                   COALESCE(AVG(r.calificacion), 0) as calificacion_promedio,
-                   COUNT(r.id_resena) as total_resenas
-            FROM producto p
-            LEFT JOIN marca m ON p.id_marca = m.id_marca
-            LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
-            LEFT JOIN resena r ON p.id_producto = r.id_producto AND r.aprobada = 1
-            WHERE p.status_producto = 1 
-              AND p.estado = 'activo' 
-              AND p.stock_actual_producto > 0
-        ";
+     $query = "
+         SELECT p.id_producto, p.nombre_producto, p.precio_producto,
+             p.codigo, p.descripcion_producto,
+             COALESCE(p.descuento_porcentaje_producto, 0) as descuento_porcentaje_producto,
+             p.genero_producto, p.en_oferta_producto, p.stock_actual_producto,
+             p.url_imagen_producto,
+             COALESCE(m.nombre_marca, 'Sin marca') as nombre_marca, 
+             COALESCE(c.nombre_categoria, 'General') as nombre_categoria,
+             c.id_categoria, m.id_marca,
+             COALESCE(s.nombre_subcategoria, NULL) as nombre_subcategoria,
+             COALESCE(AVG(r.calificacion), 0) as calificacion_promedio,
+             COUNT(r.id_resena) as total_resenas
+         FROM producto p
+         LEFT JOIN marca m ON p.id_marca = m.id_marca
+         LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
+         LEFT JOIN subcategoria s ON p.id_subcategoria = s.id_subcategoria
+         LEFT JOIN resena r ON p.id_producto = r.id_producto AND r.aprobada = 1
+         WHERE p.status_producto = 1 
+        AND p.estado = 'activo' 
+        AND p.stock_actual_producto > 0
+     ";
         
         $params = [];
         
@@ -255,7 +257,7 @@ class ShopController {
         $query .= " GROUP BY p.id_producto, p.nombre_producto, p.precio_producto, p.codigo, 
                     p.descripcion_producto, p.descuento_porcentaje_producto, p.genero_producto, 
                     p.en_oferta_producto, p.stock_actual_producto, p.url_imagen_producto,
-                    m.nombre_marca, c.nombre_categoria, c.id_categoria, m.id_marca";
+                    m.nombre_marca, c.nombre_categoria, c.id_categoria, m.id_marca, s.nombre_subcategoria";
         
         // Ordenamiento
         $query .= self::getOrderByClause($filters['ordenar']);

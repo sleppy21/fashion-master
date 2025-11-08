@@ -47,12 +47,14 @@ try {
             p.genero_producto,
             m.nombre_marca,
             c.nombre_categoria,
+            s.nombre_subcategoria,
             COALESCE(AVG(r.calificacion), 0) as calificacion_promedio,
             COALESCE(COUNT(DISTINCT r.id_resena), 0) as total_resenas,
             (p.precio_producto - (p.precio_producto * p.descuento_porcentaje_producto / 100)) as precio_final
         FROM producto p
         LEFT JOIN marca m ON p.id_marca = m.id_marca
         LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
+        LEFT JOIN subcategoria s ON p.id_subcategoria = s.id_subcategoria
         LEFT JOIN resena r ON p.id_producto = r.id_producto AND r.aprobada = 1
         WHERE p.status_producto = 1
           AND p.estado = 'activo'

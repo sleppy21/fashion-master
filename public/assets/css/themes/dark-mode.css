@@ -100,25 +100,6 @@ body.dark-mode .container-box {
     border-color: var(--dark-border);
 }
 
-/* ========================================
-   BREADCRUMB
-   ======================================== */
-
-body.dark-mode .breadcrumb-option {
-    background: var(--dark-bg-secondary);
-}
-
-body.dark-mode .breadcrumb__links a {
-    color: var(--dark-text-secondary);
-}
-
-body.dark-mode .breadcrumb__links a:hover {
-    color: var(--dark-accent);
-}
-
-body.dark-mode .breadcrumb__links span {
-    color: var(--dark-text-muted);
-}
 
 /* ========================================
    FOOTER

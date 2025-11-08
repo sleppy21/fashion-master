@@ -9,6 +9,10 @@
  */
 
 function renderProductCard($product, $is_favorite = false, $user_logged = false, $in_cart = false) {
+    // DEBUG: Log de datos del producto para depuración
+    if ($product['id_producto'] == 2) {
+        error_log('DEBUG PRODUCTO 2: ' . print_r($product, true));
+    }
     // Calcular precio con descuento
     $precio_original = floatval($product['precio_producto']);
     $descuento = floatval($product['descuento_porcentaje_producto'] ?? 0);
@@ -126,44 +130,48 @@ function renderProductCard($product, $is_favorite = false, $user_logged = false,
             <!-- Información del producto -->
             <div class="product-info">
                 <!-- Categoría -->
-                <div class="product-category">
-                    <?= strtoupper(htmlspecialchars($product['nombre_categoria'] ?? 'GENERAL')) ?>
+                <div class="product-category" style="display: flex; align-items: center; gap: 8px;">
+                    <span><?= strtoupper(htmlspecialchars($product['nombre_categoria'] ?? 'GENERAL')) ?></span>
+                    <?php if (!empty($product['nombre_subcategoria'])): ?>
+                        <span style="font-size: 0.95em; color: #888; letter-spacing: 1px; vertical-align: middle;">| <?= strtoupper(htmlspecialchars($product['nombre_subcategoria'])) ?></span>
+                    <?php endif; ?>
                 </div>
-                <?php if (!empty($product['nombre_subcategoria'])): ?>
-                <div class="product-subcategory" style="margin-left: 18px; display: inline-block; font-size: 0.95em; color: #888; letter-spacing: 1px; vertical-align: middle;">
-                    <?= strtoupper(htmlspecialchars($product['nombre_subcategoria'])) ?>
-                </div>
-                <?php endif; ?>
                 
                 <!-- Nombre del producto -->
-                <h3 class="product-name">
-                    <a href="<?= $product_url ?>">
-                        <?= htmlspecialchars($product['nombre_producto']) ?>
-                    </a>
+                <h3 class="product-name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">
+                    <?php
+                    $max_chars = 30;
+                    $nombre = htmlspecialchars($product['nombre_producto']);
+                    if (mb_strlen($nombre) > $max_chars) {
+                        echo mb_substr($nombre, 0, $max_chars - 2) . '...';
+                    } else {
+                        echo $nombre;
+                    }
+                    ?>
                 </h3>
                 
                 <!-- Rating -->
                 <?php if ($total_reviews > 0): ?>
-                    <div class="product-rating">
-                        <div class="stars">
-                            <?php 
-                            $full_stars = floor($rating);
-                            $has_half = ($rating - $full_stars) >= 0.5;
-                            $empty_stars = 5 - $full_stars - ($has_half ? 1 : 0);
-                            
-                            for ($i = 0; $i < $full_stars; $i++) {
-                                echo '<i class="fa fa-star star"></i>';
+                <div class="product-rating">
+                    <div class="stars">
+                        <?php
+                        // Forzar que ratings como 4.8, 4.9, 4.6, 4.7, etc. muestren 4.5 estrellas
+                        $rounded = ($rating == 5.0) ? 5.0 : floor($rating) + (($rating - floor($rating)) >= 0.25 ? 0.5 : 0);
+                        $full_stars = floor($rounded);
+                        $has_half = ($rounded - $full_stars) == 0.5;
+                        for ($i = 0; $i < 5; $i++) {
+                            if ($i < $full_stars) {
+                                echo '<span class="icon_star star"></span>';
+                            } elseif ($i == $full_stars && $has_half) {
+                                echo '<span class="icon_star-half_alt star"></span>';
+                            } else {
+                                echo '<span class="icon_star_alt star empty"></span>';
                             }
-                            if ($has_half) {
-                                echo '<i class="fa fa-star-half-o star"></i>';
-                            }
-                            for ($i = 0; $i < $empty_stars; $i++) {
-                                echo '<i class="fa fa-star-o star empty"></i>';
-                            }
-                            ?>
-                        </div>
-                        <span class="rating-count">(<?= $total_reviews ?>)</span>
+                        }
+                        ?>
                     </div>
+                    <span class="rating-count"><?= number_format($rating, 1) ?></span>
+                </div>
                 <?php endif; ?>
                 
                 <!-- Precio -->

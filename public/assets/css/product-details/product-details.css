@@ -22,42 +22,6 @@ body {
 }
 
 /* ========================================
-   BREADCRUMB
-   ======================================== */
-.breadcrumb-container {
-    background: var(--bg-light);
-    padding: 12px 0;
-    margin-bottom: 30px;
-}
-
-.breadcrumb {
-    background: transparent;
-    margin: 0;
-    padding: 0;
-    font-size: 13px;
-}
-
-.breadcrumb-item a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.breadcrumb-item a:hover {
-    color: var(--primary-color);
-}
-
-.breadcrumb-item.active {
-    color: var(--text-primary);
-    font-weight: 500;
-}
-
-.breadcrumb-item + .breadcrumb-item::before {
-    content: "›";
-    color: var(--text-secondary);
-}
-
-/* ========================================
    PRODUCT DETAILS SECTION
    ======================================== */
 .product-details-section {
@@ -230,7 +194,6 @@ body {
 .current-price {
     font-size: 36px;
     font-weight: 800;
-    color: var(--primary-color);
 }
 
 .original-price {

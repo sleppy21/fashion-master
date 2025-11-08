@@ -221,9 +221,6 @@ $page_title = htmlspecialchars($producto['nombre_producto']);
     
     <?php include 'includes/header-section.php'; ?>
     
-    <!-- Breadcrumb -->
-    <?php include 'includes/breadcrumb.php'; ?>
-
     <!-- Product Details Section -->
     <div class="product-details-section">
         <div class="container">

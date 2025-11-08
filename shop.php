@@ -61,9 +61,6 @@ $page_title = "Tienda";
     <!-- Header con modales (ya incluye offcanvas-menu.php) -->
     <?php include 'includes/header-section.php'; ?>
     
-    <!-- Breadcrumb -->
-    <?php include 'includes/breadcrumb.php'; ?>
-    
     <!-- Botón de filtros móvil - Diseño del offcanvas -->
     <button class="btn-mobile-filters" id="btnMobileFilters" aria-label="Abrir filtros">
         <i class="fa fa-filter"></i>
@@ -197,7 +194,6 @@ $page_title = "Tienda";
                                 <i class="fa fa-store"></i> Catálogo
                             </h1>
                         </div>
-                        
                         <div class="topbar-right topbar-right-mobile">
                             <!-- Búsqueda -->
                             <div class="search-box-modern">
@@ -208,9 +204,6 @@ $page_title = "Tienda";
                                        value="<?= htmlspecialchars($filters['buscar']) ?>">
                                 <i class="fa fa-search"></i>
                             </div>
-                                        <?php include 'includes/categories-navbar.php'; ?>
-    <link rel="stylesheet" href="public/assets/css/components/categories-navbar.css?v=1.0">
-                            
                             <!-- Ordenar -->
                             <div class="sort-dropdown hide-on-mobile">
                                 <button class="btn-sort" id="btnSort">
@@ -218,8 +211,8 @@ $page_title = "Tienda";
                                     <span>Ordenar</span>
                                 </button>
                                 <div class="sort-menu" id="sortMenu">
-                    <button data-filter-type="ordenar" data-filter-value="newest" 
-                        class="<?= (!isset($filters['ordenar']) || $filters['ordenar'] == 'newest') ? 'active' : '' ?>">
+                                    <button data-filter-type="ordenar" data-filter-value="newest" 
+                                        class="<?= (!isset($filters['ordenar']) || $filters['ordenar'] == 'newest') ? 'active' : '' ?>">
                                         <i class="fa fa-clock"></i> Más recientes
                                     </button>
                                     <button data-filter-type="ordenar" data-filter-value="price_asc"
@@ -242,6 +235,10 @@ $page_title = "Tienda";
                             </div>
                         </div>
                     </div>
+                                                
+                    <!-- Navbar de categorías fuera del topbar -->
+                    <?php include 'includes/categories-navbar.php'; ?>
+                    <link rel="stylesheet" href="public/assets/css/components/categories-navbar.css?v=1.0">
                     
                     <!-- Grid de productos -->
                     <div class="products-grid-modern" id="products-container"></div>

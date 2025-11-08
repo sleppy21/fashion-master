@@ -1,3 +1,16 @@
+    <script>
+    // Quitar sticky solo en cart.php
+    document.addEventListener('DOMContentLoaded', function() {
+        var navbar = document.querySelector('.categories-navbar-carousel');
+        if (navbar) {
+            navbar.style.position = 'static';
+            navbar.style.top = 'auto';
+            navbar.style.left = 'auto';
+            navbar.style.right = 'auto';
+            navbar.style.zIndex = 'auto';
+        }
+    });
+    </script>
 <?php
 /**
  * PÁGINA DE CARRITO DE COMPRAS
@@ -169,8 +182,6 @@ try {
     <?php include 'includes/header-section.php'; ?>
     <!-- Header Section End -->
 
-    <?php include 'includes/breadcrumb.php'; ?>
-
     <!-- Shop Cart Section Begin -->
     <section class="shop-cart spad">
         <div class="container-fluid px-lg-5" style="max-width: 1600px;">
@@ -257,9 +268,12 @@ try {
                                     </td>
                                     <td class="cart__total">$<?php echo number_format($subtotal, 2); ?></td>
                                     <td class="cart__close" style="text-align: center; position: relative; z-index: 10;">
-                                        <button class="remove-cart-item" data-id="<?php echo $item['id_carrito']; ?>" style="background: #fee; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; position: relative; z-index: 10;">
-                                            <i class="fa fa-trash" style="color: #dc3545; font-size: 14px; pointer-events: none;"></i>
-                                        </button>
+                                        <!-- Botón de opciones (3 puntitos) -->
+                                        <div class="cart-mobile-item__options">
+                                            <button class="cart-mobile-item__options-btn" data-id="<?php echo $item['id_carrito']; ?>" data-product-id="<?php echo $item['id_producto']; ?>">
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -338,9 +352,10 @@ try {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="cart-mobile-item__remove">
-                                    <button class="cart-mobile-item__remove-btn remove-cart-item" data-id="<?php echo $item['id_carrito']; ?>">
-                                        <i class="fa fa-trash-o"></i>
+                                <!-- Botón de opciones (3 puntitos) -->
+                                <div class="cart-mobile-item__options">
+                                    <button class="cart-mobile-item__options-btn" data-id="<?php echo $item['id_carrito']; ?>" data-product-id="<?php echo $item['id_producto']; ?>">
+                                        <i class="fa fa-ellipsis-v"></i>
                                     </button>
                                 </div>
                             </div>
@@ -349,6 +364,9 @@ try {
                     </div>
                     
                     <!-- Productos Relacionados Dentro de la Columna Izquierda -->
+                    <div class="related-products-divider">
+                        <span>Productos relacionados</span>
+                    </div>
                     <?php
                     // Obtener IDs de productos en el carrito y sus categorías
                     $product_ids_in_cart = array_column($cart_items, 'id_producto');
@@ -432,22 +450,11 @@ try {
                     ?>
                     
                     <!-- Sección de Productos Relacionados -->
-                    <div class="related-products-section" style="margin-top: 23px;">
+                    <div class="related-products-section">
                         <!-- Header de la sección -->
                         <div class="related-products-header">
-                            <div class="header-content">
-                                <div class="header-icon">
-                                    <i class="fa fa-shopping-bag"></i>
-                                </div>
-                                <div class="header-text">
-                                    <h3>Completa tu compra</h3>
-                                    <p>Productos que podrían interesarte</p>
-                                </div>
-                            </div>
-                            <div class="header-decoration"></div>
-                        </div>
-                        
-                        <!-- Navbar de categorías -->
+                           
+                            <!-- Navbar de categorías -->
                         <?php 
                         // Pasar variables necesarias para el navbar
                         $filters = ['categorias' => []]; // Sin filtros activos inicialmente
@@ -459,6 +466,9 @@ try {
                                 <!-- Los productos se cargarán aquí mediante AJAX -->
                             </div>
                         </div>
+                        </div>
+                        
+                        
                     </div>
                 </div>
 
@@ -620,6 +630,20 @@ try {
         </div>
     </div>
     <?php endif; ?>
+
+    <!-- Modal de opciones de carrito -->
+    <div id="cart-options-modal" class="cart-options-modal" style="display:none;">
+        <div class="cart-options-modal__content">
+            <div class="cart-options-modal__actions">
+                <button class="cart-options-modal__btn go-to-product">
+                    <i class="fa fa-link"></i> Ver producto
+                </button>
+                <button class="cart-options-modal__btn remove-cart-item-modal">
+                    <i class="fa fa-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Js Plugins -->
     <script>
@@ -1343,6 +1367,7 @@ try {
     }
     
     </script>
+    <script src="public/assets/js/cart.js?v=1.0"></script>
 </body>
     
 </html>

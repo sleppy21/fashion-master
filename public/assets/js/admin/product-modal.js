@@ -520,7 +520,7 @@ const ProductModal = (() => {
                 productCard.querySelector('.product-info')?.appendChild(stockWarning);
             }
             const warningText = stockWarning.querySelector('span') || document.createElement('span');
-            warningText.textContent = '¡Solo quedan ' + stock + '!';
+            warningText.textContent = '¡Ultimos ' + stock + '!' ;
             if (!stockWarning.querySelector('span')) {
                 stockWarning.appendChild(warningText);
             }

@@ -16,3 +16,39 @@ siempre al inisiar sesion de debe guardar en local cokies
 
 
 -manejar mejor todas las notificaciones push y en el modal
+
+
+-cambiar todos las letras que estan como dolares a soles.. y poner en product-detais soles. usar mas soles que dolares
+
+
+
+
+-en product-details mejorar el boton de agregar al carrito
+
+
+
+
+-corregir que si no tengo agregado a carrito un producto y selecciono una cantidad que automaticamente se agregue a carrito con la cantidad que seleccione
+
+
+
+
+quita el navbar de galeria en product-details y mejorar esa seleccione
+
+
+
+-en las tarjetas normalizar que aparezcan las subcategorias juntos a las categorias y que las estrellas se vean siempre..  y poner el precio en soles y con un texto al costado "Soles"
+
+
+
+-en shop modificar el offcanvas de filtros por el de cateogiras y subcategorias.. generos y eliminar marcas.
+
+
+
+
+
+-corregir el asistente virtual en celular.. no se ve el input en algunas pantallas
+
+
+
+-agregar boton para inflar descuento de producto automaticamente

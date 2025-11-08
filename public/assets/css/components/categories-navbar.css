@@ -1,3 +1,24 @@
+/* Sticky navbar de categorías siempre visible */
+/* Sticky navbar de categorías SIEMPRE visible debajo del header */
+.shop-categories-navbar-wrapper {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 64px; /* Altura exacta del header fijo */
+    z-index: 9999;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+@media (max-width: 991px) {
+    .shop-categories-navbar-wrapper {
+        top: 56px; /* Altura del header en móvil si es menor */
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        border-radius: 0;
+    }
+}
 /*
  * Navbar de categorías tipo carousel global
  * Incluye scroll horizontal, ocultamiento de scrollbar y estilos modernos
@@ -10,9 +31,12 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     border-radius: 14px;
     overflow-x: auto;
-    position: relative;
-    z-index: 2;
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 9999;
 }
+
 .categories-navbar-wrapper {
     overflow-x: auto;
     overflow-y: hidden;
@@ -52,8 +76,8 @@
 }
 .category-navbar-item.active button,
 .category-navbar-item button.active {
-    font-weight: 700;
-    outline: 1px solid black;
+    background: #f3f3f3;
+    color: #222;
 }
 .category-navbar-item button:hover:not(.active) {
     background: #f3f3f3;

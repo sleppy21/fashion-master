@@ -211,9 +211,6 @@ try {
 
     <?php include 'includes/header-section.php'; ?>
 
-    <!-- Breadcrumb -->
-    <?php include 'includes/breadcrumb.php'; ?>
-
     <!-- Checkout Section Begin -->
     <section class="checkout spad">
         <div class="container-fluid px-lg-5">

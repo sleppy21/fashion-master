@@ -664,11 +664,7 @@ body.offcanvas-active {
 .favorite-price {
     margin-bottom: 4px;
 }
-.price-current {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-bold);
-    color: var(--primary-color);
-}
+
 .price-old {
     font-size: var(--font-size-sm);
     color: var(--text-muted);

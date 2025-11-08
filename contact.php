@@ -204,10 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_contacto'])) {
             margin: 0;
             line-height: 1.8;
         }
-        
-        .contact__form {
-            margin-top: 50px;
-        }
+
         
         .contact__form input,
         .contact__form textarea {

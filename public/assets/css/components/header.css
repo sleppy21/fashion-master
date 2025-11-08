@@ -68,26 +68,6 @@ a:focus, a:active, button:focus, button:active, [role="button"]:focus, [role="bu
 }
 
 /* ========================================
-   LOGO SECTION
-   ======================================== */
-
-.header__logo {
-    display: flex;
-    align-items: center;
-}
-
-.header__logo a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-}
-
-.header__logo img {
-    max-height: 40px;
-    width: auto;
-}
-
-/* ========================================
    MENU NAVIGATION
    ======================================== */
 
@@ -629,36 +609,6 @@ body.dark-mode .header__right__widget li.auth-buttons-container a.btn-auth:hover
     color: var(--dark-accent) !important;
 }
 
-/* ========================================
-   COMPENSAR ESPACIO DEL HEADER FIXED
-   ======================================== */
-
-/* Espacio superior para todas las páginas */
-.breadcrumb-option {
-    margin-top: 60px !important;
-    padding-top: 40px !important;
-    padding-bottom: 10px !important;
-}
-
-/* Shop - más espacio */
-body[class*="shop"] .breadcrumb-option,
-.shop-page .breadcrumb-option {
-    padding-bottom: 30px !important;
-}
-
-/* Checkout - menos espacio */
-body[class*="checkout"] .breadcrumb-option,
-.checkout-page .breadcrumb-option {
-    padding-bottom: 30px !important;
-}
-
-/* Cart page */
-body.cart-page .breadcrumb-option {
-    margin-top: 0 !important;
-    padding-top: 90px !important;
-    padding-bottom: 20px !important;
-}
-
 body.cart-page .shop-cart {
     padding-top: 30px !important;
 }
@@ -667,33 +617,6 @@ body.cart-page .shop-cart {
 .shop-modern {
     padding-top: 10px !important;
     margin-top: 0 !important;
-}
-
-/* Responsive breadcrumb */
-@media (max-width: 991px) {
-    .breadcrumb-option {
-        margin-top: 70px !important;
-        padding-bottom: 10px !important;
-    }
-    
-    .shop-modern {
-        padding-top: 0 !important;
-    }
-}
-
-@media (max-width: 767px) {
-    .breadcrumb-option {
-        margin-top: 50px !important;
-        padding-bottom: 30px !important;
-    }
-    
-    body.cart-page .breadcrumb-option {
-        padding-bottom: 30px !important;
-    }
-    
-    body.cart-page .shop-cart {
-        padding-top: 0px !important;
-    }
 }
 
 /* ========================================
@@ -730,7 +653,7 @@ body.cart-page .shop-cart {
     align-items: center;
     justify-content: center;
     border-radius: 50% !important;
-    overflow: hidden;
+    overflow: visible;
     background: var(--bg-secondary);
     border: none !important;
     box-shadow: none !important;
@@ -762,13 +685,15 @@ body.cart-page .shop-cart {
 
 .header-user-avatar .avatar-status-dot {
     position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 10px;
-    height: 10px;
+    bottom: 0;
+    right: 0;
+    width: 7px;
+    height: 7px;
     background: #4caf50;
-    border: 2px solid white;
+    border: 1px solid white;
     border-radius: 50%;
+    transform: translate(10%, -15%);
+    z-index: 10;
 }
 
 .header__right__widget li.user-avatar-btn-container {

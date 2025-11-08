@@ -1,3 +1,25 @@
+/* Quitar sombra del header solo en shop y ponerla en el navbar de categorías */
+body.shop-page .header {
+    box-shadow: none !important;
+}
+body.shop-page .categories-navbar-carousel {
+    box-shadow: var(--header-shadow) !important;
+    margin-top: 49px;
+}
+/* Espacio para que las tarjetas no queden ocultas bajo el navbar fijo de categorías */
+.products-grid-modern {
+        padding-top: 70px; /* Ajusta según la altura total del navbar fijo */
+}
+@media (max-width: 991px) {
+    .products-grid-modern {
+        padding-top: 110px; /* Ajusta según la altura del navbar fijo en móvil */
+    }
+}
+@media (max-width: 576px) {
+    .shop-topbar.modern-topbar {
+        display: none !important;
+    }
+}
 /* Ocultar en móvil */
 .hide-on-mobile {
     display: block;
@@ -41,7 +63,7 @@ html {
 }
 
 body.shop-page {
-    background: #f8f5f2 !important;
+    background: #fff !important;
     /* Forzar scrollbar visible para evitar saltos del header */
     overflow-y: scroll !important;
     /* Evitar scroll horizontal que cause movimiento del header */
@@ -320,13 +342,13 @@ body.shop-page {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
     padding: 20px 25px;
     background: white;
     border-radius: 16px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     gap: 20px;
     flex-wrap: wrap;
+    margin-top: 50px;
 }
 
 .shop-modern .topbar-left {
@@ -863,7 +885,6 @@ body.dark-mode .sort-menu button.active {
     /* Navbar de categorías debajo de la búsqueda - solo en shop */
     .shop-modern .categories-navbar-carousel {
         order: 2;
-        margin: 0 -15px;
         width: calc(100% + 30px);
         border-radius: 0;
     }
@@ -873,6 +894,7 @@ body.dark-mode .sort-menu button.active {
         order: 3;
     }
 }
+
 
 /* ========================================
    FIN DEL ARCHIVO
