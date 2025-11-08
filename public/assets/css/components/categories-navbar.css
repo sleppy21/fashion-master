@@ -25,9 +25,9 @@
  */
 .categories-navbar-carousel {
     width: 100%;
-    margin: 0 0 18px 0;
+    margin: 0 0 10px 0;
     padding: 0;
-    background: #fff;
+    background: #ffffff;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     border-radius: 14px;
     overflow-x: auto;

@@ -1,117 +1,179 @@
 /**
- * PRODUCT TOUCH HANDLER
+ * PRODUCT TOUCH HANDLER (Versión Robusta)
  * Maneja el comportamiento de touch en móviles para las tarjetas de productos
  * - Primer toque: Muestra los botones hover
- * - Los botones permiten: Ver detalles, Favoritos, Carrito
- * 
+ * - Tocar fuera o en otra tarjeta: Cierra la tarjeta activa
+ * - Solo una tarjeta puede estar activa a la vez.
+ *
  * GLOBAL: Se usa en shop.php, cart.php, product-details.php
  */
 
 (function() {
     'use strict';
 
-    let isMobile = window.innerWidth <= 768;
-    
-    // Actualizar detección de móvil en resize
-    window.addEventListener('resize', function() {
-        isMobile = window.innerWidth <= 768;
-    });
+    /**
+     * @type {HTMLElement | null} La única tarjeta de producto que está activa (mostrando hover)
+     */
+    let currentActiveCard = null;
 
-    // Inicializar cuando el DOM esté listo
-    document.addEventListener('DOMContentLoaded', function() {
-        initProductTouchHandler();
-    });
-
-    function initProductTouchHandler() {
-        // Solo aplicar en móviles
-        if (!isMobile) return;
-
-        const productCards = document.querySelectorAll('.product-card-modern');
-        
-        productCards.forEach(function(card) {
-            const imageWrapper = card.querySelector('.product-image-wrapper');
-            
-            if (!imageWrapper) return;
-
-            // Marcar como no iniciado
-            card.removeAttribute('data-hover-active');
-            
-            // Remover event listeners previos
-            imageWrapper.removeEventListener('click', handleImageClick);
-            
-            // Agregar event listener
-            imageWrapper.addEventListener('click', handleImageClick);
-        });
-        
-        console.log(`🎯 Touch handler inicializado para ${productCards.length} tarjetas`);
+    function isTouchDevice() {
+        // Comprobación estándar de dispositivo táctil
+        return (('ontouchstart' in window) || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0);
     }
 
-    function handleImageClick(e) {
-        const card = this.closest('.product-card-modern');
-        if (!card) return;
+    /**
+     * Inicializa los listeners de eventos delegados en el documento.
+     */
+    function initProductTouchHandler() {
+        if (!isTouchDevice()) return;
+
+        // Usar 'pointerdown' es más rápido que 'click' y captura la intención
+        document.addEventListener('pointerdown', onPointerDown, { passive: true });
         
-        // Si se clickea en un botón hover, no hacer nada (dejar que funcione)
-        if (e.target.closest('.product__hover')) {
+        // Exponer re-init para compatibilidad (aunque con delegación no es necesario)
+        window.reinitProductTouchHandler = function() {
+            console.log('product-touch-handler: reinit (delegated)');
+        };
+
+        console.log('product-touch-handler: initialized (delegated, robust)');
+    }
+
+    /**
+     * Manejador principal para todos los eventos 'pointerdown' en el documento.
+     * @param {PointerEvent} e
+     */
+    function onPointerDown(e) {
+        // Solo manejar toques (ignorar mouse)
+        if (e.pointerType && e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
+
+        const card = e.target.closest('.product-card-modern');
+
+        // --- SIEMPRE cerrar todas las demás antes de abrir ---
+        if (card) {
+            document.querySelectorAll('.product-card-modern.force-hover').forEach(function(otherCard) {
+                if (otherCard !== card) deactivateHover(otherCard);
+            });
+        } else {
+            // Si tocó fuera de cualquier tarjeta, cerrar todas
+            document.querySelectorAll('.product-card-modern.force-hover').forEach(function(otherCard) {
+                deactivateHover(otherCard);
+            });
             return;
         }
-        
-        const isHoverActive = card.hasAttribute('data-hover-active');
-        
-        if (!isHoverActive) {
-            // Primer click: Mostrar botones
+
+        // --- CASO: Tocó un botón de hover (Añadir, Favorito, etc.) ---
+        if (e.target.closest('.product__hover')) {
+            // Si el usuario interactúa con los botones,
+            // reiniciamos el temporizador de cierre automático.
+            resetAutoClose(card);
+            return;
+        }
+
+        // La fuente de la verdad: ¿Es esta tarjeta la que ya está activa?
+        const isActive = (card === currentActiveCard);
+
+        if (!isActive) {
+            // Abrimos la nueva tarjeta (esta función también cierra la anterior)
             activateHover(card);
-            closeOtherCards(card);
+            e.stopPropagation();
         } else {
-            // Segundo click: Navegar a product-details
-            const productId = card.getAttribute('data-product-id');
-            if (productId) {
-                window.location.href = `product-details.php?id=${productId}`;
-            }
+            // Segundo toque: navegar
+            navigateToProduct(card);
         }
     }
 
+    /**
+     * Activa el estado hover en una tarjeta y cierra cualquier otra que estuviera activa.
+     * @param {HTMLElement} card La tarjeta a activar.
+     */
     function activateHover(card) {
-        // Marcar como activo
+        // 1. Cierra TODAS las tarjetas abiertas (robusto)
+        document.querySelectorAll('.product-card-modern.force-hover').forEach(function(otherCard) {
+            if (otherCard !== card) deactivateHover(otherCard);
+        });
+
+        // 2. Activa la nueva tarjeta
         card.setAttribute('data-hover-active', 'true');
-        
-        // Agregar clase CSS para mostrar botones
         card.classList.add('force-hover');
-        
-        // Auto-cerrar después de 5 segundos de inactividad
-        setTimeout(function() {
-            if (card.hasAttribute('data-hover-active')) {
-                deactivateHover(card);
-            }
-        }, 5000);
+        currentActiveCard = card;
+
+        // 3. Inicia el temporizador de cierre automático
+        resetAutoClose(card);
     }
 
+    /**
+     * Desactiva el estado hover de una tarjeta.
+     * @param {HTMLElement} card La tarjeta a desactivar.
+     */
     function deactivateHover(card) {
+        if (!card) return;
+
         card.removeAttribute('data-hover-active');
         card.classList.remove('force-hover');
+        clearExistingCloseTimeout(card);
+
+        // Si esta era la tarjeta activa, actualizamos el estado global
+        if (card === currentActiveCard) {
+            currentActiveCard = null;
+        }
     }
 
-    function closeOtherCards(currentCard) {
-        const allCards = document.querySelectorAll('.product-card-modern[data-hover-active]');
-        allCards.forEach(function(card) {
-            if (card !== currentCard) {
+    /**
+     * Navega a la página de detalles del producto.
+     * @param {HTMLElement} card
+     */
+    function navigateToProduct(card) {
+        const link = card.querySelector('.product-info a, a.product-link');
+        let href = null;
+
+        if (link && link.href) {
+            href = link.href;
+        } else {
+            const productId = card.getAttribute('data-product-id');
+            if (productId) {
+                href = 'product-details.php?id=' + encodeURIComponent(productId);
+            }
+        }
+
+        if (href) {
+            // Pequeño retardo para permitir feedback visual del toque
+            setTimeout(function() {
+                window.location.href = href;
+            }, 50);
+        }
+    }
+
+    /**
+     * (Re)inicia el temporizador de cierre automático para una tarjeta.
+     * @param {HTMLElement} card
+     */
+    function resetAutoClose(card) {
+        clearExistingCloseTimeout(card);
+        
+        card.__closeTimeout = setTimeout(function() {
+            // Solo cierra si la tarjeta sigue siendo la activa
+            if (card === currentActiveCard) {
                 deactivateHover(card);
             }
-        });
+        }, 5000); // 5 segundos de inactividad
     }
 
-    // Cerrar hover cuando se toca fuera de las tarjetas
-    document.addEventListener('click', function(e) {
-        if (!isMobile) return;
-        
-        const card = e.target.closest('.product-card-modern');
-        if (!card) {
-            // Tocó fuera de cualquier tarjeta, cerrar todas
-            const activeCards = document.querySelectorAll('.product-card-modern[data-hover-active]');
-            activeCards.forEach(deactivateHover);
+    /**
+     * Limpia cualquier temporizador de cierre existente en la tarjeta.
+     * @param {HTMLElement} card
+     */
+    function clearExistingCloseTimeout(card) {
+        if (card && card.__closeTimeout) {
+            clearTimeout(card.__closeTimeout);
+            card.__closeTimeout = null;
         }
-    });
+    }
 
-    // Exponer función para re-inicializar después de AJAX
-    window.reinitProductTouchHandler = initProductTouchHandler;
+    // --- Inicialización ---
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initProductTouchHandler);
+    } else {
+        initProductTouchHandler(); // El DOM ya está listo
+    }
 
 })();

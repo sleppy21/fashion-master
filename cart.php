@@ -151,9 +151,6 @@ try {
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- 6. SPECIFIC: Estilos específicos de página -->
-    <link rel="stylesheet" href="public/assets/css/cart-improvements.css?v=<?= time() ?>" type="text/css">
     
     <?php include 'includes/modern-libraries.php'; ?>
     
